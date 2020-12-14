@@ -31,6 +31,7 @@ import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValue
 import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.product.service.CPOptionService;
 import com.liferay.commerce.product.service.CPSpecificationOptionService;
+import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.service.CPDefinitionInventoryService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Attachment;
@@ -628,6 +629,9 @@ public class ProductResourceImpl
 			GetterUtil.getBoolean(product.getNeverExpire(), true),
 			serviceContext);
 
+		_cProductLocalService.updateCProductExternalReferenceCode(
+			cpDefinition.getCProductId(), product.getExternalReferenceCode());
+
 		// Workflow
 
 		if (!product.getActive()) {
@@ -818,6 +822,9 @@ public class ProductResourceImpl
 
 	@Reference
 	private CPOptionService _cpOptionService;
+
+	@Reference
+	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private CPSpecificationOptionService _cpSpecificationOptionService;
