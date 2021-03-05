@@ -575,10 +575,11 @@ public class CPDefinitionLocalServiceImpl
 
 		// CPDisplayLayout
 
-		CPDisplayLayout cpDisplayLayout = cpDisplayLayoutPersistence.fetchByC_C(
-			cpDefinitionClassNameId, cpDefinitionId);
+		List<CPDisplayLayout> cpDisplayLayouts =
+			cpDisplayLayoutPersistence.findByC_C(
+				cpDefinitionClassNameId, cpDefinitionId);
 
-		if (cpDisplayLayout != null) {
+		for (CPDisplayLayout cpDisplayLayout : cpDisplayLayouts) {
 			CPDisplayLayout newCPDisplayLayout =
 				(CPDisplayLayout)cpDisplayLayout.clone();
 
@@ -729,10 +730,10 @@ public class CPDefinitionLocalServiceImpl
 			companyGroup.getGroupId(), CProduct.class,
 			cpDefinition.getCProductId());
 
-		// Commerce product display layout
+		// Commerce product display layouts
 
-		cpDisplayLayoutLocalService.deleteCPDisplayLayout(
-			CPDefinition.class, cpDefinition.getCPDefinitionId());
+		cpDisplayLayoutLocalService.deleteCPDisplayLayouts(
+			CPDefinition.class.getName(), cpDefinition.getCPDefinitionId());
 
 		// Commerce product version contributors
 
@@ -1150,24 +1151,6 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		return facets;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 * #getLayoutUuid(long, long)}
-	 */
-	@Deprecated
-	@Override
-	public String getLayoutUuid(long cpDefinitionId) {
-		CPDisplayLayout cpDisplayLayout =
-			cpDisplayLayoutLocalService.fetchCPDisplayLayout(
-				CPDefinition.class, cpDefinitionId);
-
-		if (cpDisplayLayout == null) {
-			return null;
-		}
-
-		return cpDisplayLayout.getLayoutUuid();
 	}
 
 	@Override
