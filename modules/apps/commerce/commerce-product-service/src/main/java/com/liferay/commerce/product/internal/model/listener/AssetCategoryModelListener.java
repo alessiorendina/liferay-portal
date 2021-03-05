@@ -71,8 +71,8 @@ public class AssetCategoryModelListener
 			_cpAttachmentFileEntryLocalService.deleteCPAttachmentFileEntries(
 				AssetCategory.class.getName(), assetCategory.getCategoryId());
 
-			_cpDisplayLayoutLocalService.deleteCPDisplayLayout(
-				AssetCategory.class, assetCategory.getCategoryId());
+			_cpDisplayLayoutLocalService.deleteCPDisplayLayouts(
+				AssetCategory.class.getName(), assetCategory.getCategoryId());
 
 			Group companyGroup = _groupLocalService.getCompanyGroup(
 				assetCategory.getCompanyId());
