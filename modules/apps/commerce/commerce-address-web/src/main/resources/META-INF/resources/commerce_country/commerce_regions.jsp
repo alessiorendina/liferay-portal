@@ -1,4 +1,6 @@
-<%--
+<%@ page import="java.util.HashMap" %>
+<%@ page
+	import="com.liferay.commerce.address.web.internal.frontend.CommerceRegionsClayTable" %><%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -21,6 +23,17 @@ CommerceRegionsDisplayContext commerceRegionsDisplayContext = (CommerceRegionsDi
 %>
 
 <c:if test="<%= commerceRegionsDisplayContext.hasPermission(CommerceActionKeys.MANAGE_COMMERCE_COUNTRIES) %>">
+	<clay:data-set-display
+		contextParams="<%= new HashMap<>() %>"
+		dataProviderKey="<%= CommerceRegionsClayTable.NAME %>"
+		id="<%= CommerceRegionsClayTable.NAME %>"
+		itemsPerPage="<%= 10 %>"
+		namespace="<%= liferayPortletResponse.getNamespace() %>"
+		pageNumber="<%= 1 %>"
+		portletURL="<%= commerceRegionsDisplayContext.getPortletURL() %>"
+		style="fluid"
+	/>
+
 	<liferay-frontend:management-bar
 		includeCheckBox="<%= true %>"
 		searchContainerId="commerceRegions"
