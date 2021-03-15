@@ -733,7 +733,7 @@ public class CPDefinitionLocalServiceImpl
 		// Commerce product display layouts
 
 		cpDisplayLayoutLocalService.deleteCPDisplayLayouts(
-			CPDefinition.class.getName(), cpDefinition.getCPDefinitionId());
+			CPDefinition.class, cpDefinition.getCPDefinitionId());
 
 		// Commerce product version contributors
 

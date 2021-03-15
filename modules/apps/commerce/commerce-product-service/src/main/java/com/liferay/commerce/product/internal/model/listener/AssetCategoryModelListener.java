@@ -72,7 +72,7 @@ public class AssetCategoryModelListener
 				AssetCategory.class.getName(), assetCategory.getCategoryId());
 
 			_cpDisplayLayoutLocalService.deleteCPDisplayLayouts(
-				AssetCategory.class.getName(), assetCategory.getCategoryId());
+				AssetCategory.class, assetCategory.getCategoryId());
 
 			Group companyGroup = _groupLocalService.getCompanyGroup(
 				assetCategory.getCompanyId());
