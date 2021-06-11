@@ -14,14 +14,16 @@
 
 package com.liferay.commerce.notification.service.impl;
 
-import com.liferay.commerce.notification.constants.CommerceNotificationActionKeys;
-import com.liferay.commerce.notification.constants.CommerceNotificationConstants;
 import com.liferay.commerce.notification.model.CommerceNotificationQueueEntry;
 import com.liferay.commerce.notification.service.base.CommerceNotificationQueueEntryServiceBaseImpl;
+import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
-import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermissionFactory;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.util.List;
 
@@ -41,10 +43,12 @@ public class CommerceNotificationQueueEntryServiceImpl
 				getCommerceNotificationQueueEntry(
 					commerceNotificationQueueEntryId);
 
-		_portletResourcePermission.check(
-			getPermissionChecker(), commerceNotificationQueueEntry.getGroupId(),
-			CommerceNotificationActionKeys.
-				DELETE_COMMERCE_NOTIFICATION_QUEUE_ENTRY);
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannelByGroupId(
+				commerceNotificationQueueEntry.getGroupId());
+
+		_commerceChannelModelResourcePermission.check(
+			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
 
 		commerceNotificationQueueEntryLocalService.
 			deleteCommerceNotificationQueue(commerceNotificationQueueEntry);
@@ -58,10 +62,11 @@ public class CommerceNotificationQueueEntryServiceImpl
 					orderByComparator)
 		throws PortalException {
 
-		_portletResourcePermission.check(
-			getPermissionChecker(), groupId,
-			CommerceNotificationActionKeys.
-				VIEW_COMMERCE_NOTIFICATION_QUEUE_ENTRIES);
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannelByGroupId(groupId);
+
+		_commerceChannelModelResourcePermission.check(
+			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
 
 		return commerceNotificationQueueEntryLocalService.
 			getCommerceNotificationQueueEntries(
@@ -72,10 +77,11 @@ public class CommerceNotificationQueueEntryServiceImpl
 	public int getCommerceNotificationQueueEntriesCount(long groupId)
 		throws PortalException {
 
-		_portletResourcePermission.check(
-			getPermissionChecker(), groupId,
-			CommerceNotificationActionKeys.
-				VIEW_COMMERCE_NOTIFICATION_QUEUE_ENTRIES);
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannelByGroupId(groupId);
+
+		_commerceChannelModelResourcePermission.check(
+			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
 
 		return commerceNotificationQueueEntryLocalService.
 			getCommerceNotificationQueueEntriesCount(groupId);
@@ -91,21 +97,26 @@ public class CommerceNotificationQueueEntryServiceImpl
 				getCommerceNotificationQueueEntry(
 					commerceNotificationQueueEntryId);
 
-		_portletResourcePermission.check(
-			getPermissionChecker(), commerceNotificationQueueEntry.getGroupId(),
-			CommerceNotificationActionKeys.
-				RESEND_COMMERCE_NOTIFICATION_QUEUE_ENTRY);
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannelByGroupId(
+				commerceNotificationQueueEntry.getGroupId());
+
+		_commerceChannelModelResourcePermission.check(
+			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
 
 		return commerceNotificationQueueEntryLocalService.
 			resendCommerceNotificationQueueEntry(
 				commerceNotificationQueueEntryId);
 	}
 
-	private static volatile PortletResourcePermission
-		_portletResourcePermission =
-			PortletResourcePermissionFactory.getInstance(
+	private static volatile ModelResourcePermission<CommerceChannel>
+		_commerceChannelModelResourcePermission =
+			ModelResourcePermissionFactory.getInstance(
 				CommerceNotificationQueueEntryServiceImpl.class,
-				"_portletResourcePermission",
-				CommerceNotificationConstants.RESOURCE_NAME);
+				"_commerceChannelModelResourcePermission",
+				CommerceChannel.class);
+
+	@ServiceReference(type = CommerceChannelLocalService.class)
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 }

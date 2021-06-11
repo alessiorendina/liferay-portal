@@ -14,18 +14,17 @@
 
 package com.liferay.commerce.notification.service.impl;
 
-import com.liferay.commerce.notification.constants.CommerceNotificationActionKeys;
-import com.liferay.commerce.notification.constants.CommerceNotificationConstants;
 import com.liferay.commerce.notification.model.CommerceNotificationTemplate;
 import com.liferay.commerce.notification.service.base.CommerceNotificationTemplateServiceBaseImpl;
+import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
-import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
-import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermissionFactory;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.util.List;
 import java.util.Locale;
@@ -46,9 +45,11 @@ public class CommerceNotificationTemplateServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		_portletResourcePermission.check(
-			getPermissionChecker(), groupId,
-			CommerceNotificationActionKeys.ADD_COMMERCE_NOTIFICATION_TEMPLATE);
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannelByGroupId(groupId);
+
+		_commerceChannelModelResourcePermission.check(
+			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
 
 		return commerceNotificationTemplateLocalService.
 			addCommerceNotificationTemplate(
@@ -158,6 +159,12 @@ public class CommerceNotificationTemplateServiceImpl
 				serviceContext);
 	}
 
+	private static volatile ModelResourcePermission<CommerceChannel>
+		_commerceChannelModelResourcePermission =
+			ModelResourcePermissionFactory.getInstance(
+				CommerceNotificationTemplateServiceImpl.class,
+				"_commerceChannelModelResourcePermission",
+				CommerceChannel.class);
 	private static volatile ModelResourcePermission
 		<CommerceNotificationTemplate>
 			_commerceNotificationTemplateResourcePermission =
@@ -165,11 +172,8 @@ public class CommerceNotificationTemplateServiceImpl
 					CommerceNotificationTemplateServiceImpl.class,
 					"_commerceNotificationTemplateResourcePermission",
 					CommerceNotificationTemplate.class);
-	private static volatile PortletResourcePermission
-		_portletResourcePermission =
-			PortletResourcePermissionFactory.getInstance(
-				CommerceNotificationTemplateServiceImpl.class,
-				"_portletResourcePermission",
-				CommerceNotificationConstants.RESOURCE_NAME);
+
+	@ServiceReference(type = CommerceChannelLocalService.class)
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 }
