@@ -14,23 +14,20 @@
 
 package com.liferay.commerce.shop.by.diagram.service.impl;
 
+import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramSetting;
 import com.liferay.commerce.shop.by.diagram.service.base.CPDefinitionDiagramSettingServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
- * The implementation of the cp definition diagram setting remote service.
- *
- * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the <code>com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramSettingService</code> interface.
- *
- * <p>
- * This is a remote service. Methods of this service are expected to have security checks based on the propagated JAAS credentials because this service can be accessed remotely.
- * </p>
- *
  * @author Andrea Sbarra
- * @see CPDefinitionDiagramSettingServiceBaseImpl
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	enabled = false,
@@ -43,10 +40,85 @@ import org.osgi.service.component.annotations.Component;
 public class CPDefinitionDiagramSettingServiceImpl
 	extends CPDefinitionDiagramSettingServiceBaseImpl {
 
-	/**
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Always use <code>com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramSettingServiceUtil</code> to access the cp definition diagram setting remote service.
-	 */
+	@Override
+	public CPDefinitionDiagramSetting addCPDefinitionDiagramSetting(
+			long userId, long cpDefinitionId, long cpAttachmentFileEntryId,
+			String color, double radius, String type)
+		throws PortalException {
+
+		_cpDefinitionModelResourcePermission.check(
+			getPermissionChecker(), cpDefinitionId, ActionKeys.UPDATE);
+
+		return cpDefinitionDiagramSettingLocalService.
+			addCPDefinitionDiagramSetting(
+				userId, cpDefinitionId, cpAttachmentFileEntryId, color, radius,
+				type);
+	}
+
+	@Override
+	public CPDefinitionDiagramSetting
+			fetchCPDefinitionDiagramSettingByCPDefinitionId(long cpDefinitionId)
+		throws PortalException {
+
+		_cpDefinitionModelResourcePermission.check(
+			getPermissionChecker(), cpDefinitionId, ActionKeys.UPDATE);
+
+		return cpDefinitionDiagramSettingLocalService.
+			fetchCPDefinitionDiagramSettingByCPDefinitionId(cpDefinitionId);
+	}
+
+	@Override
+	public CPDefinitionDiagramSetting getCPDefinitionDiagramSetting(
+			long cpDefinitionDiagramSettingId)
+		throws PortalException {
+
+		CPDefinitionDiagramSetting cpDefinitionDiagramSetting =
+			cpDefinitionDiagramSettingLocalService.
+				getCPDefinitionDiagramSetting(cpDefinitionDiagramSettingId);
+
+		_cpDefinitionModelResourcePermission.check(
+			getPermissionChecker(),
+			cpDefinitionDiagramSetting.getCPDefinitionId(), ActionKeys.UPDATE);
+
+		return cpDefinitionDiagramSetting;
+	}
+
+	@Override
+	public CPDefinitionDiagramSetting
+			getCPDefinitionDiagramSettingByCPDefinitionId(long cpDefinitionId)
+		throws PortalException {
+
+		_cpDefinitionModelResourcePermission.check(
+			getPermissionChecker(), cpDefinitionId, ActionKeys.UPDATE);
+
+		return cpDefinitionDiagramSettingLocalService.
+			getCPDefinitionDiagramSettingByCPDefinitionId(cpDefinitionId);
+	}
+
+	@Override
+	public CPDefinitionDiagramSetting updateCPDefinitionDiagramSetting(
+			long cpDefinitionDiagramSettingId, long cpAttachmentFileEntryId,
+			String color, double radius, String type)
+		throws PortalException {
+
+		CPDefinitionDiagramSetting cpDefinitionDiagramSetting =
+			cpDefinitionDiagramSettingLocalService.
+				getCPDefinitionDiagramSetting(cpDefinitionDiagramSettingId);
+
+		_cpDefinitionModelResourcePermission.check(
+			getPermissionChecker(),
+			cpDefinitionDiagramSetting.getCPDefinitionId(), ActionKeys.UPDATE);
+
+		return cpDefinitionDiagramSettingLocalService.
+			updateCPDefinitionDiagramSetting(
+				cpDefinitionDiagramSetting.getCPDefinitionDiagramSettingId(),
+				cpAttachmentFileEntryId, color, radius, type);
+	}
+
+	private static volatile ModelResourcePermission<CPDefinition>
+		_cpDefinitionModelResourcePermission =
+			ModelResourcePermissionFactory.getInstance(
+				CPDefinitionDiagramSettingServiceImpl.class,
+				"_cpDefinitionModelResourcePermission", CPDefinition.class);
 
 }

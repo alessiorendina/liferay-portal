@@ -14,23 +14,17 @@
 
 package com.liferay.commerce.shop.by.diagram.service.impl;
 
+import com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramSetting;
 import com.liferay.commerce.shop.by.diagram.service.base.CPDefinitionDiagramSettingLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
- * The implementation of the cp definition diagram setting local service.
- *
- * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the <code>com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramSettingLocalService</code> interface.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
- *
  * @author Andrea Sbarra
- * @see CPDefinitionDiagramSettingLocalServiceBaseImpl
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	enabled = false,
@@ -40,10 +34,96 @@ import org.osgi.service.component.annotations.Component;
 public class CPDefinitionDiagramSettingLocalServiceImpl
 	extends CPDefinitionDiagramSettingLocalServiceBaseImpl {
 
-	/**
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Use <code>com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramSettingLocalService</code> via injection or a <code>org.osgi.util.tracker.ServiceTracker</code> or use <code>com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramSettingLocalServiceUtil</code>.
-	 */
+	@Override
+	public CPDefinitionDiagramSetting addCPDefinitionDiagramSetting(
+			long userId, long cpDefinitionId, long cpAttachmentFileEntryId,
+			String color, double radius, String type)
+		throws PortalException {
+
+		User user = userLocalService.getUser(userId);
+
+		long cpDefinitionDiagramSettingId = counterLocalService.increment();
+
+		CPDefinitionDiagramSetting cpDefinitionDiagramSetting =
+			cpDefinitionDiagramSettingPersistence.create(
+				cpDefinitionDiagramSettingId);
+
+		cpDefinitionDiagramSetting.setCompanyId(user.getCompanyId());
+		cpDefinitionDiagramSetting.setUserId(user.getUserId());
+		cpDefinitionDiagramSetting.setUserName(user.getFullName());
+		cpDefinitionDiagramSetting.setCPDefinitionId(cpDefinitionId);
+		cpDefinitionDiagramSetting.setCPAttachmentFileEntryId(
+			cpAttachmentFileEntryId);
+		cpDefinitionDiagramSetting.setColor(color);
+		cpDefinitionDiagramSetting.setRadius(radius);
+		cpDefinitionDiagramSetting.setType(type);
+
+		return cpDefinitionDiagramSettingPersistence.update(
+			cpDefinitionDiagramSetting);
+	}
+
+	@Override
+	public CPDefinitionDiagramSetting deleteCPDefinitionDiagramSetting(
+			long cpDefinitionDiagramSettingId)
+		throws PortalException {
+
+		CPDefinitionDiagramSetting cpDefinitionDiagramSetting =
+			cpDefinitionDiagramSettingPersistence.findByPrimaryKey(
+				cpDefinitionDiagramSettingId);
+
+		return cpDefinitionDiagramSettingLocalService.
+			deleteCPDefinitionDiagramSetting(cpDefinitionDiagramSetting);
+	}
+
+	@Override
+	public CPDefinitionDiagramSetting
+			deleteCPDefinitionDiagramSettingByCPDefinitionId(
+				long cpDefinitionId)
+		throws PortalException {
+
+		CPDefinitionDiagramSetting cpDefinitionDiagramSetting =
+			cpDefinitionDiagramSettingPersistence.findByCPDefinitionId(
+				cpDefinitionId);
+
+		return cpDefinitionDiagramSettingLocalService.
+			deleteCPDefinitionDiagramSetting(cpDefinitionDiagramSetting);
+	}
+
+	@Override
+	public CPDefinitionDiagramSetting
+		fetchCPDefinitionDiagramSettingByCPDefinitionId(long cpDefinitionId) {
+
+		return cpDefinitionDiagramSettingPersistence.fetchByCPDefinitionId(
+			cpDefinitionId);
+	}
+
+	@Override
+	public CPDefinitionDiagramSetting
+			getCPDefinitionDiagramSettingByCPDefinitionId(long cpDefinitionId)
+		throws PortalException {
+
+		return cpDefinitionDiagramSettingPersistence.findByCPDefinitionId(
+			cpDefinitionId);
+	}
+
+	@Override
+	public CPDefinitionDiagramSetting updateCPDefinitionDiagramSetting(
+			long cpDefinitionDiagramSettingId, long cpAttachmentFileEntryId,
+			String color, double radius, String type)
+		throws PortalException {
+
+		CPDefinitionDiagramSetting cpDefinitionDiagramSetting =
+			cpDefinitionDiagramSettingLocalService.
+				getCPDefinitionDiagramSetting(cpDefinitionDiagramSettingId);
+
+		cpDefinitionDiagramSetting.setCPAttachmentFileEntryId(
+			cpAttachmentFileEntryId);
+		cpDefinitionDiagramSetting.setColor(color);
+		cpDefinitionDiagramSetting.setRadius(radius);
+		cpDefinitionDiagramSetting.setType(type);
+
+		return cpDefinitionDiagramSettingPersistence.update(
+			cpDefinitionDiagramSetting);
+	}
 
 }
