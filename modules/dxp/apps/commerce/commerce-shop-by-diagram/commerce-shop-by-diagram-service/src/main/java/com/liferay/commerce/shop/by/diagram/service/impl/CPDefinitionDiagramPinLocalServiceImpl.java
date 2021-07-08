@@ -14,23 +14,19 @@
 
 package com.liferay.commerce.shop.by.diagram.service.impl;
 
+import com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramPin;
 import com.liferay.commerce.shop.by.diagram.service.base.CPDefinitionDiagramPinLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
- * The implementation of the cp definition diagram pin local service.
- *
- * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the <code>com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramPinLocalService</code> interface.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
- *
  * @author Andrea Sbarra
- * @see CPDefinitionDiagramPinLocalServiceBaseImpl
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	enabled = false,
@@ -40,10 +36,65 @@ import org.osgi.service.component.annotations.Component;
 public class CPDefinitionDiagramPinLocalServiceImpl
 	extends CPDefinitionDiagramPinLocalServiceBaseImpl {
 
-	/**
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Use <code>com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramPinLocalService</code> via injection or a <code>org.osgi.util.tracker.ServiceTracker</code> or use <code>com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramPinLocalServiceUtil</code>.
-	 */
+	@Override
+	public CPDefinitionDiagramPin addCPDefinitionDiagramPin(
+			long userId, long cpDefinitionId, int number, double positionX,
+			double positionY)
+		throws PortalException {
+
+		User user = userLocalService.getUser(userId);
+
+		long cpDefinitionDiagramPinId = counterLocalService.increment();
+
+		CPDefinitionDiagramPin cpDefinitionDiagramPin =
+			cpDefinitionDiagramPinPersistence.create(cpDefinitionDiagramPinId);
+
+		cpDefinitionDiagramPin.setCompanyId(user.getCompanyId());
+		cpDefinitionDiagramPin.setUserId(user.getUserId());
+		cpDefinitionDiagramPin.setUserName(user.getFullName());
+		cpDefinitionDiagramPin.setCPDefinitionId(cpDefinitionId);
+		cpDefinitionDiagramPin.setNumber(number);
+		cpDefinitionDiagramPin.setPositionX(positionX);
+		cpDefinitionDiagramPin.setPositionY(positionY);
+
+		return cpDefinitionDiagramPinPersistence.update(cpDefinitionDiagramPin);
+	}
+
+	@Override
+	public void deleteCPDefinitionDiagramPins(long cpDefinitionId) {
+		cpDefinitionDiagramPinPersistence.removeByCPDefinitionId(
+			cpDefinitionId);
+	}
+
+	@Override
+	public List<CPDefinitionDiagramPin> getCPDefinitionDiagramPins(
+		long cpDefinitionId, int start, int end) {
+
+		return cpDefinitionDiagramPinPersistence.findByCPDefinitionId(
+			cpDefinitionId, start, end);
+	}
+
+	@Override
+	public int getCPDefinitionDiagramPinsCount(long cpDefinitionId) {
+		return cpDefinitionDiagramPinPersistence.countByCPDefinitionId(
+			cpDefinitionId);
+	}
+
+	@Override
+	public CPDefinitionDiagramPin updateCPDefinitionDiagramPin(
+			long cpDefinitionDiagramPinId, int number, double positionX,
+			double positionY)
+		throws PortalException {
+
+		CPDefinitionDiagramPin cpDefinitionDiagramPin =
+			cpDefinitionDiagramPinLocalService.getCPDefinitionDiagramPin(
+				cpDefinitionDiagramPinId);
+
+		cpDefinitionDiagramPin.setNumber(number);
+		cpDefinitionDiagramPin.setPositionX(positionX);
+		cpDefinitionDiagramPin.setPositionY(positionY);
+
+		return cpDefinitionDiagramPinPersistence.update(cpDefinitionDiagramPin);
+	}
 
 }
