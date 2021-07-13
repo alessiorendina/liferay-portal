@@ -137,6 +137,51 @@ public class CPDefinitionDiagramEntryServiceHttp {
 		}
 	}
 
+	public static
+		com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramEntry
+				getCPDefinitionDiagramEntry(
+					HttpPrincipal httpPrincipal, long cpDefinitionId,
+					int number)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPDefinitionDiagramEntryServiceUtil.class,
+				"getCPDefinitionDiagramEntry",
+				_getCPDefinitionDiagramEntryParameterTypes2);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, cpDefinitionId, number);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.shop.by.diagram.model.
+				CPDefinitionDiagramEntry)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static java.util.List
 		<com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramEntry>
 				getCPDefinitionDiagramEntries(
@@ -148,7 +193,7 @@ public class CPDefinitionDiagramEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionDiagramEntryServiceUtil.class,
 				"getCPDefinitionDiagramEntries",
-				_getCPDefinitionDiagramEntriesParameterTypes2);
+				_getCPDefinitionDiagramEntriesParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionId, start, end);
@@ -191,7 +236,7 @@ public class CPDefinitionDiagramEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionDiagramEntryServiceUtil.class,
 				"getCPDefinitionDiagramEntriesCount",
-				_getCPDefinitionDiagramEntriesCountParameterTypes3);
+				_getCPDefinitionDiagramEntriesCountParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionId);
@@ -235,7 +280,7 @@ public class CPDefinitionDiagramEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionDiagramEntryServiceUtil.class,
 				"getCPDefinitionDiagramEntry",
-				_getCPDefinitionDiagramEntryParameterTypes4);
+				_getCPDefinitionDiagramEntryParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionDiagramEntryId);
@@ -284,7 +329,7 @@ public class CPDefinitionDiagramEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionDiagramEntryServiceUtil.class,
 				"updateCPDefinitionDiagramEntry",
-				_updateCPDefinitionDiagramEntryParameterTypes5);
+				_updateCPDefinitionDiagramEntryParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionDiagramEntryId, cpInstanceUuid,
@@ -333,17 +378,21 @@ public class CPDefinitionDiagramEntryServiceHttp {
 			long.class
 		};
 	private static final Class<?>[]
-		_getCPDefinitionDiagramEntriesParameterTypes2 = new Class[] {
+		_getCPDefinitionDiagramEntryParameterTypes2 = new Class[] {
+			long.class, int.class
+		};
+	private static final Class<?>[]
+		_getCPDefinitionDiagramEntriesParameterTypes3 = new Class[] {
 			long.class, int.class, int.class
 		};
 	private static final Class<?>[]
-		_getCPDefinitionDiagramEntriesCountParameterTypes3 = new Class[] {
+		_getCPDefinitionDiagramEntriesCountParameterTypes4 = new Class[] {
 			long.class
 		};
 	private static final Class<?>[]
-		_getCPDefinitionDiagramEntryParameterTypes4 = new Class[] {long.class};
+		_getCPDefinitionDiagramEntryParameterTypes5 = new Class[] {long.class};
 	private static final Class<?>[]
-		_updateCPDefinitionDiagramEntryParameterTypes5 = new Class[] {
+		_updateCPDefinitionDiagramEntryParameterTypes6 = new Class[] {
 			long.class, String.class, long.class, boolean.class, int.class,
 			int.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
