@@ -14,27 +14,144 @@
 
 package com.liferay.commerce.service.impl;
 
+import com.liferay.commerce.constants.CommerceOrderActionKeys;
+import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.service.base.CommerceOrderTypeServiceBaseImpl;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.util.Locale;
+import java.util.Map;
 
 /**
- * The implementation of the commerce order type remote service.
- *
- * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the <code>com.liferay.commerce.service.CommerceOrderTypeService</code> interface.
- *
- * <p>
- * This is a remote service. Methods of this service are expected to have security checks based on the propagated JAAS credentials because this service can be accessed remotely.
- * </p>
- *
  * @author Alessio Antonio Rendina
- * @see CommerceOrderTypeServiceBaseImpl
  */
 public class CommerceOrderTypeServiceImpl
 	extends CommerceOrderTypeServiceBaseImpl {
 
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Always use <code>com.liferay.commerce.service.CommerceOrderTypeServiceUtil</code> to access the commerce order type remote service.
-	 */
+	@Override
+	public CommerceOrderType addCommerceOrderType(
+			String externalReferenceCode, long userId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			boolean active, int displayDateMonth, int displayDateDay,
+			int displayDateYear, int displayDateHour, int displayDateMinute,
+			int displayOrder, int expirationDateMonth, int expirationDateDay,
+			int expirationDateYear, int expirationDateHour,
+			int expirationDateMinute, boolean neverExpire,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		PortletResourcePermission portletResourcePermission =
+			_commerceOrderTypeResourcePermission.getPortletResourcePermission();
+
+		portletResourcePermission.check(
+			getPermissionChecker(), null,
+			CommerceOrderActionKeys.ADD_COMMERCE_ORDER_TYPE);
+
+		return commerceOrderTypeLocalService.addCommerceOrderType(
+			externalReferenceCode, userId, nameMap, descriptionMap, active,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, displayOrder, expirationDateMonth,
+			expirationDateDay, expirationDateYear, expirationDateHour,
+			expirationDateMinute, neverExpire, serviceContext);
+	}
+
+	@Override
+	public CommerceOrderType deleteCommerceOrderType(long commerceOrderTypeId)
+		throws PortalException {
+
+		_commerceOrderTypeResourcePermission.check(
+			getPermissionChecker(), commerceOrderTypeId, ActionKeys.DELETE);
+
+		return commerceOrderTypeLocalService.deleteCommerceOrderType(
+			commerceOrderTypeId);
+	}
+
+	@Override
+	public CommerceOrderType fetchByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CommerceOrderType commerceOrderType =
+			commerceOrderTypeLocalService.fetchByExternalReferenceCode(
+				externalReferenceCode, companyId);
+
+		if (commerceOrderType != null) {
+			_commerceOrderTypeResourcePermission.check(
+				getPermissionChecker(), commerceOrderType, ActionKeys.VIEW);
+		}
+
+		return commerceOrderType;
+	}
+
+	@Override
+	public CommerceOrderType fetchCommerceOrderType(long commerceOrderTypeId)
+		throws PortalException {
+
+		_commerceOrderTypeResourcePermission.check(
+			getPermissionChecker(), commerceOrderTypeId, ActionKeys.VIEW);
+
+		return commerceOrderTypeLocalService.fetchCommerceOrderType(
+			commerceOrderTypeId);
+	}
+
+	@Override
+	public CommerceOrderType getCommerceOrderType(long commerceOrderTypeId)
+		throws PortalException {
+
+		_commerceOrderTypeResourcePermission.check(
+			getPermissionChecker(), commerceOrderTypeId, ActionKeys.VIEW);
+
+		return commerceOrderTypeLocalService.getCommerceOrderType(
+			commerceOrderTypeId);
+	}
+
+	@Override
+	public CommerceOrderType updateCommerceOrderType(
+			String externalReferenceCode, long commerceOrderTypeId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			boolean active, int displayDateMonth, int displayDateDay,
+			int displayDateYear, int displayDateHour, int displayDateMinute,
+			int displayOrder, int expirationDateMonth, int expirationDateDay,
+			int expirationDateYear, int expirationDateHour,
+			int expirationDateMinute, boolean neverExpire,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		_commerceOrderTypeResourcePermission.check(
+			getPermissionChecker(), commerceOrderTypeId, ActionKeys.UPDATE);
+
+		return commerceOrderTypeLocalService.updateCommerceOrderType(
+			externalReferenceCode, commerceOrderTypeId, nameMap, descriptionMap,
+			active, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, displayOrder,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+	}
+
+	@Override
+	public CommerceOrderType updateCommerceOrderTypeExternalReferenceCode(
+			String externalReferenceCode, long commerceOrderTypeId)
+		throws PortalException {
+
+		_commerceOrderTypeResourcePermission.check(
+			getPermissionChecker(), commerceOrderTypeId, ActionKeys.UPDATE);
+
+		return commerceOrderTypeLocalService.
+			updateCommerceOrderTypeExternalReferenceCode(
+				externalReferenceCode, commerceOrderTypeId);
+	}
+
+	private static volatile ModelResourcePermission<CommerceOrderType>
+		_commerceOrderTypeResourcePermission =
+			ModelResourcePermissionFactory.getInstance(
+				CommerceOrderTypeServiceImpl.class,
+				"_commerceOrderTypeResourcePermission",
+				CommerceOrderType.class);
+
 }
