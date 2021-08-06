@@ -45,22 +45,6 @@ import org.osgi.service.component.annotations.Reference;
 public class EditCommerceOrderTypeQualifiersMVCActionCommand
 	extends BaseMVCActionCommand {
 
-	protected void addOrUpdateCommerceOrderTypeQualifiers(
-			ActionRequest actionRequest)
-		throws Exception {
-
-		String channelQualifiers = ParamUtil.getString(
-			actionRequest, "channelQualifiers");
-
-		if (Objects.equals(channelQualifiers, "all")) {
-			long commerceOrderTypeId = ParamUtil.getLong(
-				actionRequest, "commerceOrderTypeId");
-
-			_commerceOrderTypeRelService.deleteCommerceOrderTypeRels(
-				CommerceChannel.class.getName(), commerceOrderTypeId);
-		}
-	}
-
 	@Override
 	protected void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
@@ -70,7 +54,16 @@ public class EditCommerceOrderTypeQualifiersMVCActionCommand
 
 		try {
 			if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
-				addOrUpdateCommerceOrderTypeQualifiers(actionRequest);
+				String channelQualifiers = ParamUtil.getString(
+					actionRequest, "channelQualifiers");
+
+				if (Objects.equals(channelQualifiers, "all")) {
+					long commerceOrderTypeId = ParamUtil.getLong(
+						actionRequest, "commerceOrderTypeId");
+
+					_commerceOrderTypeRelService.deleteCommerceOrderTypeRels(
+						CommerceChannel.class.getName(), commerceOrderTypeId);
+				}
 			}
 		}
 		catch (Exception exception) {

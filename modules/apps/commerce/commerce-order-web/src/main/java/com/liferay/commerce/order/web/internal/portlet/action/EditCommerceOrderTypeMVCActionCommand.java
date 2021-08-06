@@ -51,95 +51,6 @@ import org.osgi.service.component.annotations.Reference;
 public class EditCommerceOrderTypeMVCActionCommand
 	extends BaseMVCActionCommand {
 
-	protected CommerceOrderType addOrUpdateCommerceOrderType(
-			ActionRequest actionRequest)
-		throws Exception {
-
-		long commerceOrderTypeId = ParamUtil.getLong(
-			actionRequest, "commerceOrderTypeId");
-
-		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
-			actionRequest, "name");
-
-		Map<Locale, String> descriptionMap =
-			LocalizationUtil.getLocalizationMap(actionRequest, "description");
-
-		boolean active = ParamUtil.getBoolean(actionRequest, "active");
-
-		int displayDateMonth = ParamUtil.getInteger(
-			actionRequest, "displayDateMonth");
-
-		int displayDateDay = ParamUtil.getInteger(
-			actionRequest, "displayDateDay");
-
-		int displayDateYear = ParamUtil.getInteger(
-			actionRequest, "displayDateYear");
-
-		int displayDateHour = ParamUtil.getInteger(
-			actionRequest, "displayDateHour");
-
-		int displayDateAmPm = ParamUtil.getInteger(
-			actionRequest, "displayDateAmPm");
-
-		if (displayDateAmPm == Calendar.PM) {
-			displayDateHour += 12;
-		}
-
-		int displayDateMinute = ParamUtil.getInteger(
-			actionRequest, "displayDateMinute");
-
-		int displayOrder = ParamUtil.getInteger(actionRequest, "displayOrder");
-
-		int expirationDateMonth = ParamUtil.getInteger(
-			actionRequest, "expirationDateMonth");
-
-		int expirationDateDay = ParamUtil.getInteger(
-			actionRequest, "expirationDateDay");
-
-		int expirationDateYear = ParamUtil.getInteger(
-			actionRequest, "expirationDateYear");
-
-		int expirationDateHour = ParamUtil.getInteger(
-			actionRequest, "expirationDateHour");
-
-		int expirationDateAmPm = ParamUtil.getInteger(
-			actionRequest, "expirationDateAmPm");
-
-		if (expirationDateAmPm == Calendar.PM) {
-			expirationDateHour += 12;
-		}
-
-		int expirationDateMinute = ParamUtil.getInteger(
-			actionRequest, "expirationDateMinute");
-
-		String externalReferenceCode = ParamUtil.getString(
-			actionRequest, "externalReferenceCode");
-
-		boolean neverExpire = ParamUtil.getBoolean(
-			actionRequest, "neverExpire");
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CommerceOrderType.class.getName(), actionRequest);
-
-		if (commerceOrderTypeId <= 0) {
-			return _commerceOrderTypeService.addCommerceOrderType(
-				externalReferenceCode, serviceContext.getUserId(), nameMap,
-				descriptionMap, active, displayDateMonth, displayDateDay,
-				displayDateYear, displayDateHour, displayDateMinute,
-				displayOrder, expirationDateMonth, expirationDateDay,
-				expirationDateYear, expirationDateHour, expirationDateMinute,
-				neverExpire, serviceContext);
-		}
-
-		return _commerceOrderTypeService.updateCommerceOrderType(
-			externalReferenceCode, commerceOrderTypeId, nameMap, descriptionMap,
-			active, displayDateMonth, displayDateDay, displayDateYear,
-			displayDateHour, displayDateMinute, displayOrder,
-			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, neverExpire,
-			serviceContext);
-	}
-
 	@Override
 	protected void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
@@ -149,7 +60,95 @@ public class EditCommerceOrderTypeMVCActionCommand
 
 		try {
 			if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
-				addOrUpdateCommerceOrderType(actionRequest);
+				long commerceOrderTypeId = ParamUtil.getLong(
+					actionRequest, "commerceOrderTypeId");
+
+				Map<Locale, String> nameMap =
+					LocalizationUtil.getLocalizationMap(actionRequest, "name");
+
+				Map<Locale, String> descriptionMap =
+					LocalizationUtil.getLocalizationMap(
+						actionRequest, "description");
+
+				boolean active = ParamUtil.getBoolean(actionRequest, "active");
+
+				int displayDateMonth = ParamUtil.getInteger(
+					actionRequest, "displayDateMonth");
+
+				int displayDateDay = ParamUtil.getInteger(
+					actionRequest, "displayDateDay");
+
+				int displayDateYear = ParamUtil.getInteger(
+					actionRequest, "displayDateYear");
+
+				int displayDateHour = ParamUtil.getInteger(
+					actionRequest, "displayDateHour");
+
+				int displayDateAmPm = ParamUtil.getInteger(
+					actionRequest, "displayDateAmPm");
+
+				if (displayDateAmPm == Calendar.PM) {
+					displayDateHour += 12;
+				}
+
+				int displayDateMinute = ParamUtil.getInteger(
+					actionRequest, "displayDateMinute");
+
+				int displayOrder = ParamUtil.getInteger(
+					actionRequest, "displayOrder");
+
+				int expirationDateMonth = ParamUtil.getInteger(
+					actionRequest, "expirationDateMonth");
+
+				int expirationDateDay = ParamUtil.getInteger(
+					actionRequest, "expirationDateDay");
+
+				int expirationDateYear = ParamUtil.getInteger(
+					actionRequest, "expirationDateYear");
+
+				int expirationDateHour = ParamUtil.getInteger(
+					actionRequest, "expirationDateHour");
+
+				int expirationDateAmPm = ParamUtil.getInteger(
+					actionRequest, "expirationDateAmPm");
+
+				if (expirationDateAmPm == Calendar.PM) {
+					expirationDateHour += 12;
+				}
+
+				int expirationDateMinute = ParamUtil.getInteger(
+					actionRequest, "expirationDateMinute");
+
+				String externalReferenceCode = ParamUtil.getString(
+					actionRequest, "externalReferenceCode");
+
+				boolean neverExpire = ParamUtil.getBoolean(
+					actionRequest, "neverExpire");
+
+				ServiceContext serviceContext =
+					ServiceContextFactory.getInstance(
+						CommerceOrderType.class.getName(), actionRequest);
+
+				if (commerceOrderTypeId <= 0) {
+					_commerceOrderTypeService.addCommerceOrderType(
+						externalReferenceCode, serviceContext.getUserId(),
+						nameMap, descriptionMap, active, displayDateMonth,
+						displayDateDay, displayDateYear, displayDateHour,
+						displayDateMinute, displayOrder, expirationDateMonth,
+						expirationDateDay, expirationDateYear,
+						expirationDateHour, expirationDateMinute, neverExpire,
+						serviceContext);
+				}
+				else {
+					_commerceOrderTypeService.updateCommerceOrderType(
+						externalReferenceCode, commerceOrderTypeId, nameMap,
+						descriptionMap, active, displayDateMonth,
+						displayDateDay, displayDateYear, displayDateHour,
+						displayDateMinute, displayOrder, expirationDateMonth,
+						expirationDateDay, expirationDateYear,
+						expirationDateHour, expirationDateMinute, neverExpire,
+						serviceContext);
+				}
 			}
 		}
 		catch (Throwable throwable) {

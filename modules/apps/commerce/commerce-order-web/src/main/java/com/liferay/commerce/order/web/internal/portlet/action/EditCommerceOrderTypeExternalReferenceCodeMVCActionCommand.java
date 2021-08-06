@@ -51,7 +51,20 @@ public class EditCommerceOrderTypeExternalReferenceCodeMVCActionCommand
 		throws Exception {
 
 		try {
-			updateCommerceOrderTypeExternalReferenceCode(actionRequest);
+			long commerceOrderTypeId = ParamUtil.getLong(
+				actionRequest, "commerceOrderTypeId");
+
+			CommerceOrderType commerceOrderType =
+				_commerceOrderTypeService.getCommerceOrderType(
+					commerceOrderTypeId);
+
+			String externalReferenceCode = ParamUtil.getString(
+				actionRequest, "externalReferenceCode");
+
+			_commerceOrderTypeService.
+				updateCommerceOrderTypeExternalReferenceCode(
+					externalReferenceCode,
+					commerceOrderType.getCommerceOrderTypeId());
 		}
 		catch (Exception exception) {
 			if (exception instanceof NoSuchOrderTypeException) {
@@ -68,23 +81,6 @@ public class EditCommerceOrderTypeExternalReferenceCodeMVCActionCommand
 				sendRedirect(actionRequest, actionResponse, redirect);
 			}
 		}
-	}
-
-	protected void updateCommerceOrderTypeExternalReferenceCode(
-			ActionRequest actionRequest)
-		throws Exception {
-
-		long commerceOrderTypeId = ParamUtil.getLong(
-			actionRequest, "commerceOrderTypeId");
-
-		CommerceOrderType commerceOrderType =
-			_commerceOrderTypeService.getCommerceOrderType(commerceOrderTypeId);
-
-		String externalReferenceCode = ParamUtil.getString(
-			actionRequest, "externalReferenceCode");
-
-		_commerceOrderTypeService.updateCommerceOrderTypeExternalReferenceCode(
-			externalReferenceCode, commerceOrderType.getCommerceOrderTypeId());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
