@@ -16,6 +16,7 @@ package com.liferay.commerce.service;
 
 import com.liferay.commerce.model.CommerceOrderTypeRel;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
 
@@ -84,6 +85,45 @@ public class CommerceOrderTypeRelServiceUtil {
 		throws PortalException {
 
 		return getService().getCommerceOrderTypeRel(commerceOrderTypeRelId);
+	}
+
+	public static List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+			String className, long classPK)
+		throws PortalException {
+
+		return getService().getCommerceOrderTypeRels(className, classPK);
+	}
+
+	public static List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+			String className, long classPK, int start, int end,
+			OrderByComparator<CommerceOrderTypeRel> orderByComparator)
+		throws PortalException {
+
+		return getService().getCommerceOrderTypeRels(
+			className, classPK, start, end, orderByComparator);
+	}
+
+	public static List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+			String className, long classPK, String name, int start, int end)
+		throws PortalException {
+
+		return getService().getCommerceOrderTypeRels(
+			className, classPK, name, start, end);
+	}
+
+	public static int getCommerceOrderTypeRelsCount(
+			String className, long classPK)
+		throws PortalException {
+
+		return getService().getCommerceOrderTypeRelsCount(className, classPK);
+	}
+
+	public static int getCommerceOrderTypeRelsCount(
+			String className, long classPK, String name)
+		throws PortalException {
+
+		return getService().getCommerceOrderTypeRelsCount(
+			className, classPK, name);
 	}
 
 	/**

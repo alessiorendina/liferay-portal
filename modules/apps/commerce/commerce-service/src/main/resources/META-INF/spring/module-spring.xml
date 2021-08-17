@@ -34,6 +34,7 @@
 	<bean class="com.liferay.commerce.service.impl.CommerceOrderTypeRelLocalServiceImpl" id="com.liferay.commerce.service.CommerceOrderTypeRelLocalService" />
 	<bean class="com.liferay.commerce.service.impl.CommerceOrderTypeRelServiceImpl" id="com.liferay.commerce.service.CommerceOrderTypeRelService" />
 	<bean class="com.liferay.commerce.service.persistence.impl.CommerceOrderTypeRelPersistenceImpl" id="com.liferay.commerce.service.persistence.CommerceOrderTypeRelPersistence" />
+	<bean class="com.liferay.commerce.service.persistence.impl.CommerceOrderTypeRelFinderImpl" id="com.liferay.commerce.service.persistence.CommerceOrderTypeRelFinder" />
 	<bean class="com.liferay.commerce.service.impl.CommerceShipmentLocalServiceImpl" id="com.liferay.commerce.service.CommerceShipmentLocalService" />
 	<bean class="com.liferay.commerce.service.impl.CommerceShipmentServiceImpl" id="com.liferay.commerce.service.CommerceShipmentService" />
 	<bean class="com.liferay.commerce.service.persistence.impl.CommerceShipmentPersistenceImpl" id="com.liferay.commerce.service.persistence.CommerceShipmentPersistence" />

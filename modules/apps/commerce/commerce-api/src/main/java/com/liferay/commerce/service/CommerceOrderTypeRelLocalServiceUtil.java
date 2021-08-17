@@ -338,6 +338,27 @@ public class CommerceOrderTypeRelLocalServiceUtil {
 		return getService().getCommerceOrderTypeRels(start, end);
 	}
 
+	public static List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+		String className, long classPK) {
+
+		return getService().getCommerceOrderTypeRels(className, classPK);
+	}
+
+	public static List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+		String className, long classPK, int start, int end,
+		OrderByComparator<CommerceOrderTypeRel> orderByComparator) {
+
+		return getService().getCommerceOrderTypeRels(
+			className, classPK, start, end, orderByComparator);
+	}
+
+	public static List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+		String className, long classPK, String name, int start, int end) {
+
+		return getService().getCommerceOrderTypeRels(
+			className, classPK, name, start, end);
+	}
+
 	/**
 	 * Returns the number of commerce order type rels.
 	 *
@@ -345,6 +366,19 @@ public class CommerceOrderTypeRelLocalServiceUtil {
 	 */
 	public static int getCommerceOrderTypeRelsCount() {
 		return getService().getCommerceOrderTypeRelsCount();
+	}
+
+	public static int getCommerceOrderTypeRelsCount(
+		String className, long classPK) {
+
+		return getService().getCommerceOrderTypeRelsCount(className, classPK);
+	}
+
+	public static int getCommerceOrderTypeRelsCount(
+		String className, long classPK, String name) {
+
+		return getService().getCommerceOrderTypeRelsCount(
+			className, classPK, name);
 	}
 
 	public static

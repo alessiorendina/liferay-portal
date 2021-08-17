@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
 
@@ -86,6 +87,31 @@ public interface CommerceOrderTypeRelService extends BaseService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceOrderTypeRel getCommerceOrderTypeRel(
 			long commerceOrderTypeRelId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+			String className, long classPK)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+			String className, long classPK, int start, int end,
+			OrderByComparator<CommerceOrderTypeRel> orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+			String className, long classPK, String name, int start, int end)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceOrderTypeRelsCount(String className, long classPK)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceOrderTypeRelsCount(
+			String className, long classPK, String name)
 		throws PortalException;
 
 	/**

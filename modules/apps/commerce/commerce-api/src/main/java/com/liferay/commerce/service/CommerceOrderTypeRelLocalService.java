@@ -291,6 +291,19 @@ public interface CommerceOrderTypeRelLocalService
 	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
 		int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+		String className, long classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+		String className, long classPK, int start, int end,
+		OrderByComparator<CommerceOrderTypeRel> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+		String className, long classPK, String name, int start, int end);
+
 	/**
 	 * Returns the number of commerce order type rels.
 	 *
@@ -298,6 +311,13 @@ public interface CommerceOrderTypeRelLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceOrderTypeRelsCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceOrderTypeRelsCount(String className, long classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceOrderTypeRelsCount(
+		String className, long classPK, String name);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();

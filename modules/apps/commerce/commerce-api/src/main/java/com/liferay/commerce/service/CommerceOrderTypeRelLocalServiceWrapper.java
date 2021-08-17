@@ -384,6 +384,35 @@ public class CommerceOrderTypeRelLocalServiceWrapper
 			start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.commerce.model.CommerceOrderTypeRel>
+		getCommerceOrderTypeRels(String className, long classPK) {
+
+		return _commerceOrderTypeRelLocalService.getCommerceOrderTypeRels(
+			className, classPK);
+	}
+
+	@Override
+	public java.util.List<com.liferay.commerce.model.CommerceOrderTypeRel>
+		getCommerceOrderTypeRels(
+			String className, long classPK, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.commerce.model.CommerceOrderTypeRel>
+					orderByComparator) {
+
+		return _commerceOrderTypeRelLocalService.getCommerceOrderTypeRels(
+			className, classPK, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<com.liferay.commerce.model.CommerceOrderTypeRel>
+		getCommerceOrderTypeRels(
+			String className, long classPK, String name, int start, int end) {
+
+		return _commerceOrderTypeRelLocalService.getCommerceOrderTypeRels(
+			className, classPK, name, start, end);
+	}
+
 	/**
 	 * Returns the number of commerce order type rels.
 	 *
@@ -393,6 +422,20 @@ public class CommerceOrderTypeRelLocalServiceWrapper
 	public int getCommerceOrderTypeRelsCount() {
 		return _commerceOrderTypeRelLocalService.
 			getCommerceOrderTypeRelsCount();
+	}
+
+	@Override
+	public int getCommerceOrderTypeRelsCount(String className, long classPK) {
+		return _commerceOrderTypeRelLocalService.getCommerceOrderTypeRelsCount(
+			className, classPK);
+	}
+
+	@Override
+	public int getCommerceOrderTypeRelsCount(
+		String className, long classPK, String name) {
+
+		return _commerceOrderTypeRelLocalService.getCommerceOrderTypeRelsCount(
+			className, classPK, name);
 	}
 
 	@Override

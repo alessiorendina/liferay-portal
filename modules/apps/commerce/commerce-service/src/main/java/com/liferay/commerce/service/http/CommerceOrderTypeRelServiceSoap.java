@@ -159,6 +159,107 @@ public class CommerceOrderTypeRelServiceSoap {
 		}
 	}
 
+	public static com.liferay.commerce.model.CommerceOrderTypeRelSoap[]
+			getCommerceOrderTypeRels(String className, long classPK)
+		throws RemoteException {
+
+		try {
+			java.util.List<com.liferay.commerce.model.CommerceOrderTypeRel>
+				returnValue =
+					CommerceOrderTypeRelServiceUtil.getCommerceOrderTypeRels(
+						className, classPK);
+
+			return com.liferay.commerce.model.CommerceOrderTypeRelSoap.
+				toSoapModels(returnValue);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static com.liferay.commerce.model.CommerceOrderTypeRelSoap[]
+			getCommerceOrderTypeRels(
+				String className, long classPK, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.commerce.model.CommerceOrderTypeRel>
+						orderByComparator)
+		throws RemoteException {
+
+		try {
+			java.util.List<com.liferay.commerce.model.CommerceOrderTypeRel>
+				returnValue =
+					CommerceOrderTypeRelServiceUtil.getCommerceOrderTypeRels(
+						className, classPK, start, end, orderByComparator);
+
+			return com.liferay.commerce.model.CommerceOrderTypeRelSoap.
+				toSoapModels(returnValue);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static com.liferay.commerce.model.CommerceOrderTypeRelSoap[]
+			getCommerceOrderTypeRels(
+				String className, long classPK, String name, int start, int end)
+		throws RemoteException {
+
+		try {
+			java.util.List<com.liferay.commerce.model.CommerceOrderTypeRel>
+				returnValue =
+					CommerceOrderTypeRelServiceUtil.getCommerceOrderTypeRels(
+						className, classPK, name, start, end);
+
+			return com.liferay.commerce.model.CommerceOrderTypeRelSoap.
+				toSoapModels(returnValue);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static int getCommerceOrderTypeRelsCount(
+			String className, long classPK)
+		throws RemoteException {
+
+		try {
+			int returnValue =
+				CommerceOrderTypeRelServiceUtil.getCommerceOrderTypeRelsCount(
+					className, classPK);
+
+			return returnValue;
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static int getCommerceOrderTypeRelsCount(
+			String className, long classPK, String name)
+		throws RemoteException {
+
+		try {
+			int returnValue =
+				CommerceOrderTypeRelServiceUtil.getCommerceOrderTypeRelsCount(
+					className, classPK, name);
+
+			return returnValue;
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
 	public static com.liferay.commerce.model.CommerceOrderTypeRelSoap
 			getCommerceOrderTypeRel(long commerceOrderTypeRelId)
 		throws RemoteException {

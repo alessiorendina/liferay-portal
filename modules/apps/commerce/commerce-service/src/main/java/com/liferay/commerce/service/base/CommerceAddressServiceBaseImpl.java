@@ -28,6 +28,7 @@ import com.liferay.commerce.service.persistence.CommerceOrderNotePersistence;
 import com.liferay.commerce.service.persistence.CommerceOrderPaymentPersistence;
 import com.liferay.commerce.service.persistence.CommerceOrderPersistence;
 import com.liferay.commerce.service.persistence.CommerceOrderTypePersistence;
+import com.liferay.commerce.service.persistence.CommerceOrderTypeRelFinder;
 import com.liferay.commerce.service.persistence.CommerceOrderTypeRelPersistence;
 import com.liferay.commerce.service.persistence.CommerceShipmentFinder;
 import com.liferay.commerce.service.persistence.CommerceShipmentItemFinder;
@@ -671,6 +672,26 @@ public abstract class CommerceAddressServiceBaseImpl
 		CommerceOrderTypeRelPersistence commerceOrderTypeRelPersistence) {
 
 		this.commerceOrderTypeRelPersistence = commerceOrderTypeRelPersistence;
+	}
+
+	/**
+	 * Returns the commerce order type rel finder.
+	 *
+	 * @return the commerce order type rel finder
+	 */
+	public CommerceOrderTypeRelFinder getCommerceOrderTypeRelFinder() {
+		return commerceOrderTypeRelFinder;
+	}
+
+	/**
+	 * Sets the commerce order type rel finder.
+	 *
+	 * @param commerceOrderTypeRelFinder the commerce order type rel finder
+	 */
+	public void setCommerceOrderTypeRelFinder(
+		CommerceOrderTypeRelFinder commerceOrderTypeRelFinder) {
+
+		this.commerceOrderTypeRelFinder = commerceOrderTypeRelFinder;
 	}
 
 	/**
@@ -1560,6 +1581,9 @@ public abstract class CommerceAddressServiceBaseImpl
 
 	@BeanReference(type = CommerceOrderTypeRelPersistence.class)
 	protected CommerceOrderTypeRelPersistence commerceOrderTypeRelPersistence;
+
+	@BeanReference(type = CommerceOrderTypeRelFinder.class)
+	protected CommerceOrderTypeRelFinder commerceOrderTypeRelFinder;
 
 	@BeanReference(
 		type = com.liferay.commerce.service.CommerceShipmentLocalService.class

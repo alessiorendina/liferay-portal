@@ -92,6 +92,55 @@ public class CommerceOrderTypeRelServiceWrapper
 			commerceOrderTypeRelId);
 	}
 
+	@Override
+	public java.util.List<com.liferay.commerce.model.CommerceOrderTypeRel>
+			getCommerceOrderTypeRels(String className, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderTypeRelService.getCommerceOrderTypeRels(
+			className, classPK);
+	}
+
+	@Override
+	public java.util.List<com.liferay.commerce.model.CommerceOrderTypeRel>
+			getCommerceOrderTypeRels(
+				String className, long classPK, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.commerce.model.CommerceOrderTypeRel>
+						orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderTypeRelService.getCommerceOrderTypeRels(
+			className, classPK, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<com.liferay.commerce.model.CommerceOrderTypeRel>
+			getCommerceOrderTypeRels(
+				String className, long classPK, String name, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderTypeRelService.getCommerceOrderTypeRels(
+			className, classPK, name, start, end);
+	}
+
+	@Override
+	public int getCommerceOrderTypeRelsCount(String className, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderTypeRelService.getCommerceOrderTypeRelsCount(
+			className, classPK);
+	}
+
+	@Override
+	public int getCommerceOrderTypeRelsCount(
+			String className, long classPK, String name)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderTypeRelService.getCommerceOrderTypeRelsCount(
+			className, classPK, name);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

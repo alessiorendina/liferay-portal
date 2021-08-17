@@ -153,6 +153,13 @@ public class CommerceOrderTypeRelWrapper
 		return model.getClassPK();
 	}
 
+	@Override
+	public CommerceOrderType getCommerceOrderType()
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return model.getCommerceOrderType();
+	}
+
 	/**
 	 * Returns the commerce order type ID of this commerce order type rel.
 	 *
