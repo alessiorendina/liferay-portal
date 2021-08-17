@@ -14,8 +14,19 @@
 
 package com.liferay.commerce.model.impl;
 
+import com.liferay.commerce.model.CommerceOrderType;
+import com.liferay.commerce.service.CommerceOrderTypeLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+
 /**
  * @author Alessio Antonio Rendina
  */
 public class CommerceOrderTypeRelImpl extends CommerceOrderTypeRelBaseImpl {
+
+	@Override
+	public CommerceOrderType getCommerceOrderType() throws PortalException {
+		return CommerceOrderTypeLocalServiceUtil.getCommerceOrderType(
+			getCommerceOrderTypeId());
+	}
+
 }
