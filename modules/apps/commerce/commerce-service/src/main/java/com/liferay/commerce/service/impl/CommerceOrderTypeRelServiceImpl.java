@@ -16,12 +16,14 @@ package com.liferay.commerce.service.impl;
 
 import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.model.CommerceOrderTypeRel;
+import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.service.base.CommerceOrderTypeRelServiceBaseImpl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
 
@@ -116,11 +118,87 @@ public class CommerceOrderTypeRelServiceImpl
 			commerceOrderTypeRelId);
 	}
 
+	@Override
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+			String className, long classPK)
+		throws PortalException {
+
+		if (className.equals(CommercePriceList.class.getName())) {
+			_commercePriceListModelResourcePermission.check(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+		}
+
+		return commerceOrderTypeRelLocalService.getCommerceOrderTypeRels(
+			className, classPK);
+	}
+
+	@Override
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+			String className, long classPK, int start, int end,
+			OrderByComparator<CommerceOrderTypeRel> orderByComparator)
+		throws PortalException {
+
+		if (className.equals(CommercePriceList.class.getName())) {
+			_commercePriceListModelResourcePermission.check(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+		}
+
+		return commerceOrderTypeRelLocalService.getCommerceOrderTypeRels(
+			className, classPK, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+			String className, long classPK, String name, int start, int end)
+		throws PortalException {
+
+		if (className.equals(CommercePriceList.class.getName())) {
+			_commercePriceListModelResourcePermission.check(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+		}
+
+		return commerceOrderTypeRelLocalService.getCommerceOrderTypeRels(
+			className, classPK, name, start, end);
+	}
+
+	@Override
+	public int getCommerceOrderTypeRelsCount(String className, long classPK)
+		throws PortalException {
+
+		if (className.equals(CommercePriceList.class.getName())) {
+			_commercePriceListModelResourcePermission.check(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+		}
+
+		return commerceOrderTypeRelLocalService.getCommerceOrderTypeRelsCount(
+			className, classPK);
+	}
+
+	@Override
+	public int getCommerceOrderTypeRelsCount(
+			String className, long classPK, String name)
+		throws PortalException {
+
+		if (className.equals(CommercePriceList.class.getName())) {
+			_commercePriceListModelResourcePermission.check(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+		}
+
+		return commerceOrderTypeRelLocalService.getCommerceOrderTypeRelsCount(
+			className, classPK, name);
+	}
+
 	private static volatile ModelResourcePermission<CommerceOrderType>
 		_commerceOrderTypeModelResourcePermission =
 			ModelResourcePermissionFactory.getInstance(
 				CommerceOrderTypeRelServiceImpl.class,
 				"_commerceOrderTypeModelResourcePermission",
 				CommerceOrderType.class);
+	private static volatile ModelResourcePermission<CommercePriceList>
+		_commercePriceListModelResourcePermission =
+			ModelResourcePermissionFactory.getInstance(
+				CommerceOrderTypeRelServiceImpl.class,
+				"_commercePriceListModelResourcePermission",
+				CommercePriceList.class);
 
 }

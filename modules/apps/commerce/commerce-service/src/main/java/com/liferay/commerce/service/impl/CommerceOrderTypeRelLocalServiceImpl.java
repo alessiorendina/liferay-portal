@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
@@ -167,6 +168,47 @@ public class CommerceOrderTypeRelLocalServiceImpl
 
 		return commerceOrderTypeRelPersistence.findByPrimaryKey(
 			commerceOrderTypeRelId);
+	}
+
+	@Override
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+		String className, long classPK) {
+
+		return commerceOrderTypeRelPersistence.findByC_C(
+			classNameLocalService.getClassNameId(className), classPK);
+	}
+
+	@Override
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+		String className, long classPK, int start, int end,
+		OrderByComparator<CommerceOrderTypeRel> orderByComparator) {
+
+		return commerceOrderTypeRelPersistence.findByC_C(
+			classNameLocalService.getClassNameId(className), classPK, start,
+			end, orderByComparator);
+	}
+
+	@Override
+	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
+		String className, long classPK, String name, int start, int end) {
+
+		return commerceOrderTypeRelFinder.findByC_C_N(
+			classNameLocalService.getClassNameId(className), classPK, name,
+			start, end);
+	}
+
+	@Override
+	public int getCommerceOrderTypeRelsCount(String className, long classPK) {
+		return commerceOrderTypeRelPersistence.countByC_C(
+			classNameLocalService.getClassNameId(className), classPK);
+	}
+
+	@Override
+	public int getCommerceOrderTypeRelsCount(
+		String className, long classPK, String name) {
+
+		return commerceOrderTypeRelFinder.countByC_C_N(
+			classNameLocalService.getClassNameId(className), classPK, name);
 	}
 
 	protected void reindexCommerceOrderType(long commerceOrderTypeId)
