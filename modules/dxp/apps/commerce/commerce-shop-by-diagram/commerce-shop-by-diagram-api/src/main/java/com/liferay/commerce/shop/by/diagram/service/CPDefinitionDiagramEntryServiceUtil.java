@@ -105,14 +105,14 @@ public class CPDefinitionDiagramEntryServiceUtil {
 
 	public static CPDefinitionDiagramEntry updateCPDefinitionDiagramEntry(
 			long cpDefinitionDiagramEntryId, String cpInstanceUuid,
-			long cProductId, boolean diagram, int number, String sku,
-			String sequence,
+			long cProductId, boolean diagram, int number, String sequence,
+			String sku,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().updateCPDefinitionDiagramEntry(
 			cpDefinitionDiagramEntryId, cpInstanceUuid, cProductId, diagram,
-			number, sku, sequence, serviceContext);
+			number, sequence, sku, serviceContext);
 	}
 
 	public static CPDefinitionDiagramEntryService getService() {

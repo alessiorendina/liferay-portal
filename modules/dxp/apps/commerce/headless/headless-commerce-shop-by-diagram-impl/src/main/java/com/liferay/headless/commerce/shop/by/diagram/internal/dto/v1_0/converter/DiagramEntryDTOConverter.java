@@ -14,10 +14,17 @@
 
 package com.liferay.headless.commerce.shop.by.diagram.internal.dto.v1_0.converter;
 
+import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.model.CProduct;
+import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramEntry;
 import com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramEntryService;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.headless.commerce.shop.by.diagram.dto.v1_0.DiagramEntry;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
@@ -56,9 +63,38 @@ public class DiagramEntryDTOConverter
 				diagram = cpDefinitionDiagramEntry.isDiagram();
 				expando = expandoBridge.getAttributes();
 				id = cpDefinitionDiagramEntry.getCPDefinitionDiagramEntryId();
+
+				setProductExternalReferenceCode(
+					() -> {
+						CPDefinition cpDefinition =
+							_cpDefinitionService.fetchCPDefinitionByCProductId(
+								cpDefinitionDiagramEntry.getCProductId());
+
+						if (cpDefinition == null) {
+							return StringPool.BLANK;
+						}
+
+						CProduct cProduct = cpDefinition.getCProduct();
+
+						return cProduct.getExternalReferenceCode();
+					});
+
 				productId = cpDefinitionDiagramEntry.getCProductId();
 				quantity = cpDefinitionDiagramEntry.getQuantity();
 				sequence = cpDefinitionDiagramEntry.getSequence();
+
+				setSkuExternalReferenceCode(
+					() -> {
+						CPInstance cpInstance = _cpInstanceService.fetchCPInstance(
+							GetterUtil.getLong(cpDefinitionDiagramEntry.getCPInstanceUuid()));
+
+						if (cpInstance == null) {
+							return StringPool.BLANK;
+						}
+
+						return cpInstance.getExternalReferenceCode();
+					});
+
 				sku = cpDefinitionDiagramEntry.getSku();
 				skuUuid = cpDefinitionDiagramEntry.getCPInstanceUuid();
 			}
@@ -67,5 +103,11 @@ public class DiagramEntryDTOConverter
 
 	@Reference
 	private CPDefinitionDiagramEntryService _cpDefinitionDiagramEntryService;
+
+	@Reference
+	private CPDefinitionService _cpDefinitionService;
+
+	@Reference
+	private CPInstanceService _cpInstanceService;
 
 }

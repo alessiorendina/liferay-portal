@@ -15,8 +15,11 @@
 package com.liferay.headless.commerce.shop.by.diagram.internal.resource.v1_0;
 
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
+import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramEntry;
 import com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramEntryService;
 import com.liferay.headless.commerce.shop.by.diagram.dto.v1_0.DiagramEntry;
@@ -110,10 +113,10 @@ public class DiagramEntryResourceImpl extends BaseDiagramEntryResourceImpl {
 				diagramEntry.getQuantity(),
 				cpDefinitionDiagramEntry.getQuantity()),
 			GetterUtil.get(
-				diagramEntry.getSku(), cpDefinitionDiagramEntry.getSku()),
-			GetterUtil.get(
 				diagramEntry.getSequence(),
 				cpDefinitionDiagramEntry.getSequence()),
+			GetterUtil.get(
+				diagramEntry.getSku(), cpDefinitionDiagramEntry.getSku()),
 			new ServiceContext());
 
 		return _toDiagramEntry(
@@ -159,10 +162,28 @@ public class DiagramEntryResourceImpl extends BaseDiagramEntryResourceImpl {
 			long cpDefinitionId, DiagramEntry diagramEntry)
 		throws Exception {
 
+		String cpInstanceId = GetterUtil.getString(diagramEntry.getSkuUuid());
+
+		CPInstance cpInstance = _cpInstanceService.fetchByExternalReferenceCode(
+			diagramEntry.getSkuExternalReferenceCode(), contextCompany.getCompanyId());
+
+		if (cpInstance != null) {
+			cpInstanceId = String.valueOf(cpInstance.getCPInstanceId());
+		}
+
+		long productId = GetterUtil.getLong(diagramEntry.getProductId());
+
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode(
+				diagramEntry.getProductExternalReferenceCode(), contextCompany.getCompanyId());
+
+		if (cpDefinition != null) {
+			productId = cpDefinition.getCProductId();
+		}
+
 		CPDefinitionDiagramEntry cpDefinitionDiagramEntry =
 			_cpDefinitionDiagramEntryService.addCPDefinitionDiagramEntry(
-				cpDefinitionId, GetterUtil.getString(diagramEntry.getSkuUuid()),
-				GetterUtil.getLong(diagramEntry.getProductId()),
+				cpDefinitionId, cpInstanceId, productId,
 				GetterUtil.getBoolean(diagramEntry.getDiagram()),
 				GetterUtil.getInteger(diagramEntry.getQuantity()),
 				GetterUtil.getString(diagramEntry.getSequence()),
@@ -203,6 +224,9 @@ public class DiagramEntryResourceImpl extends BaseDiagramEntryResourceImpl {
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;
+
+	@Reference
+	private CPInstanceService _cpInstanceService;
 
 	@Reference
 	private DiagramEntryDTOConverter _diagramEntryDTOConverter;

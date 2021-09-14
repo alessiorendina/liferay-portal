@@ -364,8 +364,8 @@ public class CPDefinitionDiagramEntryServiceHttp {
 				updateCPDefinitionDiagramEntry(
 					HttpPrincipal httpPrincipal,
 					long cpDefinitionDiagramEntryId, String cpInstanceUuid,
-					long cProductId, boolean diagram, int number, String sku,
-					String sequence,
+					long cProductId, boolean diagram, int number,
+					String sequence, String sku,
 					com.liferay.portal.kernel.service.ServiceContext
 						serviceContext)
 			throws com.liferay.portal.kernel.exception.PortalException {
@@ -378,7 +378,7 @@ public class CPDefinitionDiagramEntryServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionDiagramEntryId, cpInstanceUuid,
-				cProductId, diagram, number, sku, sequence, serviceContext);
+				cProductId, diagram, number, sequence, sku, serviceContext);
 
 			Object returnObj = null;
 

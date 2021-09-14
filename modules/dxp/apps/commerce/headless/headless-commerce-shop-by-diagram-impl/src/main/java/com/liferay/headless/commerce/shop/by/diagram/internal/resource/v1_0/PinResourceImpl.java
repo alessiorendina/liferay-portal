@@ -17,6 +17,7 @@ package com.liferay.headless.commerce.shop.by.diagram.internal.resource.v1_0;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramEntry;
 import com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramPin;
 import com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramEntryService;
 import com.liferay.commerce.shop.by.diagram.service.CPDefinitionDiagramPinService;
@@ -166,13 +167,29 @@ public class PinResourceImpl extends BasePinResourceImpl {
 			diagramEntry = new DiagramEntry();
 		}
 
-		_cpDefinitionDiagramEntryService.addCPDefinitionDiagramEntry(
-			cpDefinitionId, GetterUtil.getString(diagramEntry.getSkuUuid()),
-			GetterUtil.getLong(diagramEntry.getProductId()),
-			GetterUtil.getBoolean(diagramEntry.getDiagram()),
-			GetterUtil.getInteger(diagramEntry.getQuantity()),
-			GetterUtil.getString(pin.getSequence()),
-			GetterUtil.getString(diagramEntry.getSku()), new ServiceContext());
+		CPDefinitionDiagramEntry cpDefinitionDiagramEntry =
+			_cpDefinitionDiagramEntryService.fetchCPDefinitionDiagramEntry(
+				cpDefinitionId, GetterUtil.getString(pin.getSequence()));
+
+		if (cpDefinitionDiagramEntry == null) {
+			_cpDefinitionDiagramEntryService.addCPDefinitionDiagramEntry(
+				cpDefinitionId, GetterUtil.getString(diagramEntry.getSkuUuid()),
+				GetterUtil.getLong(diagramEntry.getProductId()),
+				GetterUtil.getBoolean(diagramEntry.getDiagram()),
+				GetterUtil.getInteger(diagramEntry.getQuantity()),
+				GetterUtil.getString(pin.getSequence()),
+				GetterUtil.getString(diagramEntry.getSku()), new ServiceContext());
+		}
+		else {
+			_cpDefinitionDiagramEntryService.updateCPDefinitionDiagramEntry(
+					cpDefinitionDiagramEntry.getCPDefinitionDiagramEntryId(),
+					GetterUtil.getString(diagramEntry.getSkuUuid()),
+					GetterUtil.getLong(diagramEntry.getProductId()),
+					GetterUtil.getBoolean(diagramEntry.getDiagram()),
+					GetterUtil.getInteger(diagramEntry.getQuantity()),
+					GetterUtil.getString(pin.getSequence()),
+					GetterUtil.getString(diagramEntry.getSku()), new ServiceContext());
+		}
 
 		return _toPin(cpDefinitionDiagramPin.getCPDefinitionDiagramPinId());
 	}

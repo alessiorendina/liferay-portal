@@ -215,8 +215,8 @@ public class CPDefinitionDiagramEntryServiceSoap {
 		com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramEntrySoap
 				updateCPDefinitionDiagramEntry(
 					long cpDefinitionDiagramEntryId, String cpInstanceUuid,
-					long cProductId, boolean diagram, int number, String sku,
-					String sequence,
+					long cProductId, boolean diagram, int number,
+					String sequence, String sku,
 					com.liferay.portal.kernel.service.ServiceContext
 						serviceContext)
 			throws RemoteException {
@@ -227,7 +227,7 @@ public class CPDefinitionDiagramEntryServiceSoap {
 					CPDefinitionDiagramEntryServiceUtil.
 						updateCPDefinitionDiagramEntry(
 							cpDefinitionDiagramEntryId, cpInstanceUuid,
-							cProductId, diagram, number, sku, sequence,
+							cProductId, diagram, number, sequence, sku,
 							serviceContext);
 
 			return com.liferay.commerce.shop.by.diagram.model.

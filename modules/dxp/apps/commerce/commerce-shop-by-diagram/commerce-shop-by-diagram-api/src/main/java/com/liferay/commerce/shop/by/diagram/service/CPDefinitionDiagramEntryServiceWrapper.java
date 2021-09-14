@@ -114,14 +114,14 @@ public class CPDefinitionDiagramEntryServiceWrapper
 	public com.liferay.commerce.shop.by.diagram.model.CPDefinitionDiagramEntry
 			updateCPDefinitionDiagramEntry(
 				long cpDefinitionDiagramEntryId, String cpInstanceUuid,
-				long cProductId, boolean diagram, int number, String sku,
-				String sequence,
+				long cProductId, boolean diagram, int number, String sequence,
+				String sku,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionDiagramEntryService.updateCPDefinitionDiagramEntry(
 			cpDefinitionDiagramEntryId, cpInstanceUuid, cProductId, diagram,
-			number, sku, sequence, serviceContext);
+			number, sequence, sku, serviceContext);
 	}
 
 	@Override
