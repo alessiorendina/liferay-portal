@@ -62,6 +62,11 @@ public class DiagramEntryDTOConverter
 				diagram = csDiagramEntry.isDiagram();
 				expando = expandoBridge.getAttributes();
 				id = csDiagramEntry.getCSDiagramEntryId();
+				productId = csDiagramEntry.getCProductId();
+				quantity = csDiagramEntry.getQuantity();
+				sequence = csDiagramEntry.getSequence();
+				sku = csDiagramEntry.getSku();
+				skuUuid = String.valueOf(csDiagramEntry.getCPInstanceId());
 
 				setProductExternalReferenceCode(
 					() -> {
@@ -78,16 +83,12 @@ public class DiagramEntryDTOConverter
 						return cProduct.getExternalReferenceCode();
 					});
 
-				productId = csDiagramEntry.getCProductId();
-				quantity = csDiagramEntry.getQuantity();
-				sequence = csDiagramEntry.getSequence();
-
 				setSkuExternalReferenceCode(
 					() -> {
 						CPInstance cpInstance =
 							_cpInstanceService.fetchCPInstance(
 								GetterUtil.getLong(
-									csDiagramEntry.getCPInstanceUuid()));
+									csDiagramEntry.getCPInstanceId()));
 
 						if (cpInstance == null) {
 							return StringPool.BLANK;
@@ -95,9 +96,6 @@ public class DiagramEntryDTOConverter
 
 						return cpInstance.getExternalReferenceCode();
 					});
-
-				sku = csDiagramEntry.getSku();
-				skuUuid = csDiagramEntry.getCPInstanceUuid();
 			}
 		};
 	}
