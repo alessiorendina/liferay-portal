@@ -44,6 +44,16 @@ public class CommerceOrderRuleEntryLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.commerce.order.rule.service.impl.CommerceOrderRuleEntryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static CommerceOrderRuleEntry addCommerceOrderRuleEntry(
+			boolean active, String description, String name, int priority,
+			String type, String typeSettings,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().addCommerceOrderRuleEntry(
+			active, description, name, priority, type, typeSettings,
+			serviceContext);
+	}
 
 	/**
 	 * Adds the commerce order rule entry to the database. Also notifies the appropriate model listeners.
@@ -110,11 +120,14 @@ public class CommerceOrderRuleEntryLocalServiceUtil {
 	 *
 	 * @param commerceOrderRuleEntryId the primary key of the commerce order rule entry
 	 * @return the commerce order rule entry that was removed
+	 * @throws NoSuchOrderRuleEntryException
 	 * @throws PortalException if a commerce order rule entry with the primary key could not be found
 	 */
 	public static CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
 			long commerceOrderRuleEntryId)
-		throws PortalException {
+		throws com.liferay.commerce.order.rule.exception.
+			NoSuchOrderRuleEntryException,
+			   PortalException {
 
 		return getService().deleteCommerceOrderRuleEntry(
 			commerceOrderRuleEntryId);
@@ -228,6 +241,22 @@ public class CommerceOrderRuleEntryLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		boolean active, int start, int end,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+
+		return getService().getCommerceOrderRuleEntries(
+			active, start, end, serviceContext);
+	}
+
+	public static List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		boolean active, String type, int start, int end,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+
+		return getService().getCommerceOrderRuleEntries(
+			active, type, start, end, serviceContext);
+	}
+
 	/**
 	 * Returns a range of all the commerce order rule entries.
 	 *
@@ -243,6 +272,14 @@ public class CommerceOrderRuleEntryLocalServiceUtil {
 		int start, int end) {
 
 		return getService().getCommerceOrderRuleEntries(start, end);
+	}
+
+	public static List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		String type, int start, int end,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+
+		return getService().getCommerceOrderRuleEntries(
+			type, start, end, serviceContext);
 	}
 
 	/**
@@ -308,6 +345,16 @@ public class CommerceOrderRuleEntryLocalServiceUtil {
 
 		return getService().updateCommerceOrderRuleEntry(
 			commerceOrderRuleEntry);
+	}
+
+	public static CommerceOrderRuleEntry updateCommerceOrderRuleEntry(
+			long commerceOrderRuleEntryId, boolean active, String description,
+			String name, int priority, String typeSettings)
+		throws PortalException {
+
+		return getService().updateCommerceOrderRuleEntry(
+			commerceOrderRuleEntryId, active, description, name, priority,
+			typeSettings);
 	}
 
 	public static CommerceOrderRuleEntryLocalService getService() {

@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.order.rule.service;
 
+import com.liferay.commerce.order.rule.exception.NoSuchOrderRuleEntryException;
 import com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -61,6 +63,11 @@ public interface CommerceOrderRuleEntryLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.order.rule.service.impl.CommerceOrderRuleEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the commerce order rule entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CommerceOrderRuleEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public CommerceOrderRuleEntry addCommerceOrderRuleEntry(
+			boolean active, String description, String name, int priority,
+			String type, String typeSettings, ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	 * Adds the commerce order rule entry to the database. Also notifies the appropriate model listeners.
@@ -115,12 +122,13 @@ public interface CommerceOrderRuleEntryLocalService
 	 *
 	 * @param commerceOrderRuleEntryId the primary key of the commerce order rule entry
 	 * @return the commerce order rule entry that was removed
+	 * @throws NoSuchOrderRuleEntryException
 	 * @throws PortalException if a commerce order rule entry with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
 			long commerceOrderRuleEntryId)
-		throws PortalException;
+		throws NoSuchOrderRuleEntryException, PortalException;
 
 	/**
 	 * @throws PortalException
@@ -208,6 +216,15 @@ public interface CommerceOrderRuleEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		boolean active, int start, int end, ServiceContext serviceContext);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		boolean active, String type, int start, int end,
+		ServiceContext serviceContext);
+
 	/**
 	 * Returns a range of all the commerce order rule entries.
 	 *
@@ -222,6 +239,10 @@ public interface CommerceOrderRuleEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
 		int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		String type, int start, int end, ServiceContext serviceContext);
 
 	/**
 	 * Returns the number of commerce order rule entries.
@@ -274,5 +295,11 @@ public interface CommerceOrderRuleEntryLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceOrderRuleEntry updateCommerceOrderRuleEntry(
 		CommerceOrderRuleEntry commerceOrderRuleEntry);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public CommerceOrderRuleEntry updateCommerceOrderRuleEntry(
+			long commerceOrderRuleEntryId, boolean active, String description,
+			String name, int priority, String typeSettings)
+		throws PortalException;
 
 }

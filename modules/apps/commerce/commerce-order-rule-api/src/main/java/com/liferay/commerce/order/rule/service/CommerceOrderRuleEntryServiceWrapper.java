@@ -33,6 +33,64 @@ public class CommerceOrderRuleEntryServiceWrapper
 		_commerceOrderRuleEntryService = commerceOrderRuleEntryService;
 	}
 
+	@Override
+	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+			addCommerceOrderRuleEntry(
+				boolean active, String description, String name, int priority,
+				String type, String typeSettings,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderRuleEntryService.addCommerceOrderRuleEntry(
+			active, description, name, priority, type, typeSettings,
+			serviceContext);
+	}
+
+	@Override
+	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+			deleteCommerceOrderRuleEntry(long commerceOrderRuleEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderRuleEntryService.deleteCommerceOrderRuleEntry(
+			commerceOrderRuleEntryId);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
+			getCommerceOrderRuleEntries(
+				boolean active, int start, int end,
+				com.liferay.portal.kernel.service.ServiceContext
+					serviceContext) {
+
+		return _commerceOrderRuleEntryService.getCommerceOrderRuleEntries(
+			active, start, end, serviceContext);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
+			getCommerceOrderRuleEntries(
+				boolean active, String type, int start, int end,
+				com.liferay.portal.kernel.service.ServiceContext
+					serviceContext) {
+
+		return _commerceOrderRuleEntryService.getCommerceOrderRuleEntries(
+			active, type, start, end, serviceContext);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
+			getCommerceOrderRuleEntries(
+				String type, int start, int end,
+				com.liferay.portal.kernel.service.ServiceContext
+					serviceContext) {
+
+		return _commerceOrderRuleEntryService.getCommerceOrderRuleEntries(
+			type, start, end, serviceContext);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -41,6 +99,19 @@ public class CommerceOrderRuleEntryServiceWrapper
 	@Override
 	public String getOSGiServiceIdentifier() {
 		return _commerceOrderRuleEntryService.getOSGiServiceIdentifier();
+	}
+
+	@Override
+	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+			updateCommerceOrderRuleEntry(
+				long commerceOrderRuleEntryId, boolean active,
+				String description, String name, int priority,
+				String typeSettings)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderRuleEntryService.updateCommerceOrderRuleEntry(
+			commerceOrderRuleEntryId, active, description, name, priority,
+			typeSettings);
 	}
 
 	@Override
