@@ -14,8 +14,18 @@
 
 package com.liferay.commerce.order.rule.service.impl;
 
+import com.liferay.commerce.order.rule.exception.NoSuchOrderRuleEntryException;
+import com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry;
 import com.liferay.commerce.order.rule.service.base.CommerceOrderRuleEntryLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -29,4 +39,101 @@ import org.osgi.service.component.annotations.Component;
 )
 public class CommerceOrderRuleEntryLocalServiceImpl
 	extends CommerceOrderRuleEntryLocalServiceBaseImpl {
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CommerceOrderRuleEntry addCommerceOrderRuleEntry(
+			boolean active, String description, String name, int priority,
+			String type, String typeSettings, ServiceContext serviceContext)
+		throws PortalException {
+
+		User user = userLocalService.getUser(serviceContext.getUserId());
+
+		long commerceOrderRuleEntryId = counterLocalService.increment();
+
+		CommerceOrderRuleEntry commerceOrderRuleEntry =
+			commerceOrderRuleEntryPersistence.create(commerceOrderRuleEntryId);
+
+		commerceOrderRuleEntry.setCompanyId(serviceContext.getCompanyId());
+		commerceOrderRuleEntry.setUserId(user.getUserId());
+		commerceOrderRuleEntry.setUserName(user.getFullName());
+		commerceOrderRuleEntry.setActive(active);
+		commerceOrderRuleEntry.setDescription(description);
+		commerceOrderRuleEntry.setExclusive(true);
+		commerceOrderRuleEntry.setName(name);
+		commerceOrderRuleEntry.setPriority(priority);
+		commerceOrderRuleEntry.setType(type);
+
+		UnicodeProperties settingsUnicodeProperties =
+			commerceOrderRuleEntry.getSettingsProperties();
+
+		settingsUnicodeProperties.put(type, typeSettings);
+
+		commerceOrderRuleEntry.setSettingsProperties(settingsUnicodeProperties);
+
+		return commerceOrderRuleEntryPersistence.update(commerceOrderRuleEntry);
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	@Override
+	public CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
+			long commerceOrderRuleEntryId)
+		throws NoSuchOrderRuleEntryException {
+
+		return commerceOrderRuleEntryPersistence.remove(
+			commerceOrderRuleEntryId);
+	}
+
+	@Override
+	public List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		boolean active, int start, int end, ServiceContext serviceContext) {
+
+		return commerceOrderRuleEntryPersistence.findByC_A(
+			serviceContext.getCompanyId(), active, start, end);
+	}
+
+	@Override
+	public List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		boolean active, String type, int start, int end,
+		ServiceContext serviceContext) {
+
+		return commerceOrderRuleEntryPersistence.findByC_A_LikeType(
+			serviceContext.getCompanyId(), active, type, start, end);
+	}
+
+	@Override
+	public List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		String type, int start, int end, ServiceContext serviceContext) {
+
+		return commerceOrderRuleEntryPersistence.findByC_LikeType(
+			serviceContext.getCompanyId(), type, start, end);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CommerceOrderRuleEntry updateCommerceOrderRuleEntry(
+			long commerceOrderRuleEntryId, boolean active, String description,
+			String name, int priority, String typeSettings)
+		throws PortalException {
+
+		CommerceOrderRuleEntry commerceOrderRuleEntry =
+			commerceOrderRuleEntryLocalService.getCommerceOrderRuleEntry(
+				commerceOrderRuleEntryId);
+
+		commerceOrderRuleEntry.setActive(active);
+		commerceOrderRuleEntry.setDescription(description);
+		commerceOrderRuleEntry.setName(name);
+		commerceOrderRuleEntry.setPriority(priority);
+
+		UnicodeProperties settingsUnicodeProperties =
+			commerceOrderRuleEntry.getSettingsProperties();
+
+		settingsUnicodeProperties.put(
+			commerceOrderRuleEntry.getType(), typeSettings);
+
+		commerceOrderRuleEntry.setSettingsProperties(settingsUnicodeProperties);
+
+		return commerceOrderRuleEntryPersistence.update(commerceOrderRuleEntry);
+	}
+
 }
