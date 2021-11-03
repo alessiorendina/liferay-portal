@@ -422,6 +422,24 @@ public class CPTestUtil {
 		return cpInstance;
 	}
 
+	public static CPInstance addCPInstanceFromCatalogWithERC(
+		long groupId, String externalReferenceCode, BigDecimal price, String sku)
+		throws PortalException {
+
+		CPInstance cpInstance = addCPInstanceFromCatalog(groupId);
+
+		cpInstance.setSku(sku);
+		cpInstance.setPrice(price);
+		cpInstance.setExternalReferenceCode(externalReferenceCode);
+
+		cpInstance = CPInstanceLocalServiceUtil.updateCPInstance(cpInstance);
+
+		_addCommercePriceEntry(cpInstance);
+
+		return cpInstance;
+	}
+
+
 	public static CPInstance addCPInstanceFromCatalog(
 			long groupId, long[] assetCategoryIds)
 		throws PortalException {
