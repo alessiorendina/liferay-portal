@@ -39,10 +39,10 @@ public class CSDiagramEntryModelPreFilterContributor
 		BooleanFilter booleanFilter, ModelSearchSettings modelSearchSettings,
 		SearchContext searchContext) {
 
-		_filterByCpDefinitionId(booleanFilter, searchContext);
+		_filterByCPDefinitionId(booleanFilter, searchContext);
 	}
 
-	private void _filterByCpDefinitionId(
+	private void _filterByCPDefinitionId(
 		BooleanFilter booleanFilter, SearchContext searchContext) {
 
 		long cpDefinitionId = GetterUtil.getLong(
