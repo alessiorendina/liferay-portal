@@ -30,7 +30,6 @@ import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -39,6 +38,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Andrea Sbarra
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	enabled = false,
@@ -74,36 +74,19 @@ public class ProductSpecificationResourceImpl
 						pagination.getStartPosition(),
 						pagination.getEndPosition(), null);
 
-		int totalItems =
+		return Page.of(
+			transform(
+				cpDefinitionSpecificationOptionValues,
+				cpDefinitionSpecificationOptionValue ->
+					_productSpecificationDTOConverter.toDTO(
+						new DefaultDTOConverterContext(
+							cpDefinitionSpecificationOptionValue.
+								getCPDefinitionSpecificationOptionValueId(),
+							contextAcceptLanguage.getPreferredLocale()))),
+			pagination,
 			_cpDefinitionSpecificationOptionValueLocalService.
 				getCPDefinitionSpecificationOptionValuesCount(
-					cpDefinition.getCPDefinitionId());
-
-		return Page.of(
-			_toProductSpecifications(cpDefinitionSpecificationOptionValues),
-			pagination, totalItems);
-	}
-
-	private List<ProductSpecification> _toProductSpecifications(
-			List<CPDefinitionSpecificationOptionValue>
-				cpDefinitionSpecificationOptionValues)
-		throws Exception {
-
-		List<ProductSpecification> productSpecifications = new ArrayList<>();
-
-		for (CPDefinitionSpecificationOptionValue
-				cpDefinitionSpecificationOptionValue :
-					cpDefinitionSpecificationOptionValues) {
-
-			productSpecifications.add(
-				_productSpecificationDTOConverter.toDTO(
-					new DefaultDTOConverterContext(
-						cpDefinitionSpecificationOptionValue.
-							getCPDefinitionSpecificationOptionValueId(),
-						contextAcceptLanguage.getPreferredLocale())));
-		}
-
-		return productSpecifications;
+					cpDefinition.getCPDefinitionId()));
 	}
 
 	@Reference

@@ -14,13 +14,10 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
-import com.liferay.commerce.account.exception.NoSuchAccountException;
-import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.commerce.account.service.CommerceAccountLocalService;
 import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
-import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
@@ -30,6 +27,7 @@ import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.AttachmentDTOConverter;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.AttachmentDTOConverterContext;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.HeadlessCommerceDeliveryCatalogApplicationUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.AttachmentResource;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -45,6 +43,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Andrea Sbarra
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	enabled = false,
@@ -70,12 +69,16 @@ public class AttachmentResourceImpl
 				"Unable to find Product with ID: " + productId);
 		}
 
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(channelId);
+
 		return _getAttachmentPage(
-			cpDefinition,
-			_getAccountId(
-				accountId,
-				_commerceChannelLocalService.getCommerceChannel(channelId)),
-			CPAttachmentFileEntryConstants.TYPE_OTHER, pagination);
+			HeadlessCommerceDeliveryCatalogApplicationUtil.getCommerceAccountId(
+				accountId, _commerceAccountHelper, _commerceAccountLocalService,
+				commerceChannel.getGroupId(), contextCompany.getCompanyId(),
+				contextUser.getUserId()),
+			cpDefinition, CPAttachmentFileEntryConstants.TYPE_OTHER,
+			pagination);
 	}
 
 	@NestedField(parentClass = Product.class, value = "images")
@@ -93,49 +96,20 @@ public class AttachmentResourceImpl
 				"Unable to find Product with ID: " + productId);
 		}
 
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(channelId);
+
 		return _getAttachmentPage(
-			cpDefinition,
-			_getAccountId(
-				accountId,
-				_commerceChannelLocalService.getCommerceChannel(channelId)),
-			CPAttachmentFileEntryConstants.TYPE_IMAGE, pagination);
-	}
-
-	private Long _getAccountId(Long accountId, CommerceChannel commerceChannel)
-		throws Exception {
-
-		int countUserCommerceAccounts =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
-
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				throw new NoSuchAccountException();
-			}
-		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (commerceAccountIds.length == 0) {
-				CommerceAccount commerceAccount =
-					_commerceAccountLocalService.getGuestCommerceAccount(
-						contextCompany.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					commerceAccount.getCommerceAccountId()
-				};
-			}
-
-			return commerceAccountIds[0];
-		}
-
-		return accountId;
+			HeadlessCommerceDeliveryCatalogApplicationUtil.getCommerceAccountId(
+				accountId, _commerceAccountHelper, _commerceAccountLocalService,
+				commerceChannel.getGroupId(), contextCompany.getCompanyId(),
+				contextUser.getUserId()),
+			cpDefinition, CPAttachmentFileEntryConstants.TYPE_IMAGE,
+			pagination);
 	}
 
 	private Page<Attachment> _getAttachmentPage(
-			CPDefinition cpDefinition, long accountId, int type,
+			long commerceAccountId, CPDefinition cpDefinition, int type,
 			Pagination pagination)
 		throws Exception {
 
@@ -147,24 +121,17 @@ public class AttachmentResourceImpl
 					cpDefinition.getCPDefinitionId(), type,
 					WorkflowConstants.STATUS_APPROVED,
 					pagination.getStartPosition(), pagination.getEndPosition()),
-				cpAttachmentFileEntry -> _toAttachment(
-					accountId, cpAttachmentFileEntry)),
+				cpAttachmentFileEntry -> _attachmentDTOConverter.toDTO(
+					new AttachmentDTOConverterContext(
+						cpAttachmentFileEntry.getCPAttachmentFileEntryId(),
+						contextAcceptLanguage.getPreferredLocale(),
+						commerceAccountId))),
 			pagination,
 			_cpAttachmentFileEntryLocalService.getCPAttachmentFileEntriesCount(
 				_classNameLocalService.getClassNameId(
 					cpDefinition.getModelClass()),
 				cpDefinition.getCPDefinitionId(), type,
 				WorkflowConstants.STATUS_APPROVED));
-	}
-
-	private Attachment _toAttachment(
-			long accountId, CPAttachmentFileEntry cpAttachmentFileEntry)
-		throws Exception {
-
-		return _attachmentDTOConverter.toDTO(
-			new AttachmentDTOConverterContext(
-				cpAttachmentFileEntry.getCPAttachmentFileEntryId(),
-				contextAcceptLanguage.getPreferredLocale(), accountId));
 	}
 
 	@Reference

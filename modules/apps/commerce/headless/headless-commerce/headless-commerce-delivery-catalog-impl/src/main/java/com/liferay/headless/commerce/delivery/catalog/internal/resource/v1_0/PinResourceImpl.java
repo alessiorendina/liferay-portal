@@ -14,11 +14,8 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
-import com.liferay.commerce.account.exception.NoSuchAccountException;
-import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.commerce.account.service.CommerceAccountLocalService;
 import com.liferay.commerce.account.util.CommerceAccountHelper;
-import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.context.CommerceContextFactory;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -31,12 +28,12 @@ import com.liferay.commerce.shop.by.diagram.service.CSDiagramPinLocalService;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Pin;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.PinDTOConverter;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.PinDTOConverterContext;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.HeadlessCommerceDeliveryCatalogApplicationUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.PinResource;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.portal.vulcan.util.TransformUtil;
 
 import java.util.List;
 
@@ -46,6 +43,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Ivica Cardic
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	enabled = false, properties = "OSGI-INF/liferay/rest/v1_0/pin.properties",
@@ -70,77 +68,36 @@ public class PinResourceImpl extends BasePinResourceImpl {
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		accountId = _getAccountId(accountId, commerceChannel);
+		Long commerceAccountId =
+			HeadlessCommerceDeliveryCatalogApplicationUtil.getCommerceAccountId(
+				accountId, _commerceAccountHelper, _commerceAccountLocalService,
+				commerceChannel.getGroupId(), contextCompany.getCompanyId(),
+				contextUser.getUserId());
 
 		_commerceProductViewPermission.check(
-			PermissionThreadLocal.getPermissionChecker(), accountId,
+			PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
 			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
 
-		CommerceContext commerceContext = _commerceContextFactory.create(
-			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
-			contextUser.getUserId(), 0, accountId);
+		List<CSDiagramPin> csDiagramPins =
+			_csDiagramPinLocalService.getCSDiagramPins(
+				cpDefinition.getCPDefinitionId(), pagination.getStartPosition(),
+				pagination.getEndPosition());
 
 		return Page.of(
-			_toPins(
-				commerceContext,
-				_csDiagramPinLocalService.getCSDiagramPins(
-					cpDefinition.getCPDefinitionId(),
-					pagination.getStartPosition(),
-					pagination.getEndPosition())),
+			transform(
+				csDiagramPins,
+				csDiagramPin -> _pinDTOConverter.toDTO(
+					new PinDTOConverterContext(
+						_commerceContextFactory.create(
+							contextCompany.getCompanyId(),
+							commerceChannel.getGroupId(),
+							contextUser.getUserId(), 0, commerceAccountId),
+						contextCompany.getCompanyId(),
+						csDiagramPin.getCSDiagramPinId(),
+						contextAcceptLanguage.getPreferredLocale()))),
 			pagination,
 			_csDiagramPinLocalService.getCSDiagramPinsCount(
 				cpDefinition.getCPDefinitionId()));
-	}
-
-	private Long _getAccountId(Long accountId, CommerceChannel commerceChannel)
-		throws Exception {
-
-		int countUserCommerceAccounts =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
-
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				throw new NoSuchAccountException();
-			}
-		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (commerceAccountIds.length == 0) {
-				CommerceAccount commerceAccount =
-					_commerceAccountLocalService.getGuestCommerceAccount(
-						contextUser.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					commerceAccount.getCommerceAccountId()
-				};
-			}
-
-			return commerceAccountIds[0];
-		}
-
-		return accountId;
-	}
-
-	private Pin _toPin(CommerceContext commerceContext, long csDiagramPinId)
-		throws Exception {
-
-		return _pinDTOConverter.toDTO(
-			new PinDTOConverterContext(
-				commerceContext, contextCompany.getCompanyId(), csDiagramPinId,
-				contextAcceptLanguage.getPreferredLocale()));
-	}
-
-	private List<Pin> _toPins(
-		CommerceContext commerceContext, List<CSDiagramPin> csDiagramPins) {
-
-		return TransformUtil.transform(
-			csDiagramPins,
-			csDiagramPin -> _toPin(
-				commerceContext, csDiagramPin.getCSDiagramPinId()));
 	}
 
 	@Reference

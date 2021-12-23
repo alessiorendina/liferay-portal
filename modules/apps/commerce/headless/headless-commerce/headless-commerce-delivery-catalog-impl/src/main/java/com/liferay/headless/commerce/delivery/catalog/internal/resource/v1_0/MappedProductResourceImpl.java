@@ -14,8 +14,6 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
-import com.liferay.commerce.account.exception.NoSuchAccountException;
-import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.commerce.account.service.CommerceAccountLocalService;
 import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.commerce.context.CommerceContext;
@@ -31,15 +29,19 @@ import com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.MappedProduct;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.MappedProductDTOConverter;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.MappedProductDTOConverterContext;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.HeadlessCommerceDeliveryCatalogApplicationUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.MappedProductResource;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
+
+import java.io.Serializable;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -47,6 +49,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Andrea Sbarra
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	enabled = false,
@@ -72,55 +75,27 @@ public class MappedProductResourceImpl extends BaseMappedProductResourceImpl {
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		accountId = _getAccountId(accountId, commerceChannel);
+		Long commerceAccountId =
+			HeadlessCommerceDeliveryCatalogApplicationUtil.getCommerceAccountId(
+				accountId, _commerceAccountHelper, _commerceAccountLocalService,
+				commerceChannel.getGroupId(), contextCompany.getCompanyId(),
+				contextUser.getUserId());
 
 		_commerceProductViewPermission.check(
-			PermissionThreadLocal.getPermissionChecker(), accountId,
+			PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
 			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
 
 		CommerceContext commerceContext = _commerceContextFactory.create(
 			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
-			contextUser.getUserId(), 0, accountId);
+			contextUser.getUserId(), 0, commerceAccountId);
 
 		return _getMappedProductsPage(
-			commerceContext, cpDefinition.getCPDefinitionId(), pagination,
-			search, sorts);
-	}
-
-	private Long _getAccountId(Long accountId, CommerceChannel commerceChannel)
-		throws Exception {
-
-		int countUserCommerceAccounts =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
-
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				throw new NoSuchAccountException();
-			}
-		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (commerceAccountIds.length == 0) {
-				CommerceAccount commerceAccount =
-					_commerceAccountLocalService.getGuestCommerceAccount(
-						contextUser.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					commerceAccount.getCommerceAccountId()
-				};
-			}
-
-			return commerceAccountIds[0];
-		}
-
-		return accountId;
+			commerceAccountId, commerceChannel.getGroupId(), commerceContext,
+			cpDefinition.getCPDefinitionId(), pagination, search, sorts);
 	}
 
 	private Page<MappedProduct> _getMappedProductsPage(
+			long commerceAccountId, long commerceChannelGroupId,
 			CommerceContext commerceContext, long cpDefinitionId,
 			Pagination pagination, String search, Sort[] sorts)
 		throws Exception {
@@ -139,23 +114,25 @@ public class MappedProductResourceImpl extends BaseMappedProductResourceImpl {
 					searchContext.setKeywords(search);
 				}
 
-				searchContext.setAttribute(
-					CPField.CP_DEFINITION_ID, cpDefinitionId);
+				searchContext.setAttributes(
+					HashMapBuilder.<String, Serializable>put(
+						CPField.CP_DEFINITION_ID, cpDefinitionId
+					).put(
+						"commerceAccountGroupIds",
+						_commerceAccountHelper.getCommerceAccountGroupIds(
+							commerceAccountId)
+					).put(
+						"commerceChannelGroupId", commerceChannelGroupId
+					).put(
+						"secure", true
+					).build());
 			},
 			sorts,
-			document -> _toMappedProduct(
-				commerceContext,
-				GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))));
-	}
-
-	private MappedProduct _toMappedProduct(
-			CommerceContext commerceContext, long csDiagramEntryId)
-		throws Exception {
-
-		return _mappedProductDTOConverter.toDTO(
-			new MappedProductDTOConverterContext(
-				commerceContext, contextCompany.getCompanyId(),
-				csDiagramEntryId, contextAcceptLanguage.getPreferredLocale()));
+			document -> _mappedProductDTOConverter.toDTO(
+				new MappedProductDTOConverterContext(
+					commerceContext, contextCompany.getCompanyId(),
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)),
+					contextAcceptLanguage.getPreferredLocale())));
 	}
 
 	@Reference

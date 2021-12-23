@@ -30,7 +30,6 @@ import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -39,6 +38,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Andrea Sbarra
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	enabled = false,
@@ -69,31 +69,16 @@ public class ProductOptionResourceImpl
 				cpDefinition.getCPDefinitionId(), pagination.getStartPosition(),
 				pagination.getEndPosition());
 
-		int totalItems =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRelsCount(
-				cpDefinition.getCPDefinitionId());
-
 		return Page.of(
-			_toProductOptions(cpDefinitionOptionRels), pagination, totalItems);
-	}
-
-	private List<ProductOption> _toProductOptions(
-			List<CPDefinitionOptionRel> cpDefinitionOptionRels)
-		throws Exception {
-
-		List<ProductOption> productOptions = new ArrayList<>();
-
-		for (CPDefinitionOptionRel cpDefinitionOptionRel :
-				cpDefinitionOptionRels) {
-
-			productOptions.add(
-				_productOptionDTOConverter.toDTO(
+			transform(
+				cpDefinitionOptionRels,
+				cpDefinitionOptionRel -> _productOptionDTOConverter.toDTO(
 					new DefaultDTOConverterContext(
 						cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
-						contextAcceptLanguage.getPreferredLocale())));
-		}
-
-		return productOptions;
+						contextAcceptLanguage.getPreferredLocale()))),
+			pagination,
+			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRelsCount(
+				cpDefinition.getCPDefinitionId()));
 	}
 
 	@Reference

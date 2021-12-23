@@ -14,12 +14,28 @@
 
 package com.liferay.commerce.shop.by.diagram.internal.search.spi.model.index.contributor;
 
+import com.liferay.commerce.account.model.CommerceAccountGroupRel;
+import com.liferay.commerce.account.service.CommerceAccountGroupRelLocalService;
 import com.liferay.commerce.product.constants.CPField;
+import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.model.CommerceChannelRel;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPInstanceLocalService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alessio Antonio Rendina
@@ -39,6 +55,66 @@ public class CSDiagramEntryModelDocumentContributor
 		document.addText(CPField.SKU, csDiagramEntry.getSku());
 		document.addNumber("quantity", csDiagramEntry.getQuantity());
 		document.addText("sequence", csDiagramEntry.getSequence());
+
+		CPDefinition cpDefinition =
+			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+				csDiagramEntry.getCProductId());
+
+		if (cpDefinition != null) {
+			List<Long> commerceChannelGroupIds = new ArrayList<>();
+
+			for (CommerceChannelRel commerceChannelRel :
+					_commerceChannelRelLocalService.getCommerceChannelRels(
+						cpDefinition.getModelClassName(),
+						cpDefinition.getCPDefinitionId(), QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS, null)) {
+
+				CommerceChannel commerceChannel =
+					_commerceChannelLocalService.fetchCommerceChannel(
+						commerceChannelRel.getCommerceChannelId());
+
+				if (commerceChannel != null) {
+					commerceChannelGroupIds.add(commerceChannel.getGroupId());
+				}
+			}
+
+			document.addNumber(
+				CPField.COMMERCE_CHANNEL_GROUP_IDS,
+				ArrayUtil.toLongArray(commerceChannelGroupIds));
+
+			List<CommerceAccountGroupRel> commerceAccountGroupRels =
+				_commerceAccountGroupRelLocalService.
+					getCommerceAccountGroupRels(
+						CPDefinition.class.getName(),
+						cpDefinition.getCPDefinitionId(), QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS, null);
+
+			Stream<CommerceAccountGroupRel> stream =
+				commerceAccountGroupRels.stream();
+
+			long[] commerceAccountGroupIds = stream.mapToLong(
+				CommerceAccountGroupRel::getCommerceAccountGroupId
+			).toArray();
+
+			document.addNumber(
+				"commerceAccountGroupIds", commerceAccountGroupIds);
+		}
 	}
+
+	@Reference
+	private CommerceAccountGroupRelLocalService
+		_commerceAccountGroupRelLocalService;
+
+	@Reference
+	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
+	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
+
+	@Reference
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Reference
+	private CPInstanceLocalService _cpInstanceLocalService;
 
 }

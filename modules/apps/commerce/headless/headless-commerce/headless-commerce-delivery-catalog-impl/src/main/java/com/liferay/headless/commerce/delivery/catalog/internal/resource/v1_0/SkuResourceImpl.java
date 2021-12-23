@@ -14,11 +14,8 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
-import com.liferay.commerce.account.exception.NoSuchAccountException;
-import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.commerce.account.service.CommerceAccountLocalService;
 import com.liferay.commerce.account.util.CommerceAccountHelper;
-import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.context.CommerceContextFactory;
 import com.liferay.commerce.product.exception.NoSuchCProductException;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -32,6 +29,7 @@ import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Sku;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.SkuDTOConverter;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.SkuDTOConverterContext;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.HeadlessCommerceDeliveryCatalogApplicationUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.SkuResource;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -41,7 +39,6 @@ import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -50,6 +47,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Andrea Sbarra
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	enabled = false, properties = "OSGI-INF/liferay/rest/v1_0/sku.properties",
@@ -76,35 +74,14 @@ public class SkuResourceImpl
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		int countUserCommerceAccounts =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
-
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				throw new NoSuchAccountException();
-			}
-		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (commerceAccountIds.length == 0) {
-				CommerceAccount commerceAccount =
-					_commerceAccountLocalService.getGuestCommerceAccount(
-						contextUser.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					commerceAccount.getCommerceAccountId()
-				};
-			}
-
-			accountId = commerceAccountIds[0];
-		}
+		Long commerceAccountId =
+			HeadlessCommerceDeliveryCatalogApplicationUtil.getCommerceAccountId(
+				accountId, _commerceAccountHelper, _commerceAccountLocalService,
+				commerceChannel.getGroupId(), contextCompany.getCompanyId(),
+				contextUser.getUserId());
 
 		_commerceProductViewPermission.check(
-			PermissionThreadLocal.getPermissionChecker(), accountId,
+			PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
 			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
 
 		List<CPInstance> cpInstances =
@@ -114,70 +91,22 @@ public class SkuResourceImpl
 				pagination.getStartPosition(), pagination.getEndPosition(),
 				null);
 
-		int totalItems = _cpInstanceLocalService.getCPDefinitionInstancesCount(
-			cpDefinition.getCPDefinitionId(),
-			WorkflowConstants.STATUS_APPROVED);
-
 		return Page.of(
-			_toSKUs(channelId, accountId, cpInstances, cpDefinition),
-			pagination, totalItems);
-	}
-
-	private List<Sku> _toSKUs(
-			Long channelId, Long accountId, List<CPInstance> cpInstances,
-			CPDefinition cpDefinition)
-		throws Exception {
-
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannel(channelId);
-
-		int countUserCommerceAccounts =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
-
-		CommerceContext commerceContext;
-
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				throw new NoSuchAccountException();
-			}
-
-			commerceContext = _commerceContextFactory.create(
-				contextCompany.getCompanyId(), commerceChannel.getGroupId(),
-				contextUser.getUserId(), 0, accountId);
-		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (commerceAccountIds.length == 0) {
-				CommerceAccount commerceAccount =
-					_commerceAccountLocalService.getGuestCommerceAccount(
-						contextUser.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					commerceAccount.getCommerceAccountId()
-				};
-			}
-
-			commerceContext = _commerceContextFactory.create(
-				contextCompany.getCompanyId(), commerceChannel.getGroupId(),
-				contextUser.getUserId(), 0, commerceAccountIds[0]);
-		}
-
-		List<Sku> skus = new ArrayList<>();
-
-		for (CPInstance cpInstance : cpInstances) {
-			skus.add(
-				_skuDTOConverter.toDTO(
+			transform(
+				cpInstances,
+				cpInstance -> _skuDTOConverter.toDTO(
 					new SkuDTOConverterContext(
 						contextAcceptLanguage.getPreferredLocale(),
 						cpInstance.getCPInstanceId(), cpDefinition,
-						contextCompany.getCompanyId(), commerceContext)));
-		}
-
-		return skus;
+						contextCompany.getCompanyId(),
+						_commerceContextFactory.create(
+							contextCompany.getCompanyId(),
+							commerceChannel.getGroupId(),
+							contextUser.getUserId(), 0, commerceAccountId)))),
+			pagination,
+			_cpInstanceLocalService.getCPDefinitionInstancesCount(
+				cpDefinition.getCPDefinitionId(),
+				WorkflowConstants.STATUS_APPROVED));
 	}
 
 	@Reference

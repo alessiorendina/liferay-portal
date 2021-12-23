@@ -31,7 +31,6 @@ import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -40,6 +39,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Andrea Sbarra
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	enabled = false,
@@ -72,29 +72,18 @@ public class CategoryResourceImpl
 				cpDefinition.getCPDefinitionId(), pagination.getStartPosition(),
 				pagination.getEndPosition());
 
-		int totalItems = _assetCategoryLocalService.getCategoriesCount(
-			_classNameLocalService.getClassNameId(cpDefinition.getModelClass()),
-			cpDefinition.getCPDefinitionId());
-
 		return Page.of(
-			_toProductCategories(assetCategories), pagination, totalItems);
-	}
-
-	private List<Category> _toProductCategories(
-			List<AssetCategory> assetCategories)
-		throws Exception {
-
-		List<Category> categories = new ArrayList<>();
-
-		for (AssetCategory category : assetCategories) {
-			categories.add(
-				_categoryDTOConverter.toDTO(
+			transform(
+				assetCategories,
+				assetCategory -> _categoryDTOConverter.toDTO(
 					new DefaultDTOConverterContext(
-						category.getCategoryId(),
-						contextAcceptLanguage.getPreferredLocale())));
-		}
-
-		return categories;
+						assetCategory.getCategoryId(),
+						contextAcceptLanguage.getPreferredLocale()))),
+			pagination,
+			_assetCategoryLocalService.getCategoriesCount(
+				_classNameLocalService.getClassNameId(
+					cpDefinition.getModelClass()),
+				cpDefinition.getCPDefinitionId()));
 	}
 
 	@Reference

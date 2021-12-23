@@ -14,13 +14,10 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
-import com.liferay.commerce.account.exception.NoSuchAccountException;
-import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.commerce.account.service.CommerceAccountLocalService;
 import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.context.CommerceContextFactory;
-import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPQuery;
 import com.liferay.commerce.product.data.source.CPDataSourceResult;
 import com.liferay.commerce.product.exception.NoSuchCProductException;
@@ -34,6 +31,7 @@ import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.ProductDTOConverter;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.ProductDTOConverterContext;
 import com.liferay.headless.commerce.delivery.catalog.internal.odata.entity.v1_0.ProductEntityModel;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.HeadlessCommerceDeliveryCatalogApplicationUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.ProductResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.search.BooleanClause;
@@ -55,10 +53,10 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
+import com.liferay.portal.vulcan.util.TransformUtil;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -94,8 +92,11 @@ public class ProductResourceImpl
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		Long commerceAccountId = _getCommerceAccountId(
-			accountId, commerceChannel);
+		Long commerceAccountId =
+			HeadlessCommerceDeliveryCatalogApplicationUtil.getCommerceAccountId(
+				accountId, _commerceAccountHelper, _commerceAccountLocalService,
+				commerceChannel.getGroupId(), contextCompany.getCompanyId(),
+				contextUser.getUserId());
 
 		_commerceProductViewPermission.check(
 			PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
@@ -119,8 +120,11 @@ public class ProductResourceImpl
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
 
-		Long commerceAccountId = _getCommerceAccountId(
-			accountId, commerceChannel);
+		Long commerceAccountId =
+			HeadlessCommerceDeliveryCatalogApplicationUtil.getCommerceAccountId(
+				accountId, _commerceAccountHelper, _commerceAccountLocalService,
+				commerceChannel.getGroupId(), contextCompany.getCompanyId(),
+				contextUser.getUserId());
 
 		searchContext.setAttributes(
 			HashMapBuilder.<String, Serializable>put(
@@ -191,40 +195,6 @@ public class ProductResourceImpl
 			booleanQuery, BooleanClauseOccur.MUST.getName());
 	}
 
-	private Long _getCommerceAccountId(
-			Long accountId, CommerceChannel commerceChannel)
-		throws Exception {
-
-		int countUserCommerceAccounts =
-			_commerceAccountHelper.countUserCommerceAccounts(
-				contextUser.getUserId(), commerceChannel.getGroupId());
-
-		if (countUserCommerceAccounts > 1) {
-			if (accountId == null) {
-				throw new NoSuchAccountException();
-			}
-		}
-		else {
-			long[] commerceAccountIds =
-				_commerceAccountHelper.getUserCommerceAccountIds(
-					contextUser.getUserId(), commerceChannel.getGroupId());
-
-			if (commerceAccountIds.length == 0) {
-				CommerceAccount commerceAccount =
-					_commerceAccountLocalService.getGuestCommerceAccount(
-						contextUser.getCompanyId());
-
-				commerceAccountIds = new long[] {
-					commerceAccount.getCommerceAccountId()
-				};
-			}
-
-			return commerceAccountIds[0];
-		}
-
-		return accountId;
-	}
-
 	private Product _toProduct(
 			CommerceContext commerceContext, CPDefinition cpDefinition)
 		throws Exception {
@@ -236,24 +206,16 @@ public class ProductResourceImpl
 	}
 
 	private List<Product> _toProducts(
-			CommerceContext commerceContext,
-			CPDataSourceResult cpDataSourceResult)
-		throws Exception {
+		CommerceContext commerceContext,
+		CPDataSourceResult cpDataSourceResult) {
 
-		List<Product> products = new ArrayList<>();
-
-		for (CPCatalogEntry cpCatalogEntry :
-				cpDataSourceResult.getCPCatalogEntries()) {
-
-			products.add(
-				_productDTOConverter.toDTO(
-					new ProductDTOConverterContext(
-						commerceContext, cpCatalogEntry,
-						cpCatalogEntry.getCPDefinitionId(),
-						contextAcceptLanguage.getPreferredLocale())));
-		}
-
-		return products;
+		return TransformUtil.transform(
+			cpDataSourceResult.getCPCatalogEntries(),
+			cpCatalogEntry -> _productDTOConverter.toDTO(
+				new ProductDTOConverterContext(
+					commerceContext, cpCatalogEntry,
+					cpCatalogEntry.getCPDefinitionId(),
+					contextAcceptLanguage.getPreferredLocale())));
 	}
 
 	private static final EntityModel _entityModel = new ProductEntityModel();
