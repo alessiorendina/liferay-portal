@@ -12,12 +12,18 @@
  * details.
  */
 
-export {default as orderAPI} from './Order';
-export {default as orderRuleAccountAPI} from './OrderRuleAccount';
-export {default as orderRuleAccountGroupAPI} from './OrderRuleAccountGroup';
-export {default as orderRuleAPI} from './OrderRule';
-export {default as orderRuleChannelAPI} from './OrderRuleChannel';
-export {default as orderRuleOrderTypeAPI} from './OrderRuleOrderType';
-export {default as orderTypeAPI} from './OrderType';
-export {default as orderTypeChannelAPI} from './OrderTypeChannel';
-export {default as termAPI} from './Term';
+import AJAX from '../../../utilities/AJAX/index';
+
+const TERMS_PATH = '/terms';
+
+const VERSION = 'v1.0';
+
+function resolvePath(basePath = '', termId = '') {
+	return `${basePath}${VERSION}${TERMS_PATH}/${termId}`;
+}
+
+export default function Term(basePath) {
+	return {
+		addTerm: (json) => AJAX.POST(resolvePath(basePath), json),
+	};
+}
