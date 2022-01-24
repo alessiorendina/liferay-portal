@@ -62,6 +62,7 @@ public class TermDTOConverter implements DTOConverter<CommerceTermEntry, Term> {
 				id = commerceTermEntry.getCommerceTermEntryId();
 				label = commerceTermEntry.getLanguageIdToLabelMap();
 				name = commerceTermEntry.getName();
+				priority = commerceTermEntry.getPriority();
 				type = commerceTermEntry.getType();
 				typeSettings = commerceTermEntry.getTypeSettings();
 
