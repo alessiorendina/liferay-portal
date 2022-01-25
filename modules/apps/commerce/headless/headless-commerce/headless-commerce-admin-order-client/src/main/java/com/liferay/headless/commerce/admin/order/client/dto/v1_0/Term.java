@@ -286,6 +286,28 @@ public class Term implements Cloneable, Serializable {
 
 	protected Double priority;
 
+	public TermOrderType[] getTermOrderType() {
+		return termOrderType;
+	}
+
+	public void setTermOrderType(TermOrderType[] termOrderType) {
+		this.termOrderType = termOrderType;
+	}
+
+	public void setTermOrderType(
+		UnsafeSupplier<TermOrderType[], Exception>
+			termOrderTypeUnsafeSupplier) {
+
+		try {
+			termOrderType = termOrderTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected TermOrderType[] termOrderType;
+
 	public String getType() {
 		return type;
 	}

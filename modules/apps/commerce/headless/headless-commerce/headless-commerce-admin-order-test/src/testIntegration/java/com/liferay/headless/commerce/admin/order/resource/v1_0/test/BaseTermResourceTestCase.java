@@ -907,6 +907,14 @@ public abstract class BaseTermResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("termOrderType", additionalAssertFieldName)) {
+				if (term.getTermOrderType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("type", additionalAssertFieldName)) {
 				if (term.getType() == null) {
 					valid = false;
@@ -1131,6 +1139,16 @@ public abstract class BaseTermResourceTestCase {
 			if (Objects.equals("priority", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						term1.getPriority(), term2.getPriority())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("termOrderType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						term1.getTermOrderType(), term2.getTermOrderType())) {
 
 					return false;
 				}
@@ -1406,6 +1424,11 @@ public abstract class BaseTermResourceTestCase {
 		}
 
 		if (entityFieldName.equals("priority")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("termOrderType")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}

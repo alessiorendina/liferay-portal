@@ -405,6 +405,36 @@ public class Term implements Serializable {
 	protected Double priority;
 
 	@Schema
+	@Valid
+	public TermOrderType[] getTermOrderType() {
+		return termOrderType;
+	}
+
+	public void setTermOrderType(TermOrderType[] termOrderType) {
+		this.termOrderType = termOrderType;
+	}
+
+	@JsonIgnore
+	public void setTermOrderType(
+		UnsafeSupplier<TermOrderType[], Exception>
+			termOrderTypeUnsafeSupplier) {
+
+		try {
+			termOrderType = termOrderTypeUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected TermOrderType[] termOrderType;
+
+	@Schema
 	public String getType() {
 		return type;
 	}
@@ -656,6 +686,26 @@ public class Term implements Serializable {
 			sb.append("\"priority\": ");
 
 			sb.append(priority);
+		}
+
+		if (termOrderType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"termOrderType\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < termOrderType.length; i++) {
+				sb.append(String.valueOf(termOrderType[i]));
+
+				if ((i + 1) < termOrderType.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		if (type != null) {
