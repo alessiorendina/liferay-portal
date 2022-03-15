@@ -17,6 +17,7 @@ package com.liferay.commerce.shipping.engine.fixed.internal.upgrade;
 import com.liferay.commerce.shipping.engine.fixed.internal.upgrade.v1_1_0.CommerceShippingFixedOptionRelUpgradeProcess;
 import com.liferay.commerce.shipping.engine.fixed.internal.upgrade.v2_2_0.util.CommerceShippingFixedOptionQualifierTable;
 import com.liferay.commerce.shipping.engine.fixed.internal.upgrade.v2_3_0.CommerceShippingFixedOptionUpgradeProcess;
+import com.liferay.commerce.shipping.engine.fixed.internal.upgrade.v2_4_0.util.AccountEntryShippingOptionRelTable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
@@ -69,6 +70,9 @@ public class CommerceShippingEngineFixedUpgradeStepRegistrator
 
 		registry.register(
 			"2.2.0", "2.3.0", new CommerceShippingFixedOptionUpgradeProcess());
+
+		registry.register(
+			"2.3.0", "2.4.0", AccountEntryShippingOptionRelTable.create());
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
