@@ -4,6 +4,44 @@
 <service-builder auto-namespace-tables="false" mvcc-enabled="true" package-path="com.liferay.commerce.shipping.engine.fixed">
 	<author>Alessio Antonio Rendina</author>
 	<namespace>Commerce</namespace>
+	<entity local-service="true" name="AccountEntryShippingOptionRel" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column db-name="AccountEntryCSOptionRelId" name="accountEntryShippingOptionRelId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="accountEntryId" type="long" />
+		<column name="channelId" type="long" />
+		<column name="shippingMethodKey" type="String" />
+		<column name="shippingOptionKey" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="ShippingOptionKey" return-type="Collection">
+			<finder-column name="shippingOptionKey" />
+		</finder>
+		<finder name="C_A_C" return-type="AccountEntryShippingOptionRel" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="accountEntryId" />
+			<finder-column name="channelId" />
+		</finder>
+		<finder name="C_A_C_S" return-type="AccountEntryShippingOptionRel" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="accountEntryId" />
+			<finder-column name="channelId" />
+			<finder-column name="shippingOptionKey" />
+		</finder>
+	</entity>
 	<entity local-service="true" name="CommerceShippingFixedOption" remote-service="true">
 
 		<!-- PK fields -->
