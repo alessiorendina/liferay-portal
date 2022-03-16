@@ -148,10 +148,12 @@ public class CommerceShippingMethodServiceUtil {
 	}
 
 	public static List<CommerceShippingMethod> getCommerceShippingMethods(
-			long groupId, boolean active)
+			long groupId, boolean active,
+			OrderByComparator<CommerceShippingMethod> orderByComparator)
 		throws PortalException {
 
-		return getService().getCommerceShippingMethods(groupId, active);
+		return getService().getCommerceShippingMethods(
+			groupId, active, orderByComparator);
 	}
 
 	public static List<CommerceShippingMethod> getCommerceShippingMethods(

@@ -17,6 +17,7 @@ package com.liferay.commerce.shipping.engine.fixed.service.base;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOptionQualifier;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionQualifierLocalService;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionQualifierLocalServiceUtil;
+import com.liferay.commerce.shipping.engine.fixed.service.persistence.AccountEntryShippingOptionRelPersistence;
 import com.liferay.commerce.shipping.engine.fixed.service.persistence.CommerceShippingFixedOptionPersistence;
 import com.liferay.commerce.shipping.engine.fixed.service.persistence.CommerceShippingFixedOptionQualifierPersistence;
 import com.liferay.commerce.shipping.engine.fixed.service.persistence.CommerceShippingFixedOptionRelFinder;
@@ -430,6 +431,56 @@ public abstract class CommerceShippingFixedOptionQualifierLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the account entry shipping option rel local service.
+	 *
+	 * @return the account entry shipping option rel local service
+	 */
+	public com.liferay.commerce.shipping.engine.fixed.service.
+		AccountEntryShippingOptionRelLocalService
+			getAccountEntryShippingOptionRelLocalService() {
+
+		return accountEntryShippingOptionRelLocalService;
+	}
+
+	/**
+	 * Sets the account entry shipping option rel local service.
+	 *
+	 * @param accountEntryShippingOptionRelLocalService the account entry shipping option rel local service
+	 */
+	public void setAccountEntryShippingOptionRelLocalService(
+		com.liferay.commerce.shipping.engine.fixed.service.
+			AccountEntryShippingOptionRelLocalService
+				accountEntryShippingOptionRelLocalService) {
+
+		this.accountEntryShippingOptionRelLocalService =
+			accountEntryShippingOptionRelLocalService;
+	}
+
+	/**
+	 * Returns the account entry shipping option rel persistence.
+	 *
+	 * @return the account entry shipping option rel persistence
+	 */
+	public AccountEntryShippingOptionRelPersistence
+		getAccountEntryShippingOptionRelPersistence() {
+
+		return accountEntryShippingOptionRelPersistence;
+	}
+
+	/**
+	 * Sets the account entry shipping option rel persistence.
+	 *
+	 * @param accountEntryShippingOptionRelPersistence the account entry shipping option rel persistence
+	 */
+	public void setAccountEntryShippingOptionRelPersistence(
+		AccountEntryShippingOptionRelPersistence
+			accountEntryShippingOptionRelPersistence) {
+
+		this.accountEntryShippingOptionRelPersistence =
+			accountEntryShippingOptionRelPersistence;
+	}
+
+	/**
 	 * Returns the commerce shipping fixed option local service.
 	 *
 	 * @return the commerce shipping fixed option local service
@@ -806,6 +857,17 @@ public abstract class CommerceShippingFixedOptionQualifierLocalServiceBaseImpl
 			throw new RuntimeException(reflectiveOperationException);
 		}
 	}
+
+	@BeanReference(
+		type = com.liferay.commerce.shipping.engine.fixed.service.AccountEntryShippingOptionRelLocalService.class
+	)
+	protected com.liferay.commerce.shipping.engine.fixed.service.
+		AccountEntryShippingOptionRelLocalService
+			accountEntryShippingOptionRelLocalService;
+
+	@BeanReference(type = AccountEntryShippingOptionRelPersistence.class)
+	protected AccountEntryShippingOptionRelPersistence
+		accountEntryShippingOptionRelPersistence;
 
 	@BeanReference(
 		type = com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService.class

@@ -1,3 +1,17 @@
+create table AccountEntryShippingOptionRel (
+	mvccVersion LONG default 0 not null,
+	AccountEntryCSOptionRelId LONG not null primary key,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	accountEntryId LONG,
+	channelId LONG,
+	shippingMethodKey VARCHAR(75) null,
+	shippingOptionKey VARCHAR(75) null
+);
+
 create table CSFixedOptionQualifier (
 	mvccVersion LONG default 0 not null,
 	CSFixedOptionQualifierId LONG not null primary key,

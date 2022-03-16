@@ -1,3 +1,6 @@
+create unique index IX_2A672489 on AccountEntryShippingOptionRel (companyId, accountEntryId, channelId);
+create index IX_DD777375 on AccountEntryShippingOptionRel (shippingOptionKey[$COLUMN_LENGTH:75$]);
+
 create unique index IX_221AEC7F on CSFixedOptionQualifier (classNameId, classPK, commerceShippingFixedOptionId);
 create index IX_F58BD6F4 on CSFixedOptionQualifier (classNameId, commerceShippingFixedOptionId);
 create index IX_9ABCCE34 on CSFixedOptionQualifier (commerceShippingFixedOptionId);

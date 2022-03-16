@@ -391,10 +391,14 @@ public class CommerceShippingMethodLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceShippingMethod>
-		getCommerceShippingMethods(long groupId, boolean active) {
+		getCommerceShippingMethods(
+			long groupId, boolean active,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.commerce.model.CommerceShippingMethod>
+					orderByComparator) {
 
 		return _commerceShippingMethodLocalService.getCommerceShippingMethods(
-			groupId, active);
+			groupId, active, orderByComparator);
 	}
 
 	@Override

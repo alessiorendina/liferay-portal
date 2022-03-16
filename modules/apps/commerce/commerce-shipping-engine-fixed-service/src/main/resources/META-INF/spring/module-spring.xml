@@ -7,6 +7,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
 >
+	<bean class="com.liferay.commerce.shipping.engine.fixed.service.impl.AccountEntryShippingOptionRelLocalServiceImpl" id="com.liferay.commerce.shipping.engine.fixed.service.AccountEntryShippingOptionRelLocalService" />
+	<bean class="com.liferay.commerce.shipping.engine.fixed.service.impl.AccountEntryShippingOptionRelServiceImpl" id="com.liferay.commerce.shipping.engine.fixed.service.AccountEntryShippingOptionRelService" />
+	<bean class="com.liferay.commerce.shipping.engine.fixed.service.persistence.impl.AccountEntryShippingOptionRelModelArgumentsResolver" id="com.liferay.commerce.shipping.engine.fixed.service.persistence.impl.AccountEntryShippingOptionRelModelArgumentsResolver" />
+	<bean class="com.liferay.commerce.shipping.engine.fixed.service.persistence.impl.AccountEntryShippingOptionRelPersistenceImpl" id="com.liferay.commerce.shipping.engine.fixed.service.persistence.AccountEntryShippingOptionRelPersistence" />
 	<bean class="com.liferay.commerce.shipping.engine.fixed.service.impl.CommerceShippingFixedOptionLocalServiceImpl" id="com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService" />
 	<bean class="com.liferay.commerce.shipping.engine.fixed.service.impl.CommerceShippingFixedOptionServiceImpl" id="com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionService" />
 	<bean class="com.liferay.commerce.shipping.engine.fixed.service.persistence.impl.CommerceShippingFixedOptionModelArgumentsResolver" id="com.liferay.commerce.shipping.engine.fixed.service.persistence.impl.CommerceShippingFixedOptionModelArgumentsResolver" />

@@ -161,11 +161,15 @@ public class CommerceShippingMethodServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceShippingMethod>
-			getCommerceShippingMethods(long groupId, boolean active)
+			getCommerceShippingMethods(
+				long groupId, boolean active,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.commerce.model.CommerceShippingMethod>
+						orderByComparator)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceShippingMethodService.getCommerceShippingMethods(
-			groupId, active);
+			groupId, active, orderByComparator);
 	}
 
 	@Override
