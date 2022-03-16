@@ -216,13 +216,14 @@ public class CommerceShippingMethodServiceImpl
 
 	@Override
 	public List<CommerceShippingMethod> getCommerceShippingMethods(
-			long groupId, boolean active)
+			long groupId, boolean active,
+			OrderByComparator<CommerceShippingMethod> orderByComparator)
 		throws PortalException {
 
 		_checkCommerceChannel(groupId);
 
 		return commerceShippingMethodLocalService.getCommerceShippingMethods(
-			groupId, active);
+			groupId, active, orderByComparator);
 	}
 
 	@Override
