@@ -60,6 +60,7 @@ import com.liferay.commerce.product.service.CPMeasurementUnitLocalService;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.shipping.engine.fedex.internal.configuration.FedExCommerceShippingEngineGroupServiceConfiguration;
 import com.liferay.commerce.shipping.engine.fedex.internal.constants.FedExCommerceShippingEngineConstants;
+import com.liferay.commerce.shipping.engine.fedex.internal.util.comparator.FedExCommerceShippingOptionPriorityComparator;
 import com.liferay.commerce.shipping.origin.locator.CommerceShippingOriginLocator;
 import com.liferay.commerce.util.CommerceShippingHelper;
 import com.liferay.petra.string.StringBundler;
@@ -73,6 +74,7 @@ import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -189,6 +191,7 @@ public class FedExCommerceShippingOptionHelper {
 
 		List<CommerceShippingOption> commerceShippingOptions = new ArrayList<>(
 			_serviceTypes.size());
+		double priority = 0;
 
 		for (Map.Entry<String, List<BigDecimal>> entry : rates.entrySet()) {
 			List<BigDecimal> amounts = entry.getValue();
@@ -234,10 +237,12 @@ public class FedExCommerceShippingOptionHelper {
 			}
 
 			commerceShippingOptions.add(
-				new CommerceShippingOption(name, label, amount));
+				new CommerceShippingOption(name, label, amount, priority++));
 		}
 
-		return commerceShippingOptions;
+		return ListUtil.sort(
+			commerceShippingOptions,
+			new FedExCommerceShippingOptionPriorityComparator());
 	}
 
 	private void _executeRateRequest(
