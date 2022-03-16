@@ -19,6 +19,7 @@ import com.liferay.commerce.exception.CommerceShippingMethodNameException;
 import com.liferay.commerce.model.CommerceAddressRestriction;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.service.base.CommerceShippingMethodLocalServiceBaseImpl;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -222,9 +223,12 @@ public class CommerceShippingMethodLocalServiceImpl
 
 	@Override
 	public List<CommerceShippingMethod> getCommerceShippingMethods(
-		long groupId, boolean active) {
+		long groupId, boolean active,
+		OrderByComparator<CommerceShippingMethod> orderByComparator) {
 
-		return commerceShippingMethodPersistence.findByG_A(groupId, active);
+		return commerceShippingMethodPersistence.findByG_A(
+			groupId, active, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			orderByComparator);
 	}
 
 	@Override
