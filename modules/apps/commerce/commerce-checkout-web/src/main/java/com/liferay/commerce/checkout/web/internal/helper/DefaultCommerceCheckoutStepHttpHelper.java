@@ -39,13 +39,16 @@ import com.liferay.commerce.price.CommerceOrderPriceCalculation;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.CommerceShippingMethodLocalService;
+import com.liferay.commerce.shipping.engine.fixed.model.AccountEntryShippingOptionRel;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
+import com.liferay.commerce.shipping.engine.fixed.service.AccountEntryShippingOptionRelService;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
 import com.liferay.commerce.term.model.CommerceTermEntry;
 import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.commerce.util.CommerceBigDecimalUtil;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.commerce.util.CommerceShippingHelper;
+import com.liferay.commerce.util.comparator.CommerceShippingMethodPriorityComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -433,17 +436,30 @@ public class DefaultCommerceCheckoutStepHttpHelper
 
 		List<CommerceShippingMethod> commerceShippingMethods =
 			_commerceShippingMethodLocalService.getCommerceShippingMethods(
-				commerceOrder.getGroupId(), true);
+				commerceOrder.getGroupId(), true,
+				new CommerceShippingMethodPriorityComparator());
 
 		if (commerceShippingMethods.isEmpty()) {
 			return false;
 		}
 
-		if (commerceShippingMethods.size() == 1) {
-			CommerceContext commerceContext =
-				(CommerceContext)httpServletRequest.getAttribute(
-					CommerceWebKeys.COMMERCE_CONTEXT);
+		CommerceContext commerceContext =
+			(CommerceContext)httpServletRequest.getAttribute(
+				CommerceWebKeys.COMMERCE_CONTEXT);
 
+		CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
+
+		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
+			commerceAccount.getCommerceAccountId());
+
+		AccountEntryShippingOptionRel accountEntryShippingOptionRel =
+			_accountEntryShippingOptionRelService.
+				fetchAccountEntryShippingOptionRel(
+					accountEntry.getAccountEntryId(),
+					commerceContext.getCommerceChannelId(),
+					accountEntry.getCompanyId());
+
+		if (commerceShippingMethods.size() == 1) {
 			CommerceShippingMethod commerceShippingMethod =
 				commerceShippingMethods.get(0);
 
@@ -457,7 +473,9 @@ public class DefaultCommerceCheckoutStepHttpHelper
 					_portal.getLocale(httpServletRequest));
 
 			if (commerceShippingOptions.size() == 1) {
-				if (commerceOrder.isOpen()) {
+				if (commerceOrder.isOpen() &&
+					commerceOrder.getCommerceShippingMethodId() == 0) {
+
 					_updateCommerceOrder(
 						commerceContext, commerceOrder,
 						commerceShippingMethod.getCommerceShippingMethodId(),
@@ -468,7 +486,50 @@ public class DefaultCommerceCheckoutStepHttpHelper
 			}
 		}
 
-		return true;
+		CommerceShippingOption shippingOption = null;
+
+		for (CommerceShippingMethod commerceShippingMethod :
+				commerceShippingMethods) {
+
+			CommerceShippingEngine commerceShippingEngine =
+				_commerceShippingEngineRegistry.getCommerceShippingEngine(
+					commerceShippingMethod.getEngineKey());
+
+			List<CommerceShippingOption> commerceShippingOptions =
+				commerceShippingEngine.getCommerceShippingOptions(
+					commerceContext, commerceOrder,
+					_portal.getLocale(httpServletRequest));
+			if (commerceShippingOptions.size() == 0) {
+				continue;
+			}
+			Stream<CommerceShippingOption> commerceShippingOptionsStream =
+				commerceShippingOptions.stream();
+
+			CommerceShippingOption defaultShippingOption =
+				commerceShippingOptionsStream.filter(
+					commerceShippingOption -> commerceShippingOption.getName(
+					).equals(
+						accountEntryShippingOptionRel.getShippingOptionKey()
+					)
+				).findFirst(
+				).orElse(
+					null
+				);
+
+			if (defaultShippingOption != null) {
+				return _hasCommerceShippingOptionPermission(
+					httpServletRequest, commerceOrder, commerceContext,
+					commerceShippingMethod, defaultShippingOption);
+			}
+
+			if (shippingOption == null) {
+				shippingOption = commerceShippingOptions.get(0);
+			}
+		}
+
+		return _hasCommerceShippingOptionPermission(
+			httpServletRequest, commerceOrder, commerceContext,
+			commerceShippingMethods.get(0), shippingOption);
 	}
 
 	@Override
@@ -498,6 +559,31 @@ public class DefaultCommerceCheckoutStepHttpHelper
 			!_commerceOrderPortletResourcePermission.contains(
 				themeDisplay.getPermissionChecker(),
 				commerceAccount.getCommerceAccountGroupId(), actionId)) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean _hasCommerceShippingOptionPermission(
+			HttpServletRequest httpServletRequest, CommerceOrder commerceOrder,
+			CommerceContext commerceContext,
+			CommerceShippingMethod commerceShippingMethod,
+			CommerceShippingOption defaultShippingOption)
+		throws PortalException {
+
+		if (commerceOrder.isOpen()&&
+			commerceOrder.getCommerceShippingMethodId() == 0) {
+			_updateCommerceOrder(
+				commerceContext, commerceOrder,
+				commerceShippingMethod.getCommerceShippingMethodId(),
+				defaultShippingOption, httpServletRequest);
+		}
+
+		if (!_hasCommerceOrderPermission(
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS,
+				commerceOrder, httpServletRequest)) {
 
 			return false;
 		}
@@ -562,6 +648,10 @@ public class DefaultCommerceCheckoutStepHttpHelper
 
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
+	private AccountEntryShippingOptionRelService
+		_accountEntryShippingOptionRelService;
 
 	@Reference
 	private CommerceAddressService _commerceAddressService;
