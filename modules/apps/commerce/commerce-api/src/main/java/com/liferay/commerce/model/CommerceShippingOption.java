@@ -22,11 +22,12 @@ import java.math.BigDecimal;
 public class CommerceShippingOption {
 
 	public CommerceShippingOption(
-		String name, String label, BigDecimal amount) {
+		String name, String label, BigDecimal amount, double priority) {
 
 		_name = name;
 		_label = label;
 		_amount = amount;
+		_priority = priority;
 	}
 
 	public BigDecimal getAmount() {
@@ -41,8 +42,13 @@ public class CommerceShippingOption {
 		return _name;
 	}
 
+	public double getPriority() {
+		return _priority;
+	}
+
 	private final BigDecimal _amount;
 	private final String _label;
 	private final String _name;
+	private final double _priority;
 
 }
