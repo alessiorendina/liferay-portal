@@ -32,6 +32,7 @@ import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOpt
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOptionRel;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionRelLocalService;
+import com.liferay.commerce.shipping.engine.fixed.util.comparator.CommerceShippingFixedOptionPriorityComparator;
 import com.liferay.commerce.util.CommerceShippingHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -117,7 +118,8 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 		return _commerceShippingFixedOptionLocalService.
 			getCommerceShippingFixedOptions(
 				commerceShippingMethod.getCommerceShippingMethodId(),
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				new CommerceShippingFixedOptionPriorityComparator());
 	}
 
 	private CommerceShippingOption _getCommerceShippingOption(
@@ -152,9 +154,11 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 
 		String key = commerceShippingFixedOption.getKey();
 		String name = commerceShippingFixedOption.getName(locale);
+		double priority = commerceShippingFixedOption.getPriority();
 
 		if (_commerceShippingHelper.isFreeShipping(commerceOrder)) {
-			return new CommerceShippingOption(key, name, BigDecimal.ZERO);
+			return new CommerceShippingOption(
+				key, name, BigDecimal.ZERO, priority);
 		}
 
 		BigDecimal amount = commerceShippingFixedOptionRel.getFixedPrice();
@@ -201,7 +205,7 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 			amount = amount.multiply(commerceCurrency.getRate());
 		}
 
-		return new CommerceShippingOption(key, name, amount);
+		return new CommerceShippingOption(key, name, amount, priority);
 	}
 
 	private List<CommerceShippingOption> _getCommerceShippingOptions(
