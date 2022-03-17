@@ -29,8 +29,8 @@ public class AccountEntryShippingOptionRelLocalServiceImpl
 
 	@Override
 	public AccountEntryShippingOptionRel addAccountEntryShippingOptionRel(
-			 long accountEntryId, long channelId, String shippingMethodKey,
-			 String shippingOptionKey, long userId)
+			long accountEntryId, long channelId, String shippingMethodKey,
+			String shippingOptionKey, long userId)
 		throws PortalException {
 
 		User user = userLocalService.getUser(userId);
@@ -107,8 +107,9 @@ public class AccountEntryShippingOptionRelLocalServiceImpl
 
 	@Override
 	public AccountEntryShippingOptionRel updateAccountEntryShippingOptionRel(
-			long accountEntryShippingOptionRelId, long accountEntryId, long channelId, long companyId,
-			String shippingMethodKey, String shippingOptionKey)
+			long accountEntryShippingOptionRelId, long accountEntryId,
+			long channelId, long companyId, String shippingMethodKey,
+			String shippingOptionKey)
 		throws PortalException {
 
 		AccountEntryShippingOptionRel accountEntryShippingOptionRel =
