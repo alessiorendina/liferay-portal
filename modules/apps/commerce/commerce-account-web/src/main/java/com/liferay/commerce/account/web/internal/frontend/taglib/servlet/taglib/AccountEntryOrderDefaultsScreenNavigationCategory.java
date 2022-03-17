@@ -14,12 +14,20 @@
 
 package com.liferay.commerce.account.web.internal.frontend.taglib.servlet.taglib;
 
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryService;
+import com.liferay.commerce.account.constants.CommerceAccountWebKeys;
 import com.liferay.commerce.account.web.internal.constants.AccountEntryScreenNavigationEntryConstants;
-import com.liferay.commerce.account.web.internal.display.AccountEntryDisplay;
+import com.liferay.commerce.account.web.internal.display.context.CommerceAccountDisplayContext;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.io.IOException;
@@ -47,7 +55,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class AccountEntryOrderDefaultsScreenNavigationCategory
 	implements ScreenNavigationCategory,
-			   ScreenNavigationEntry<AccountEntryDisplay> {
+			   ScreenNavigationEntry<CommerceAccountDisplayContext> {
 
 	@Override
 	public String getCategoryKey() {
@@ -84,13 +92,42 @@ public class AccountEntryOrderDefaultsScreenNavigationCategory
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
+		try {
+			CommerceAccountDisplayContext commerceAccountDisplayContext =
+				new CommerceAccountDisplayContext(
+					_accountEntryModelResourcePermission, _accountEntryService,
+					httpServletRequest, _portal);
+
+			httpServletRequest.setAttribute(
+				CommerceAccountWebKeys.COMMERCE_ACCOUNT_DISPLAY_CONTEXT,
+				commerceAccountDisplayContext);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+
 		_jspRenderer.renderJSP(
 			_servletContext, httpServletRequest, httpServletResponse,
 			"/account_entry/order_defaults.jsp");
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		AccountEntryOrderDefaultsScreenNavigationCategory.class);
+
+	@Reference(
+		target = "(model.class.name=com.liferay.account.model.AccountEntry)"
+	)
+	private ModelResourcePermission<AccountEntry>
+		_accountEntryModelResourcePermission;
+
+	@Reference
+	private AccountEntryService _accountEntryService;
+
 	@Reference
 	private JSPRenderer _jspRenderer;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.commerce.account.web)"
