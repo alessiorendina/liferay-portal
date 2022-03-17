@@ -14,8 +14,6 @@
  */
 --%>
 
-<%@ include file="/init.jsp" %>
-
 <clay:sheet-section
 	id='<%= liferayPortletResponse.getNamespace() + "defaultCommerceShippingOption" %>'
 >
@@ -36,8 +34,17 @@
 			<div class="sheet-text">
 				<liferay-ui:message key="shipping-options" />
 
-				<clay:icon
-					symbol="truck"
+				<clay:data-set-display
+					contextParams="<%= new HashMap<>() %>"
+					creationMenu="<%= commerceAccountDisplayContext.getCreationMenu() %>"
+					dataProviderKey="<%= AccountEntryDefaultShippingOptionClayTableDataSetDisplayView.NAME %>"
+					id="<%= AccountEntryDefaultShippingOptionClayTableDataSetDisplayView.NAME %>"
+					itemsPerPage="<%= 10 %>"
+					namespace="<%= liferayPortletResponse.getNamespace() %>"
+					pageNumber="<%= 1 %>"
+					portletURL="<%= currentURLObj %>"
+					selectedItemsKey="key"
+					showManagementBar="<%= true %>"
 				/>
 			</div>
 		</div>
