@@ -32,11 +32,11 @@ public class AccountEntryShippingOptionRelServiceImpl
 
 	@Override
 	public AccountEntryShippingOptionRel addAccountEntryShippingOptionRel(
-		long accountEntryId, long channelId, String shippingMethodKey,
-		String shippingOptionKey)
+			long accountEntryId, long channelId, String shippingMethodKey,
+			String shippingOptionKey)
 		throws PortalException {
 
-		_checkAccountEntry(accountEntryId);
+		_checkAccountEntry(accountEntryId, ActionKeys.UPDATE);
 
 		return accountEntryShippingOptionRelLocalService.
 			addAccountEntryShippingOptionRel(
@@ -49,7 +49,7 @@ public class AccountEntryShippingOptionRelServiceImpl
 			long accountEntryId, String shippingOptionKey)
 		throws PortalException {
 
-		_checkAccountEntry(accountEntryId);
+		_checkAccountEntry(accountEntryId, ActionKeys.UPDATE);
 
 		accountEntryShippingOptionRelLocalService.
 			deleteAccountEntryShippingOptionRelsByShippingOptionKey(
@@ -61,7 +61,7 @@ public class AccountEntryShippingOptionRelServiceImpl
 			long accountEntryId, long channelId, long companyId)
 		throws PortalException {
 
-		_checkAccountEntry(accountEntryId);
+		_checkAccountEntry(accountEntryId, ActionKeys.VIEW);
 
 		return accountEntryShippingOptionRelLocalService.
 			fetchAccountEntryShippingOptionRel(
@@ -74,10 +74,11 @@ public class AccountEntryShippingOptionRelServiceImpl
 			String shippingOptionKey)
 		throws PortalException {
 
-		_checkAccountEntry(accountEntryId);
+		_checkAccountEntry(accountEntryId, ActionKeys.VIEW);
 
-		return accountEntryShippingOptionRelLocalService.fetchAccountEntryShippingOptionRel(
-			companyId, accountEntryId, channelId, shippingOptionKey);
+		return accountEntryShippingOptionRelLocalService.
+			fetchAccountEntryShippingOptionRel(
+				companyId, accountEntryId, channelId, shippingOptionKey);
 	}
 
 	@Override
@@ -86,7 +87,7 @@ public class AccountEntryShippingOptionRelServiceImpl
 				long accountEntryId, String shippingOptionKey)
 		throws PortalException {
 
-		_checkAccountEntry(accountEntryId);
+		_checkAccountEntry(accountEntryId, ActionKeys.VIEW);
 
 		return accountEntryShippingOptionRelLocalService.
 			getAccountEntryShippingOptionRelsByShippingOptionKey(
@@ -100,7 +101,7 @@ public class AccountEntryShippingOptionRelServiceImpl
 				int end)
 		throws PortalException {
 
-		_checkAccountEntry(accountEntryId);
+		_checkAccountEntry(accountEntryId, ActionKeys.VIEW);
 
 		return accountEntryShippingOptionRelLocalService.
 			getAccountEntryShippingOptionRelsByShippingOptionKey(
@@ -112,7 +113,7 @@ public class AccountEntryShippingOptionRelServiceImpl
 			long accountEntryId, String shippingOptionKey)
 		throws PortalException {
 
-		_checkAccountEntry(accountEntryId);
+		_checkAccountEntry(accountEntryId, ActionKeys.VIEW);
 
 		return accountEntryShippingOptionRelLocalService.
 			getAccountEntryShippingOptionRelsByShippingOptionKeyCount(
@@ -121,23 +122,24 @@ public class AccountEntryShippingOptionRelServiceImpl
 
 	@Override
 	public AccountEntryShippingOptionRel updateAccountEntryShippingOptionRel(
-		long accountEntryShippingOptionRelId, long accountEntryId, long channelId, long companyId,
-		String shippingMethodKey, String shippingOptionKey)
+			long accountEntryShippingOptionRelId, long accountEntryId,
+			long channelId, long companyId, String shippingMethodKey,
+			String shippingOptionKey)
 		throws PortalException {
 
-		_checkAccountEntry(accountEntryId);
+		_checkAccountEntry(accountEntryId, ActionKeys.UPDATE);
 
 		return accountEntryShippingOptionRelLocalService.
 			updateAccountEntryShippingOptionRel(
-		accountEntryShippingOptionRelId,  accountEntryId,  channelId,  companyId,
-		 shippingMethodKey,  shippingOptionKey);
+				accountEntryShippingOptionRelId, accountEntryId, channelId,
+				companyId, shippingMethodKey, shippingOptionKey);
 	}
 
-	private void _checkAccountEntry(long accountEntryId)
+	private void _checkAccountEntry(long accountEntryId, String actionId)
 		throws PortalException {
 
 		_accountEntryModelResourcePermission.check(
-			getPermissionChecker(), accountEntryId, ActionKeys.UPDATE);
+			getPermissionChecker(), accountEntryId, actionId);
 	}
 
 	private static volatile ModelResourcePermission<AccountEntry>
