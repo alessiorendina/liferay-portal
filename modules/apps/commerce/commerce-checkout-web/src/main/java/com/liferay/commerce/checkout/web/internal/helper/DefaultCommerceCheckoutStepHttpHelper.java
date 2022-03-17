@@ -159,12 +159,12 @@ public class DefaultCommerceCheckoutStepHttpHelper
 		for (CommerceShippingOption commerceShippingOption :
 				commerceShippingOptions) {
 
-			if (shippingOptionName.equals(commerceShippingOption.getName())) {
+			if (shippingOptionName.equals(commerceShippingOption.getKey())) {
 				CommerceShippingFixedOption commerceShippingFixedOption =
 					_commerceShippingFixedOptionLocalService.
 						fetchCommerceShippingFixedOption(
 							commerceOrder.getCompanyId(),
-							commerceShippingOption.getName());
+							commerceShippingOption.getKey());
 
 				if (commerceShippingFixedOption != null) {
 					deliveryCommerceTermEntries =
@@ -264,6 +264,9 @@ public class DefaultCommerceCheckoutStepHttpHelper
 				commerceOrder.getGroupId(), commerceOrder.getCommerceOrderId());
 
 		if (commercePaymentMethods.isEmpty()) {
+			_updateCommerceOrder(
+				commerceOrder, StringPool.BLANK, httpServletRequest);
+
 			return false;
 		}
 
@@ -272,8 +275,8 @@ public class DefaultCommerceCheckoutStepHttpHelper
 				commercePaymentMethods.get(0);
 
 			_updateCommerceOrder(
-				httpServletRequest, commerceOrder,
-				commercePaymentMethod.getKey());
+				commerceOrder, commercePaymentMethod.getKey(),
+				httpServletRequest);
 
 			return false;
 		}
@@ -308,8 +311,8 @@ public class DefaultCommerceCheckoutStepHttpHelper
 						);
 
 					_updateCommerceOrder(
-						httpServletRequest, commerceOrder,
-						commercePaymentMethod.getKey());
+						commerceOrder, commercePaymentMethod.getKey(),
+						httpServletRequest);
 				}
 
 				if (!_hasCommerceOrderPermission(
@@ -328,8 +331,8 @@ public class DefaultCommerceCheckoutStepHttpHelper
 						commercePaymentMethods.get(0);
 
 					_updateCommerceOrder(
-						httpServletRequest, commerceOrder,
-						commercePaymentMethod.getKey());
+						commerceOrder, commercePaymentMethod.getKey(),
+						httpServletRequest);
 				}
 
 				if (!_hasCommerceOrderPermission(
@@ -428,11 +431,29 @@ public class DefaultCommerceCheckoutStepHttpHelper
 			(CommerceOrder)httpServletRequest.getAttribute(
 				CommerceCheckoutWebKeys.COMMERCE_ORDER);
 
-		if (!_commerceShippingHelper.isShippable(commerceOrder) ||
+		if (!commerceOrder.isOpen() ||
+			!_commerceShippingHelper.isShippable(commerceOrder) ||
 			_commerceShippingHelper.isFreeShipping(commerceOrder)) {
 
 			return false;
 		}
+
+		if (commerceOrder.getCommerceShippingMethodId() > 0) {
+			CommerceShippingMethod commerceShippingMethod =
+				_commerceShippingMethodLocalService.getCommerceShippingMethod(
+					commerceOrder.getCommerceShippingMethodId());
+
+			if (commerceShippingMethod.isActive()) {
+				return _hasCommerceOrderPermission(
+					CommerceOrderActionKeys.
+						MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS,
+					commerceOrder, httpServletRequest);
+			}
+		}
+
+		CommerceContext commerceContext =
+			(CommerceContext)httpServletRequest.getAttribute(
+				CommerceWebKeys.COMMERCE_CONTEXT);
 
 		List<CommerceShippingMethod> commerceShippingMethods =
 			_commerceShippingMethodLocalService.getCommerceShippingMethods(
@@ -440,24 +461,53 @@ public class DefaultCommerceCheckoutStepHttpHelper
 				new CommerceShippingMethodPriorityComparator());
 
 		if (commerceShippingMethods.isEmpty()) {
+			_updateCommerceOrder(
+				commerceContext, commerceOrder, StringPool.BLANK,
+				StringPool.BLANK, httpServletRequest);
+
 			return false;
 		}
 
-		CommerceContext commerceContext =
-			(CommerceContext)httpServletRequest.getAttribute(
-				CommerceWebKeys.COMMERCE_CONTEXT);
+		CommerceShippingOption singleCommerceShippingOption =
+			_getSingleCommerceShippingOption(
+				commerceContext, commerceOrder, commerceShippingMethods,
+				httpServletRequest);
 
-		CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
+		if (singleCommerceShippingOption != null) {
+			_updateCommerceOrder(
+				commerceContext, commerceOrder,
+				singleCommerceShippingOption.getCommerceShippingMethodKey(),
+				singleCommerceShippingOption.getKey(), httpServletRequest);
 
-		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
-			commerceAccount.getCommerceAccountId());
+			return false;
+		}
 
-		AccountEntryShippingOptionRel accountEntryShippingOptionRel =
-			_accountEntryShippingOptionRelService.
-				fetchAccountEntryShippingOptionRel(
-					accountEntry.getAccountEntryId(),
-					commerceContext.getCommerceChannelId(),
-					accountEntry.getCompanyId());
+		commerceOrder = _updateCommerceOrderCommerceShippingMethod(
+			commerceContext, commerceOrder, commerceShippingMethods,
+			httpServletRequest);
+
+		return _hasCommerceOrderPermission(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS,
+			commerceOrder, httpServletRequest);
+	}
+
+	@Override
+	public boolean isCommercePaymentComplete(
+			HttpServletRequest httpServletRequest, CommerceOrder commerceOrder)
+		throws PortalException {
+
+		if (CommerceBigDecimalUtil.isZero(commerceOrder.getTotal())) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private CommerceShippingOption _getSingleCommerceShippingOption(
+			CommerceContext commerceContext, CommerceOrder commerceOrder,
+			List<CommerceShippingMethod> commerceShippingMethods,
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
 
 		if (commerceShippingMethods.size() == 1) {
 			CommerceShippingMethod commerceShippingMethod =
@@ -473,75 +523,11 @@ public class DefaultCommerceCheckoutStepHttpHelper
 					_portal.getLocale(httpServletRequest));
 
 			if (commerceShippingOptions.size() == 1) {
-				if (commerceOrder.isOpen() &&
-					commerceOrder.getCommerceShippingMethodId() == 0) {
-
-					_updateCommerceOrder(
-						commerceContext, commerceOrder,
-						commerceShippingMethod.getCommerceShippingMethodId(),
-						commerceShippingOptions.get(0), httpServletRequest);
-				}
-
-				return false;
+				return commerceShippingOptions.get(0);
 			}
 		}
 
-		CommerceShippingOption shippingOption = null;
-
-		for (CommerceShippingMethod commerceShippingMethod :
-				commerceShippingMethods) {
-
-			CommerceShippingEngine commerceShippingEngine =
-				_commerceShippingEngineRegistry.getCommerceShippingEngine(
-					commerceShippingMethod.getEngineKey());
-
-			List<CommerceShippingOption> commerceShippingOptions =
-				commerceShippingEngine.getCommerceShippingOptions(
-					commerceContext, commerceOrder,
-					_portal.getLocale(httpServletRequest));
-			if (commerceShippingOptions.size() == 0) {
-				continue;
-			}
-			Stream<CommerceShippingOption> commerceShippingOptionsStream =
-				commerceShippingOptions.stream();
-
-			CommerceShippingOption defaultShippingOption =
-				commerceShippingOptionsStream.filter(
-					commerceShippingOption -> commerceShippingOption.getName(
-					).equals(
-						accountEntryShippingOptionRel.getShippingOptionKey()
-					)
-				).findFirst(
-				).orElse(
-					null
-				);
-
-			if (defaultShippingOption != null) {
-				return _hasCommerceShippingOptionPermission(
-					httpServletRequest, commerceOrder, commerceContext,
-					commerceShippingMethod, defaultShippingOption);
-			}
-
-			if (shippingOption == null) {
-				shippingOption = commerceShippingOptions.get(0);
-			}
-		}
-
-		return _hasCommerceShippingOptionPermission(
-			httpServletRequest, commerceOrder, commerceContext,
-			commerceShippingMethods.get(0), shippingOption);
-	}
-
-	@Override
-	public boolean isCommercePaymentComplete(
-			HttpServletRequest httpServletRequest, CommerceOrder commerceOrder)
-		throws PortalException {
-
-		if (CommerceBigDecimalUtil.isZero(commerceOrder.getTotal())) {
-			return true;
-		}
-
-		return false;
+		return null;
 	}
 
 	private boolean _hasCommerceOrderPermission(
@@ -550,6 +536,7 @@ public class DefaultCommerceCheckoutStepHttpHelper
 		throws PortalException {
 
 		CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -566,35 +553,9 @@ public class DefaultCommerceCheckoutStepHttpHelper
 		return true;
 	}
 
-	private boolean _hasCommerceShippingOptionPermission(
-			HttpServletRequest httpServletRequest, CommerceOrder commerceOrder,
-			CommerceContext commerceContext,
-			CommerceShippingMethod commerceShippingMethod,
-			CommerceShippingOption defaultShippingOption)
-		throws PortalException {
-
-		if (commerceOrder.isOpen()&&
-			commerceOrder.getCommerceShippingMethodId() == 0) {
-			_updateCommerceOrder(
-				commerceContext, commerceOrder,
-				commerceShippingMethod.getCommerceShippingMethodId(),
-				defaultShippingOption, httpServletRequest);
-		}
-
-		if (!_hasCommerceOrderPermission(
-				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS,
-				commerceOrder, httpServletRequest)) {
-
-			return false;
-		}
-
-		return true;
-	}
-
-	private void _updateCommerceOrder(
+	private CommerceOrder _updateCommerceOrder(
 			CommerceContext commerceContext, CommerceOrder commerceOrder,
-			long commerceShippingMethodId,
-			CommerceShippingOption commerceShippingOption,
+			String commerceShippingMethodKey, String commerceShippingOptionKey,
 			HttpServletRequest httpServletRequest)
 		throws PortalException {
 
@@ -605,21 +566,35 @@ public class DefaultCommerceCheckoutStepHttpHelper
 		}
 
 		if (commerceAddress == null) {
-			return;
+			return commerceOrder;
+		}
+
+		long commerceShippingMethodId = 0;
+
+		CommerceShippingMethod commerceShippingMethod =
+			_commerceShippingMethodLocalService.fetchCommerceShippingMethod(
+				commerceContext.getCommerceChannelGroupId(),
+				commerceShippingMethodKey);
+
+		if (commerceShippingMethod != null) {
+			commerceShippingMethodId =
+				commerceShippingMethod.getCommerceShippingMethodId();
 		}
 
 		commerceOrder = _commerceOrderService.updateCommerceShippingMethod(
 			commerceOrder.getCommerceOrderId(), commerceShippingMethodId,
-			commerceShippingOption.getName(), commerceContext,
+			commerceShippingOptionKey, commerceContext,
 			_portal.getLocale(httpServletRequest));
 
 		httpServletRequest.setAttribute(
 			CommerceCheckoutWebKeys.COMMERCE_ORDER, commerceOrder);
+
+		return commerceOrder;
 	}
 
 	private void _updateCommerceOrder(
-			HttpServletRequest httpServletRequest, CommerceOrder commerceOrder,
-			String commercePaymentMethodKey)
+			CommerceOrder commerceOrder, String commercePaymentMethodKey,
+			HttpServletRequest httpServletRequest)
 		throws PortalException {
 
 		if (!commerceOrder.isOpen()) {
@@ -644,6 +619,88 @@ public class DefaultCommerceCheckoutStepHttpHelper
 
 		httpServletRequest.setAttribute(
 			CommerceCheckoutWebKeys.COMMERCE_ORDER, commerceOrder);
+	}
+
+	private CommerceOrder _updateCommerceOrderCommerceShippingMethod(
+			CommerceContext commerceContext, CommerceOrder commerceOrder,
+			List<CommerceShippingMethod> commerceShippingMethods,
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		CommerceShippingOption highestPriorityCommerceShippingOption = null;
+
+		CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
+
+		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
+			commerceAccount.getCommerceAccountId());
+
+		AccountEntryShippingOptionRel accountEntryShippingOptionRel =
+			_accountEntryShippingOptionRelService.
+				fetchAccountEntryShippingOptionRel(
+					accountEntry.getAccountEntryId(),
+					commerceContext.getCommerceChannelId(),
+					accountEntry.getCompanyId());
+
+		for (CommerceShippingMethod commerceShippingMethod :
+				commerceShippingMethods) {
+
+			CommerceShippingEngine commerceShippingEngine =
+				_commerceShippingEngineRegistry.getCommerceShippingEngine(
+					commerceShippingMethod.getEngineKey());
+
+			List<CommerceShippingOption> commerceShippingOptions =
+				commerceShippingEngine.getCommerceShippingOptions(
+					commerceContext, commerceOrder,
+					_portal.getLocale(httpServletRequest));
+
+			if (commerceShippingOptions.isEmpty()) {
+				continue;
+			}
+
+			if (accountEntryShippingOptionRel != null) {
+				Stream<CommerceShippingOption> commerceShippingOptionsStream =
+					commerceShippingOptions.stream();
+
+				CommerceShippingOption defaultCommerceShippingOption =
+					commerceShippingOptionsStream.filter(
+						commerceShippingOption -> commerceShippingOption.getKey(
+						).equals(
+							accountEntryShippingOptionRel.getShippingOptionKey()
+						)
+					).findFirst(
+					).orElse(
+						null
+					);
+
+				if (defaultCommerceShippingOption != null) {
+					return _updateCommerceOrder(
+						commerceContext, commerceOrder,
+						commerceShippingMethod.getEngineKey(),
+						defaultCommerceShippingOption.getKey(),
+						httpServletRequest);
+				}
+			}
+
+			if (highestPriorityCommerceShippingOption == null) {
+				highestPriorityCommerceShippingOption =
+					commerceShippingOptions.get(0);
+
+				if (accountEntryShippingOptionRel == null) {
+					break;
+				}
+			}
+		}
+
+		if (highestPriorityCommerceShippingOption != null) {
+			return _updateCommerceOrder(
+				commerceContext, commerceOrder,
+				highestPriorityCommerceShippingOption.
+					getCommerceShippingMethodKey(),
+				highestPriorityCommerceShippingOption.getKey(),
+				httpServletRequest);
+		}
+
+		return commerceOrder;
 	}
 
 	@Reference
