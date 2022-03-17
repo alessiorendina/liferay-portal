@@ -193,7 +193,7 @@ public class CommerceOrderGenerator {
 
 		// Commerce shipping options
 
-		String commerceShippingOptionName =
+		String commerceShippingOptionKey =
 			commerceOrder.getShippingOptionName();
 
 		List<CommerceShippingOption> commerceShippingOptions =
@@ -204,7 +204,7 @@ public class CommerceOrderGenerator {
 			CommerceShippingOption commerceShippingOption =
 				commerceShippingOptions.get(0);
 
-			commerceShippingOptionName = commerceShippingOption.getName();
+			commerceShippingOptionKey = commerceShippingOption.getKey();
 		}
 
 		// Update commerce order
@@ -214,7 +214,7 @@ public class CommerceOrderGenerator {
 			commerceAddress.getCommerceAddressId(),
 			commerceAddress.getCommerceAddressId(),
 			commerceOrder.getCommercePaymentMethodKey(),
-			commerceShippingMethodId, commerceShippingOptionName,
+			commerceShippingMethodId, commerceShippingOptionKey,
 			commerceOrder.getPurchaseOrderNumber(), commerceOrder.getSubtotal(),
 			commerceOrder.getShippingAmount(), commerceOrder.getTotal(),
 			commerceOrder.getAdvanceStatus(), commerceContext);
