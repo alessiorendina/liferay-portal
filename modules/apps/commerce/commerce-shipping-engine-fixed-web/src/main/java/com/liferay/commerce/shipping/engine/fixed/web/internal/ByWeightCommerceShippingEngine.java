@@ -17,7 +17,7 @@ package com.liferay.commerce.shipping.engine.fixed.web.internal;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceMoney;
-import com.liferay.commerce.currency.service.CommerceCurrencyService;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.exception.CommerceShippingEngineException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
@@ -25,7 +25,7 @@ import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
 import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceAddressRestrictionLocalService;
 import com.liferay.commerce.service.CommerceShippingMethodLocalService;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
@@ -34,12 +34,14 @@ import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedO
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionRelLocalService;
 import com.liferay.commerce.shipping.engine.fixed.util.comparator.CommerceShippingFixedOptionPriorityComparator;
 import com.liferay.commerce.util.CommerceShippingHelper;
+import com.liferay.commerce.util.comparator.CommerceShippingOptionPriorityComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.math.BigDecimal;
@@ -158,7 +160,7 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 
 		if (_commerceShippingHelper.isFreeShipping(commerceOrder)) {
 			return new CommerceShippingOption(
-				key, name, BigDecimal.ZERO, priority);
+				KEY, key, name, BigDecimal.ZERO, priority);
 		}
 
 		BigDecimal amount = commerceShippingFixedOptionRel.getFixedPrice();
@@ -182,7 +184,7 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 			ratePercentage.multiply(orderPrice.divide(new BigDecimal(100))));
 
 		CommerceChannel commerceChannel =
-			_commerceChannelService.getCommerceChannelByOrderGroupId(
+			_commerceChannelLocalService.getCommerceChannelByOrderGroupId(
 				commerceOrder.getGroupId());
 
 		CommerceCurrency commerceCurrency = commerceOrder.getCommerceCurrency();
@@ -193,7 +195,7 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 				commerceChannel.getCommerceCurrencyCode())) {
 
 			CommerceCurrency commerceChannelCommerceCurrency =
-				_commerceCurrencyService.getCommerceCurrency(
+				_commerceCurrencyLocalService.getCommerceCurrency(
 					commerceOrder.getCompanyId(),
 					commerceChannel.getCommerceCurrencyCode());
 
@@ -205,7 +207,7 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 			amount = amount.multiply(commerceCurrency.getRate());
 		}
 
-		return new CommerceShippingOption(key, name, amount, priority);
+		return new CommerceShippingOption(KEY, key, name, amount, priority);
 	}
 
 	private List<CommerceShippingOption> _getCommerceShippingOptions(
@@ -250,7 +252,9 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 			}
 		}
 
-		return commerceShippingOptions;
+		return ListUtil.sort(
+			commerceShippingOptions,
+			new CommerceShippingOptionPriorityComparator());
 	}
 
 	private ResourceBundle _getResourceBundle(Locale locale) {
@@ -266,10 +270,10 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 		_commerceAddressRestrictionLocalService;
 
 	@Reference
-	private CommerceChannelService _commerceChannelService;
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
-	private CommerceCurrencyService _commerceCurrencyService;
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private CommerceShippingFixedOptionLocalService

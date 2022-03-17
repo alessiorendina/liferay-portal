@@ -58,11 +58,12 @@ import com.liferay.commerce.product.model.CPMeasurementUnit;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPMeasurementUnitLocalService;
 import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.shipping.engine.fedex.internal.FedExCommerceShippingEngine;
 import com.liferay.commerce.shipping.engine.fedex.internal.configuration.FedExCommerceShippingEngineGroupServiceConfiguration;
 import com.liferay.commerce.shipping.engine.fedex.internal.constants.FedExCommerceShippingEngineConstants;
-import com.liferay.commerce.shipping.engine.fedex.internal.util.comparator.FedExCommerceShippingOptionPriorityComparator;
 import com.liferay.commerce.shipping.origin.locator.CommerceShippingOriginLocator;
 import com.liferay.commerce.util.CommerceShippingHelper;
+import com.liferay.commerce.util.comparator.CommerceShippingOptionPriorityComparator;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
@@ -237,12 +238,14 @@ public class FedExCommerceShippingOptionHelper {
 			}
 
 			commerceShippingOptions.add(
-				new CommerceShippingOption(name, label, amount, priority++));
+				new CommerceShippingOption(
+					FedExCommerceShippingEngine.KEY, name, label, amount,
+					priority++));
 		}
 
 		return ListUtil.sort(
 			commerceShippingOptions,
-			new FedExCommerceShippingOptionPriorityComparator());
+			new CommerceShippingOptionPriorityComparator());
 	}
 
 	private void _executeRateRequest(
