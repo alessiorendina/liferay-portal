@@ -1,0 +1,12 @@
+{
+	"dependencies": {
+	},
+	"name": "commerce-account-web",
+	"scripts": {
+		"build": "liferay-npm-scripts build",
+		"checkFormat": "liferay-npm-scripts check",
+		"format": "liferay-npm-scripts format fix",
+		"test": "liferay-npm-scripts test"
+	},
+	"version": "4.0.17"
+}
