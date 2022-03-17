@@ -560,7 +560,10 @@ public class CommerceShippingMethodServiceHttp {
 	public static java.util.List
 		<com.liferay.commerce.model.CommerceShippingMethod>
 				getCommerceShippingMethods(
-					HttpPrincipal httpPrincipal, long groupId, boolean active)
+					HttpPrincipal httpPrincipal, long groupId, boolean active,
+					com.liferay.portal.kernel.util.OrderByComparator
+						<com.liferay.commerce.model.CommerceShippingMethod>
+							orderByComparator)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -570,7 +573,7 @@ public class CommerceShippingMethodServiceHttp {
 				_getCommerceShippingMethodsParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, groupId, active);
+				methodKey, groupId, active, orderByComparator);
 
 			Object returnObj = null;
 
@@ -822,7 +825,8 @@ public class CommerceShippingMethodServiceHttp {
 		_getCommerceShippingMethodsParameterTypes11 = new Class[] {long.class};
 	private static final Class<?>[]
 		_getCommerceShippingMethodsParameterTypes12 = new Class[] {
-			long.class, boolean.class
+			long.class, boolean.class,
+			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
 		_getCommerceShippingMethodsParameterTypes13 = new Class[] {
