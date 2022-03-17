@@ -1,6 +1,19 @@
 <?xml version="1.0"?>
 
 <model-hints>
+	<model name="com.liferay.commerce.shipping.engine.fixed.model.AccountEntryShippingOptionRel">
+		<field name="mvccVersion" type="long" />
+		<field name="accountEntryShippingOptionRelId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="accountEntryId" type="long" />
+		<field name="channelId" type="long" />
+		<field name="shippingMethodKey" type="String" />
+		<field name="shippingOptionKey" type="String" />
+	</model>
 	<model name="com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption">
 		<field name="mvccVersion" type="long" />
 		<field name="commerceShippingFixedOptionId" type="long" />
