@@ -16,6 +16,8 @@ package com.liferay.commerce.shipping.engine.fixed.service.impl;
 
 import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.model.CommerceShippingMethodTable;
+import com.liferay.commerce.service.CommerceShippingMethodService;
+import com.liferay.commerce.service.CommerceShippingOptionAccountEntryRelLocalService;
 import com.liferay.commerce.shipping.engine.fixed.exception.CommerceShippingFixedOptionKeyException;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOptionQualifierTable;
@@ -50,6 +52,7 @@ import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.math.BigDecimal;
 
@@ -125,6 +128,12 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 			deleteCommerceShippingFixedOptionRels(
 				commerceShippingFixedOption.getCommerceShippingFixedOptionId());
 
+		// Commerce shipping option account entry rels
+
+		_commerceShippingOptionAccountEntryRelLocalService.
+			deleteCommerceShippingOptionAccountEntryRelsByCSFixedOptionKey(
+				commerceShippingFixedOption.getKey());
+
 		return commerceShippingFixedOption;
 	}
 
@@ -132,8 +141,16 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 	public void deleteCommerceShippingFixedOptions(
 		long commerceShippingMethodId) {
 
-		commerceShippingFixedOptionPersistence.removeByCommerceShippingMethodId(
-			commerceShippingMethodId);
+		List<CommerceShippingFixedOption> commerceShippingFixedOptions =
+			commerceShippingFixedOptionPersistence.
+				findByCommerceShippingMethodId(commerceShippingMethodId);
+
+		for (CommerceShippingFixedOption commerceShippingFixedOption :
+				commerceShippingFixedOptions) {
+
+			commerceShippingFixedOptionLocalService.
+				deleteCommerceShippingFixedOption(commerceShippingFixedOption);
+		}
 	}
 
 	@Override
@@ -438,5 +455,9 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 			throw new CommerceShippingFixedOptionKeyException();
 		}
 	}
+
+	@ServiceReference(type = CommerceShippingMethodService.class)
+	private CommerceShippingOptionAccountEntryRelLocalService
+		_commerceShippingOptionAccountEntryRelLocalService;
 
 }
