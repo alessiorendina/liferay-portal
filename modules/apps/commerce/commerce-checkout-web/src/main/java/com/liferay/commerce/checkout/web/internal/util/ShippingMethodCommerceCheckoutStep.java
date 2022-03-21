@@ -213,7 +213,7 @@ public class ShippingMethodCommerceCheckoutStep
 		for (CommerceShippingOption commerceShippingOption :
 				commerceShippingOptions) {
 
-			if (shippingOptionName.equals(commerceShippingOption.getName())) {
+			if (shippingOptionName.equals(commerceShippingOption.getKey())) {
 				return commerceShippingOption.getAmount();
 			}
 		}

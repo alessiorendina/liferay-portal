@@ -142,8 +142,8 @@ public class ShippingMethodResourceImpl extends BaseShippingMethodResourceImpl {
 					commerceContext.getCommerceCurrency(),
 					commerceShippingOption.getAmount(),
 					contextAcceptLanguage.getPreferredLocale());
-				label = commerceShippingOption.getLabel();
-				name = commerceShippingOption.getName();
+				label = commerceShippingOption.getName();
+				name = commerceShippingOption.getKey();
 			}
 		};
 	}

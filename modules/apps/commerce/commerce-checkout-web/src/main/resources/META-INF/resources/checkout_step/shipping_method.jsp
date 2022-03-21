@@ -70,7 +70,7 @@ if (Validator.isNull(commerceShippingOptionKey)) {
 
 					<%
 					for (CommerceShippingOption commerceShippingOption : commerceShippingOptions) {
-						String curCommerceShippingOptionKey = shippingMethodCheckoutStepDisplayContext.getCommerceShippingOptionKey(commerceShippingMethod.getCommerceShippingMethodId(), commerceShippingOption.getName());
+						String curCommerceShippingOptionKey = shippingMethodCheckoutStepDisplayContext.getCommerceShippingOptionKey(commerceShippingMethod.getCommerceShippingMethodId(), commerceShippingOption.getKey());
 						String label = shippingMethodCheckoutStepDisplayContext.getCommerceShippingOptionLabel(commerceShippingOption);
 					%>
 
