@@ -4,15 +4,30 @@ on:
     - cron: '*/60 * * * *' # every 60 minutes
   workflow_dispatch: # on button click
 jobs:
-  sync:
+  fetch-upstream:
     runs-on: ubuntu-latest
+    name: Alessio
     steps:
-      - name: GitHub Forks Sync Action
-        uses: TobKed/github-forks-sync-action@v0.2.0
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
-          # Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Repository name to clone.
-          upstream_repository: liferay/liferay-portal
-          # Determines if force push is used
-          force: true
+          repository: alessiorendina/liferay-portal
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Configure git
+        run: |
+          git config --global user.name "alessiorendina"
+          git config --global user.email "asilcomando@gmail.com"
+          git remote add upstream https://github.com/liferay-commerce/liferay-portal.git
+        shell: bash
+      - name: Sync Fork
+        id: sync-fork
+        run: |
+          git fetch upstream
+          git checkout master
+          lines=$( git diff main..upstream/master -- . ':(exclude).github/**' | wc -l )
+          echo "Number of detected line changes: $lines"
+          if [ $lines -gt 0 ]; then
+            git pull --rebase upstream master
+            git push --force origin master
+          fi
+        shell: bash
