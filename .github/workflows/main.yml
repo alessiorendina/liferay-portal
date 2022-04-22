@@ -11,8 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository: alessiorendina/liferay-portal
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
       - name: Configure git
         run: |
           git config --global user.name "alessiorendina"
