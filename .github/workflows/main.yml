@@ -1,0 +1,30 @@
+name: Sync Fork
+on:
+  schedule:
+    - cron: '*/60 * * * *' # every 60 minutes
+  workflow_dispatch: # on button click
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync-Fork-action
+        uses: XueMoMo/Sync-Fork-action@v1.0.6
+        with:
+          # Token for accessing the remote repo with authentication
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Upstream repository, e.g. => aormsby/Fork-Sync-With-Upstream-action
+          upstream_repository: liferay/liferay-portal
+          # Branch to sync from, e.g. => main, master, dev
+          upstream_branch: master
+          # Branch to push to, e.g. => main, master, prod
+          target_branch: master
+          # Any extra args to pass to `git push` like --ff-only or --tags, default = ""
+          git_pull_args: --rebase
+          # Any extra args to pass to `git push` like --force, default = ""
+          git_push_args: --force 
+          # Git user credentials for sigining commit (set to "null" for no credential changes)
+          git_user: alessiorendina
+          # Git email credentials for sigining commit (set to "null" for no credential changes)
+          git_email: asilcomando@gmail.com
+          # Git config for "pull.rebase" (standard default to false, set to "null" for no config)
+          git_pull_rebase_config: "null"
