@@ -6,12 +6,8 @@ on:
 jobs:
   fetch-upstream:
     runs-on: ubuntu-latest
-    name: Alessio
+    name: sync
     steps:
-      - name: Preparing environment
-        run: |
-          echo "Cloning repository..."
-        shell: bash
       - name: Checkout
         uses: actions/checkout@v2
         with:
