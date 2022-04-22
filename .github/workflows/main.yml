@@ -29,7 +29,7 @@ jobs:
           echo "Syncing fork..."
           git fetch upstream
           git checkout master
-          lines=$( git diff main..upstream/master -- . ':(exclude).github/**' | wc -l )
+          lines=$( git diff master..upstream/master -- . ':(exclude).github/**' | wc -l )
           echo "Number of detected line changes: $lines"
           if [ $lines -gt 0 ]; then
             git pull --rebase upstream master
