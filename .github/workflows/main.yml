@@ -8,12 +8,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Alessio
     steps:
+      - name: Preparing environment
+        run: |
+          echo "Cloning repository..."
+        shell: bash
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
       - name: Configure git
         run: |
+          echo "Configuring git..."
           git config --global user.name "alessiorendina"
           git config --global user.email "asilcomando@gmail.com"
           git remote add upstream https://github.com/liferay-commerce/liferay-portal.git
@@ -21,6 +26,7 @@ jobs:
       - name: Sync Fork
         id: sync-fork
         run: |
+          echo "Syncing fork..."
           git fetch upstream
           git checkout master
           lines=$( git diff main..upstream/master -- . ':(exclude).github/**' | wc -l )
@@ -28,5 +34,7 @@ jobs:
           if [ $lines -gt 0 ]; then
             git pull --rebase upstream master
             git push --force origin master
+            echo "Successfully synced!"
           fi
+          echo "Fork is updated."
         shell: bash
