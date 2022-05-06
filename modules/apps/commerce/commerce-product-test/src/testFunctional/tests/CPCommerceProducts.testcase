@@ -1533,9 +1533,9 @@ definition {
 			locator1 = "Button#ANY");
 	}
 
-	@description = "This is a test for COMMERCE-9180. VerifyDraftStatusNormalWorkflow"
+	@description = "This is a test for COMMERCE-9180. VerifyProductPublication"
 	@priority = "3"
-	test VerifyDraftStatusNormalWorkflow {
+	test VerifyProductPublication {
 		property portal.acceptance = "false";
 
 		CommerceNavigator.gotoPortlet(
