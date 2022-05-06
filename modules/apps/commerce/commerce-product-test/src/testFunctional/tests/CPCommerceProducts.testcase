@@ -1427,9 +1427,9 @@ definition {
 		CommerceNavigator.viewFilterResultsSpecificOrder(resultsList = "U-Joint,Transmission Cooler Line Assembly,Torque Converters");
 	}
 
-	@description = "This is a test for COMMERCE-9182. VerifyDraftProductNotAppearOnMiniumCatalogPage"
+	@description = "This is a test for COMMERCE-9182. VerifyDraftProductVisibilityOnStorefront"
 	@priority = "3"
-	test VerifyDraftProductNotAppearOnMiniumCatalogPage {
+	test VerifyDraftProductVisibilityOnStorefront {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
