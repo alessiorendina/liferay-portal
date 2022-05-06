@@ -1066,9 +1066,9 @@ definition {
 		CommerceEntry.viewProductSkus(skusList = "6:10.00,12:20.00,24:30.00,48:40.00,112:50.00");
 	}
 
-	@description = "This is a test for COMMERCE-9181. SaveAsDraftAnAlreadyDraftProduct"
+	@description = "This is a test for COMMERCE-9181. VerifyDraftProductSaveAsDraft"
 	@priority = "3"
-	test SaveAsDraftAnAlreadyDraftProduct {
+	test VerifyDraftProductSaveAsDraft {
 		property portal.acceptance = "false";
 
 		CommerceNavigator.gotoPortlet(
