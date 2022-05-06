@@ -1508,9 +1508,9 @@ definition {
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
 	}
 
-	@description = "This is a test for COMMERCE-9179. VerifyDraftStatus"
+	@description = "This is a test for COMMERCE-9179. VerifyDraftProductStatus"
 	@priority = "3"
-	test VerifyDraftStatus {
+	test VerifyDraftProductStatus {
 		property portal.acceptance = "false";
 
 		CommerceNavigator.gotoPortlet(
