@@ -1099,9 +1099,9 @@ definition {
 			value1 = "Simple T-Shirt 01");
 	}
 
-	@description = "This is a test for COMMERCE-9183. SaveAsDraftAnApprovedProduct"
+	@description = "This is a test for COMMERCE-9183. VerifyApprovedProductSaveAsDraft"
 	@priority = "3"
-	test SaveAsDraftAnApprovedProduct {
+	test VerifyApprovedProductSaveAsDraft {
 		property portal.acceptance = "false";
 
 		CommerceNavigator.gotoPortlet(
