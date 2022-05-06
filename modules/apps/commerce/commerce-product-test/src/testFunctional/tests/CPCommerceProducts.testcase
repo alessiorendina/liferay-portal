@@ -804,9 +804,9 @@ definition {
 			locator1 = "CommerceEntry#WORKFLOW_STATUS");
 	}
 
-	@description = "This is a test for COMMERCE-9189. DuplicateAnApprovedProduct"
+	@description = "This is a test for COMMERCE-9189. VerifyApprovedProductDuplication"
 	@priority = "3"
-	test DuplicateAnApprovedProduct {
+	test VerifyApprovedProductDuplication {
 		property portal.acceptance = "false";
 
 		CommerceNavigator.gotoPortlet(
