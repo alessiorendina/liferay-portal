@@ -768,9 +768,9 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-	@description = "This is a test for COMMERCE-9190. DuplicateADraftProduct"
+	@description = "This is a test for COMMERCE-9190. VerifyDraftProductDuplication"
 	@priority = "3"
-	test DuplicateADraftProduct {
+	test VerifyDraftProductDuplication {
 		property portal.acceptance = "false";
 
 		CommerceNavigator.gotoPortlet(
