@@ -375,9 +375,9 @@ definition {
 		AssertElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
 	}
 
-	@description = "This is a test for COMMERCE-9191. CheckTheFirstStatusForSingleApproverWorkflow"
+	@description = "This is a test for COMMERCE-9191. VerifyDraftProductStatusWithWorkflow"
 	@priority = "3"
-	test CheckTheFirstStatusForSingleApproverWorkflow {
+	test VerifyDraftProductStatusWithWorkflow {
 		property portal.acceptance = "false";
 
 		ApplicationsMenu.gotoPortlet(
