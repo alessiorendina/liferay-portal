@@ -158,7 +158,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 				long cpDefinitionId, long cpOptionCategoryId)
 		throws PortalException {
 
-		return _cpCatalogEntrySpecificationOptionValueLocalService.
+		return _cpDefinitionSpecificationOptionValueLocalService.
 			getCPDefinitionSpecificationOptionValues(
 				cpDefinitionId, cpOptionCategoryId);
 	}
@@ -307,7 +307,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 			getCPDefinitionSpecificationOptionValues(long cpDefinitionId)
 		throws PortalException {
 
-		return _cpCatalogEntrySpecificationOptionValueLocalService.
+		return _cpDefinitionSpecificationOptionValueLocalService.
 			getCPDefinitionSpecificationOptionValues(
 				cpDefinitionId,
 				CPOptionCategoryConstants.DEFAULT_CP_OPTION_CATEGORY_ID);
@@ -605,7 +605,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 
 		List<CPDefinitionSpecificationOptionValue>
 			cpDefinitionSpecificationOptionValues =
-				_cpCatalogEntrySpecificationOptionValueLocalService.
+				_cpDefinitionSpecificationOptionValueLocalService.
 					getCPDefinitionSpecificationOptionValues(
 						cpDefinitionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 						null);
@@ -833,10 +833,6 @@ public class CPContentHelperImpl implements CPContentHelper {
 		_cpAttachmentFileEntryLocalService;
 
 	@Reference
-	private CPDefinitionSpecificationOptionValueLocalService
-		_cpCatalogEntrySpecificationOptionValueLocalService;
-
-	@Reference
 	private CPContentContributorRegistry _cpContentContributorRegistry;
 
 	@Reference
@@ -855,6 +851,10 @@ public class CPContentHelperImpl implements CPContentHelper {
 	@Reference
 	private CPDefinitionOptionValueRelLocalService
 		_cpDefinitionOptionValueRelLocalService;
+
+	@Reference
+	private CPDefinitionSpecificationOptionValueLocalService
+		_cpDefinitionSpecificationOptionValueLocalService;
 
 	@Reference
 	private CPInstanceHelper _cpInstanceHelper;
