@@ -830,12 +830,14 @@ public class CPDefinitionLocalServiceImpl
 					updateCPInstanceOptionValueRel(newCPInstanceOptionValueRel);
 			}
 
-			_updateCommercePriceEntry(
-				newCPInstance, CommercePriceListConstants.TYPE_PRICE_LIST,
-				newCPInstance.getPrice(), serviceContext);
-			_updateCommercePriceEntry(
-				newCPInstance, CommercePriceListConstants.TYPE_PROMOTION,
-				newCPInstance.getPromoPrice(), serviceContext);
+			serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
+
+			_addCommercePriceEntry(
+				newCPInstance, cpInstance.getCPInstanceUuid(),
+				CommercePriceListConstants.TYPE_PRICE_LIST, serviceContext);
+			_addCommercePriceEntry(
+				newCPInstance, cpInstance.getCPInstanceUuid(),
+				CommercePriceListConstants.TYPE_PROMOTION, serviceContext);
 
 			cpInstancePersistence.update(newCPInstance);
 		}
@@ -1148,7 +1150,7 @@ public class CPDefinitionLocalServiceImpl
 			newCPInstance.setCPInstanceId(cpInstanceId);
 
 			newCPInstance.setCPDefinitionId(newCPDefinitionId);
-			newCPInstance.setCPInstanceUuid(PortalUUIDUtil.generate());
+			newCPInstance.setCPInstanceUuid(cpInstance.getCPInstanceUuid());
 
 			List<CPInstanceOptionValueRel> cpInstanceOptionValueRels =
 				cpInstanceOptionValueRelPersistence.findByCPInstanceId(
@@ -1222,13 +1224,6 @@ public class CPDefinitionLocalServiceImpl
 				cpInstanceOptionValueRelLocalService.
 					updateCPInstanceOptionValueRel(newCPInstanceOptionValueRel);
 			}
-
-			_updateCommercePriceEntry(
-				newCPInstance, CommercePriceListConstants.TYPE_PRICE_LIST,
-				newCPInstance.getPrice(), serviceContext);
-			_updateCommercePriceEntry(
-				newCPInstance, CommercePriceListConstants.TYPE_PROMOTION,
-				newCPInstance.getPromoPrice(), serviceContext);
 
 			cpInstancePersistence.update(newCPInstance);
 		}
@@ -2906,6 +2901,32 @@ public class CPDefinitionLocalServiceImpl
 		}
 	}
 
+	private void _addCommercePriceEntry(
+			CPInstance cpInstance, String cpInstanceUuid, String type,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		CommercePriceList commercePriceList =
+			CommercePriceListLocalServiceUtil.
+				getCatalogBaseCommercePriceListByType(
+					cpInstance.getGroupId(), type);
+
+		CommercePriceEntry commercePriceEntry =
+			CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(
+				commercePriceList.getCommercePriceListId(), cpInstanceUuid);
+
+		if (commercePriceEntry == null) {
+			return;
+		}
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(
+			cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
+			commercePriceList.getCommercePriceListId(),
+			commercePriceEntry.getPrice(), null, serviceContext);
+	}
+
 	private List<CPDefinitionLocalization> _addCPDefinitionLocalizedFields(
 			long companyId, long cpDefinitionId, Map<Locale, String> nameMap,
 			Map<Locale, String> shortDescriptionMap,
@@ -3081,36 +3102,6 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		return false;
-	}
-
-	private void _updateCommercePriceEntry(
-			CPInstance cpInstance, String type, BigDecimal price,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		CommercePriceList commercePriceList =
-			CommercePriceListLocalServiceUtil.
-				getCatalogBaseCommercePriceListByType(
-					cpInstance.getGroupId(), type);
-
-		CommercePriceEntry commercePriceEntry =
-			CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(
-				commercePriceList.getCommercePriceListId(),
-				cpInstance.getCPInstanceUuid());
-
-		if (commercePriceEntry == null) {
-			CPDefinition cpDefinition = cpInstance.getCPDefinition();
-
-			CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(
-				cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
-				commercePriceList.getCommercePriceListId(), price, null,
-				serviceContext);
-		}
-		else {
-			CommercePriceEntryLocalServiceUtil.updateCommercePriceEntry(
-				commercePriceEntry.getCommercePriceEntryId(), price, null,
-				serviceContext);
-		}
 	}
 
 	private List<CPDefinitionLocalization> _updateCPDefinitionLocalizedFields(
