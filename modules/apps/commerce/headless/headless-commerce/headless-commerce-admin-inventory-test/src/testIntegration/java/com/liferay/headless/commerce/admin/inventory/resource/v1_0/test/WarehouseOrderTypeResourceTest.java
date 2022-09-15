@@ -266,14 +266,14 @@ public class WarehouseOrderTypeResourceTest
 				WarehouseOrderType warehouseOrderType)
 		throws Exception {
 
-		WarehouseOrderType newWarehouseOrderType =
+		WarehouseOrderType postWarehouseOrderType =
 			warehouseOrderTypeResource.postWarehouseIdWarehouseOrderType(
 				warehouseOrderType.getWarehouseId(), warehouseOrderType);
 
 		_warehouseOrderTypeIds.add(
-			newWarehouseOrderType.getWarehouseOrderTypeId());
+			postWarehouseOrderType.getWarehouseOrderTypeId());
 
-		return newWarehouseOrderType;
+		return postWarehouseOrderType;
 	}
 
 	@DeleteAfterTestRun

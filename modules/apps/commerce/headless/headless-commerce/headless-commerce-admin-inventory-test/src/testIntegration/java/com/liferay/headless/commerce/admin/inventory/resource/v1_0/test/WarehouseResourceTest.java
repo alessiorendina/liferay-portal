@@ -214,11 +214,11 @@ public class WarehouseResourceTest extends BaseWarehouseResourceTestCase {
 	}
 
 	private Warehouse _addWarehouse(Warehouse warehouse) throws Exception {
-		Warehouse newWarehouse = warehouseResource.postWarehouse(warehouse);
+		Warehouse postWarehouse = warehouseResource.postWarehouse(warehouse);
 
-		_warehouseIds.add(newWarehouse.getId());
+		_warehouseIds.add(postWarehouse.getId());
 
-		return newWarehouse;
+		return postWarehouse;
 	}
 
 	private final List<Long> _warehouseIds = new ArrayList<>();
