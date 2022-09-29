@@ -154,12 +154,13 @@ public class CPDefinitionLinkServiceWrapper
 
 	@Override
 	public void updateCPDefinitionLinks(
-			long cpDefinitionId, long[] cpDefinitionIds2, String type,
+			long userId, long cpDefinitionId, long[] cpDefinitionIds2,
+			String type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_cpDefinitionLinkService.updateCPDefinitionLinks(
-			cpDefinitionId, cpDefinitionIds2, type, serviceContext);
+			userId, cpDefinitionId, cpDefinitionIds2, type, serviceContext);
 	}
 
 	@Override

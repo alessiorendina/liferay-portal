@@ -95,12 +95,6 @@ public class CPOptionCategoryLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
-	public static void deleteCPOptionCategories(long companyId)
-		throws PortalException {
-
-		getService().deleteCPOptionCategories(companyId);
-	}
-
 	/**
 	 * Deletes the cp option category from the database. Also notifies the appropriate model listeners.
 	 *
@@ -110,11 +104,9 @@ public class CPOptionCategoryLocalServiceUtil {
 	 *
 	 * @param cpOptionCategory the cp option category
 	 * @return the cp option category that was removed
-	 * @throws PortalException
 	 */
 	public static CPOptionCategory deleteCPOptionCategory(
-			CPOptionCategory cpOptionCategory)
-		throws PortalException {
+		CPOptionCategory cpOptionCategory) {
 
 		return getService().deleteCPOptionCategory(cpOptionCategory);
 	}
@@ -135,6 +127,20 @@ public class CPOptionCategoryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteCPOptionCategory(CPOptionCategoryId);
+	}
+
+	public static CPOptionCategory deleteCPOptionCategory(
+			long userId, CPOptionCategory cpOptionCategory)
+		throws PortalException {
+
+		return getService().deleteCPOptionCategory(userId, cpOptionCategory);
+	}
+
+	public static CPOptionCategory deleteCPOptionCategory(
+			long userId, long cpOptionCategoryId)
+		throws PortalException {
+
+		return getService().deleteCPOptionCategory(userId, cpOptionCategoryId);
 	}
 
 	/**

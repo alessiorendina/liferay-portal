@@ -60,12 +60,19 @@ public class CommerceChannelRelLocalServiceWrapper
 
 	@Override
 	public CommerceChannelRel addCommerceChannelRel(
-			String className, long classPK, long commerceChannelId,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+			long userId, String className, long classPK, long commerceChannelId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceChannelRelLocalService.addCommerceChannelRel(
-			className, classPK, commerceChannelId, serviceContext);
+			userId, className, classPK, commerceChannelId);
+	}
+
+	@Override
+	public void cloneCommerceChannelRels(
+		long oldCPDefinitionId, long newCPDefinitionId) {
+
+		_commerceChannelRelLocalService.cloneCommerceChannelRels(
+			oldCPDefinitionId, newCPDefinitionId);
 	}
 
 	/**

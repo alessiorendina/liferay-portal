@@ -416,20 +416,6 @@ public class CPDefinitionInventoryLocalServiceUtil {
 		return getService().updateCPDefinitionInventory(cpDefinitionInventory);
 	}
 
-	public static CPDefinitionInventory updateCPDefinitionInventory(
-			long cpDefinitionInventoryId, String cpDefinitionInventoryEngine,
-			String lowStockActivity, boolean displayAvailability,
-			boolean displayStockQuantity, int minStockQuantity,
-			boolean backOrders, int minOrderQuantity, int maxOrderQuantity,
-			String allowedOrderQuantities, int multipleOrderQuantity)
-		throws PortalException {
-
-		return getService().updateCPDefinitionInventory(
-			cpDefinitionInventoryId, cpDefinitionInventoryEngine,
-			lowStockActivity, displayAvailability, displayStockQuantity,
-			minStockQuantity, backOrders, minOrderQuantity, maxOrderQuantity,
-			allowedOrderQuantities, multipleOrderQuantity);
-	}
 
 	public static CPDefinitionInventoryLocalService getService() {
 		return _service;

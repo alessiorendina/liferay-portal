@@ -88,9 +88,12 @@ public interface CPDefinitionLinkLocalService
 		CPDefinitionLink cpDefinitionLink);
 
 	public CPDefinitionLink addCPDefinitionLinkByCProductId(
-			long cpDefinitionId, long cProductId, double priority, String type,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long cProductId, double priority,
+			String type, ServiceContext serviceContext)
 		throws PortalException;
+
+	public void cloneCPDefinitionLinks(
+		long oldCPDefinitionId, long newCPDefinitionId);
 
 	/**
 	 * Creates a new cp definition link with the primary key. Does not add the cp definition link to the database.
@@ -139,10 +142,12 @@ public interface CPDefinitionLinkLocalService
 	public CPDefinitionLink deleteCPDefinitionLink(long CPDefinitionLinkId)
 		throws PortalException;
 
-	public void deleteCPDefinitionLinksByCPDefinitionId(long cpDefinitionId)
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public CPDefinitionLink deleteCPDefinitionLink(
+			long userId, CPDefinitionLink cpDefinitionLink)
 		throws PortalException;
 
-	public void deleteCPDefinitionLinksByCProductId(long cProductId)
+	public void deleteCPDefinitionLinksByCPDefinitionId(long cpDefinitionId)
 		throws PortalException;
 
 	/**
@@ -380,12 +385,12 @@ public interface CPDefinitionLinkLocalService
 		CPDefinitionLink cpDefinitionLink);
 
 	public CPDefinitionLink updateCPDefinitionLink(
-			long cpDefinitionLinkId, double priority,
+			long userId, long cpDefinitionLinkId, double priority,
 			ServiceContext serviceContext)
 		throws PortalException;
 
 	public void updateCPDefinitionLinkCProductIds(
-			long cpDefinitionId, long[] cProductIds, String type,
+			long userId, long cpDefinitionId, long[] cProductIds, String type,
 			ServiceContext serviceContext)
 		throws PortalException;
 

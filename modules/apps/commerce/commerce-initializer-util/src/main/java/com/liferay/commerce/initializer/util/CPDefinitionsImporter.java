@@ -424,9 +424,9 @@ public class CPDefinitionsImporter {
 			_addExpandoValue(
 				cpDefinition, jsonObject.getJSONArray("customFields"));
 
-			_commerceChannelRelLocalService.addCommerceChannelRel(
+			_commerceChannelRelLocalService.addCommerceChannelRel(serviceContext.getUserId(),
 				CPDefinition.class.getName(), cpDefinition.getCPDefinitionId(),
-				commerceChannelId, serviceContext);
+				commerceChannelId);
 
 			Indexer<CPDefinition> indexer =
 				IndexerRegistryUtil.nullSafeGetIndexer(CPDefinition.class);
@@ -539,6 +539,7 @@ public class CPDefinitionsImporter {
 		else {
 			try {
 				_cpInstanceLocalService.buildCPInstances(
+					serviceContext.getUserId(),
 					cpDefinition.getCPDefinitionId(), serviceContext);
 			}
 			catch (NoSuchSkuContributorCPDefinitionOptionRelException
@@ -615,12 +616,12 @@ public class CPDefinitionsImporter {
 				allowedOrderQuantities, multipleOrderQuantity);
 		}
 		else {
-			_cpDefinitionInventoryLocalService.updateCPDefinitionInventory(
+			_cpDefinitionInventoryLocalService.updateCPDefinitionInventory(serviceContext.getUserId(),
 				cpDefinitionInventory.getCPDefinitionInventoryId(),
-				cpDefinitionInventoryEngine, lowStockActivity,
-				displayAvailability, displayStockQuantity, minStockQuantity,
-				backOrders, minOrderQuantity, maxOrderQuantity,
-				allowedOrderQuantities, multipleOrderQuantity);
+				cpDefinitionInventoryEngine,
+				lowStockActivity, displayAvailability, displayStockQuantity,
+				minStockQuantity, backOrders, minOrderQuantity,
+				maxOrderQuantity, allowedOrderQuantities, multipleOrderQuantity);
 		}
 
 		// Commerce product definition availability estimate
@@ -686,8 +687,8 @@ public class CPDefinitionsImporter {
 			cpDefinition.getCPDefinitionId(), true);
 
 		_commerceChannelRelLocalService.addCommerceChannelRel(
-			CPDefinition.class.getName(), cpDefinition.getCPDefinitionId(),
-			commerceChannelId, serviceContext);
+			serviceContext.getUserId(), CPDefinition.class.getName(), cpDefinition.getCPDefinitionId(),
+			commerceChannelId);
 
 		// Filter account groups
 
@@ -714,8 +715,8 @@ public class CPDefinitionsImporter {
 						addCommerceAccountGroupRel(
 							CPDefinition.class.getName(),
 							cpDefinition.getCPDefinitionId(),
-							commerceAccountGroup.getCommerceAccountGroupId(),
-							serviceContext);
+							commerceAccountGroup.getCommerceAccountGroupId()
+						);
 				}
 			}
 		}
@@ -752,9 +753,9 @@ public class CPDefinitionsImporter {
 
 		try {
 			cpDefinitionOptionRel =
-				_cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-					cpDefinitionId, cpOption.getCPOptionId(), importOptionValue,
-					serviceContext);
+				_cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(serviceContext.getUserId(),
+					cpDefinitionId, cpOption.getCPOptionId(),
+					importOptionValue, serviceContext);
 		}
 		finally {
 			serviceContext.setScopeGroupId(scopeGroupId);
@@ -827,7 +828,7 @@ public class CPDefinitionsImporter {
 		double priority = jsonObject.getDouble("priority", defaultPriority);
 
 		return _cpDefinitionSpecificationOptionValueLocalService.
-			addCPDefinitionSpecificationOptionValue(
+			addCPDefinitionSpecificationOptionValue(serviceContext.getUserId(),
 				cpDefinitionId,
 				cpSpecificationOption.getCPSpecificationOptionId(),
 				cpOptionCategoryId, valueMap, priority, serviceContext);
@@ -931,23 +932,25 @@ public class CPDefinitionsImporter {
 		}
 
 		CPInstance cpInstance = _cpInstanceLocalService.addCPInstance(
-			externalReferenceCode, cpDefinitionId, cpDefinition.getGroupId(),
-			sku, null, manufacturerPartNumber, true,
+			serviceContext.getUserId(), externalReferenceCode, cpDefinitionId,
+			cpDefinition.getGroupId(), sku, null, manufacturerPartNumber,
+			true,
 			_cpDefinitionOptionRelLocalService.
 				getCPDefinitionOptionRelCPDefinitionOptionValueRelIds(
-					cpDefinitionId, optionsJSON),
-			cpDefinition.getWidth(), cpDefinition.getHeight(),
-			cpDefinition.getDepth(), cpDefinition.getWeight(),
-			BigDecimal.valueOf(price), BigDecimal.valueOf(promoPrice),
-			BigDecimal.valueOf(0), true, calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
-			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-			0, 0, 0, 0, 0, true, overrideSubscriptionInfo, subscriptionEnabled,
-			subscriptionLength, subscriptionType,
+					cpDefinitionId, optionsJSON), cpDefinition.getWidth(),
+			cpDefinition.getHeight(), cpDefinition.getDepth(),
+			cpDefinition.getWeight(), BigDecimal.valueOf(price),
+			BigDecimal.valueOf(promoPrice), BigDecimal.valueOf(0), true,
+			calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+			calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
+			calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+			overrideSubscriptionInfo,
+			subscriptionEnabled, subscriptionLength,
+			subscriptionType,
 			_getSubscriptionTypeSettingsUnicodeProperties(
-				subscriptionInfoJSONObject),
-			maxSubscriptionCycles, false, 1, null, null, 0, null, false, null,
-			0, 0, 0, 0, serviceContext);
+				subscriptionInfoJSONObject), maxSubscriptionCycles, false, 1,
+			null, null, 0, null, false,
+			null, 0, 0, 0, 0, serviceContext);
 
 		_addWarehouseQuantities(
 			skuJSONObject, commerceInventoryWarehouseIds, serviceContext,

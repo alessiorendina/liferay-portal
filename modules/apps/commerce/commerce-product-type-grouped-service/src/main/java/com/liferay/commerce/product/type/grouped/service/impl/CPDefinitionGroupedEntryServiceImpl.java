@@ -60,8 +60,8 @@ public class CPDefinitionGroupedEntryServiceImpl
 			_checkCommerceCatalog(entryCPDefinitionId, ActionKeys.VIEW);
 		}
 
-		cpDefinitionGroupedEntryLocalService.addCPDefinitionGroupedEntries(
-			cpDefinitionId, entryCPDefinitionIds, serviceContext);
+		cpDefinitionGroupedEntryLocalService.addCPDefinitionGroupedEntries(getUserId(),
+			cpDefinitionId, entryCPDefinitionIds, serviceContext, 0, 1);
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class CPDefinitionGroupedEntryServiceImpl
 			ActionKeys.UPDATE);
 
 		return cpDefinitionGroupedEntryLocalService.
-			updateCPDefinitionGroupedEntry(
+			updateCPDefinitionGroupedEntry(getUserId(),
 				cpDefinitionGroupedEntryId, priority, quantity);
 	}
 

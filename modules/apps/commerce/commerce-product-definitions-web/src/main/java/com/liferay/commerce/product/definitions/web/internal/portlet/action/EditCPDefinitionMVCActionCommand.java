@@ -665,7 +665,7 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 
 			_commerceAccountGroupRelService.addCommerceAccountGroupRel(
 				CPDefinition.class.getName(), cpDefinitionId,
-				commerceAccountGroupId, serviceContext);
+				commerceAccountGroupId);
 		}
 
 		// Commerce channel rels
@@ -679,8 +679,7 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			}
 
 			_commerceChannelRelService.addCommerceChannelRel(
-				CPDefinition.class.getName(), cpDefinitionId, commerceChannelId,
-				serviceContext);
+				CPDefinition.class.getName(), cpDefinitionId, commerceChannelId);
 		}
 
 		// Filters

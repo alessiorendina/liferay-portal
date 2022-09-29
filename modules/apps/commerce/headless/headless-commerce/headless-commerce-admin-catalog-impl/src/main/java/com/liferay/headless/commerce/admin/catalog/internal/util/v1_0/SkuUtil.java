@@ -52,8 +52,8 @@ import java.util.Objects;
 public class SkuUtil {
 
 	public static CPInstance addOrUpdateCPInstance(
-			CPInstanceService cpInstanceService, Sku sku,
-			CPDefinition cpDefinition, ServiceContext serviceContext)
+		CPInstanceService cpInstanceService, Sku sku,
+		CPDefinition cpDefinition, ServiceContext serviceContext)
 		throws PortalException {
 
 		long replacementCProductId = 0;

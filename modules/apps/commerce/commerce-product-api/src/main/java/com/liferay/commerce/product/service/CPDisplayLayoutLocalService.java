@@ -91,6 +91,9 @@ public interface CPDisplayLayoutLocalService
 			String layoutUuid)
 		throws PortalException;
 
+	public void cloneCPDisplayLayouts(
+		long oldCPDefinitionId, long newCPDefinitionId);
+
 	/**
 	 * Creates a new cp display layout with the primary key. Does not add the cp display layout to the database.
 	 *
@@ -105,9 +108,6 @@ public interface CPDisplayLayoutLocalService
 	 */
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Indexable(type = IndexableType.DELETE)
-	public CPDisplayLayout deleteCPDisplayLayout(Class<?> clazz, long classPK);
 
 	/**
 	 * Deletes the cp display layout from the database. Also notifies the appropriate model listeners.

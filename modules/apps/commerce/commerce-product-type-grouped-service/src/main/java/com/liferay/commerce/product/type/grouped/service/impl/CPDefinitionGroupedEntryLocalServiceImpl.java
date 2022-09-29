@@ -47,14 +47,10 @@ import org.osgi.service.component.annotations.Reference;
 public class CPDefinitionGroupedEntryLocalServiceImpl
 	extends CPDefinitionGroupedEntryLocalServiceBaseImpl {
 
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
 	@Override
 	public void addCPDefinitionGroupedEntries(
-			long cpDefinitionId, long[] entryCPDefinitionIds,
-			ServiceContext serviceContext)
+		long userId, long cpDefinitionId, long[] entryCPDefinitionIds,
+		ServiceContext serviceContext, int priority, int quantity)
 		throws PortalException {
 
 		for (long entryCPDefinitionId : entryCPDefinitionIds) {
@@ -62,53 +58,21 @@ public class CPDefinitionGroupedEntryLocalServiceImpl
 				_cpDefinitionLocalService.getCPDefinition(entryCPDefinitionId);
 
 			cpDefinitionGroupedEntryLocalService.
-				addCPDefinitionGroupedEntryByEntryCProductId(
-					cpDefinitionId, cpDefinition.getCProductId(), 0, 1,
-					serviceContext);
+				addCPDefinitionGroupedEntryByEntryCProductId(userId,
+					cpDefinitionId, cpDefinition.getCProductId(), priority,
+					quantity, serviceContext);
 		}
-	}
-
-	@Override
-	public void addCPDefinitionGroupedEntriesByEntryCProductIds(
-			long cpDefinitionId, long[] entryCProductIds,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		for (long entryCProductId : entryCProductIds) {
-			cpDefinitionGroupedEntryLocalService.
-				addCPDefinitionGroupedEntryByEntryCProductId(
-					cpDefinitionId, entryCProductId, 0, 1, serviceContext);
-		}
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	@Override
-	public CPDefinitionGroupedEntry addCPDefinitionGroupedEntry(
-			long cpDefinitionId, long entryCPDefinitionId, double priority,
-			int quantity, ServiceContext serviceContext)
-		throws PortalException {
-
-		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
-			entryCPDefinitionId);
-
-		return cpDefinitionGroupedEntryLocalService.
-			addCPDefinitionGroupedEntryByEntryCProductId(
-				cpDefinitionId, cpDefinition.getCProductId(), priority,
-				quantity, serviceContext);
 	}
 
 	@Override
 	public CPDefinitionGroupedEntry
 			addCPDefinitionGroupedEntryByEntryCProductId(
-				long cpDefinitionId, long entryCProductId, double priority,
-				int quantity, ServiceContext serviceContext)
+		long userId, long cpDefinitionId, long entryCProductId, double priority,
+		int quantity, ServiceContext serviceContext)
 		throws PortalException {
 
 		CPDefinition cpDefinition = null;
-		User user = userLocalService.getUser(serviceContext.getUserId());
+		User user = userLocalService.getUser(userId);
 
 		validate(cpDefinitionId, entryCProductId, quantity);
 
@@ -119,7 +83,7 @@ public class CPDefinitionGroupedEntryLocalServiceImpl
 				cpDefinitionGroupedEntryId);
 
 		if (_cpDefinitionLocalService.isVersionable(cpDefinitionId)) {
-			cpDefinition = _cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition = _cpDefinitionLocalService.copyCPDefinition(userId,
 				cpDefinitionId);
 		}
 		else {
@@ -167,17 +131,6 @@ public class CPDefinitionGroupedEntryLocalServiceImpl
 
 	@Override
 	public void deleteCPDefinitionGroupedEntries(long cpDefinitionId) {
-		if (_cpDefinitionLocalService.isVersionable(cpDefinitionId)) {
-			try {
-				CPDefinition newCPDefinition =
-					_cpDefinitionLocalService.copyCPDefinition(cpDefinitionId);
-
-				cpDefinitionId = newCPDefinition.getCPDefinitionId();
-			}
-			catch (PortalException portalException) {
-				throw new SystemException(portalException);
-			}
-		}
 
 		cpDefinitionGroupedEntryPersistence.removeByCPDefinitionId(
 			cpDefinitionId);
@@ -244,7 +197,7 @@ public class CPDefinitionGroupedEntryLocalServiceImpl
 
 	@Override
 	public CPDefinitionGroupedEntry updateCPDefinitionGroupedEntry(
-			long cpDefinitionGroupedEntryId, double priority, int quantity)
+		long userId, long cpDefinitionGroupedEntryId, double priority, int quantity)
 		throws PortalException {
 
 		CPDefinitionGroupedEntry cpDefinitionGroupedEntry =
@@ -255,7 +208,7 @@ public class CPDefinitionGroupedEntryLocalServiceImpl
 				cpDefinitionGroupedEntry.getCPDefinitionId())) {
 
 			CPDefinition newCPDefinition =
-				_cpDefinitionLocalService.copyCPDefinition(
+				_cpDefinitionLocalService.copyCPDefinition(userId,
 					cpDefinitionGroupedEntry.getCPDefinitionId());
 
 			cpDefinitionGroupedEntry =

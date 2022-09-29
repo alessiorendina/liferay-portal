@@ -21,7 +21,9 @@ import com.liferay.commerce.account.exception.DuplicateCommerceAccountGroupRelEx
 import com.liferay.commerce.account.model.CommerceAccountGroupRel;
 import com.liferay.commerce.account.model.impl.CommerceAccountGroupRelImpl;
 import com.liferay.commerce.account.service.base.CommerceAccountGroupRelLocalServiceBaseImpl;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -52,8 +54,7 @@ public class CommerceAccountGroupRelLocalServiceImpl
 
 	@Override
 	public CommerceAccountGroupRel addCommerceAccountGroupRel(
-			String className, long classPK, long commerceAccountGroupId,
-			ServiceContext serviceContext)
+			String className, long classPK, long commerceAccountGroupId)
 		throws PortalException {
 
 		try {
@@ -66,6 +67,27 @@ public class CommerceAccountGroupRelLocalServiceImpl
 
 			throw new DuplicateCommerceAccountGroupRelException(
 				duplicateAccountGroupRelException);
+		}
+	}
+
+	@Override
+	public void cloneCommerceAccountGroupRel(long oldCPDefinitionId, long newCPDefinitionId){
+
+		for (CommerceAccountGroupRel commerceAccountGroupRel :
+			commerceAccountGroupRelLocalService.
+				getCommerceAccountGroupRels(
+					CPDefinition.class.getName(),
+					oldCPDefinitionId,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+			try {
+				commerceAccountGroupRelLocalService.addCommerceAccountGroupRel(
+					CPDefinition.class.getName(), newCPDefinitionId,
+					commerceAccountGroupRel.getCommerceAccountGroupId());
+			}
+			catch (PortalException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

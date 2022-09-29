@@ -64,8 +64,8 @@ public class CPDefinitionVirtualSettingLocalServiceUtil {
 	}
 
 	public static CPDefinitionVirtualSetting addCPDefinitionVirtualSetting(
-			String className, long classPK, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
+			long userId, String className, long classPK, long fileEntryId,
+			String url, int activationStatus, long duration, int maxUsages,
 			boolean useSample, long sampleFileEntryId, String sampleUrl,
 			boolean termsOfUseRequired,
 			Map<java.util.Locale, String> termsOfUseContentMap,
@@ -74,27 +74,10 @@ public class CPDefinitionVirtualSettingLocalServiceUtil {
 		throws PortalException {
 
 		return getService().addCPDefinitionVirtualSetting(
-			className, classPK, fileEntryId, url, activationStatus, duration,
-			maxUsages, useSample, sampleFileEntryId, sampleUrl,
+			userId, className, classPK, fileEntryId, url, activationStatus,
+			duration, maxUsages, useSample, sampleFileEntryId, sampleUrl,
 			termsOfUseRequired, termsOfUseContentMap,
 			termsOfUseJournalArticleResourcePrimKey, override, serviceContext);
-	}
-
-	public static CPDefinitionVirtualSetting addCPDefinitionVirtualSetting(
-			String className, long classPK, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
-			boolean useSample, long sampleFileEntryId, String sampleUrl,
-			boolean termsOfUseRequired,
-			Map<java.util.Locale, String> termsOfUseContentMap,
-			long termsOfUseJournalArticleResourcePrimKey,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCPDefinitionVirtualSetting(
-			className, classPK, fileEntryId, url, activationStatus, duration,
-			maxUsages, useSample, sampleFileEntryId, sampleUrl,
-			termsOfUseRequired, termsOfUseContentMap,
-			termsOfUseJournalArticleResourcePrimKey, serviceContext);
 	}
 
 	public static void cloneCPDefinitionVirtualSetting(
@@ -164,8 +147,15 @@ public class CPDefinitionVirtualSettingLocalServiceUtil {
 	}
 
 	public static CPDefinitionVirtualSetting deleteCPDefinitionVirtualSetting(
-			String className, long classPK)
+			long userId, String className, long classPK)
 		throws PortalException {
+
+		return getService().deleteCPDefinitionVirtualSetting(
+			userId, className, classPK);
+	}
+
+	public static CPDefinitionVirtualSetting deleteCPDefinitionVirtualSetting(
+		String className, long classPK) {
 
 		return getService().deleteCPDefinitionVirtualSetting(
 			className, classPK);
@@ -450,8 +440,8 @@ public class CPDefinitionVirtualSettingLocalServiceUtil {
 	}
 
 	public static CPDefinitionVirtualSetting updateCPDefinitionVirtualSetting(
-			long cpDefinitionVirtualSettingId, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
+			long userId, long cpDefinitionVirtualSettingId, long fileEntryId,
+			String url, int activationStatus, long duration, int maxUsages,
 			boolean useSample, long sampleFileEntryId, String sampleUrl,
 			boolean termsOfUseRequired,
 			Map<java.util.Locale, String> termsOfUseContentMap,
@@ -460,27 +450,10 @@ public class CPDefinitionVirtualSettingLocalServiceUtil {
 		throws PortalException {
 
 		return getService().updateCPDefinitionVirtualSetting(
-			cpDefinitionVirtualSettingId, fileEntryId, url, activationStatus,
-			duration, maxUsages, useSample, sampleFileEntryId, sampleUrl,
-			termsOfUseRequired, termsOfUseContentMap,
+			userId, cpDefinitionVirtualSettingId, fileEntryId, url,
+			activationStatus, duration, maxUsages, useSample, sampleFileEntryId,
+			sampleUrl, termsOfUseRequired, termsOfUseContentMap,
 			termsOfUseJournalArticleResourcePrimKey, override, serviceContext);
-	}
-
-	public static CPDefinitionVirtualSetting updateCPDefinitionVirtualSetting(
-			long cpDefinitionVirtualSettingId, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
-			boolean useSample, long sampleFileEntryId, String sampleUrl,
-			boolean termsOfUseRequired,
-			Map<java.util.Locale, String> termsOfUseContentMap,
-			long termsOfUseJournalArticleResourcePrimKey,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().updateCPDefinitionVirtualSetting(
-			cpDefinitionVirtualSettingId, fileEntryId, url, activationStatus,
-			duration, maxUsages, useSample, sampleFileEntryId, sampleUrl,
-			termsOfUseRequired, termsOfUseContentMap,
-			termsOfUseJournalArticleResourcePrimKey, serviceContext);
 	}
 
 	public static CPDefinitionVirtualSettingLocalService getService() {

@@ -63,16 +63,16 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 
 	@Override
 	public CPDefinitionVirtualSetting addCPDefinitionVirtualSetting(
-			String className, long classPK, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
-			boolean useSample, long sampleFileEntryId, String sampleUrl,
-			boolean termsOfUseRequired,
-			Map<Locale, String> termsOfUseContentMap,
-			long termsOfUseJournalArticleResourcePrimKey, boolean override,
-			ServiceContext serviceContext)
+		long userId, String className, long classPK, long fileEntryId, String url,
+		int activationStatus, long duration, int maxUsages,
+		boolean useSample, long sampleFileEntryId, String sampleUrl,
+		boolean termsOfUseRequired,
+		Map<Locale, String> termsOfUseContentMap,
+		long termsOfUseJournalArticleResourcePrimKey, boolean override,
+		ServiceContext serviceContext)
 		throws PortalException {
 
-		User user = userLocalService.getUser(serviceContext.getUserId());
+		User user = userLocalService.getUser(userId);
 		long groupId = serviceContext.getScopeGroupId();
 
 		if (Validator.isNotNull(url)) {
@@ -123,7 +123,7 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 			_cpDefinitionLocalService.isVersionable(classPK)) {
 
 			CPDefinition newCPDefinition =
-				_cpDefinitionLocalService.copyCPDefinition(
+				_cpDefinitionLocalService.copyCPDefinition(userId,
 					cpDefinitionVirtualSetting.getClassPK());
 
 			classPK = newCPDefinition.getCPDefinitionId();
@@ -136,7 +136,7 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 					cpInstance.getCPDefinitionId())) {
 
 				CPDefinition newCPDefinition =
-					_cpDefinitionLocalService.copyCPDefinition(
+					_cpDefinitionLocalService.copyCPDefinition(userId,
 						cpInstance.getCPDefinitionId());
 
 				CPInstance newCPInstance =
@@ -174,24 +174,7 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 			cpDefinitionVirtualSetting);
 	}
 
-	@Override
-	public CPDefinitionVirtualSetting addCPDefinitionVirtualSetting(
-			String className, long classPK, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
-			boolean useSample, long sampleFileEntryId, String sampleUrl,
-			boolean termsOfUseRequired,
-			Map<Locale, String> termsOfUseContentMap,
-			long termsOfUseJournalArticleResourcePrimKey,
-			ServiceContext serviceContext)
-		throws PortalException {
 
-		return cpDefinitionVirtualSettingLocalService.
-			addCPDefinitionVirtualSetting(
-				className, classPK, fileEntryId, url, activationStatus,
-				duration, maxUsages, useSample, sampleFileEntryId, sampleUrl,
-				termsOfUseRequired, termsOfUseContentMap,
-				termsOfUseJournalArticleResourcePrimKey, false, serviceContext);
-	}
 
 	@Override
 	public void cloneCPDefinitionVirtualSetting(
@@ -218,7 +201,7 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 
 	@Override
 	public CPDefinitionVirtualSetting deleteCPDefinitionVirtualSetting(
-			String className, long classPK)
+		long userId, String className, long classPK)
 		throws PortalException {
 
 		long classNameId = classNameLocalService.getClassNameId(className);
@@ -232,7 +215,7 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 				_cpDefinitionLocalService.isVersionable(classPK)) {
 
 				CPDefinition newCPDefinition =
-					_cpDefinitionLocalService.copyCPDefinition(classPK);
+					_cpDefinitionLocalService.copyCPDefinition(userId, classPK);
 
 				cpDefinitionVirtualSetting =
 					cpDefinitionVirtualSettingPersistence.findByC_C(
@@ -243,10 +226,10 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 					classPK);
 
 				if (_cpDefinitionLocalService.isVersionable(
-						cpInstance.getCPDefinitionId())) {
+					cpInstance.getCPDefinitionId())) {
 
 					CPDefinition newCPDefinition =
-						_cpDefinitionLocalService.copyCPDefinition(
+						_cpDefinitionLocalService.copyCPDefinition(userId,
 							cpInstance.getCPDefinitionId());
 
 					CPInstance newCPInstance =
@@ -259,6 +242,25 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 							classNameId, newCPInstance.getCPInstanceId());
 				}
 			}
+
+			cpDefinitionVirtualSettingPersistence.remove(
+				cpDefinitionVirtualSetting);
+		}
+
+		return cpDefinitionVirtualSetting;
+	}
+
+	@Override
+	public CPDefinitionVirtualSetting deleteCPDefinitionVirtualSetting(
+			String className, long classPK) {
+
+		long classNameId = classNameLocalService.getClassNameId(className);
+
+		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
+			cpDefinitionVirtualSettingPersistence.fetchByC_C(
+				classNameId, classPK);
+
+		if (cpDefinitionVirtualSetting != null) {
 
 			cpDefinitionVirtualSettingPersistence.remove(
 				cpDefinitionVirtualSetting);
@@ -286,13 +288,13 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 
 	@Override
 	public CPDefinitionVirtualSetting updateCPDefinitionVirtualSetting(
-			long cpDefinitionVirtualSettingId, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
-			boolean useSample, long sampleFileEntryId, String sampleUrl,
-			boolean termsOfUseRequired,
-			Map<Locale, String> termsOfUseContentMap,
-			long termsOfUseJournalArticleResourcePrimKey, boolean override,
-			ServiceContext serviceContext)
+		long userId, long cpDefinitionVirtualSettingId, long fileEntryId, String url,
+		int activationStatus, long duration, int maxUsages,
+		boolean useSample, long sampleFileEntryId, String sampleUrl,
+		boolean termsOfUseRequired,
+		Map<Locale, String> termsOfUseContentMap,
+		long termsOfUseJournalArticleResourcePrimKey, boolean override,
+		ServiceContext serviceContext)
 		throws PortalException {
 
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
@@ -348,7 +350,7 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 				cpDefinitionVirtualSetting.getClassPK())) {
 
 			CPDefinition newCPDefinition =
-				_cpDefinitionLocalService.copyCPDefinition(
+				_cpDefinitionLocalService.copyCPDefinition(userId,
 					cpDefinitionVirtualSetting.getClassPK());
 
 			cpDefinitionVirtualSetting =
@@ -366,7 +368,7 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 					cpInstance.getCPDefinitionId())) {
 
 				CPDefinition newCPDefinition =
-					_cpDefinitionLocalService.copyCPDefinition(
+					_cpDefinitionLocalService.copyCPDefinition(userId,
 						cpInstance.getCPDefinitionId());
 
 				CPInstance newCPInstance =
@@ -401,25 +403,6 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 			cpDefinitionVirtualSetting);
 	}
 
-	@Override
-	public CPDefinitionVirtualSetting updateCPDefinitionVirtualSetting(
-			long cpDefinitionVirtualSettingId, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
-			boolean useSample, long sampleFileEntryId, String sampleUrl,
-			boolean termsOfUseRequired,
-			Map<Locale, String> termsOfUseContentMap,
-			long termsOfUseJournalArticleResourcePrimKey,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return cpDefinitionVirtualSettingLocalService.
-			updateCPDefinitionVirtualSetting(
-				cpDefinitionVirtualSettingId, fileEntryId, url,
-				activationStatus, duration, maxUsages, useSample,
-				sampleFileEntryId, sampleUrl, termsOfUseRequired,
-				termsOfUseContentMap, termsOfUseJournalArticleResourcePrimKey,
-				false, serviceContext);
-	}
 
 	protected void validate(
 			long fileEntryId, String url, boolean useSample,

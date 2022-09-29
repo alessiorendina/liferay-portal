@@ -435,9 +435,7 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		}
 
 		cpDefinition = _cpDefinitionService.cloneCPDefinition(
-			cpDefinition.getCPDefinitionId(), commerceCatalog.getGroupId(),
-			_serviceContextHelper.getServiceContext(
-				commerceCatalog.getGroupId()));
+			cpDefinition.getCPDefinitionId(), commerceCatalog.getGroupId());
 
 		return _toProduct(cpDefinition.getCPDefinitionId());
 	}
@@ -1010,8 +1008,7 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 				_commerceChannelRelService.addCommerceChannelRel(
 					CPDefinition.class.getName(),
-					cpDefinition.getCPDefinitionId(), commerceChannelId,
-					serviceContext);
+					cpDefinition.getCPDefinitionId(), commerceChannelId);
 			}
 		}
 
@@ -1074,8 +1071,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 				_commerceAccountGroupRelService.addCommerceAccountGroupRel(
 					CPDefinition.class.getName(),
-					cpDefinition.getCPDefinitionId(), accountGroupId,
-					serviceContext);
+					cpDefinition.getCPDefinitionId(), accountGroupId
+				);
 			}
 		}
 

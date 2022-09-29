@@ -46,12 +46,18 @@ public class CommerceAccountGroupRelLocalServiceUtil {
 	}
 
 	public static CommerceAccountGroupRel addCommerceAccountGroupRel(
-			String className, long classPK, long commerceAccountGroupId,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+			String className, long classPK, long commerceAccountGroupId)
 		throws PortalException {
 
 		return getService().addCommerceAccountGroupRel(
-			className, classPK, commerceAccountGroupId, serviceContext);
+			className, classPK, commerceAccountGroupId);
+	}
+
+	public static void cloneCommerceAccountGroupRel(
+		long oldCPDefinitionId, long newCPDefinitionId) {
+
+		getService().cloneCommerceAccountGroupRel(
+			oldCPDefinitionId, newCPDefinitionId);
 	}
 
 	public static CommerceAccountGroupRel deleteCommerceAccountGroupRel(

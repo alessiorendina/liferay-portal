@@ -222,13 +222,10 @@ public class CPDefinitionServiceWrapper
 	}
 
 	@Override
-	public CPDefinition cloneCPDefinition(
-			long cpDefinitionId, long groupId,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+	public CPDefinition cloneCPDefinition(long cpDefinitionId, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _cpDefinitionService.cloneCPDefinition(
-			cpDefinitionId, groupId, serviceContext);
+		return _cpDefinitionService.cloneCPDefinition(cpDefinitionId, groupId);
 	}
 
 	@Override

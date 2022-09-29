@@ -113,8 +113,6 @@ public interface CPOptionCategoryLocalService
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public void deleteCPOptionCategories(long companyId) throws PortalException;
-
 	/**
 	 * Deletes the cp option category from the database. Also notifies the appropriate model listeners.
 	 *
@@ -124,13 +122,10 @@ public interface CPOptionCategoryLocalService
 	 *
 	 * @param cpOptionCategory the cp option category
 	 * @return the cp option category that was removed
-	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPOptionCategory deleteCPOptionCategory(
-			CPOptionCategory cpOptionCategory)
-		throws PortalException;
+		CPOptionCategory cpOptionCategory);
 
 	/**
 	 * Deletes the cp option category with the primary key from the database. Also notifies the appropriate model listeners.
@@ -145,6 +140,16 @@ public interface CPOptionCategoryLocalService
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public CPOptionCategory deleteCPOptionCategory(long CPOptionCategoryId)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.DELETE)
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public CPOptionCategory deleteCPOptionCategory(
+			long userId, CPOptionCategory cpOptionCategory)
+		throws PortalException;
+
+	public CPOptionCategory deleteCPOptionCategory(
+			long userId, long cpOptionCategoryId)
 		throws PortalException;
 
 	/**

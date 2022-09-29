@@ -63,7 +63,8 @@ public class CPOptionCategoryServiceImpl
 		_cpOptionCategoryModelResourcePermission.check(
 			getPermissionChecker(), cpOptionCategoryId, ActionKeys.DELETE);
 
-		cpOptionCategoryLocalService.deleteCPOptionCategory(cpOptionCategoryId);
+		cpOptionCategoryLocalService.deleteCPOptionCategory(getUserId(),
+			cpOptionCategoryId);
 	}
 
 	@Override

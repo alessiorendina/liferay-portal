@@ -96,9 +96,9 @@ public interface CPInstanceLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPInstance addCPInstance(
-			String externalReferenceCode, long cpDefinitionId, long groupId,
-			String sku, String gtin, String manufacturerPartNumber,
-			boolean purchasable,
+			long userId, String externalReferenceCode, long cpDefinitionId,
+			long groupId, String sku, String gtin,
+			String manufacturerPartNumber, boolean purchasable,
 			Map<Long, List<Long>>
 				cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds,
 			double width, double height, double depth, double weight,
@@ -122,29 +122,33 @@ public interface CPInstanceLocalService
 		throws PortalException;
 
 	public CPInstance addOrUpdateCPInstance(
-			String externalReferenceCode, long cpDefinitionId, long groupId,
-			String sku, String gtin, String manufacturerPartNumber,
-			boolean purchasable, String json, double width, double height,
-			double depth, double weight, BigDecimal price,
-			BigDecimal promoPrice, BigDecimal cost, boolean published,
-			int displayDateMonth, int displayDateDay, int displayDateYear,
-			int displayDateHour, int displayDateMinute, int expirationDateMonth,
-			int expirationDateDay, int expirationDateYear,
-			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire, String unspsc, boolean discontinued,
-			String replacementCPInstanceUuid, long replacementCProductId,
-			int discontinuedDateMonth, int discontinuedDateDay,
-			int discontinuedDateYear, ServiceContext serviceContext)
+			long userId, String externalReferenceCode, long cpDefinitionId,
+			long groupId, String sku, String gtin,
+			String manufacturerPartNumber, boolean purchasable, String json,
+			double width, double height, double depth, double weight,
+			BigDecimal price, BigDecimal promoPrice, BigDecimal cost,
+			boolean published, int displayDateMonth, int displayDateDay,
+			int displayDateYear, int displayDateHour, int displayDateMinute,
+			int expirationDateMonth, int expirationDateDay,
+			int expirationDateYear, int expirationDateHour,
+			int expirationDateMinute, boolean neverExpire, String unspsc,
+			boolean discontinued, String replacementCPInstanceUuid,
+			long replacementCProductId, int discontinuedDateMonth,
+			int discontinuedDateDay, int discontinuedDateYear,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public void buildCPInstances(
-			long cpDefinitionId, ServiceContext serviceContext)
+			long userId, long cpDefinitionId, ServiceContext serviceContext)
 		throws PortalException;
 
 	public void checkCPInstances(long cpDefinitionId) throws PortalException;
 
 	public void checkCPInstancesByDisplayDate(long cpDefinitionId)
 		throws PortalException;
+
+	public void cloneCPInstances(
+		long oldCPDefinitionId, long newCPDefinitionId);
 
 	/**
 	 * Creates a new cp instance with the primary key. Does not add the cp instance to the database.
@@ -177,11 +181,6 @@ public interface CPInstanceLocalService
 	public CPInstance deleteCPInstance(CPInstance cpInstance)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.DELETE)
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public CPInstance deleteCPInstance(CPInstance cpInstance, boolean makeCopy)
-		throws PortalException;
-
 	/**
 	 * Deletes the cp instance with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -197,7 +196,13 @@ public interface CPInstanceLocalService
 	public CPInstance deleteCPInstance(long CPInstanceId)
 		throws PortalException;
 
+	public CPInstance deleteCPInstance(long userId, CPInstance cpInstance)
+		throws PortalException;
+
 	public void deleteCPInstances(long cpDefinitionId) throws PortalException;
+
+	public void deleteCPInstances(long userId, long cpDefinitionId)
+		throws PortalException;
 
 	/**
 	 * @throws PortalException
@@ -531,7 +536,7 @@ public interface CPInstanceLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPInstance updateCPInstance(
-			long cpInstanceId, String sku, String gtin,
+			long userId, long cpInstanceId, String sku, String gtin,
 			String manufacturerPartNumber, boolean purchasable, double width,
 			double height, double depth, double weight, BigDecimal price,
 			BigDecimal promoPrice, BigDecimal cost, boolean published,
@@ -546,13 +551,14 @@ public interface CPInstanceLocalService
 		throws PortalException;
 
 	public CPInstance updatePricingInfo(
-			long cpInstanceId, BigDecimal price, BigDecimal promoPrice,
-			BigDecimal cost, ServiceContext serviceContext)
+			long userId, long cpInstanceId, BigDecimal price,
+			BigDecimal promoPrice, BigDecimal cost,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPInstance updateShippingInfo(
-			long cpInstanceId, double width, double height, double depth,
-			double weight, ServiceContext serviceContext)
+			long userId, long cpInstanceId, double width, double height,
+			double depth, double weight, ServiceContext serviceContext)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -561,7 +567,7 @@ public interface CPInstanceLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPInstance updateSubscriptionInfo(
-			long cpInstanceId, boolean overrideSubscriptionInfo,
+			long userId, long cpInstanceId, boolean overrideSubscriptionInfo,
 			boolean subscriptionEnabled, int subscriptionLength,
 			String subscriptionType,
 			UnicodeProperties subscriptionTypeSettingsUnicodeProperties,

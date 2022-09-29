@@ -225,12 +225,10 @@ public class CPDefinitionServiceUtil {
 	}
 
 	public static CPDefinition cloneCPDefinition(
-			long cpDefinitionId, long groupId,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+			long cpDefinitionId, long groupId)
 		throws PortalException {
 
-		return getService().cloneCPDefinition(
-			cpDefinitionId, groupId, serviceContext);
+		return getService().cloneCPDefinition(cpDefinitionId, groupId);
 	}
 
 	public static CPDefinition copyCPDefinition(

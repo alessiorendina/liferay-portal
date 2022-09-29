@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -35,6 +36,7 @@ public class CPInstanceModelListener extends BaseModelListener<CPInstance> {
 		try {
 			_cpDefinitionVirtualSettingLocalService.
 				deleteCPDefinitionVirtualSetting(
+					PrincipalThreadLocal.getUserId(),
 					cpInstance.getModelClassName(),
 					cpInstance.getCPInstanceId());
 		}

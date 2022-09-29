@@ -104,11 +104,12 @@ public class CPDefinitionInventoryServiceImpl
 		_checkCommerceCatalog(
 			cpDefinitionInventory.getCPDefinitionId(), ActionKeys.UPDATE);
 
-		return cpDefinitionInventoryLocalService.updateCPDefinitionInventory(
-			cpDefinitionInventoryId, cpDefinitionInventoryEngine,
-			lowStockActivity, displayAvailability, displayStockQuantity,
-			minStockQuantity, backOrders, minOrderQuantity, maxOrderQuantity,
-			allowedOrderQuantities, multipleOrderQuantity);
+		return cpDefinitionInventoryLocalService.updateCPDefinitionInventory(getUserId(),
+			cpDefinitionInventoryId,
+			cpDefinitionInventoryEngine, lowStockActivity, displayAvailability,
+			displayStockQuantity, minStockQuantity, backOrders,
+			minOrderQuantity,
+			maxOrderQuantity, allowedOrderQuantities, multipleOrderQuantity);
 	}
 
 	@Override
@@ -127,11 +128,12 @@ public class CPDefinitionInventoryServiceImpl
 		_checkCommerceCatalog(
 			cpDefinitionInventory.getCPDefinitionId(), ActionKeys.UPDATE);
 
-		return cpDefinitionInventoryLocalService.updateCPDefinitionInventory(
-			cpDefinitionInventoryId, cpDefinitionInventoryEngine,
-			lowStockActivity, displayAvailability, displayStockQuantity,
-			minStockQuantity, backOrders, minOrderQuantity, maxOrderQuantity,
-			allowedOrderQuantities, multipleOrderQuantity);
+		return cpDefinitionInventoryLocalService.updateCPDefinitionInventory(getUserId(),
+			cpDefinitionInventoryId,
+			cpDefinitionInventoryEngine, lowStockActivity, displayAvailability,
+			displayStockQuantity, minStockQuantity, backOrders,
+			minOrderQuantity,
+			maxOrderQuantity, allowedOrderQuantities, multipleOrderQuantity);
 	}
 
 	private void _checkCommerceCatalog(long cpDefinitionId, String actionId)

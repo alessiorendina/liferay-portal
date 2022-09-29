@@ -19,6 +19,7 @@ import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.base.CPDefinitionSpecificationOptionValueLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPDefinitionPersistence;
+import com.liferay.commerce.product.service.persistence.CPDefinitionSpecificationOptionValuePersistence;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.util.List;
@@ -48,9 +50,9 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 	@Override
 	public CPDefinitionSpecificationOptionValue
 			addCPDefinitionSpecificationOptionValue(
-				long cpDefinitionId, long cpSpecificationOptionId,
-				long cpOptionCategoryId, Map<Locale, String> valueMap,
-				double priority, ServiceContext serviceContext)
+		long userId, long cpDefinitionId, long cpSpecificationOptionId,
+		long cpOptionCategoryId, Map<Locale, String> valueMap,
+		double priority, ServiceContext serviceContext)
 		throws PortalException {
 
 		CPDefinition cpDefinition = _cpDefinitionPersistence.findByPrimaryKey(
@@ -67,6 +69,7 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 
 		if (_cpDefinitionLocalService.isVersionable(cpDefinitionId)) {
 			cpDefinition = _cpDefinitionLocalService.copyCPDefinition(
+				userId,
 				cpDefinitionId);
 
 			cpDefinitionId = cpDefinition.getCPDefinitionId();
@@ -100,34 +103,48 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 	}
 
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public CPDefinitionSpecificationOptionValue
-			deleteCPDefinitionSpecificationOptionValue(
-				CPDefinitionSpecificationOptionValue
-					cpDefinitionSpecificationOptionValue)
-		throws PortalException {
+	public void cloneCPDefinitionSpecificationOptionValue(long oldCPDefinitionId, long newCPDefinitionId){
 
-		return cpDefinitionSpecificationOptionValueLocalService.
-			deleteCPDefinitionSpecificationOptionValue(
-				cpDefinitionSpecificationOptionValue, true);
+		List<CPDefinitionSpecificationOptionValue>
+			cpDefinitionSpecificationOptionValues =
+			_cpDefinitionSpecificationOptionValuePersistence.
+				findByCPDefinitionId(oldCPDefinitionId);
+
+		for (CPDefinitionSpecificationOptionValue
+			cpDefinitionSpecificationOptionValue :
+			cpDefinitionSpecificationOptionValues) {
+
+			CPDefinitionSpecificationOptionValue
+				newCPDefinitionSpecificationOptionValue =
+				(CPDefinitionSpecificationOptionValue)
+					cpDefinitionSpecificationOptionValue.clone();
+
+			newCPDefinitionSpecificationOptionValue.setUuid(
+				PortalUUIDUtil.generate());
+			newCPDefinitionSpecificationOptionValue.
+				setCPDefinitionSpecificationOptionValueId(
+					counterLocalService.increment());
+			newCPDefinitionSpecificationOptionValue.setCPDefinitionId(
+				newCPDefinitionId);
+
+			_cpDefinitionSpecificationOptionValuePersistence.update(
+				newCPDefinitionSpecificationOptionValue);
+		}
 	}
 
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPDefinitionSpecificationOptionValue
-			deleteCPDefinitionSpecificationOptionValue(
-				CPDefinitionSpecificationOptionValue
-					cpDefinitionSpecificationOptionValue,
-				boolean makeCopy)
-		throws PortalException {
+	deleteCPDefinitionSpecificationOptionValue(
+		long userId, CPDefinitionSpecificationOptionValue
+			cpDefinitionSpecificationOptionValue) throws PortalException {
 
-		if (makeCopy &&
-			_cpDefinitionLocalService.isVersionable(
+		if (_cpDefinitionLocalService.isVersionable(
 				cpDefinitionSpecificationOptionValue.getCPDefinitionId())) {
 
 			try {
 				CPDefinition newCPDefinition =
-					_cpDefinitionLocalService.copyCPDefinition(
+					_cpDefinitionLocalService.copyCPDefinition(userId,
 						cpDefinitionSpecificationOptionValue.
 							getCPDefinitionId());
 
@@ -143,12 +160,22 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 			}
 		}
 
-		// Commerce product definition specification option value
+		return cpDefinitionSpecificationOptionValueLocalService.
+			deleteCPDefinitionSpecificationOptionValue(
+				cpDefinitionSpecificationOptionValue);
+	}
+
+
+	@Override
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public CPDefinitionSpecificationOptionValue
+			deleteCPDefinitionSpecificationOptionValue(
+				CPDefinitionSpecificationOptionValue
+					cpDefinitionSpecificationOptionValue)
+		throws PortalException {
 
 		cpDefinitionSpecificationOptionValuePersistence.remove(
 			cpDefinitionSpecificationOptionValue);
-
-		// Expando
 
 		_expandoRowLocalService.deleteRows(
 			cpDefinitionSpecificationOptionValue.
@@ -176,16 +203,34 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 				cpDefinitionSpecificationOptionValue);
 	}
 
+
 	@Override
-	public void deleteCPDefinitionSpecificationOptionValues(long cpDefinitionId)
+	public void deleteCPDefinitionSpecificationOptionValues(long userId,long cpDefinitionId)
 		throws PortalException {
 
-		cpDefinitionSpecificationOptionValueLocalService.
-			deleteCPDefinitionSpecificationOptionValues(cpDefinitionId, true);
+		List<CPDefinitionSpecificationOptionValue>
+			cpDefinitionSpecificationOptionValues =
+			getCPDefinitionSpecificationOptionValues(
+				cpDefinitionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		// Commerce product definition specification option value
+
+		for (CPDefinitionSpecificationOptionValue
+			cpDefinitionSpecificationOptionValue :
+			cpDefinitionSpecificationOptionValues) {
+
+			cpDefinitionSpecificationOptionValueLocalService.
+				deleteCPDefinitionSpecificationOptionValue(userId,
+					cpDefinitionSpecificationOptionValue);
+		}
+
+		// Commerce product definition
+
+		reindexCPDefinition(cpDefinitionId);
 	}
 
-	public void deleteCPDefinitionSpecificationOptionValues(
-			long cpDefinitionId, boolean makeCopy)
+	@Override
+	public void deleteCPDefinitionSpecificationOptionValues(long cpDefinitionId)
 		throws PortalException {
 
 		List<CPDefinitionSpecificationOptionValue>
@@ -193,18 +238,14 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 				getCPDefinitionSpecificationOptionValues(
 					cpDefinitionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
-		// Commerce product definition specification option value
-
 		for (CPDefinitionSpecificationOptionValue
 				cpDefinitionSpecificationOptionValue :
 					cpDefinitionSpecificationOptionValues) {
 
 			cpDefinitionSpecificationOptionValueLocalService.
 				deleteCPDefinitionSpecificationOptionValue(
-					cpDefinitionSpecificationOptionValue, makeCopy);
+					cpDefinitionSpecificationOptionValue);
 		}
-
-		// Commerce product definition
 
 		reindexCPDefinition(cpDefinitionId);
 	}
@@ -310,9 +351,9 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 	@Override
 	public CPDefinitionSpecificationOptionValue
 			updateCPDefinitionSpecificationOptionValue(
-				long cpDefinitionSpecificationOptionValueId,
-				long cpOptionCategoryId, Map<Locale, String> valueMap,
-				double priority, ServiceContext serviceContext)
+		long userId, long cpDefinitionSpecificationOptionValueId,
+		long cpOptionCategoryId, Map<Locale, String> valueMap,
+		double priority, ServiceContext serviceContext)
 		throws PortalException {
 
 		// Commerce product definition specification option value
@@ -327,6 +368,7 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 
 			CPDefinition newCPDefinition =
 				_cpDefinitionLocalService.copyCPDefinition(
+					userId,
 					cpDefinitionSpecificationOptionValue.getCPDefinitionId());
 
 			cpDefinitionSpecificationOptionValue =
@@ -357,8 +399,8 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 
 	@Override
 	public CPDefinitionSpecificationOptionValue updateCPOptionCategoryId(
-			long cpDefinitionSpecificationOptionValueId,
-			long cpOptionCategoryId)
+		long userId, long cpDefinitionSpecificationOptionValueId,
+		long cpOptionCategoryId)
 		throws PortalException {
 
 		// Commerce product definition specification option value
@@ -372,7 +414,7 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 				cpDefinitionSpecificationOptionValue.getCPDefinitionId())) {
 
 			CPDefinition newCPDefinition =
-				_cpDefinitionLocalService.copyCPDefinition(
+				_cpDefinitionLocalService.copyCPDefinition(userId,
 					cpDefinitionSpecificationOptionValue.getCPDefinitionId());
 
 			cpDefinitionSpecificationOptionValue =
@@ -405,6 +447,10 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 
 		indexer.reindex(CPDefinition.class.getName(), cpDefinitionId);
 	}
+
+	@BeanReference(type = CPDefinitionSpecificationOptionValuePersistence.class)
+	private CPDefinitionSpecificationOptionValuePersistence
+		_cpDefinitionSpecificationOptionValuePersistence;
 
 	@BeanReference(type = CPDefinitionLocalService.class)
 	private CPDefinitionLocalService _cpDefinitionLocalService;

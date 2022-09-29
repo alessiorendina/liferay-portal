@@ -94,13 +94,6 @@ public class CPOptionCategoryLocalServiceWrapper
 			primaryKeyObj);
 	}
 
-	@Override
-	public void deleteCPOptionCategories(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_cpOptionCategoryLocalService.deleteCPOptionCategories(companyId);
-	}
-
 	/**
 	 * Deletes the cp option category from the database. Also notifies the appropriate model listeners.
 	 *
@@ -110,12 +103,10 @@ public class CPOptionCategoryLocalServiceWrapper
 	 *
 	 * @param cpOptionCategory the cp option category
 	 * @return the cp option category that was removed
-	 * @throws PortalException
 	 */
 	@Override
 	public CPOptionCategory deleteCPOptionCategory(
-			CPOptionCategory cpOptionCategory)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		CPOptionCategory cpOptionCategory) {
 
 		return _cpOptionCategoryLocalService.deleteCPOptionCategory(
 			cpOptionCategory);
@@ -138,6 +129,24 @@ public class CPOptionCategoryLocalServiceWrapper
 
 		return _cpOptionCategoryLocalService.deleteCPOptionCategory(
 			CPOptionCategoryId);
+	}
+
+	@Override
+	public CPOptionCategory deleteCPOptionCategory(
+			long userId, CPOptionCategory cpOptionCategory)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpOptionCategoryLocalService.deleteCPOptionCategory(
+			userId, cpOptionCategory);
+	}
+
+	@Override
+	public CPOptionCategory deleteCPOptionCategory(
+			long userId, long cpOptionCategoryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpOptionCategoryLocalService.deleteCPOptionCategory(
+			userId, cpOptionCategoryId);
 	}
 
 	/**

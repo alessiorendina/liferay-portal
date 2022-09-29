@@ -374,8 +374,7 @@ public class CPDefinitionServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinition
 			cloneCPDefinition(
-				HttpPrincipal httpPrincipal, long cpDefinitionId, long groupId,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+				HttpPrincipal httpPrincipal, long cpDefinitionId, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -384,7 +383,7 @@ public class CPDefinitionServiceHttp {
 				_cloneCPDefinitionParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, groupId, serviceContext);
+				methodKey, cpDefinitionId, groupId);
 
 			Object returnObj = null;
 
@@ -1615,10 +1614,7 @@ public class CPDefinitionServiceHttp {
 			int.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _cloneCPDefinitionParameterTypes4 =
-		new Class[] {
-			long.class, long.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
-		};
+		new Class[] {long.class, long.class};
 	private static final Class<?>[] _copyCPDefinitionParameterTypes5 =
 		new Class[] {long.class, long.class, int.class};
 	private static final Class<?>[]

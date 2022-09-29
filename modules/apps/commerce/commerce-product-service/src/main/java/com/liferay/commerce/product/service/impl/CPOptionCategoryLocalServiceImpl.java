@@ -104,24 +104,11 @@ public class CPOptionCategoryLocalServiceImpl
 		return cpOptionCategory;
 	}
 
-	@Override
-	public void deleteCPOptionCategories(long companyId)
-		throws PortalException {
-
-		List<CPOptionCategory> cpOptionCategories =
-			cpOptionCategoryPersistence.findByCompanyId(companyId);
-
-		for (CPOptionCategory cpOptionCategory : cpOptionCategories) {
-			cpOptionCategoryLocalService.deleteCPOptionCategory(
-				cpOptionCategory);
-		}
-	}
-
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPOptionCategory deleteCPOptionCategory(
-			CPOptionCategory cpOptionCategory)
+		long userId, CPOptionCategory cpOptionCategory)
 		throws PortalException {
 
 		// Commerce product option category
@@ -160,7 +147,7 @@ public class CPOptionCategoryLocalServiceImpl
 					cpDefinitionSpecificationOptionValues) {
 
 			_cpDefinitionSpecificationOptionValueLocalService.
-				updateCPOptionCategoryId(
+				updateCPOptionCategoryId(userId,
 					cpDefinitionSpecificationOptionValue.
 						getCPDefinitionSpecificationOptionValueId(),
 					CPOptionCategoryConstants.DEFAULT_CP_OPTION_CATEGORY_ID);
@@ -170,13 +157,13 @@ public class CPOptionCategoryLocalServiceImpl
 	}
 
 	@Override
-	public CPOptionCategory deleteCPOptionCategory(long cpOptionCategoryId)
+	public CPOptionCategory deleteCPOptionCategory(long userId, long cpOptionCategoryId)
 		throws PortalException {
 
 		CPOptionCategory cpOptionCategory =
 			cpOptionCategoryPersistence.findByPrimaryKey(cpOptionCategoryId);
 
-		return cpOptionCategoryLocalService.deleteCPOptionCategory(
+		return cpOptionCategoryLocalService.deleteCPOptionCategory(userId,
 			cpOptionCategory);
 	}
 

@@ -198,7 +198,7 @@ public class WarehouseChannelResourceImpl
 		return _commerceChannelRelService.addCommerceChannelRel(
 			CommerceInventoryWarehouse.class.getName(),
 			commerceInventoryWarehouseId,
-			commerceChannel.getCommerceChannelId(), serviceContext);
+			commerceChannel.getCommerceChannelId());
 	}
 
 	private Map<String, Map<String, String>> _getActions(

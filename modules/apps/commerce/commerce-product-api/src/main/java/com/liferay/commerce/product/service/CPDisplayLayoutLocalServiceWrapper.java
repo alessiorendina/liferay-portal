@@ -65,6 +65,14 @@ public class CPDisplayLayoutLocalServiceWrapper
 			userId, groupId, clazz, classPK, layoutUuid);
 	}
 
+	@Override
+	public void cloneCPDisplayLayouts(
+		long oldCPDefinitionId, long newCPDefinitionId) {
+
+		_cpDisplayLayoutLocalService.cloneCPDisplayLayouts(
+			oldCPDefinitionId, newCPDefinitionId);
+	}
+
 	/**
 	 * Creates a new cp display layout with the primary key. Does not add the cp display layout to the database.
 	 *
@@ -86,12 +94,6 @@ public class CPDisplayLayoutLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDisplayLayoutLocalService.createPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public CPDisplayLayout deleteCPDisplayLayout(Class<?> clazz, long classPK) {
-		return _cpDisplayLayoutLocalService.deleteCPDisplayLayout(
-			clazz, classPK);
 	}
 
 	/**

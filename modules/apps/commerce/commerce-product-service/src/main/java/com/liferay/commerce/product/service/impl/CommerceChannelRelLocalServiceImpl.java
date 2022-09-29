@@ -15,8 +15,11 @@
 package com.liferay.commerce.product.service.impl;
 
 import com.liferay.commerce.product.exception.DuplicateCommerceChannelRelException;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceChannelRel;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.base.CommerceChannelRelLocalServiceBaseImpl;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -33,10 +36,8 @@ import java.util.List;
 public class CommerceChannelRelLocalServiceImpl
 	extends CommerceChannelRelLocalServiceBaseImpl {
 
-	@Override
 	public CommerceChannelRel addCommerceChannelRel(
-			String className, long classPK, long commerceChannelId,
-			ServiceContext serviceContext)
+		long userId, String className, long classPK, long commerceChannelId)
 		throws PortalException {
 
 		long classNameId = _classNameLocalService.getClassNameId(className);
@@ -49,7 +50,7 @@ public class CommerceChannelRelLocalServiceImpl
 			throw new DuplicateCommerceChannelRelException();
 		}
 
-		User user = _userLocalService.getUser(serviceContext.getUserId());
+		User user = _userLocalService.getUser(userId);
 
 		long commerceChannelRelId = counterLocalService.increment();
 
@@ -64,6 +65,29 @@ public class CommerceChannelRelLocalServiceImpl
 		commerceChannelRel.setCommerceChannelId(commerceChannelId);
 
 		return commerceChannelRelPersistence.update(commerceChannelRel);
+	}
+
+	public void cloneCommerceChannelRels(long oldCPDefinitionId, long newCPDefinitionId){
+
+		CPDefinition cpDefinition =
+			_cpDefintionLocalService.fetchCPDefinition(newCPDefinitionId);
+
+		for (CommerceChannelRel commerceChannelRel :
+			commerceChannelRelLocalService.getCommerceChannelRels(
+				cpDefinition.getModelClassName(),
+				oldCPDefinitionId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+
+			try {
+				commerceChannelRelLocalService.addCommerceChannelRel(
+					cpDefinition.getUserId(),
+					cpDefinition.getModelClassName(), newCPDefinitionId,
+					commerceChannelRel.getCommerceChannelId());
+			}
+			catch (PortalException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 	@Override
@@ -138,5 +162,8 @@ public class CommerceChannelRelLocalServiceImpl
 
 	@ServiceReference(type = UserLocalService.class)
 	private UserLocalService _userLocalService;
+
+	@ServiceReference(type = CPDefinitionLocalService.class)
+	private CPDefinitionLocalService _cpDefintionLocalService;
 
 }

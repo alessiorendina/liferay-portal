@@ -94,30 +94,34 @@ public interface CPDefinitionOptionRelLocalService
 		CPDefinitionOptionRel cpDefinitionOptionRel);
 
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, boolean importOptionValue,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long cpOptionId,
+			boolean importOptionValue, ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String ddmFormFieldTypeName,
-			double priority, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue,
+			long userId, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String ddmFormFieldTypeName, double priority, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
 			ServiceContext serviceContext)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String ddmFormFieldTypeName,
-			double priority, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue, String priceType,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String ddmFormFieldTypeName, double priority, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
+			String priceType, ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long cpOptionId,
+			ServiceContext serviceContext)
 		throws PortalException;
+
+	public void cloneCPDefinitionOptionRels(
+		long oldCPDefinitionId, long newCPDefinitionId);
 
 	/**
 	 * Creates a new cp definition option rel with the primary key. Does not add the cp definition option rel to the database.
@@ -166,6 +170,12 @@ public interface CPDefinitionOptionRelLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public CPDefinitionOptionRel deleteCPDefinitionOptionRel(
 			long CPDefinitionOptionRelId)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.DELETE)
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public CPDefinitionOptionRel deleteCPDefinitionOptionRel(
+			long userid, CPDefinitionOptionRel cpDefinitionOptionRel)
 		throws PortalException;
 
 	public void deleteCPDefinitionOptionRels(long cpDefinitionId)
@@ -458,7 +468,7 @@ public interface CPDefinitionOptionRelLocalService
 		CPDefinitionOptionRel cpDefinitionOptionRel);
 
 	public CPDefinitionOptionRel updateCPDefinitionOptionRel(
-			long cpDefinitionOptionRelId, long cpOptionId,
+			long userId, long cpDefinitionOptionRelId, long cpOptionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			String ddmFormFieldTypeName, double priority, boolean facetable,
 			boolean required, boolean skuContributor,
@@ -467,7 +477,7 @@ public interface CPDefinitionOptionRelLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinitionOptionRel updateCPDefinitionOptionRel(
-			long cpDefinitionOptionRelId, long cpOptionId,
+			long userId, long cpDefinitionOptionRelId, long cpOptionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			String ddmFormFieldTypeName, double priority, boolean facetable,
 			boolean required, boolean skuContributor, String priceType,

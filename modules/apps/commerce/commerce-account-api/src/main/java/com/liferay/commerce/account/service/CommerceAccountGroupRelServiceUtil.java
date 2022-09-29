@@ -40,12 +40,11 @@ public class CommerceAccountGroupRelServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.commerce.account.service.impl.CommerceAccountGroupRelServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static CommerceAccountGroupRel addCommerceAccountGroupRel(
-			String className, long classPK, long commerceAccountGroupId,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+			String className, long classPK, long commerceAccountGroupId)
 		throws PortalException {
 
 		return getService().addCommerceAccountGroupRel(
-			className, classPK, commerceAccountGroupId, serviceContext);
+			className, classPK, commerceAccountGroupId);
 	}
 
 	public static void deleteCommerceAccountGroupRel(

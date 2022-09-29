@@ -53,8 +53,7 @@ public class CommerceAccountGroupRelServiceHttp {
 	public static com.liferay.commerce.account.model.CommerceAccountGroupRel
 			addCommerceAccountGroupRel(
 				HttpPrincipal httpPrincipal, String className, long classPK,
-				long commerceAccountGroupId,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+				long commerceAccountGroupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -64,8 +63,7 @@ public class CommerceAccountGroupRelServiceHttp {
 				_addCommerceAccountGroupRelParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, className, classPK, commerceAccountGroupId,
-				serviceContext);
+				methodKey, className, classPK, commerceAccountGroupId);
 
 			Object returnObj = null;
 
@@ -382,10 +380,7 @@ public class CommerceAccountGroupRelServiceHttp {
 		CommerceAccountGroupRelServiceHttp.class);
 
 	private static final Class<?>[] _addCommerceAccountGroupRelParameterTypes0 =
-		new Class[] {
-			String.class, long.class, long.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
-		};
+		new Class[] {String.class, long.class, long.class};
 	private static final Class<?>[]
 		_deleteCommerceAccountGroupRelParameterTypes1 = new Class[] {
 			long.class

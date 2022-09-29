@@ -74,7 +74,7 @@ public class CPDefinitionOptionValueRelLocalServiceWrapper
 
 	@Override
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId,
+			long userId, long cpDefinitionOptionRelId,
 			java.util.Map<java.util.Locale, String> nameMap, double priority,
 			String key,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -82,7 +82,7 @@ public class CPDefinitionOptionValueRelLocalServiceWrapper
 
 		return _cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
-				cpDefinitionOptionRelId, nameMap, priority, key,
+				userId, cpDefinitionOptionRelId, nameMap, priority, key,
 				serviceContext);
 	}
 
@@ -150,6 +150,26 @@ public class CPDefinitionOptionValueRelLocalServiceWrapper
 
 		return _cpDefinitionOptionValueRelLocalService.
 			deleteCPDefinitionOptionValueRel(CPDefinitionOptionValueRelId);
+	}
+
+	@Override
+	public CPDefinitionOptionValueRel deleteCPDefinitionOptionValueRel(
+			long userId, CPDefinitionOptionValueRel cpDefinitionOptionValueRel)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionOptionValueRelLocalService.
+			deleteCPDefinitionOptionValueRel(
+				userId, cpDefinitionOptionValueRel);
+	}
+
+	@Override
+	public CPDefinitionOptionValueRel deleteCPDefinitionOptionValueRel(
+			long userId, long cpDefinitionOptionValueRelId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionOptionValueRelLocalService.
+			deleteCPDefinitionOptionValueRel(
+				userId, cpDefinitionOptionValueRelId);
 	}
 
 	@Override
@@ -643,7 +663,7 @@ public class CPDefinitionOptionValueRelLocalServiceWrapper
 
 	@Override
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
-			long cpDefinitionOptionValueRelId,
+			long userId, long cpDefinitionOptionValueRelId,
 			java.util.Map<java.util.Locale, String> nameMap, double priority,
 			String key, long cpInstanceId, int quantity, boolean preselected,
 			java.math.BigDecimal price,
@@ -652,7 +672,7 @@ public class CPDefinitionOptionValueRelLocalServiceWrapper
 
 		return _cpDefinitionOptionValueRelLocalService.
 			updateCPDefinitionOptionValueRel(
-				cpDefinitionOptionValueRelId, nameMap, priority, key,
+				userId, cpDefinitionOptionValueRelId, nameMap, priority, key,
 				cpInstanceId, quantity, preselected, price, serviceContext);
 	}
 

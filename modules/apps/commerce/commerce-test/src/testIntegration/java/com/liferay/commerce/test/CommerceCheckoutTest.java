@@ -701,11 +701,11 @@ public class CommerceCheckoutTest {
 				1);
 		}
 		else {
-			_cpDefinitionInventoryLocalService.updateCPDefinitionInventory(
-				cpDefinitionInventory.getCPDefinitionInventoryId(), "default",
-				"default", false, false, 1, false, 0,
-				CPDefinitionInventoryConstants.DEFAULT_MAX_ORDER_QUANTITY, null,
-				1);
+			_cpDefinitionInventoryLocalService.updateCPDefinitionInventory(_user.getUserId(),
+				cpDefinitionInventory.getCPDefinitionInventoryId(),
+				"default", "default", false, false, 1, false,
+				0, CPDefinitionInventoryConstants.DEFAULT_MAX_ORDER_QUANTITY,
+				null, 1);
 		}
 
 		int stockQuantity = _commerceInventoryEngine.getStockQuantity(

@@ -66,34 +66,16 @@ public class CPDefinitionVirtualSettingServiceImpl
 		checkPermission(className, classPK, ActionKeys.UPDATE);
 
 		return cpDefinitionVirtualSettingLocalService.
-			addCPDefinitionVirtualSetting(
-				className, classPK, fileEntryId, url, activationStatus,
-				duration, maxUsages, useSample, sampleFileEntryId, sampleUrl,
-				termsOfUseRequired, termsOfUseContentMap,
-				termsOfUseJournalArticleResourcePrimKey, override,
-				serviceContext);
+			addCPDefinitionVirtualSetting(getUserId(),
+				className, classPK, fileEntryId, url,
+				activationStatus, duration, maxUsages, useSample,
+				sampleFileEntryId,
+				sampleUrl, termsOfUseRequired,
+				termsOfUseContentMap, termsOfUseJournalArticleResourcePrimKey,
+				override, serviceContext);
 	}
 
-	@Override
-	public CPDefinitionVirtualSetting addCPDefinitionVirtualSetting(
-			String className, long classPK, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
-			boolean useSample, long sampleFileEntryId, String sampleUrl,
-			boolean termsOfUseRequired,
-			Map<Locale, String> termsOfUseContentMap,
-			long termsOfUseJournalArticleResourcePrimKey,
-			ServiceContext serviceContext)
-		throws PortalException {
 
-		checkPermission(className, classPK, ActionKeys.UPDATE);
-
-		return cpDefinitionVirtualSettingLocalService.
-			addCPDefinitionVirtualSetting(
-				className, classPK, fileEntryId, url, activationStatus,
-				duration, maxUsages, useSample, sampleFileEntryId, sampleUrl,
-				termsOfUseRequired, termsOfUseContentMap,
-				termsOfUseJournalArticleResourcePrimKey, serviceContext);
-	}
 
 	@Override
 	public CPDefinitionVirtualSetting fetchCPDefinitionVirtualSetting(
@@ -131,39 +113,12 @@ public class CPDefinitionVirtualSettingServiceImpl
 			cpDefinitionVirtualSetting.getClassPK(), ActionKeys.UPDATE);
 
 		return cpDefinitionVirtualSettingLocalService.
-			updateCPDefinitionVirtualSetting(
-				cpDefinitionVirtualSettingId, fileEntryId, url,
-				activationStatus, duration, maxUsages, useSample,
-				sampleFileEntryId, sampleUrl, termsOfUseRequired,
-				termsOfUseContentMap, termsOfUseJournalArticleResourcePrimKey,
-				override, serviceContext);
-	}
-
-	@Override
-	public CPDefinitionVirtualSetting updateCPDefinitionVirtualSetting(
-			long cpDefinitionVirtualSettingId, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
-			boolean useSample, long sampleFileEntryId, String sampleUrl,
-			boolean termsOfUseRequired,
-			Map<Locale, String> termsOfUseContentMap,
-			long termsOfUseJournalArticleResourcePrimKey,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
-			cpDefinitionVirtualSettingLocalService.
-				getCPDefinitionVirtualSetting(cpDefinitionVirtualSettingId);
-
-		checkPermission(
-			cpDefinitionVirtualSetting.getClassName(),
-			cpDefinitionVirtualSetting.getClassPK(), ActionKeys.UPDATE);
-
-		return cpDefinitionVirtualSettingLocalService.
-			updateCPDefinitionVirtualSetting(
-				cpDefinitionVirtualSettingId, fileEntryId, url,
-				activationStatus, duration, maxUsages, useSample,
-				sampleFileEntryId, sampleUrl, termsOfUseRequired,
-				termsOfUseContentMap, termsOfUseJournalArticleResourcePrimKey,
+			updateCPDefinitionVirtualSetting(getUserId(),
+				cpDefinitionVirtualSettingId, fileEntryId,
+				url, activationStatus, duration, maxUsages,
+				useSample, sampleFileEntryId, sampleUrl,
+				termsOfUseRequired, termsOfUseContentMap,
+				termsOfUseJournalArticleResourcePrimKey, override,
 				serviceContext);
 	}
 

@@ -64,19 +64,9 @@ public interface CPDefinitionGroupedEntryLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.product.type.grouped.service.impl.CPDefinitionGroupedEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the cp definition grouped entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CPDefinitionGroupedEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
 	public void addCPDefinitionGroupedEntries(
-			long cpDefinitionId, long[] entryCPDefinitionIds,
-			ServiceContext serviceContext)
-		throws PortalException;
-
-	public void addCPDefinitionGroupedEntriesByEntryCProductIds(
-			long cpDefinitionId, long[] entryCProductIds,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long[] entryCPDefinitionIds,
+			ServiceContext serviceContext, int priority, int quantity)
 		throws PortalException;
 
 	/**
@@ -93,19 +83,10 @@ public interface CPDefinitionGroupedEntryLocalService
 	public CPDefinitionGroupedEntry addCPDefinitionGroupedEntry(
 		CPDefinitionGroupedEntry cpDefinitionGroupedEntry);
 
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	public CPDefinitionGroupedEntry addCPDefinitionGroupedEntry(
-			long cpDefinitionId, long entryCPDefinitionId, double priority,
-			int quantity, ServiceContext serviceContext)
-		throws PortalException;
-
 	public CPDefinitionGroupedEntry
 			addCPDefinitionGroupedEntryByEntryCProductId(
-				long cpDefinitionId, long entryCProductId, double priority,
-				int quantity, ServiceContext serviceContext)
+				long userId, long cpDefinitionId, long entryCProductId,
+				double priority, int quantity, ServiceContext serviceContext)
 		throws PortalException;
 
 	public void cloneCPDefinitionGroupedEntries(
@@ -398,7 +379,8 @@ public interface CPDefinitionGroupedEntryLocalService
 		CPDefinitionGroupedEntry cpDefinitionGroupedEntry);
 
 	public CPDefinitionGroupedEntry updateCPDefinitionGroupedEntry(
-			long cpDefinitionGroupedEntryId, double priority, int quantity)
+			long userId, long cpDefinitionGroupedEntryId, double priority,
+			int quantity)
 		throws PortalException;
 
 }

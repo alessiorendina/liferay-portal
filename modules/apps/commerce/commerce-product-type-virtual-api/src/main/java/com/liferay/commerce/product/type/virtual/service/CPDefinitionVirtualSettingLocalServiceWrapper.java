@@ -64,10 +64,11 @@ public class CPDefinitionVirtualSettingLocalServiceWrapper
 	public
 		com.liferay.commerce.product.type.virtual.model.
 			CPDefinitionVirtualSetting addCPDefinitionVirtualSetting(
-					String className, long classPK, long fileEntryId,
-					String url, int activationStatus, long duration,
-					int maxUsages, boolean useSample, long sampleFileEntryId,
-					String sampleUrl, boolean termsOfUseRequired,
+					long userId, String className, long classPK,
+					long fileEntryId, String url, int activationStatus,
+					long duration, int maxUsages, boolean useSample,
+					long sampleFileEntryId, String sampleUrl,
+					boolean termsOfUseRequired,
 					java.util.Map<java.util.Locale, String>
 						termsOfUseContentMap,
 					long termsOfUseJournalArticleResourcePrimKey,
@@ -78,34 +79,11 @@ public class CPDefinitionVirtualSettingLocalServiceWrapper
 
 		return _cpDefinitionVirtualSettingLocalService.
 			addCPDefinitionVirtualSetting(
-				className, classPK, fileEntryId, url, activationStatus,
+				userId, className, classPK, fileEntryId, url, activationStatus,
 				duration, maxUsages, useSample, sampleFileEntryId, sampleUrl,
 				termsOfUseRequired, termsOfUseContentMap,
 				termsOfUseJournalArticleResourcePrimKey, override,
 				serviceContext);
-	}
-
-	@Override
-	public
-		com.liferay.commerce.product.type.virtual.model.
-			CPDefinitionVirtualSetting addCPDefinitionVirtualSetting(
-					String className, long classPK, long fileEntryId,
-					String url, int activationStatus, long duration,
-					int maxUsages, boolean useSample, long sampleFileEntryId,
-					String sampleUrl, boolean termsOfUseRequired,
-					java.util.Map<java.util.Locale, String>
-						termsOfUseContentMap,
-					long termsOfUseJournalArticleResourcePrimKey,
-					com.liferay.portal.kernel.service.ServiceContext
-						serviceContext)
-				throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cpDefinitionVirtualSettingLocalService.
-			addCPDefinitionVirtualSetting(
-				className, classPK, fileEntryId, url, activationStatus,
-				duration, maxUsages, useSample, sampleFileEntryId, sampleUrl,
-				termsOfUseRequired, termsOfUseContentMap,
-				termsOfUseJournalArticleResourcePrimKey, serviceContext);
 	}
 
 	@Override
@@ -191,8 +169,18 @@ public class CPDefinitionVirtualSettingLocalServiceWrapper
 	public
 		com.liferay.commerce.product.type.virtual.model.
 			CPDefinitionVirtualSetting deleteCPDefinitionVirtualSetting(
-					String className, long classPK)
+					long userId, String className, long classPK)
 				throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionVirtualSettingLocalService.
+			deleteCPDefinitionVirtualSetting(userId, className, classPK);
+	}
+
+	@Override
+	public
+		com.liferay.commerce.product.type.virtual.model.
+			CPDefinitionVirtualSetting deleteCPDefinitionVirtualSetting(
+				String className, long classPK) {
 
 		return _cpDefinitionVirtualSettingLocalService.
 			deleteCPDefinitionVirtualSetting(className, classPK);
@@ -551,10 +539,11 @@ public class CPDefinitionVirtualSettingLocalServiceWrapper
 	public
 		com.liferay.commerce.product.type.virtual.model.
 			CPDefinitionVirtualSetting updateCPDefinitionVirtualSetting(
-					long cpDefinitionVirtualSettingId, long fileEntryId,
-					String url, int activationStatus, long duration,
-					int maxUsages, boolean useSample, long sampleFileEntryId,
-					String sampleUrl, boolean termsOfUseRequired,
+					long userId, long cpDefinitionVirtualSettingId,
+					long fileEntryId, String url, int activationStatus,
+					long duration, int maxUsages, boolean useSample,
+					long sampleFileEntryId, String sampleUrl,
+					boolean termsOfUseRequired,
 					java.util.Map<java.util.Locale, String>
 						termsOfUseContentMap,
 					long termsOfUseJournalArticleResourcePrimKey,
@@ -565,35 +554,11 @@ public class CPDefinitionVirtualSettingLocalServiceWrapper
 
 		return _cpDefinitionVirtualSettingLocalService.
 			updateCPDefinitionVirtualSetting(
-				cpDefinitionVirtualSettingId, fileEntryId, url,
+				userId, cpDefinitionVirtualSettingId, fileEntryId, url,
 				activationStatus, duration, maxUsages, useSample,
 				sampleFileEntryId, sampleUrl, termsOfUseRequired,
 				termsOfUseContentMap, termsOfUseJournalArticleResourcePrimKey,
 				override, serviceContext);
-	}
-
-	@Override
-	public
-		com.liferay.commerce.product.type.virtual.model.
-			CPDefinitionVirtualSetting updateCPDefinitionVirtualSetting(
-					long cpDefinitionVirtualSettingId, long fileEntryId,
-					String url, int activationStatus, long duration,
-					int maxUsages, boolean useSample, long sampleFileEntryId,
-					String sampleUrl, boolean termsOfUseRequired,
-					java.util.Map<java.util.Locale, String>
-						termsOfUseContentMap,
-					long termsOfUseJournalArticleResourcePrimKey,
-					com.liferay.portal.kernel.service.ServiceContext
-						serviceContext)
-				throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cpDefinitionVirtualSettingLocalService.
-			updateCPDefinitionVirtualSetting(
-				cpDefinitionVirtualSettingId, fileEntryId, url,
-				activationStatus, duration, maxUsages, useSample,
-				sampleFileEntryId, sampleUrl, termsOfUseRequired,
-				termsOfUseContentMap, termsOfUseJournalArticleResourcePrimKey,
-				serviceContext);
 	}
 
 	@Override

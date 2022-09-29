@@ -104,8 +104,9 @@ public interface CPDefinitionOptionValueRelLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, Map<Locale, String> nameMap,
-			double priority, String key, ServiceContext serviceContext)
+			long userId, long cpDefinitionOptionRelId,
+			Map<Locale, String> nameMap, double priority, String key,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -155,6 +156,14 @@ public interface CPDefinitionOptionValueRelLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public CPDefinitionOptionValueRel deleteCPDefinitionOptionValueRel(
 			long CPDefinitionOptionValueRelId)
+		throws PortalException;
+
+	public CPDefinitionOptionValueRel deleteCPDefinitionOptionValueRel(
+			long userId, CPDefinitionOptionValueRel cpDefinitionOptionValueRel)
+		throws PortalException;
+
+	public CPDefinitionOptionValueRel deleteCPDefinitionOptionValueRel(
+			long userId, long cpDefinitionOptionValueRelId)
 		throws PortalException;
 
 	public void deleteCPDefinitionOptionValueRels(long cpDefinitionOptionRelId)
@@ -451,10 +460,10 @@ public interface CPDefinitionOptionValueRelLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
-			long cpDefinitionOptionValueRelId, Map<Locale, String> nameMap,
-			double priority, String key, long cpInstanceId, int quantity,
-			boolean preselected, BigDecimal price,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionOptionValueRelId,
+			Map<Locale, String> nameMap, double priority, String key,
+			long cpInstanceId, int quantity, boolean preselected,
+			BigDecimal price, ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinitionOptionValueRel

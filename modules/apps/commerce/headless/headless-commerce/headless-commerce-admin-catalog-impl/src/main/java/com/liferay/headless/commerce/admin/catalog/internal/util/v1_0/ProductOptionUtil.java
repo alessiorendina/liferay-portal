@@ -30,9 +30,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 public class ProductOptionUtil {
 
 	public static CPDefinitionOptionRel addOrUpdateCPDefinitionOptionRel(
-			CPDefinitionOptionRelService cpDefinitionOptionRelService,
-			CPOptionService cpOptionService, ProductOption productOption,
-			long cpDefinitionId, ServiceContext serviceContext)
+		CPDefinitionOptionRelService cpDefinitionOptionRelService,
+		CPOptionService cpOptionService, ProductOption productOption,
+		long cpDefinitionId, ServiceContext serviceContext)
 		throws PortalException {
 
 		CPOption cpOption = cpOptionService.getCPOption(

@@ -68,12 +68,13 @@ public class VirtualCPTypeTestUtil {
 			termsOfUseContentMap = RandomTestUtil.randomLocaleStringMap();
 		}
 
+		// TODO check the override
 		return CPDefinitionVirtualSettingLocalServiceUtil.
 			addCPDefinitionVirtualSetting(
-				className, classPK, fileEntryId, url, activationStatus,
+				serviceContext.getUserId(), className, classPK, fileEntryId, url, activationStatus,
 				duration, RandomTestUtil.randomInt(), true, sampleFileEntryId,
 				sampleUrl, true, termsOfUseContentMap,
-				termsOfUseJournalArticleResourcePrimKey, serviceContext);
+				termsOfUseJournalArticleResourcePrimKey, true, serviceContext);
 	}
 
 	public static JournalArticle addJournalArticle(long groupId)

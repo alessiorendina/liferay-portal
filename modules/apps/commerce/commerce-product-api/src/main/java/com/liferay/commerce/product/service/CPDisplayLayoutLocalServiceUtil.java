@@ -70,6 +70,13 @@ public class CPDisplayLayoutLocalServiceUtil {
 			userId, groupId, clazz, classPK, layoutUuid);
 	}
 
+	public static void cloneCPDisplayLayouts(
+		long oldCPDefinitionId, long newCPDefinitionId) {
+
+		getService().cloneCPDisplayLayouts(
+			oldCPDefinitionId, newCPDefinitionId);
+	}
+
 	/**
 	 * Creates a new cp display layout with the primary key. Does not add the cp display layout to the database.
 	 *
@@ -90,12 +97,6 @@ public class CPDisplayLayoutLocalServiceUtil {
 		throws PortalException {
 
 		return getService().createPersistedModel(primaryKeyObj);
-	}
-
-	public static CPDisplayLayout deleteCPDisplayLayout(
-		Class<?> clazz, long classPK) {
-
-		return getService().deleteCPDisplayLayout(clazz, classPK);
 	}
 
 	/**

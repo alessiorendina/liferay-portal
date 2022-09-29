@@ -44,27 +44,15 @@ public class CPDefinitionGroupedEntryLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.commerce.product.type.grouped.service.impl.CPDefinitionGroupedEntryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
 	public static void addCPDefinitionGroupedEntries(
-			long cpDefinitionId, long[] entryCPDefinitionIds,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long[] entryCPDefinitionIds,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext,
+			int priority, int quantity)
 		throws PortalException {
 
 		getService().addCPDefinitionGroupedEntries(
-			cpDefinitionId, entryCPDefinitionIds, serviceContext);
-	}
-
-	public static void addCPDefinitionGroupedEntriesByEntryCProductIds(
-			long cpDefinitionId, long[] entryCProductIds,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		getService().addCPDefinitionGroupedEntriesByEntryCProductIds(
-			cpDefinitionId, entryCProductIds, serviceContext);
+			userId, cpDefinitionId, entryCPDefinitionIds, serviceContext,
+			priority, quantity);
 	}
 
 	/**
@@ -84,30 +72,15 @@ public class CPDefinitionGroupedEntryLocalServiceUtil {
 			cpDefinitionGroupedEntry);
 	}
 
-	/**
-	 * @deprecated As of Mueller (7.2.x)
-	 */
-	@Deprecated
-	public static CPDefinitionGroupedEntry addCPDefinitionGroupedEntry(
-			long cpDefinitionId, long entryCPDefinitionId, double priority,
-			int quantity,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCPDefinitionGroupedEntry(
-			cpDefinitionId, entryCPDefinitionId, priority, quantity,
-			serviceContext);
-	}
-
 	public static CPDefinitionGroupedEntry
 			addCPDefinitionGroupedEntryByEntryCProductId(
-				long cpDefinitionId, long entryCProductId, double priority,
-				int quantity,
+				long userId, long cpDefinitionId, long entryCProductId,
+				double priority, int quantity,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCPDefinitionGroupedEntryByEntryCProductId(
-			cpDefinitionId, entryCProductId, priority, quantity,
+			userId, cpDefinitionId, entryCProductId, priority, quantity,
 			serviceContext);
 	}
 
@@ -490,11 +463,12 @@ public class CPDefinitionGroupedEntryLocalServiceUtil {
 	}
 
 	public static CPDefinitionGroupedEntry updateCPDefinitionGroupedEntry(
-			long cpDefinitionGroupedEntryId, double priority, int quantity)
+			long userId, long cpDefinitionGroupedEntryId, double priority,
+			int quantity)
 		throws PortalException {
 
 		return getService().updateCPDefinitionGroupedEntry(
-			cpDefinitionGroupedEntryId, priority, quantity);
+			userId, cpDefinitionGroupedEntryId, priority, quantity);
 	}
 
 	public static CPDefinitionGroupedEntryLocalService getService() {

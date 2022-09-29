@@ -16,8 +16,8 @@ package com.liferay.commerce.product.internal.option;
 
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.option.CommerceOptionType;
-import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 
+import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import org.osgi.service.component.annotations.Reference;
 
 /**

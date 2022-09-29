@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.io.Serializable;
@@ -76,7 +77,7 @@ public class CPDisplayLayoutLocalServiceImpl
 
 			try {
 				CPDefinition newCPDefinition =
-					_cpDefinitionLocalService.copyCPDefinition(classPK);
+					_cpDefinitionLocalService.copyCPDefinition(userId, classPK);
 
 				classPK = newCPDefinition.getCPDefinitionId();
 			}
@@ -112,23 +113,27 @@ public class CPDisplayLayoutLocalServiceImpl
 		return cpDisplayLayoutPersistence.update(cpDisplayLayout);
 	}
 
-	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public CPDisplayLayout deleteCPDisplayLayout(Class<?> clazz, long classPK) {
-		try {
-			if ((clazz == CPDefinition.class) &&
-				_cpDefinitionLocalService.isVersionable(classPK)) {
+	public void cloneCPDisplayLayouts(long oldCPDefinitionId, long newCPDefinitionId){
 
-				_cpDefinitionLocalService.copyCPDefinition(classPK);
-			}
+		long cpDefinitionClassNameId = _classNameLocalService.getClassNameId(
+			CPDefinition.class);
+
+		List<CPDisplayLayout> cpDisplayLayouts =
+			cpDisplayLayoutPersistence.findByC_C(
+				cpDefinitionClassNameId, oldCPDefinitionId);
+
+		for (CPDisplayLayout cpDisplayLayout : cpDisplayLayouts) {
+			CPDisplayLayout newCPDisplayLayout =
+				(CPDisplayLayout)cpDisplayLayout.clone();
+
+			newCPDisplayLayout.setUuid(PortalUUIDUtil.generate());
+			newCPDisplayLayout.setCPDisplayLayoutId(
+				counterLocalService.increment());
+			newCPDisplayLayout.setClassPK(newCPDefinitionId);
+
+			cpDisplayLayoutPersistence.update(newCPDisplayLayout);
 		}
-		catch (PortalException portalException) {
-			throw new SystemException(portalException);
-		}
-
-		cpDisplayLayoutLocalService.deleteCPDisplayLayouts(clazz, classPK);
-
-		return null;
 	}
 
 	@Override

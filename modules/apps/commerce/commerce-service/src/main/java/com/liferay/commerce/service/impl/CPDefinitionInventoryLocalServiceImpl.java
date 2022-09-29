@@ -55,7 +55,7 @@ public class CPDefinitionInventoryLocalServiceImpl
 			cpDefinitionId);
 
 		if (_cpDefinitionLocalService.isVersionable(cpDefinitionId)) {
-			cpDefinition = _cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition = _cpDefinitionLocalService.copyCPDefinition(userId,
 				cpDefinitionId);
 		}
 
@@ -107,23 +107,6 @@ public class CPDefinitionInventoryLocalServiceImpl
 	public CPDefinitionInventory deleteCPDefinitionInventory(
 		CPDefinitionInventory cpDefinitionInventory) {
 
-		if (_cpDefinitionLocalService.isVersionable(
-				cpDefinitionInventory.getCPDefinitionId())) {
-
-			try {
-				CPDefinition newCPDefinition =
-					_cpDefinitionLocalService.copyCPDefinition(
-						cpDefinitionInventory.getCPDefinitionId());
-
-				cpDefinitionInventory =
-					cpDefinitionInventoryPersistence.findByCPDefinitionId(
-						newCPDefinition.getCPDefinitionId());
-			}
-			catch (PortalException portalException) {
-				throw new SystemException(portalException);
-			}
-		}
-
 		return cpDefinitionInventoryPersistence.remove(cpDefinitionInventory);
 	}
 
@@ -164,11 +147,11 @@ public class CPDefinitionInventoryLocalServiceImpl
 
 	@Override
 	public CPDefinitionInventory updateCPDefinitionInventory(
-			long cpDefinitionInventoryId, String cpDefinitionInventoryEngine,
-			String lowStockActivity, boolean displayAvailability,
-			boolean displayStockQuantity, int minStockQuantity,
-			boolean backOrders, int minOrderQuantity, int maxOrderQuantity,
-			String allowedOrderQuantities, int multipleOrderQuantity)
+		long userId, long cpDefinitionInventoryId, String cpDefinitionInventoryEngine,
+		String lowStockActivity, boolean displayAvailability,
+		boolean displayStockQuantity, int minStockQuantity,
+		boolean backOrders, int minOrderQuantity, int maxOrderQuantity,
+		String allowedOrderQuantities, int multipleOrderQuantity)
 		throws PortalException {
 
 		CPDefinitionInventory cpDefinitionInventory =
@@ -179,7 +162,7 @@ public class CPDefinitionInventoryLocalServiceImpl
 				cpDefinitionInventory.getCPDefinitionId())) {
 
 			CPDefinition newCPDefinition =
-				_cpDefinitionLocalService.copyCPDefinition(
+				_cpDefinitionLocalService.copyCPDefinition(userId,
 					cpDefinitionInventory.getCPDefinitionId());
 
 			cpDefinitionInventory =

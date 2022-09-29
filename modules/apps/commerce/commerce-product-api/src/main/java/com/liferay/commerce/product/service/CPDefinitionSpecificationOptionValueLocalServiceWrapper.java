@@ -67,7 +67,7 @@ public class CPDefinitionSpecificationOptionValueLocalServiceWrapper
 	@Override
 	public CPDefinitionSpecificationOptionValue
 			addCPDefinitionSpecificationOptionValue(
-				long cpDefinitionId, long cpSpecificationOptionId,
+				long userId, long cpDefinitionId, long cpSpecificationOptionId,
 				long cpOptionCategoryId,
 				java.util.Map<java.util.Locale, String> valueMap,
 				double priority,
@@ -76,8 +76,17 @@ public class CPDefinitionSpecificationOptionValueLocalServiceWrapper
 
 		return _cpDefinitionSpecificationOptionValueLocalService.
 			addCPDefinitionSpecificationOptionValue(
-				cpDefinitionId, cpSpecificationOptionId, cpOptionCategoryId,
-				valueMap, priority, serviceContext);
+				userId, cpDefinitionId, cpSpecificationOptionId,
+				cpOptionCategoryId, valueMap, priority, serviceContext);
+	}
+
+	@Override
+	public void cloneCPDefinitionSpecificationOptionValue(
+		long oldCPDefinitionId, long newCPDefinitionId) {
+
+		_cpDefinitionSpecificationOptionValueLocalService.
+			cloneCPDefinitionSpecificationOptionValue(
+				oldCPDefinitionId, newCPDefinitionId);
 	}
 
 	/**
@@ -131,19 +140,6 @@ public class CPDefinitionSpecificationOptionValueLocalServiceWrapper
 				cpDefinitionSpecificationOptionValue);
 	}
 
-	@Override
-	public CPDefinitionSpecificationOptionValue
-			deleteCPDefinitionSpecificationOptionValue(
-				CPDefinitionSpecificationOptionValue
-					cpDefinitionSpecificationOptionValue,
-				boolean makeCopy)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cpDefinitionSpecificationOptionValueLocalService.
-			deleteCPDefinitionSpecificationOptionValue(
-				cpDefinitionSpecificationOptionValue, makeCopy);
-	}
-
 	/**
 	 * Deletes the cp definition specification option value with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
@@ -167,6 +163,19 @@ public class CPDefinitionSpecificationOptionValueLocalServiceWrapper
 	}
 
 	@Override
+	public CPDefinitionSpecificationOptionValue
+			deleteCPDefinitionSpecificationOptionValue(
+				long userId,
+				CPDefinitionSpecificationOptionValue
+					cpDefinitionSpecificationOptionValue)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionSpecificationOptionValueLocalService.
+			deleteCPDefinitionSpecificationOptionValue(
+				userId, cpDefinitionSpecificationOptionValue);
+	}
+
+	@Override
 	public void deleteCPDefinitionSpecificationOptionValues(long cpDefinitionId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -176,12 +185,11 @@ public class CPDefinitionSpecificationOptionValueLocalServiceWrapper
 
 	@Override
 	public void deleteCPDefinitionSpecificationOptionValues(
-			long cpDefinitionId, boolean makeCopy)
+			long userId, long cpDefinitionId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_cpDefinitionSpecificationOptionValueLocalService.
-			deleteCPDefinitionSpecificationOptionValues(
-				cpDefinitionId, makeCopy);
+			deleteCPDefinitionSpecificationOptionValues(userId, cpDefinitionId);
 	}
 
 	@Override
@@ -596,7 +604,7 @@ public class CPDefinitionSpecificationOptionValueLocalServiceWrapper
 	@Override
 	public CPDefinitionSpecificationOptionValue
 			updateCPDefinitionSpecificationOptionValue(
-				long cpDefinitionSpecificationOptionValueId,
+				long userId, long cpDefinitionSpecificationOptionValueId,
 				long cpOptionCategoryId,
 				java.util.Map<java.util.Locale, String> valueMap,
 				double priority,
@@ -605,19 +613,20 @@ public class CPDefinitionSpecificationOptionValueLocalServiceWrapper
 
 		return _cpDefinitionSpecificationOptionValueLocalService.
 			updateCPDefinitionSpecificationOptionValue(
-				cpDefinitionSpecificationOptionValueId, cpOptionCategoryId,
-				valueMap, priority, serviceContext);
+				userId, cpDefinitionSpecificationOptionValueId,
+				cpOptionCategoryId, valueMap, priority, serviceContext);
 	}
 
 	@Override
 	public CPDefinitionSpecificationOptionValue updateCPOptionCategoryId(
-			long cpDefinitionSpecificationOptionValueId,
+			long userId, long cpDefinitionSpecificationOptionValueId,
 			long cpOptionCategoryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionSpecificationOptionValueLocalService.
 			updateCPOptionCategoryId(
-				cpDefinitionSpecificationOptionValueId, cpOptionCategoryId);
+				userId, cpDefinitionSpecificationOptionValueId,
+				cpOptionCategoryId);
 	}
 
 	@Override

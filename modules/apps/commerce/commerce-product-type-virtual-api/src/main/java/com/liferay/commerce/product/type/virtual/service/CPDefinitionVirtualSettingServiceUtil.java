@@ -55,23 +55,6 @@ public class CPDefinitionVirtualSettingServiceUtil {
 			termsOfUseJournalArticleResourcePrimKey, override, serviceContext);
 	}
 
-	public static CPDefinitionVirtualSetting addCPDefinitionVirtualSetting(
-			String className, long classPK, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
-			boolean useSample, long sampleFileEntryId, String sampleUrl,
-			boolean termsOfUseRequired,
-			Map<java.util.Locale, String> termsOfUseContentMap,
-			long termsOfUseJournalArticleResourcePrimKey,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCPDefinitionVirtualSetting(
-			className, classPK, fileEntryId, url, activationStatus, duration,
-			maxUsages, useSample, sampleFileEntryId, sampleUrl,
-			termsOfUseRequired, termsOfUseContentMap,
-			termsOfUseJournalArticleResourcePrimKey, serviceContext);
-	}
-
 	public static CPDefinitionVirtualSetting fetchCPDefinitionVirtualSetting(
 			String className, long classPK)
 		throws PortalException {
@@ -103,23 +86,6 @@ public class CPDefinitionVirtualSettingServiceUtil {
 			duration, maxUsages, useSample, sampleFileEntryId, sampleUrl,
 			termsOfUseRequired, termsOfUseContentMap,
 			termsOfUseJournalArticleResourcePrimKey, override, serviceContext);
-	}
-
-	public static CPDefinitionVirtualSetting updateCPDefinitionVirtualSetting(
-			long cpDefinitionVirtualSettingId, long fileEntryId, String url,
-			int activationStatus, long duration, int maxUsages,
-			boolean useSample, long sampleFileEntryId, String sampleUrl,
-			boolean termsOfUseRequired,
-			Map<java.util.Locale, String> termsOfUseContentMap,
-			long termsOfUseJournalArticleResourcePrimKey,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().updateCPDefinitionVirtualSetting(
-			cpDefinitionVirtualSettingId, fileEntryId, url, activationStatus,
-			duration, maxUsages, useSample, sampleFileEntryId, sampleUrl,
-			termsOfUseRequired, termsOfUseContentMap,
-			termsOfUseJournalArticleResourcePrimKey, serviceContext);
 	}
 
 	public static CPDefinitionVirtualSettingService getService() {

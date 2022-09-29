@@ -74,13 +74,14 @@ public class CPDefinitionOptionValueRelLocalServiceUtil {
 	}
 
 	public static CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, Map<java.util.Locale, String> nameMap,
-			double priority, String key,
+			long userId, long cpDefinitionOptionRelId,
+			Map<java.util.Locale, String> nameMap, double priority, String key,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCPDefinitionOptionValueRel(
-			cpDefinitionOptionRelId, nameMap, priority, key, serviceContext);
+			userId, cpDefinitionOptionRelId, nameMap, priority, key,
+			serviceContext);
 	}
 
 	/**
@@ -142,6 +143,22 @@ public class CPDefinitionOptionValueRelLocalServiceUtil {
 
 		return getService().deleteCPDefinitionOptionValueRel(
 			CPDefinitionOptionValueRelId);
+	}
+
+	public static CPDefinitionOptionValueRel deleteCPDefinitionOptionValueRel(
+			long userId, CPDefinitionOptionValueRel cpDefinitionOptionValueRel)
+		throws PortalException {
+
+		return getService().deleteCPDefinitionOptionValueRel(
+			userId, cpDefinitionOptionValueRel);
+	}
+
+	public static CPDefinitionOptionValueRel deleteCPDefinitionOptionValueRel(
+			long userId, long cpDefinitionOptionValueRelId)
+		throws PortalException {
+
+		return getService().deleteCPDefinitionOptionValueRel(
+			userId, cpDefinitionOptionValueRelId);
 	}
 
 	public static void deleteCPDefinitionOptionValueRels(
@@ -561,7 +578,7 @@ public class CPDefinitionOptionValueRelLocalServiceUtil {
 	}
 
 	public static CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
-			long cpDefinitionOptionValueRelId,
+			long userId, long cpDefinitionOptionValueRelId,
 			Map<java.util.Locale, String> nameMap, double priority, String key,
 			long cpInstanceId, int quantity, boolean preselected,
 			java.math.BigDecimal price,
@@ -569,8 +586,8 @@ public class CPDefinitionOptionValueRelLocalServiceUtil {
 		throws PortalException {
 
 		return getService().updateCPDefinitionOptionValueRel(
-			cpDefinitionOptionValueRelId, nameMap, priority, key, cpInstanceId,
-			quantity, preselected, price, serviceContext);
+			userId, cpDefinitionOptionValueRelId, nameMap, priority, key,
+			cpInstanceId, quantity, preselected, price, serviceContext);
 	}
 
 	public static CPDefinitionOptionValueRel

@@ -23,8 +23,6 @@ import com.liferay.commerce.product.data.source.CPDataSourceResult;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
-import com.liferay.commerce.product.service.CPDefinitionLocalService;
-import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.util.CPDefinitionHelper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;

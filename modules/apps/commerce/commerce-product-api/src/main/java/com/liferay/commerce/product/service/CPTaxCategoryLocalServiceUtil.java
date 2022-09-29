@@ -109,10 +109,9 @@ public class CPTaxCategoryLocalServiceUtil {
 	 *
 	 * @param cpTaxCategory the cp tax category
 	 * @return the cp tax category that was removed
-	 * @throws PortalException
 	 */
-	public static CPTaxCategory deleteCPTaxCategory(CPTaxCategory cpTaxCategory)
-		throws PortalException {
+	public static CPTaxCategory deleteCPTaxCategory(
+		CPTaxCategory cpTaxCategory) {
 
 		return getService().deleteCPTaxCategory(cpTaxCategory);
 	}
