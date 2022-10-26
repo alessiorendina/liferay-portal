@@ -34,6 +34,7 @@ page import="com.liferay.commerce.channel.web.internal.display.context.CommerceC
 page import="com.liferay.commerce.channel.web.internal.display.context.SiteCommerceChannelTypeDisplayContext" %><%@
 page import="com.liferay.commerce.constants.CommerceOrderConstants" %><%@
 page import="com.liferay.commerce.currency.model.CommerceCurrency" %><%@
+page import="com.liferay.commerce.inventory.method.CommerceInventoryMethod" %><%@
 page import="com.liferay.commerce.pricing.constants.CommercePricingConstants" %><%@
 page import="com.liferay.commerce.product.channel.CommerceChannelType" %><%@
 page import="com.liferay.commerce.product.exception.NoSuchChannelException" %><%@
