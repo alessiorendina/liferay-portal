@@ -17,6 +17,7 @@ package com.liferay.commerce.channel.web.internal.frontend.taglib.servlet.taglib
 import com.liferay.commerce.channel.web.internal.constants.CommerceChannelScreenNavigationConstants;
 import com.liferay.commerce.channel.web.internal.display.context.SiteCommerceChannelTypeDisplayContext;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethodRegistry;
 import com.liferay.commerce.product.channel.CommerceChannelHealthStatusRegistry;
 import com.liferay.commerce.product.channel.CommerceChannelTypeRegistry;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
@@ -112,10 +113,10 @@ public class CommerceChannelSiteScreenNavigationCategory
 					_commerceChannelHealthStatusRegistry,
 					_commerceChannelModelResourcePermission,
 					_commerceChannelService, _commerceChannelTypeRegistry,
-					_commerceCurrencyService, _configurationProvider,
-					_cpTaxCategoryLocalService, _dlAppLocalService,
-					_groupLocalService, httpServletRequest, _itemSelector,
-					_portal, _workflowDefinitionLinkLocalService,
+					_commerceCurrencyService, _commerceInventoryMethodRegistry,
+					_configurationProvider, _cpTaxCategoryLocalService,
+					_dlAppLocalService, _groupLocalService, httpServletRequest,
+					_itemSelector, _portal, _workflowDefinitionLinkLocalService,
 					_workflowDefinitionManager);
 
 		httpServletRequest.setAttribute(
@@ -145,6 +146,9 @@ public class CommerceChannelSiteScreenNavigationCategory
 
 	@Reference
 	private CommerceCurrencyService _commerceCurrencyService;
+
+	@Reference
+	private CommerceInventoryMethodRegistry _commerceInventoryMethodRegistry;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
