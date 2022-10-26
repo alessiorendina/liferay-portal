@@ -22,6 +22,7 @@ import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngineRegistry;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.price.CommerceProductPriceCalculation;
 import com.liferay.commerce.product.content.util.CPContentHelper;
@@ -131,7 +132,11 @@ public class CPDefinitionInfoItemFieldValuesProvider
 			cpDefinitionInventoryEngine.isDisplayAvailability(cpInstance);
 
 		if (displayAvailability) {
-			return _commerceInventoryEngine.getAvailabilityStatus(
+			CommerceInventoryMethod commerceInventoryMethod =
+				_commerceInventoryEngine.getCommerceInventoryMethod(
+					commerceChannel.getGroupId());
+
+			return commerceInventoryMethod.getAvailabilityStatus(
 				cpInstance.getCompanyId(), commerceChannel.getGroupId(),
 				cpDefinitionInventoryEngine.getMinStockQuantity(cpInstance),
 				cpInstance.getSku());
@@ -569,7 +574,11 @@ public class CPDefinitionInfoItemFieldValuesProvider
 					getCommerceChannelGroupIdBySiteGroupId(
 						themeDisplay.getScopeGroupId());
 
-			return _commerceInventoryEngine.getStockQuantity(
+			CommerceInventoryMethod commerceInventoryMethod =
+				_commerceInventoryEngine.getCommerceInventoryMethod(
+					commerceChannelGroupId);
+
+			return commerceInventoryMethod.getStockQuantity(
 				cpInstance.getCompanyId(), commerceChannelGroupId,
 				cpInstance.getSku());
 		}

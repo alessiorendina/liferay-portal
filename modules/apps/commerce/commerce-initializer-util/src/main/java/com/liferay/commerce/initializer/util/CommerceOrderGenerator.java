@@ -29,6 +29,7 @@ import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngineRegistry;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
@@ -266,7 +267,8 @@ public class CommerceOrderGenerator {
 					getCPDefinitionInventoryEngine(cpDefinitionInventory);
 
 			int maxOrderQuantity = _getMaxOrderQuantity(
-				cpInstance, cpDefinitionInventoryEngine);
+				commerceOrder.getGroupId(), cpInstance,
+				cpDefinitionInventoryEngine);
 
 			if (maxOrderQuantity < 1) {
 				continue;
@@ -436,11 +438,15 @@ public class CommerceOrderGenerator {
 	}
 
 	private int _getMaxOrderQuantity(
-			CPInstance cpInstance,
+			long commerceChannelGroupId, CPInstance cpInstance,
 			CPDefinitionInventoryEngine cpDefinitionInventoryEngine)
 		throws PortalException {
 
-		int stockQuantity = _commerceInventoryEngine.getStockQuantity(
+		CommerceInventoryMethod commerceInventoryMethod =
+			_commerceInventoryEngine.getCommerceInventoryMethod(
+				commerceChannelGroupId);
+
+		int stockQuantity = commerceInventoryMethod.getStockQuantity(
 			cpInstance.getCompanyId(), cpInstance.getSku());
 
 		int maxOrderQuantity = cpDefinitionInventoryEngine.getMaxOrderQuantity(

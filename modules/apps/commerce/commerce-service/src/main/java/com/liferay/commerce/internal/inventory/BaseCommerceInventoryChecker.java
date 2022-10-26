@@ -17,6 +17,7 @@ package com.liferay.commerce.internal.inventory;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.inventory.CommerceInventoryChecker;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -35,11 +36,23 @@ public abstract class BaseCommerceInventoryChecker<T>
 			return false;
 		}
 
-		if (isBackOrderAllowed(cpInstance) ||
-			commerceInventoryEngine.hasStockQuantity(
-				cpInstance.getCompanyId(), cpInstance.getSku(), quantity)) {
-
+		if (isBackOrderAllowed(cpInstance)) {
 			return true;
+		}
+
+		try {
+			CommerceInventoryMethod commerceInventoryMethod =
+				commerceInventoryEngine.getCommerceInventoryMethod(
+					cpInstance.getGroupId());
+
+			if (commerceInventoryMethod.hasStockQuantity(
+					cpInstance.getCompanyId(), cpInstance.getSku(), quantity)) {
+
+				return true;
+			}
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
 		}
 
 		return false;

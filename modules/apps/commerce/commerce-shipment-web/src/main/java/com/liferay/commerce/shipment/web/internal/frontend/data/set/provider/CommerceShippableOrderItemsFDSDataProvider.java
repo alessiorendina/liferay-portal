@@ -21,6 +21,7 @@ import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.frontend.model.Icon;
 import com.liferay.commerce.frontend.model.OrderItem;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
@@ -107,9 +108,13 @@ public class CommerceShippableOrderItemsFDSDataProvider
 					commerceOrderItem.getCommerceOrderItemId(), 0);
 
 			if (commerceShipmentItem == null) {
+				CommerceInventoryMethod commerceInventoryMethod =
+					_commerceInventoryEngine.getCommerceInventoryMethod(
+						commerceOrderItem.getGroupId());
+
 				orderItems.add(
 					new OrderItem(
-						_commerceInventoryEngine.getStockQuantity(
+						commerceInventoryMethod.getStockQuantity(
 							commerceOrderItem.getCompanyId(),
 							commerceOrderItem.getGroupId(),
 							commerceOrderItem.getSku()),

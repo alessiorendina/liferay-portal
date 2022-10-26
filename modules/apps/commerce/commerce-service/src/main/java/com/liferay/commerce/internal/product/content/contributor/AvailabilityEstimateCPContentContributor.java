@@ -17,6 +17,7 @@ package com.liferay.commerce.internal.product.content.contributor;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngineRegistry;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.product.constants.CPContentContributorConstants;
 import com.liferay.commerce.product.model.CPInstance;
@@ -77,6 +78,16 @@ public class AvailabilityEstimateCPContentContributor
 			return jsonObject;
 		}
 
+		boolean available = false;
+
+		CommerceInventoryMethod commerceInventoryMethod =
+			_commerceInventoryEngine.getCommerceInventoryMethod(
+				commerceChannel.getGroupId());
+
+		int stockQuantity = commerceInventoryMethod.getStockQuantity(
+			cpInstance.getCompanyId(), commerceChannel.getGroupId(),
+			cpInstance.getSku());
+
 		CPDefinitionInventory cpDefinitionInventory =
 			_cpDefinitionInventoryLocalService.
 				fetchCPDefinitionInventoryByCPDefinitionId(
@@ -86,11 +97,6 @@ public class AvailabilityEstimateCPContentContributor
 			_cpDefinitionInventoryEngineRegistry.getCPDefinitionInventoryEngine(
 				cpDefinitionInventory);
 
-		boolean available = false;
-
-		int stockQuantity = _commerceInventoryEngine.getStockQuantity(
-			cpInstance.getCompanyId(), commerceChannel.getGroupId(),
-			cpInstance.getSku());
 		int minStockQuantity = cpDefinitionInventoryEngine.getMinStockQuantity(
 			cpInstance);
 

@@ -18,6 +18,7 @@ import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngineRegistry;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
@@ -112,7 +113,11 @@ public class CommerceOrderStatusMessageListener extends BaseMessageListener {
 			return;
 		}
 
-		int stockQuantity = _commerceInventoryEngine.getStockQuantity(
+		CommerceInventoryMethod commerceInventoryMethod =
+			_commerceInventoryEngine.getCommerceInventoryMethod(
+				commerceOrderItem.getGroupId());
+
+		int stockQuantity = commerceInventoryMethod.getStockQuantity(
 			commerceOrderItem.getCompanyId(), commerceOrderItem.getSku());
 
 		CPDefinitionInventoryEngine cpDefinitionInventoryEngine =

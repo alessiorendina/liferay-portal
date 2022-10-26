@@ -22,6 +22,7 @@ import com.liferay.commerce.discount.CommerceDiscountValue;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.inventory.constants.CommerceInventoryAvailabilityConstants;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.price.CommerceProductPrice;
 import com.liferay.commerce.price.CommerceProductPriceCalculation;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -377,9 +378,13 @@ public class MappedProductDTOConverter
 
 		Availability availability = new Availability();
 
+		CommerceInventoryMethod commerceInventoryMethod =
+			_commerceInventoryEngine.getCommerceInventoryMethod(
+				commerceChannelGroupId);
+
 		if (_cpDefinitionInventoryEngine.isDisplayAvailability(cpInstance)) {
 			if (Objects.equals(
-					_commerceInventoryEngine.getAvailabilityStatus(
+					commerceInventoryMethod.getAvailabilityStatus(
 						cpInstance.getCompanyId(), commerceChannelGroupId,
 						_cpDefinitionInventoryEngine.getMinStockQuantity(
 							cpInstance),
@@ -398,7 +403,7 @@ public class MappedProductDTOConverter
 
 		if (_cpDefinitionInventoryEngine.isDisplayStockQuantity(cpInstance)) {
 			availability.setStockQuantity(
-				_commerceInventoryEngine.getStockQuantity(
+				commerceInventoryMethod.getStockQuantity(
 					companyId, commerceChannelGroupId, sku));
 		}
 

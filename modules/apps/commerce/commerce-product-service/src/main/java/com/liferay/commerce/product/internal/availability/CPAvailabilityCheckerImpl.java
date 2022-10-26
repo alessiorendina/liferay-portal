@@ -17,6 +17,7 @@ package com.liferay.commerce.product.internal.availability;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngineRegistry;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityLocalService;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.product.availability.CPAvailabilityChecker;
@@ -75,12 +76,20 @@ public class CPAvailabilityCheckerImpl implements CPAvailabilityChecker {
 		int stockQuantity;
 
 		if (commerceChannelGroupId > 0) {
-			stockQuantity = _commerceInventoryEngine.getStockQuantity(
+			CommerceInventoryMethod commerceInventoryMethod =
+				_commerceInventoryEngine.getCommerceInventoryMethod(
+					commerceChannelGroupId);
+
+			stockQuantity = commerceInventoryMethod.getStockQuantity(
 				cpInstance.getCompanyId(), commerceChannelGroupId,
 				cpInstance.getSku());
 		}
 		else {
-			stockQuantity = _commerceInventoryEngine.getStockQuantity(
+			CommerceInventoryMethod commerceInventoryMethod =
+				_commerceInventoryEngine.getCommerceInventoryMethod(
+					cpDefinition.getGroupId());
+
+			stockQuantity = commerceInventoryMethod.getStockQuantity(
 				cpInstance.getCompanyId(), cpInstance.getSku());
 		}
 

@@ -18,6 +18,7 @@ import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngineRegistry;
 import com.liferay.commerce.inventory.constants.CommerceInventoryAvailabilityConstants;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.product.constants.CPContentContributorConstants;
 import com.liferay.commerce.product.model.CPInstance;
@@ -89,8 +90,12 @@ public class AvailabilityCPContentContributor implements CPContentContributor {
 			cpDefinitionInventoryEngine.isDisplayAvailability(cpInstance);
 
 		if (displayAvailability) {
+			CommerceInventoryMethod commerceInventoryMethod =
+				_commerceInventoryEngine.getCommerceInventoryMethod(
+					commerceChannel.getGroupId());
+
 			String availabilityStatus =
-				_commerceInventoryEngine.getAvailabilityStatus(
+				commerceInventoryMethod.getAvailabilityStatus(
 					cpInstance.getCompanyId(), commerceChannel.getGroupId(),
 					cpDefinitionInventoryEngine.getMinStockQuantity(cpInstance),
 					cpInstance.getSku());

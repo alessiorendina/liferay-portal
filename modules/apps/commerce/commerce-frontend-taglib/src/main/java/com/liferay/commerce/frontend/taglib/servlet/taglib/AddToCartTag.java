@@ -21,6 +21,7 @@ import com.liferay.commerce.frontend.model.ProductSettingsModel;
 import com.liferay.commerce.frontend.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.commerce.frontend.util.ProductHelper;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
@@ -108,7 +109,11 @@ public class AddToCartTag extends IncludeTag {
 			}
 
 			if (sku != null) {
-				_stockQuantity = _commerceInventoryEngine.getStockQuantity(
+				CommerceInventoryMethod commerceInventoryMethod =
+					_commerceInventoryEngine.getCommerceInventoryMethod(
+						commerceContext.getCommerceChannelGroupId());
+
+				_stockQuantity = commerceInventoryMethod.getStockQuantity(
 					PortalUtil.getCompanyId(httpServletRequest),
 					commerceContext.getCommerceChannelGroupId(), sku);
 

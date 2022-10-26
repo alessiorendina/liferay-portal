@@ -18,6 +18,7 @@ import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.frontend.model.LabelField;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.commerce.price.CommerceProductPriceCalculation;
 import com.liferay.commerce.product.definitions.web.internal.constants.CommerceProductFDSNames;
 import com.liferay.commerce.product.definitions.web.internal.model.Sku;
@@ -103,7 +104,11 @@ public class CommerceProductInstanceFDSDataProvider
 			JSONArray keyValuesJSONArray = _jsonHelper.toJSONArray(
 				cpDefinitionOptionRelKeysCPDefinitionOptionValueRelKeys);
 
-			int stockQuantity = _commerceInventoryEngine.getStockQuantity(
+			CommerceInventoryMethod commerceInventoryMethod =
+				_commerceInventoryEngine.getCommerceInventoryMethod(
+					cpDefinition.getGroupId());
+
+			int stockQuantity = commerceInventoryMethod.getStockQuantity(
 				cpInstance.getCompanyId(), cpInstance.getSku());
 
 			String statusDisplayStyle = StringPool.BLANK;
