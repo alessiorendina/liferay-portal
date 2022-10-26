@@ -14,9 +14,9 @@
 
 package com.liferay.commerce.inventory.engine;
 
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
 import com.liferay.portal.kernel.exception.PortalException;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,35 +27,23 @@ import java.util.Map;
 public interface CommerceInventoryEngine {
 
 	public void consumeQuantity(
-			long userId, long commerceInventoryWarehouseId, String sku,
-			int quantity, long bookedQuantityId, Map<String, String> context)
+			long userId, long commerceChannelGroupId,
+			long commerceInventoryWarehouseId, String sku, int quantity,
+			long bookedQuantityId, Map<String, String> context)
 		throws PortalException;
 
 	public void decreaseStockQuantity(
-			long userId, long commerceInventoryWarehouseId, String sku,
-			int quantity)
+			long userId, long commerceChannelGroupId,
+			long commerceInventoryWarehouseId, String sku, int quantity)
 		throws PortalException;
 
-	public String getAvailabilityStatus(
-		long companyId, long commerceChannelGroupId, int minStockQuantity,
-		String sku);
-
-	public Map<String, Integer> getStockQuantities(
-			long companyId, long commerceChannelGroupId, List<String> skus)
+	public CommerceInventoryMethod getCommerceInventoryMethod(
+			long commerceChannelGroupId)
 		throws PortalException;
-
-	public int getStockQuantity(
-			long companyId, long commerceChannelGroupId, String sku)
-		throws PortalException;
-
-	public int getStockQuantity(long companyId, String sku)
-		throws PortalException;
-
-	public boolean hasStockQuantity(long companyId, String sku, int quantity);
 
 	public void increaseStockQuantity(
-			long userId, long commerceInventoryWarehouseId, String sku,
-			int quantity)
+			long userId, long commerceChannelGroupId,
+			long commerceInventoryWarehouseId, String sku, int quantity)
 		throws PortalException;
 
 }
