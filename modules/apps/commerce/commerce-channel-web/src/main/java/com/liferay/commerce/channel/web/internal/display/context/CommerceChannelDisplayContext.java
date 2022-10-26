@@ -24,6 +24,9 @@ import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.frontend.model.HeaderActionModel;
+import com.liferay.commerce.inventory.configuration.CommerceInventoryGroupConfiguration;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethodRegistry;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.product.channel.CommerceChannelHealthStatus;
@@ -51,6 +54,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -96,6 +100,7 @@ public class CommerceChannelDisplayContext
 		CommerceChannelService commerceChannelService,
 		CommerceChannelTypeRegistry commerceChannelTypeRegistry,
 		CommerceCurrencyService commerceCurrencyService,
+		CommerceInventoryMethodRegistry commerceInventoryMethodRegistry,
 		ConfigurationProvider configurationProvider,
 		CPTaxCategoryLocalService cpTaxCategoryLocalService,
 		DLAppLocalService dlAppLocalService,
@@ -113,6 +118,7 @@ public class CommerceChannelDisplayContext
 		_commerceChannelService = commerceChannelService;
 		_commerceChannelTypeRegistry = commerceChannelTypeRegistry;
 		_commerceCurrencyService = commerceCurrencyService;
+		_commerceInventoryMethodRegistry = commerceInventoryMethodRegistry;
 		_configurationProvider = configurationProvider;
 		_cpTaxCategoryLocalService = cpTaxCategoryLocalService;
 		_dlAppLocalService = dlAppLocalService;
@@ -252,6 +258,10 @@ public class CommerceChannelDisplayContext
 		return _commerceCurrencyService.getCommerceCurrencies(
 			cpRequestHelper.getCompanyId(), true, QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, null);
+	}
+
+	public List<CommerceInventoryMethod> getCommerceInventoryMethods() {
+		return _commerceInventoryMethodRegistry.getCommerceInventoryMethods();
 	}
 
 	public int getCommerceSiteType() throws PortalException {
@@ -460,6 +470,20 @@ public class CommerceChannelDisplayContext
 			checkoutRequestedDeliveryDateEnabled();
 	}
 
+	public boolean isCommerceInventoryMethodSelected(
+			long commerceChannelGroupId, String key)
+		throws ConfigurationException {
+
+		CommerceInventoryGroupConfiguration
+			commerceInventoryGroupConfiguration =
+				_configurationProvider.getGroupConfiguration(
+					CommerceInventoryGroupConfiguration.class,
+					commerceChannelGroupId);
+
+		return key.equals(
+			commerceInventoryGroupConfiguration.inventoryMethodKey());
+	}
+
 	public boolean isGuestCheckoutEnabled() throws PortalException {
 		CommerceChannel commerceChannel = getCommerceChannel();
 
@@ -552,6 +576,8 @@ public class CommerceChannelDisplayContext
 	private final CommerceChannelService _commerceChannelService;
 	private final CommerceChannelTypeRegistry _commerceChannelTypeRegistry;
 	private final CommerceCurrencyService _commerceCurrencyService;
+	private final CommerceInventoryMethodRegistry
+		_commerceInventoryMethodRegistry;
 	private CommerceOrderFieldsConfiguration _commerceOrderFieldsConfiguration;
 	private final ConfigurationProvider _configurationProvider;
 	private final CPTaxCategoryLocalService _cpTaxCategoryLocalService;
