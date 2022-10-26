@@ -139,6 +139,20 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 				<aui:button name="selectFileButton" value="select-file" />
 
 				<aui:input label="order-importer-date-format" labelOff="disabled" labelOn="enabled" name="format--orderImporterDateFormat--" type="text" value="<%= commerceChannelDisplayContext.getOrderImporterDateFormat() %>" />
+
+				<aui:select label="inventory-method-key" name="inventorySettings--inventoryMethodKey--" required="<%= true %>">
+
+					<%
+					for (CommerceInventoryMethod commerceInventoryMethod : commerceChannelDisplayContext.getCommerceInventoryMethods()) {
+					%>
+
+						<aui:option label="<%= commerceInventoryMethod.getLabel(locale) %>" selected="<%= commerceChannelDisplayContext.isCommerceInventoryMethodSelected(commerceChannel.getGroupId(), commerceInventoryMethod.getKey()) %>" value="<%= commerceInventoryMethod.getKey() %>" />
+
+					<%
+					}
+					%>
+
+				</aui:select>
 			</commerce-ui:panel>
 		</div>
 

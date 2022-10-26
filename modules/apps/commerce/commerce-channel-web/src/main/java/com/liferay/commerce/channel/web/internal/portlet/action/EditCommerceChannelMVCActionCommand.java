@@ -19,6 +19,7 @@ import com.liferay.commerce.account.configuration.CommerceAccountGroupServiceCon
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -35,14 +36,14 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
+import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
@@ -79,10 +80,11 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCActionCommand.class
 )
-public class EditCommerceChannelMVCActionCommand extends BaseMVCActionCommand {
+public class EditCommerceChannelMVCActionCommand
+	extends BaseTransactionalMVCActionCommand {
 
 	@Override
-	protected void doProcessAction(
+	protected void doTransactionalCommand(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
@@ -100,21 +102,20 @@ public class EditCommerceChannelMVCActionCommand extends BaseMVCActionCommand {
 				_selectSite(actionRequest);
 			}
 		}
-		catch (FileExtensionException | InvalidFileException |
-			   PrincipalException exception) {
-
+		catch (Exception exception) {
 			if (exception instanceof FileExtensionException ||
 				exception instanceof InvalidFileException) {
 
-				hideDefaultErrorMessage(actionRequest);
+				SessionMessages.add(
+					actionRequest,
+					_portal.getPortletId(actionRequest) +
+						SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 
 				SessionErrors.add(
 					actionRequest, exception.getClass(), exception);
 
-				String redirect = ParamUtil.getString(
-					actionRequest, "redirect");
-
-				sendRedirect(actionRequest, actionResponse, redirect);
+				actionResponse.setRenderParameter(
+					"mvcPath", "/edit_commerce_channel.jsp");
 			}
 			else {
 				SessionErrors.add(actionRequest, exception.getClass());
@@ -237,6 +238,7 @@ public class EditCommerceChannelMVCActionCommand extends BaseMVCActionCommand {
 			_commerceChannelService.getCommerceChannel(commerceChannelId);
 
 		_updateAccountCartMaxAllowed(commerceChannel, actionRequest);
+		_updateInventoryMethodKey(commerceChannel, actionRequest);
 		_updatePurchaseOrderNumber(commerceChannel, actionRequest);
 		_updateRequestedDeliveryDateFormat(commerceChannel, actionRequest);
 		_updateShippingTaxCategory(commerceChannel, actionRequest);
@@ -248,6 +250,28 @@ public class EditCommerceChannelMVCActionCommand extends BaseMVCActionCommand {
 			commerceChannel.getType(),
 			commerceChannel.getTypeSettingsProperties(), commerceCurrencyCode,
 			priceDisplayType, discountsTargetNetPrice);
+	}
+
+	private void _updateInventoryMethodKey(
+			CommerceChannel commerceChannel, ActionRequest actionRequest)
+		throws Exception {
+
+		Settings settings = _settingsFactory.getSettings(
+			new GroupServiceSettingsLocator(
+				commerceChannel.getGroupId(),
+				CommerceInventoryConstants.SERVICE_NAME));
+
+		ModifiableSettings modifiableSettings =
+			settings.getModifiableSettings();
+
+		Map<String, String> parameterMap = PropertiesParamUtil.getProperties(
+			actionRequest, "inventorySettings--");
+
+		for (Map.Entry<String, String> entry : parameterMap.entrySet()) {
+			modifiableSettings.setValue(entry.getKey(), entry.getValue());
+		}
+
+		modifiableSettings.store();
 	}
 
 	private void _updatePurchaseOrderNumber(
