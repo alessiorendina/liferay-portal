@@ -14,24 +14,21 @@
 
 package com.liferay.commerce.inventory.internal.engine;
 
-import com.liferay.commerce.inventory.constants.CommerceInventoryAvailabilityConstants;
-import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
+import com.liferay.commerce.inventory.configuration.CommerceInventoryGroupConfiguration;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
-import com.liferay.commerce.inventory.exception.MVCCException;
-import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
-import com.liferay.commerce.inventory.service.CommerceInventoryAuditLocalService;
-import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityLocalService;
-import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
-import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemService;
-import com.liferay.commerce.inventory.type.CommerceInventoryAuditType;
-import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeRegistry;
+import com.liferay.commerce.inventory.engine.contributor.CommerceInventoryEngineContributor;
+import com.liferay.commerce.inventory.engine.contributor.CommerceInventoryEngineContributorRegistry;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethod;
+import com.liferay.commerce.inventory.method.CommerceInventoryMethodRegistry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -51,25 +48,31 @@ public class CommerceInventoryEngineImpl implements CommerceInventoryEngine {
 		propagation = Propagation.REQUIRED, rollbackFor = Exception.class
 	)
 	public void consumeQuantity(
-			long userId, long commerceInventoryWarehouseId, String sku,
-			int quantity, long bookedQuantityId, Map<String, String> context)
+			long userId, long groupId, long commerceInventoryWarehouseId,
+			String sku, int quantity, long bookedQuantityId,
+			Map<String, String> context)
 		throws PortalException {
 
-		if (bookedQuantityId > 0) {
-			_commerceBookedQuantityLocalService.consumeCommerceBookedQuantity(
-				bookedQuantityId, quantity);
+		CommerceInventoryMethod commerceInventoryMethod =
+			_getCommerceInventoryMethod(groupId);
+
+		if (commerceInventoryMethod == null) {
+			return;
 		}
 
-		decreaseStockQuantity(
-			userId, commerceInventoryWarehouseId, sku, quantity);
+		commerceInventoryMethod.consumeQuantity(
+			userId, commerceInventoryWarehouseId, sku, quantity,
+			bookedQuantityId, context);
 
-		CommerceInventoryAuditType commerceInventoryAuditType =
-			_commerceInventoryAuditTypeRegistry.getCommerceInventoryAuditType(
-				CommerceInventoryConstants.AUDIT_TYPE_CONSUME_QUANTITY);
+		for (CommerceInventoryEngineContributor
+				commerceInventoryEngineContributor :
+					_commerceInventoryEngineContributorRegistry.
+						getCommerceInventoryEngineContributors()) {
 
-		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, sku, commerceInventoryAuditType.getType(),
-			commerceInventoryAuditType.getLog(context), quantity);
+			commerceInventoryEngineContributor.consumeQuantityContribute(
+				userId, commerceInventoryWarehouseId, sku, quantity,
+				bookedQuantityId, context);
+		}
 	}
 
 	@Override
@@ -77,85 +80,103 @@ public class CommerceInventoryEngineImpl implements CommerceInventoryEngine {
 		propagation = Propagation.REQUIRED, rollbackFor = Exception.class
 	)
 	public void decreaseStockQuantity(
-			long userId, long commerceInventoryWarehouseId, String sku,
-			int quantity)
+			long userId, long groupId, long commerceInventoryWarehouseId,
+			String sku, int quantity)
 		throws PortalException {
 
-		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-			_commerceInventoryWarehouseItemLocalService.
-				fetchCommerceInventoryWarehouseItem(
-					commerceInventoryWarehouseId, sku);
+		CommerceInventoryMethod commerceInventoryMethod =
+			_getCommerceInventoryMethod(groupId);
 
-		_commerceInventoryWarehouseItemLocalService.
-			updateCommerceInventoryWarehouseItem(
-				userId,
-				commerceInventoryWarehouseItem.
-					getCommerceInventoryWarehouseItemId(),
-				commerceInventoryWarehouseItem.getQuantity() - quantity,
-				commerceInventoryWarehouseItem.getMvccVersion());
+		commerceInventoryMethod.decreaseStockQuantity(
+			userId, commerceInventoryWarehouseId, sku, quantity);
+
+		for (CommerceInventoryEngineContributor
+				commerceInventoryEngineContributor :
+					_commerceInventoryEngineContributorRegistry.
+						getCommerceInventoryEngineContributors()) {
+
+			commerceInventoryEngineContributor.decreaseStockQuantityContribute(
+				userId, commerceInventoryWarehouseId, sku, quantity);
+		}
 	}
 
 	@Override
 	public String getAvailabilityStatus(
-		long companyId, long commerceChannelGroupId, int minStockQuantity,
-		String sku) {
+		long companyId, long groupId, long commerceChannelGroupId,
+		int minStockQuantity, String sku) {
 
-		return _getAvailabilityStatus(
-			minStockQuantity,
-			getStockQuantity(companyId, commerceChannelGroupId, sku));
+		CommerceInventoryMethod commerceInventoryMethod =
+			_getCommerceInventoryMethod(groupId);
+
+		if (commerceInventoryMethod == null) {
+			return null;
+		}
+
+		return commerceInventoryMethod.getAvailabilityStatus(
+			companyId, commerceChannelGroupId, minStockQuantity, sku);
 	}
 
 	@Override
 	public Map<String, Integer> getStockQuantities(
-		long companyId, long commerceChannelGroupId, List<String> skus) {
+			long companyId, long groupId, long commerceChannelGroupId,
+			List<String> skus)
+		throws PortalException {
 
-		Map<String, Integer> results = new HashMap<>();
+		CommerceInventoryMethod commerceInventoryMethod =
+			_getCommerceInventoryMethod(groupId);
 
-		for (String sku : skus) {
-			int stockQuantity = getStockQuantity(
-				companyId, commerceChannelGroupId, sku);
-
-			results.put(sku, stockQuantity);
+		if (commerceInventoryMethod == null) {
+			return Collections.emptyMap();
 		}
 
-		return results;
+		return commerceInventoryMethod.getStockQuantities(
+			companyId, commerceChannelGroupId, skus);
 	}
 
 	@Override
 	public int getStockQuantity(
-		long companyId, long commerceChannelGroupId, String sku) {
+			long companyId, long groupId, long commerceChannelGroupId,
+			String sku)
+		throws PortalException {
 
-		int stockQuantity =
-			_commerceInventoryWarehouseItemService.getStockQuantity(
-				companyId, commerceChannelGroupId, sku);
+		CommerceInventoryMethod commerceInventoryMethod =
+			_getCommerceInventoryMethod(groupId);
 
-		int commerceBookedQuantity =
-			_commerceBookedQuantityLocalService.getCommerceBookedQuantity(
-				companyId, sku);
-
-		return stockQuantity - commerceBookedQuantity;
-	}
-
-	@Override
-	public int getStockQuantity(long companyId, String sku) {
-		int stockQuantity =
-			_commerceInventoryWarehouseItemService.getStockQuantity(
-				companyId, sku);
-
-		int commerceBookedQuantity =
-			_commerceBookedQuantityLocalService.getCommerceBookedQuantity(
-				companyId, sku);
-
-		return stockQuantity - commerceBookedQuantity;
-	}
-
-	@Override
-	public boolean hasStockQuantity(long companyId, String sku, int quantity) {
-		if (quantity <= getStockQuantity(companyId, sku)) {
-			return true;
+		if (commerceInventoryMethod == null) {
+			return 0;
 		}
 
-		return false;
+		return commerceInventoryMethod.getStockQuantity(
+			companyId, commerceChannelGroupId, sku);
+	}
+
+	@Override
+	public int getStockQuantity(long companyId, long groupId, String sku)
+		throws PortalException {
+
+		CommerceInventoryMethod commerceInventoryMethod =
+			_getCommerceInventoryMethod(groupId);
+
+		if (commerceInventoryMethod == null) {
+			return 0;
+		}
+
+		return commerceInventoryMethod.getStockQuantity(companyId, sku);
+	}
+
+	@Override
+	public boolean hasStockQuantity(
+		long companyId, long groupId, String sku, int quantity) {
+
+		CommerceInventoryMethod commerceInventoryMethod =
+			_getCommerceInventoryMethod(groupId);
+
+		if (commerceInventoryMethod == null) {
+			return false;
+		}
+
+		return commerceInventoryMethod.hasStockQuantity(
+			companyId, sku, quantity);
 	}
 
 	@Override
@@ -163,80 +184,54 @@ public class CommerceInventoryEngineImpl implements CommerceInventoryEngine {
 		propagation = Propagation.REQUIRED, rollbackFor = Exception.class
 	)
 	public void increaseStockQuantity(
-			long userId, long commerceInventoryWarehouseId, String sku,
-			int quantity)
+			long userId, long groupId, long commerceInventoryWarehouseId,
+			String sku, int quantity)
 		throws PortalException {
 
-		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-			_commerceInventoryWarehouseItemLocalService.
-				fetchCommerceInventoryWarehouseItem(
-					commerceInventoryWarehouseId, sku);
+		CommerceInventoryMethod commerceInventoryMethod =
+			_getCommerceInventoryMethod(groupId);
 
-		try {
-			_commerceInventoryWarehouseItemLocalService.
-				updateCommerceInventoryWarehouseItem(
-					userId,
-					commerceInventoryWarehouseItem.
-						getCommerceInventoryWarehouseItemId(),
-					commerceInventoryWarehouseItem.getQuantity() + quantity,
-					commerceInventoryWarehouseItem.getMvccVersion());
+		commerceInventoryMethod.increaseStockQuantity(
+			userId, commerceInventoryWarehouseId, sku, quantity);
+
+		for (CommerceInventoryEngineContributor
+				commerceInventoryEngineContributor :
+					_commerceInventoryEngineContributorRegistry.
+						getCommerceInventoryEngineContributors()) {
+
+			commerceInventoryEngineContributor.increaseStockQuantityContribute(
+				userId, commerceInventoryWarehouseId, sku, quantity);
 		}
-		catch (MVCCException mvccException) {
-			_log.error(mvccException);
-
-			throw mvccException;
-		}
-
-		CommerceInventoryAuditType commerceInventoryAuditType =
-			_commerceInventoryAuditTypeRegistry.getCommerceInventoryAuditType(
-				CommerceInventoryConstants.AUDIT_TYPE_INCREASE_QUANTITY);
-
-		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, sku, commerceInventoryAuditType.getType(),
-			commerceInventoryAuditType.getLog(null), quantity);
 	}
 
-	private String _getAvailabilityStatus(
-		int minStockQuantity, int stockQuantity) {
+	private CommerceInventoryMethod _getCommerceInventoryMethod(long groupId) {
+		try {
+			CommerceInventoryGroupConfiguration
+				commerceInventoryGroupConfiguration =
+					_configurationProvider.getGroupConfiguration(
+						CommerceInventoryGroupConfiguration.class, groupId);
 
-		String availabilityStatus =
-			CommerceInventoryAvailabilityConstants.UNAVAILABLE;
-
-		boolean available = false;
-
-		if (stockQuantity > minStockQuantity) {
-			available = true;
+			return _commerceInventoryMethodRegistry.getCommerceInventoryMethod(
+				commerceInventoryGroupConfiguration.inventoryMethodKey());
+		}
+		catch (ConfigurationException configurationException) {
+			_log.error(configurationException);
 		}
 
-		if (available) {
-			availabilityStatus =
-				CommerceInventoryAvailabilityConstants.AVAILABLE;
-		}
-
-		return availabilityStatus;
+		return null;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceInventoryEngineImpl.class);
 
 	@Reference
-	private CommerceInventoryBookedQuantityLocalService
-		_commerceBookedQuantityLocalService;
+	private CommerceInventoryEngineContributorRegistry
+		_commerceInventoryEngineContributorRegistry;
 
 	@Reference
-	private CommerceInventoryAuditLocalService
-		_commerceInventoryAuditLocalService;
+	private CommerceInventoryMethodRegistry _commerceInventoryMethodRegistry;
 
 	@Reference
-	private CommerceInventoryAuditTypeRegistry
-		_commerceInventoryAuditTypeRegistry;
-
-	@Reference
-	private CommerceInventoryWarehouseItemLocalService
-		_commerceInventoryWarehouseItemLocalService;
-
-	@Reference
-	private CommerceInventoryWarehouseItemService
-		_commerceInventoryWarehouseItemService;
+	private ConfigurationProvider _configurationProvider;
 
 }
