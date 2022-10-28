@@ -196,7 +196,7 @@ public class EditCommerceChannelMVCActionCommand
 	}
 
 	private void _updateAccountCartMaxAllowed(
-			CommerceChannel commerceChannel, ActionRequest actionRequest)
+			ActionRequest actionRequest, CommerceChannel commerceChannel)
 		throws Exception {
 
 		Settings settings = _settingsFactory.getSettings(
@@ -237,13 +237,13 @@ public class EditCommerceChannelMVCActionCommand
 		CommerceChannel commerceChannel =
 			_commerceChannelService.getCommerceChannel(commerceChannelId);
 
-		_updateAccountCartMaxAllowed(commerceChannel, actionRequest);
-		_updateInventoryMethodKey(commerceChannel, actionRequest);
-		_updatePurchaseOrderNumber(commerceChannel, actionRequest);
-		_updateRequestedDeliveryDateFormat(commerceChannel, actionRequest);
-		_updateShippingTaxCategory(commerceChannel, actionRequest);
-		_updateSiteType(commerceChannel, actionRequest);
-		_updateWorkflowDefinitionLinks(commerceChannel, actionRequest);
+		_updateAccountCartMaxAllowed(actionRequest, commerceChannel);
+		_updateInventoryMethodKey(actionRequest, commerceChannel);
+		_updatePurchaseOrderNumber(actionRequest, commerceChannel);
+		_updateRequestedDeliveryDateFormat(actionRequest, commerceChannel);
+		_updateShippingTaxCategory(actionRequest, commerceChannel);
+		_updateSiteType(actionRequest, commerceChannel);
+		_updateWorkflowDefinitionLinks(actionRequest, commerceChannel);
 
 		return _commerceChannelService.updateCommerceChannel(
 			commerceChannelId, commerceChannel.getSiteGroupId(), name,
@@ -253,7 +253,7 @@ public class EditCommerceChannelMVCActionCommand
 	}
 
 	private void _updateInventoryMethodKey(
-			CommerceChannel commerceChannel, ActionRequest actionRequest)
+			ActionRequest actionRequest, CommerceChannel commerceChannel)
 		throws Exception {
 
 		Settings settings = _settingsFactory.getSettings(
@@ -275,7 +275,7 @@ public class EditCommerceChannelMVCActionCommand
 	}
 
 	private void _updatePurchaseOrderNumber(
-			CommerceChannel commerceChannel, ActionRequest actionRequest)
+			ActionRequest actionRequest, CommerceChannel commerceChannel)
 		throws Exception {
 
 		Settings settings = _settingsFactory.getSettings(
@@ -297,7 +297,7 @@ public class EditCommerceChannelMVCActionCommand
 	}
 
 	private void _updateRequestedDeliveryDateFormat(
-			CommerceChannel commerceChannel, ActionRequest actionRequest)
+			ActionRequest actionRequest, CommerceChannel commerceChannel)
 		throws Exception {
 
 		Settings settings = _settingsFactory.getSettings(
@@ -320,7 +320,7 @@ public class EditCommerceChannelMVCActionCommand
 	}
 
 	private void _updateShippingTaxCategory(
-			CommerceChannel commerceChannel, ActionRequest actionRequest)
+			ActionRequest actionRequest, CommerceChannel commerceChannel)
 		throws Exception {
 
 		Settings settings = _settingsFactory.getSettings(
@@ -342,7 +342,7 @@ public class EditCommerceChannelMVCActionCommand
 	}
 
 	private void _updateSiteType(
-			CommerceChannel commerceChannel, ActionRequest actionRequest)
+			ActionRequest actionRequest, CommerceChannel commerceChannel)
 		throws Exception {
 
 		Settings settings = _settingsFactory.getSettings(
@@ -368,7 +368,7 @@ public class EditCommerceChannelMVCActionCommand
 	}
 
 	private void _updateWorkflowDefinitionLinks(
-			CommerceChannel commerceChannel, ActionRequest actionRequest)
+			ActionRequest actionRequest, CommerceChannel commerceChannel)
 		throws Exception {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
