@@ -92,6 +92,7 @@ public class AvailabilityCPContentContributor implements CPContentContributor {
 			String availabilityStatus =
 				_commerceInventoryEngine.getAvailabilityStatus(
 					cpInstance.getCompanyId(), commerceChannel.getGroupId(),
+					commerceChannel.getGroupId(),
 					cpDefinitionInventoryEngine.getMinStockQuantity(cpInstance),
 					cpInstance.getSku());
 

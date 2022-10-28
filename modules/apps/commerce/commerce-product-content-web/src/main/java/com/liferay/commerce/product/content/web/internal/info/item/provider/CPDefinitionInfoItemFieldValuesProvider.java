@@ -133,6 +133,7 @@ public class CPDefinitionInfoItemFieldValuesProvider
 		if (displayAvailability) {
 			return _commerceInventoryEngine.getAvailabilityStatus(
 				cpInstance.getCompanyId(), commerceChannel.getGroupId(),
+				commerceChannel.getGroupId(),
 				cpDefinitionInventoryEngine.getMinStockQuantity(cpInstance),
 				cpInstance.getSku());
 		}
@@ -571,7 +572,7 @@ public class CPDefinitionInfoItemFieldValuesProvider
 
 			return _commerceInventoryEngine.getStockQuantity(
 				cpInstance.getCompanyId(), commerceChannelGroupId,
-				cpInstance.getSku());
+				commerceChannelGroupId, cpInstance.getSku());
 		}
 
 		return null;

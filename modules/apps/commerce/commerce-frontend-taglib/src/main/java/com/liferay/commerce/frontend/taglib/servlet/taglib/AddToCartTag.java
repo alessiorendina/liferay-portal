@@ -110,6 +110,7 @@ public class AddToCartTag extends IncludeTag {
 			if (sku != null) {
 				_stockQuantity = _commerceInventoryEngine.getStockQuantity(
 					PortalUtil.getCompanyId(httpServletRequest),
+					commerceContext.getCommerceChannelGroupId(),
 					commerceContext.getCommerceChannelGroupId(), sku);
 
 				_productSettingsModel = _productHelper.getProductSettingsModel(

@@ -438,7 +438,7 @@ public class CommerceShipmentItemLocalServiceImpl
 		throws PortalException {
 
 		_commerceInventoryEngine.increaseStockQuantity(
-			commerceShipmentItem.getUserId(),
+			commerceShipmentItem.getUserId(), commerceOrderItem.getGroupId(),
 			commerceShipmentItem.getCommerceInventoryWarehouseId(),
 			commerceOrderItem.getSku(), quantity);
 
@@ -481,7 +481,7 @@ public class CommerceShipmentItemLocalServiceImpl
 				commerceShipmentItemId);
 
 		_commerceInventoryEngine.consumeQuantity(
-			commerceShipmentItem.getUserId(),
+			commerceShipmentItem.getUserId(), commerceOrderItem.getGroupId(),
 			commerceShipmentItem.getCommerceInventoryWarehouseId(),
 			commerceOrderItem.getSku(), quantity,
 			commerceOrderItem.getBookedQuantityId(),

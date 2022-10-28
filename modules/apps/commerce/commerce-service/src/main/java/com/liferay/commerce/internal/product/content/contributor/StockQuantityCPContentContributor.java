@@ -86,7 +86,7 @@ public class StockQuantityCPContentContributor implements CPContentContributor {
 				CPContentContributorConstants.STOCK_QUANTITY_NAME,
 				_commerceInventoryEngine.getStockQuantity(
 					cpInstance.getCompanyId(), commerceChannel.getGroupId(),
-					cpInstance.getSku()));
+					commerceChannel.getGroupId(), cpInstance.getSku()));
 		}
 
 		return jsonObject;

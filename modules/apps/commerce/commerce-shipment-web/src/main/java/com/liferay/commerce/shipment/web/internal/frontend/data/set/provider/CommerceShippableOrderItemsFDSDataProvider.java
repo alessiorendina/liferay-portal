@@ -112,6 +112,7 @@ public class CommerceShippableOrderItemsFDSDataProvider
 						_commerceInventoryEngine.getStockQuantity(
 							commerceOrderItem.getCompanyId(),
 							commerceOrderItem.getGroupId(),
+							commerceOrderItem.getGroupId(),
 							commerceOrderItem.getSku()),
 						icon, commerceOrderItem.getCommerceOrderId(),
 						commerceOrderItem.getCommerceOrderItemId(),

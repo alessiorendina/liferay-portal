@@ -266,7 +266,8 @@ public class CommerceOrderGenerator {
 					getCPDefinitionInventoryEngine(cpDefinitionInventory);
 
 			int maxOrderQuantity = _getMaxOrderQuantity(
-				cpInstance, cpDefinitionInventoryEngine);
+				commerceOrder.getGroupId(), cpInstance,
+				cpDefinitionInventoryEngine);
 
 			if (maxOrderQuantity < 1) {
 				continue;
@@ -436,12 +437,13 @@ public class CommerceOrderGenerator {
 	}
 
 	private int _getMaxOrderQuantity(
-			CPInstance cpInstance,
+			long commerceChannelGroupId, CPInstance cpInstance,
 			CPDefinitionInventoryEngine cpDefinitionInventoryEngine)
 		throws PortalException {
 
 		int stockQuantity = _commerceInventoryEngine.getStockQuantity(
-			cpInstance.getCompanyId(), cpInstance.getSku());
+			cpInstance.getCompanyId(), commerceChannelGroupId,
+			cpInstance.getSku());
 
 		int maxOrderQuantity = cpDefinitionInventoryEngine.getMaxOrderQuantity(
 			cpInstance);

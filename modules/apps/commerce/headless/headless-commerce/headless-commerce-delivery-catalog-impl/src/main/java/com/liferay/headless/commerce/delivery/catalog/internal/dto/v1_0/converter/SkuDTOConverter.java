@@ -116,6 +116,7 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 			if (Objects.equals(
 					_commerceInventoryEngine.getAvailabilityStatus(
 						cpInstance.getCompanyId(), commerceChannelGroupId,
+						commerceChannelGroupId,
 						_cpDefinitionInventoryEngine.getMinStockQuantity(
 							cpInstance),
 						cpInstance.getSku()),
@@ -134,7 +135,8 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		if (_cpDefinitionInventoryEngine.isDisplayStockQuantity(cpInstance)) {
 			availability.setStockQuantity(
 				_commerceInventoryEngine.getStockQuantity(
-					companyId, commerceChannelGroupId, sku));
+					companyId, commerceChannelGroupId, commerceChannelGroupId,
+					sku));
 		}
 
 		return availability;

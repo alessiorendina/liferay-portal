@@ -381,6 +381,7 @@ public class MappedProductDTOConverter
 			if (Objects.equals(
 					_commerceInventoryEngine.getAvailabilityStatus(
 						cpInstance.getCompanyId(), commerceChannelGroupId,
+						commerceChannelGroupId,
 						_cpDefinitionInventoryEngine.getMinStockQuantity(
 							cpInstance),
 						cpInstance.getSku()),
@@ -399,7 +400,8 @@ public class MappedProductDTOConverter
 		if (_cpDefinitionInventoryEngine.isDisplayStockQuantity(cpInstance)) {
 			availability.setStockQuantity(
 				_commerceInventoryEngine.getStockQuantity(
-					companyId, commerceChannelGroupId, sku));
+					companyId, commerceChannelGroupId, commerceChannelGroupId,
+					sku));
 		}
 
 		return availability;

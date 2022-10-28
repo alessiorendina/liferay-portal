@@ -187,7 +187,8 @@ public class CommerceInventoryEngineTest {
 				_cpInstance1.getSku(), warehouse2ItemQuantity);
 
 		int companyStockQuantity = _commerceInventoryEngine.getStockQuantity(
-			_group.getCompanyId(), _cpInstance1.getSku());
+			_group.getCompanyId(), _commerceChannel.getGroupId(),
+			_cpInstance1.getSku());
 
 		Assert.assertEquals(
 			warehouse1ItemQuantity + warehouse2ItemQuantity,
@@ -201,7 +202,8 @@ public class CommerceInventoryEngineTest {
 
 		int remainingCompanyStockQuantity =
 			_commerceInventoryEngine.getStockQuantity(
-				_group.getCompanyId(), _cpInstance1.getSku());
+				_group.getCompanyId(), _cpInstance1.getGroupId(),
+				_cpInstance1.getSku());
 
 		Assert.assertEquals(
 			companyStockQuantity - bookedQuantity,
@@ -217,6 +219,8 @@ public class CommerceInventoryEngineTest {
 				"maximum bookable quantity is equal to the sum of the stock " +
 					"in both warehouses"
 		).given(
+			"A channel"
+		).and(
 			"2 active warehouses"
 		).and(
 			"A product sku in different quantities added to the warehouses"
@@ -251,7 +255,8 @@ public class CommerceInventoryEngineTest {
 				_cpInstance1.getSku(), warehouse2ItemQuantity);
 
 		int companyStockQuantity = _commerceInventoryEngine.getStockQuantity(
-			_group.getCompanyId(), _cpInstance1.getSku());
+			_group.getCompanyId(), _commerceChannel.getGroupId(),
+			_cpInstance1.getSku());
 
 		Assert.assertEquals(
 			warehouse1ItemQuantity + warehouse2ItemQuantity,
@@ -269,7 +274,7 @@ public class CommerceInventoryEngineTest {
 		int quantity = 3;
 
 		_commerceInventoryEngine.consumeQuantity(
-			_user.getUserId(),
+			_user.getUserId(), _commerceChannel.getGroupId(),
 			commerceInventoryWarehouse1.getCommerceInventoryWarehouseId(),
 			_cpInstance1.getSku(), quantity,
 			commerceBookedQuantity.getCommerceInventoryBookedQuantityId(),
@@ -277,7 +282,8 @@ public class CommerceInventoryEngineTest {
 
 		int remainingCompanyStockQuantity =
 			_commerceInventoryEngine.getStockQuantity(
-				_group.getCompanyId(), _cpInstance1.getSku());
+				_group.getCompanyId(), _cpInstance1.getGroupId(),
+				_cpInstance1.getSku());
 
 		consumedQuantity += quantity;
 
@@ -288,7 +294,7 @@ public class CommerceInventoryEngineTest {
 		quantity = 10;
 
 		_commerceInventoryEngine.consumeQuantity(
-			_user.getUserId(),
+			_user.getUserId(), _commerceChannel.getGroupId(),
 			commerceInventoryWarehouse1.getCommerceInventoryWarehouseId(),
 			_cpInstance1.getSku(), quantity,
 			commerceBookedQuantity.getCommerceInventoryBookedQuantityId(),
@@ -296,7 +302,8 @@ public class CommerceInventoryEngineTest {
 
 		remainingCompanyStockQuantity =
 			_commerceInventoryEngine.getStockQuantity(
-				_group.getCompanyId(), _cpInstance1.getSku());
+				_group.getCompanyId(), _cpInstance1.getGroupId(),
+				_cpInstance1.getSku());
 
 		consumedQuantity += quantity;
 
@@ -336,10 +343,10 @@ public class CommerceInventoryEngineTest {
 			_commerceInventoryWarehouseItem1.getQuantity() - bookQuantity,
 			_commerceInventoryEngine.getStockQuantity(
 				_group.getCompanyId(), _commerceChannel.getGroupId(),
-				_cpInstance1.getSku()));
+				_commerceChannel.getGroupId(), _cpInstance1.getSku()));
 
 		_commerceInventoryEngine.consumeQuantity(
-			_user.getUserId(),
+			_user.getUserId(), _commerceChannel.getGroupId(),
 			_commerceInventoryWarehouseItem1.getCommerceInventoryWarehouseId(),
 			_cpInstance1.getSku(), bookQuantity,
 			commerceBookedQuantity.getCommerceInventoryBookedQuantityId(),
@@ -349,7 +356,7 @@ public class CommerceInventoryEngineTest {
 			_commerceInventoryWarehouseItem1.getQuantity() - bookQuantity,
 			_commerceInventoryEngine.getStockQuantity(
 				_group.getCompanyId(), _commerceChannel.getGroupId(),
-				_cpInstance1.getSku()));
+				_commerceChannel.getGroupId(), _cpInstance1.getSku()));
 
 		_commerceBookedQuantityLocalService.getCommerceInventoryBookedQuantity(
 			commerceBookedQuantity.getCommerceInventoryBookedQuantityId());
@@ -396,7 +403,8 @@ public class CommerceInventoryEngineTest {
 				_cpInstance1.getSku(), warehouse2ItemQuantity);
 
 		int companyStockQuantity = _commerceInventoryEngine.getStockQuantity(
-			_group.getCompanyId(), _cpInstance1.getSku());
+			_group.getCompanyId(), _commerceChannel.getGroupId(),
+			_cpInstance1.getSku());
 
 		Assert.assertEquals(
 			warehouse1ItemQuantity + warehouse2ItemQuantity,
@@ -405,13 +413,14 @@ public class CommerceInventoryEngineTest {
 		int quantity = 7;
 
 		_commerceInventoryEngine.consumeQuantity(
-			_user.getUserId(),
+			_user.getUserId(), _commerceChannel.getGroupId(),
 			commerceInventoryWarehouse1.getCommerceInventoryWarehouseId(),
 			_cpInstance1.getSku(), quantity, 0, Collections.emptyMap());
 
 		int remainingCompanyStockQuantity =
 			_commerceInventoryEngine.getStockQuantity(
-				_group.getCompanyId(), _cpInstance1.getSku());
+				_group.getCompanyId(), _cpInstance1.getGroupId(),
+				_cpInstance1.getSku());
 
 		Assert.assertEquals(
 			warehouse1ItemQuantity + warehouse2ItemQuantity - quantity,
@@ -543,13 +552,14 @@ public class CommerceInventoryEngineTest {
 				_cpInstance1.getSku(), activeWarehouseQuantity);
 
 		int companyStockQuantity = _commerceInventoryEngine.getStockQuantity(
-			_group.getCompanyId(), _cpInstance1.getSku());
+			_group.getCompanyId(), _commerceChannel.getGroupId(),
+			_cpInstance1.getSku());
 
 		Assert.assertEquals(activeWarehouseQuantity, companyStockQuantity);
 
 		int channelStockQuantity = _commerceInventoryEngine.getStockQuantity(
 			_group.getCompanyId(), _commerceChannel.getGroupId(),
-			_cpInstance1.getSku());
+			_commerceChannel.getGroupId(), _cpInstance1.getSku());
 
 		Assert.assertEquals(0, channelStockQuantity);
 	}
@@ -583,7 +593,8 @@ public class CommerceInventoryEngineTest {
 
 		Map<String, Integer> stockQuantities =
 			_commerceInventoryEngine.getStockQuantities(
-				_group.getCompanyId(), _commerceChannel.getGroupId(), skuList);
+				_group.getCompanyId(), _commerceChannel.getGroupId(),
+				_commerceChannel.getGroupId(), skuList);
 
 		Set<String> set = stockQuantities.keySet();
 
@@ -635,7 +646,8 @@ public class CommerceInventoryEngineTest {
 		Assert.assertEquals(
 			0,
 			_commerceInventoryEngine.getStockQuantity(
-				_group.getCompanyId(), _cpInstance1.getSku()));
+				_group.getCompanyId(), _commerceChannel.getGroupId(),
+				_cpInstance1.getSku()));
 	}
 
 	@Test
@@ -675,7 +687,7 @@ public class CommerceInventoryEngineTest {
 			0,
 			_commerceInventoryEngine.getStockQuantity(
 				_group.getCompanyId(), _commerceChannel.getGroupId(),
-				_cpInstance1.getSku()));
+				_commerceChannel.getGroupId(), _cpInstance1.getSku()));
 	}
 
 	@Test
@@ -714,7 +726,7 @@ public class CommerceInventoryEngineTest {
 			0,
 			_commerceInventoryEngine.getStockQuantity(
 				_group.getCompanyId(), _commerceChannel.getGroupId(),
-				_cpInstance1.getSku()));
+				_commerceChannel.getGroupId(), _cpInstance1.getSku()));
 	}
 
 	@Test
@@ -739,7 +751,7 @@ public class CommerceInventoryEngineTest {
 			_commerceInventoryWarehouseItem1.getQuantity(),
 			_commerceInventoryEngine.getStockQuantity(
 				_group.getCompanyId(), _commerceChannel.getGroupId(),
-				_cpInstance1.getSku()));
+				_commerceChannel.getGroupId(), _cpInstance1.getSku()));
 	}
 
 	@Test
