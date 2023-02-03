@@ -143,7 +143,7 @@ public class CommerceMediaServlet extends HttpServlet {
 
 		CPAttachmentFileEntry cpAttachmentFileEntry =
 			_cpAttachmentFileEntryLocalService.getCPAttachmentFileEntry(
-				GetterUtil.getLong(cpAttachmentFileEntryIdParam));
+				GetterUtil.getLongStrict(cpAttachmentFileEntryIdParam));
 
 		return _getFileEntry(cpAttachmentFileEntry.getFileEntryId());
 	}
@@ -276,8 +276,8 @@ public class CommerceMediaServlet extends HttpServlet {
 			}
 
 			long groupId = _getGroupId(
-				GetterUtil.getLong(pathArray[1]),
-				GetterUtil.getLong(cpAttachmentFileEntryIdParam));
+				GetterUtil.getLongStrict(pathArray[1]),
+				GetterUtil.getLongStrict(cpAttachmentFileEntryIdParam));
 
 			if (groupId == 0) {
 				httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
