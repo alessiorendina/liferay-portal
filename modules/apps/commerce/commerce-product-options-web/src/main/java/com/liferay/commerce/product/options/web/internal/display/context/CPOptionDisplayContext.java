@@ -201,7 +201,9 @@ public class CPOptionDisplayContext {
 					).setWindowState(
 						LiferayWindowState.POP_UP
 					).buildString());
-				dropdownItem.setLabel("add-option-value-template");
+				dropdownItem.setLabel(
+					LanguageUtil.get(
+						cpRequestHelper.getRequest(), "add-option-value"));
 				dropdownItem.setTarget("modal");
 			}
 		).build();
