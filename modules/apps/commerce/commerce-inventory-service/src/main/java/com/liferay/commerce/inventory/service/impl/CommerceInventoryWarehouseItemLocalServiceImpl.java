@@ -16,7 +16,6 @@ package com.liferay.commerce.inventory.service.impl;
 
 import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
 import com.liferay.commerce.inventory.exception.DuplicateCommerceInventoryWarehouseItemException;
-import com.liferay.commerce.inventory.exception.MVCCException;
 import com.liferay.commerce.inventory.exception.NoSuchInventoryWarehouseItemException;
 import com.liferay.commerce.inventory.model.CIWarehouseItem;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
@@ -124,7 +123,7 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 				userId,
 				commerceInventoryWarehouseItem.
 					getCommerceInventoryWarehouseItemId(),
-				quantity, commerceInventoryWarehouseItem.getMvccVersion());
+				quantity);
 	}
 
 	@Override
@@ -148,8 +147,7 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 						userId,
 						commerceInventoryWarehouseItem.
 							getCommerceInventoryWarehouseItemId(),
-						quantity,
-						commerceInventoryWarehouseItem.getMvccVersion());
+						quantity);
 			}
 		}
 
@@ -405,8 +403,7 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 		commerceInventoryWarehouseItemLocalService.
 			updateCommerceInventoryWarehouseItem(
 				userId, fromWarehouseItem.getCommerceInventoryWarehouseItemId(),
-				fromWarehouseItem.getQuantity() - quantity,
-				fromWarehouseItem.getMvccVersion());
+				fromWarehouseItem.getQuantity() - quantity);
 
 		CommerceInventoryWarehouseItem toWarehouseItem =
 			commerceInventoryWarehouseItemPersistence.findByC_S(
@@ -415,8 +412,7 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 		commerceInventoryWarehouseItemLocalService.
 			updateCommerceInventoryWarehouseItem(
 				userId, toWarehouseItem.getCommerceInventoryWarehouseItemId(),
-				toWarehouseItem.getQuantity() + quantity,
-				toWarehouseItem.getMvccVersion());
+				toWarehouseItem.getQuantity() + quantity);
 
 		CommerceInventoryAuditType commerceInventoryAuditType =
 			_commerceInventoryAuditTypeRegistry.getCommerceInventoryAuditType(
@@ -452,17 +448,48 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 
 	@Override
 	public CommerceInventoryWarehouseItem updateCommerceInventoryWarehouseItem(
-			long userId, long commerceInventoryWarehouseItemId, int quantity,
-			int reservedQuantity, long mvccVersion)
+			long userId, long commerceInventoryWarehouseItemId, int quantity)
 		throws PortalException {
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
 			commerceInventoryWarehouseItemPersistence.findByPrimaryKey(
 				commerceInventoryWarehouseItemId);
 
-		if (commerceInventoryWarehouseItem.getMvccVersion() != mvccVersion) {
-			throw new MVCCException();
-		}
+		commerceInventoryWarehouseItem.setQuantity(quantity);
+
+		commerceInventoryWarehouseItem =
+			commerceInventoryWarehouseItemPersistence.update(
+				commerceInventoryWarehouseItem);
+
+		CommerceInventoryAuditType commerceInventoryAuditType =
+			_commerceInventoryAuditTypeRegistry.getCommerceInventoryAuditType(
+				CommerceInventoryConstants.AUDIT_TYPE_UPDATE_WAREHOUSE_ITEM);
+
+		CommerceInventoryWarehouse commerceInventoryWarehouse =
+			commerceInventoryWarehouseItem.getCommerceInventoryWarehouse();
+
+		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
+			userId, commerceInventoryWarehouseItem.getSku(),
+			commerceInventoryAuditType.getType(),
+			commerceInventoryAuditType.getLog(
+				HashMapBuilder.put(
+					CommerceInventoryAuditTypeConstants.WAREHOUSE,
+					String.valueOf(commerceInventoryWarehouse.getName())
+				).build()),
+			quantity);
+
+		return commerceInventoryWarehouseItem;
+	}
+
+	@Override
+	public CommerceInventoryWarehouseItem updateCommerceInventoryWarehouseItem(
+			long userId, long commerceInventoryWarehouseItemId, int quantity,
+			int reservedQuantity)
+		throws PortalException {
+
+		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
+			commerceInventoryWarehouseItemPersistence.findByPrimaryKey(
+				commerceInventoryWarehouseItemId);
 
 		commerceInventoryWarehouseItem.setQuantity(quantity);
 		commerceInventoryWarehouseItem.setReservedQuantity(reservedQuantity);
@@ -486,46 +513,6 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 					CommerceInventoryAuditTypeConstants.RESERVED,
 					String.valueOf(reservedQuantity)
 				).put(
-					CommerceInventoryAuditTypeConstants.WAREHOUSE,
-					String.valueOf(commerceInventoryWarehouse.getName())
-				).build()),
-			quantity);
-
-		return commerceInventoryWarehouseItem;
-	}
-
-	@Override
-	public CommerceInventoryWarehouseItem updateCommerceInventoryWarehouseItem(
-			long userId, long commerceInventoryWarehouseItemId, int quantity,
-			long mvccVersion)
-		throws PortalException {
-
-		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-			commerceInventoryWarehouseItemPersistence.findByPrimaryKey(
-				commerceInventoryWarehouseItemId);
-
-		if (commerceInventoryWarehouseItem.getMvccVersion() != mvccVersion) {
-			throw new MVCCException();
-		}
-
-		commerceInventoryWarehouseItem.setQuantity(quantity);
-
-		commerceInventoryWarehouseItem =
-			commerceInventoryWarehouseItemPersistence.update(
-				commerceInventoryWarehouseItem);
-
-		CommerceInventoryAuditType commerceInventoryAuditType =
-			_commerceInventoryAuditTypeRegistry.getCommerceInventoryAuditType(
-				CommerceInventoryConstants.AUDIT_TYPE_UPDATE_WAREHOUSE_ITEM);
-
-		CommerceInventoryWarehouse commerceInventoryWarehouse =
-			commerceInventoryWarehouseItem.getCommerceInventoryWarehouse();
-
-		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, commerceInventoryWarehouseItem.getSku(),
-			commerceInventoryAuditType.getType(),
-			commerceInventoryAuditType.getLog(
-				HashMapBuilder.put(
 					CommerceInventoryAuditTypeConstants.WAREHOUSE,
 					String.valueOf(commerceInventoryWarehouse.getName())
 				).build()),

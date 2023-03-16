@@ -316,8 +316,7 @@ public class CommerceInventoryWarehouseServiceImpl
 			Map<Locale, String> descriptionMap, boolean active, String street1,
 			String street2, String street3, String city, String zip,
 			String commerceRegionCode, String commerceCountryCode,
-			double latitude, double longitude, long mvccVersion,
-			ServiceContext serviceContext)
+			double latitude, double longitude, ServiceContext serviceContext)
 		throws PortalException {
 
 		_commerceInventoryWarehouseModelResourcePermission.check(
@@ -328,8 +327,7 @@ public class CommerceInventoryWarehouseServiceImpl
 			updateCommerceInventoryWarehouse(
 				commerceInventoryWarehouseId, nameMap, descriptionMap, active,
 				street1, street2, street3, city, zip, commerceRegionCode,
-				commerceCountryCode, latitude, longitude, mvccVersion,
-				serviceContext);
+				commerceCountryCode, latitude, longitude, serviceContext);
 	}
 
 	@Override

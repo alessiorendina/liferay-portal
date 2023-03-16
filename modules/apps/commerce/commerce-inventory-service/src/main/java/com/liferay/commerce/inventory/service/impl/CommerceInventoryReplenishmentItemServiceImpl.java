@@ -229,7 +229,7 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 			updateCommerceInventoryReplenishmentItem(
 				String externalReferenceCode,
 				long commerceInventoryReplenishmentItemId,
-				Date availabilityDate, int quantity, long mvccVersion)
+				Date availabilityDate, int quantity)
 		throws PortalException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
@@ -248,7 +248,7 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 		return commerceInventoryReplenishmentItemLocalService.
 			updateCommerceInventoryReplenishmentItem(
 				externalReferenceCode, commerceInventoryReplenishmentItemId,
-				availabilityDate, quantity, mvccVersion);
+				availabilityDate, quantity);
 	}
 
 	@Reference(

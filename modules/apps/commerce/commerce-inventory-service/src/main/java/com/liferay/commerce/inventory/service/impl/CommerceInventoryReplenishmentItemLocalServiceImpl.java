@@ -17,7 +17,6 @@ package com.liferay.commerce.inventory.service.impl;
 import com.liferay.commerce.inventory.exception.CommerceInventoryReplenishmentQuantityException;
 import com.liferay.commerce.inventory.exception.CommerceInventoryReplenishmentSkuException;
 import com.liferay.commerce.inventory.exception.DuplicateCommerceInventoryReplenishmentItemException;
-import com.liferay.commerce.inventory.exception.MVCCException;
 import com.liferay.commerce.inventory.model.CommerceInventoryReplenishmentItem;
 import com.liferay.commerce.inventory.service.base.CommerceInventoryReplenishmentItemLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
@@ -185,7 +184,7 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 			updateCommerceInventoryReplenishmentItem(
 				String externalReferenceCode,
 				long commerceInventoryReplenishmentItemId,
-				Date availabilityDate, int quantity, long mvccVersion)
+				Date availabilityDate, int quantity)
 		throws PortalException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
@@ -198,12 +197,6 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 			externalReferenceCode);
 
 		_validateQuantity(quantity);
-
-		if (commerceInventoryReplenishmentItem.getMvccVersion() !=
-				mvccVersion) {
-
-			throw new MVCCException();
-		}
 
 		commerceInventoryReplenishmentItem.setExternalReferenceCode(
 			externalReferenceCode);

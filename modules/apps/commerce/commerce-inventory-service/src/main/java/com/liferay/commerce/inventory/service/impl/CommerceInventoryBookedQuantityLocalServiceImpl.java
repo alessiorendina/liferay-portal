@@ -15,7 +15,6 @@
 package com.liferay.commerce.inventory.service.impl;
 
 import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
-import com.liferay.commerce.inventory.exception.MVCCException;
 import com.liferay.commerce.inventory.exception.NoSuchInventoryBookedQuantityException;
 import com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity;
 import com.liferay.commerce.inventory.service.CommerceInventoryAuditLocalService;
@@ -216,17 +215,13 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 	public CommerceInventoryBookedQuantity
 			updateCommerceInventoryBookedQuantity(
 				long userId, long commerceInventoryBookedQuantityId,
-				int quantity, Map<String, String> context, long mvccVersion)
+				int quantity, Map<String, String> context)
 		throws PortalException {
 
 		CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
 			commerceInventoryBookedQuantityLocalService.
 				getCommerceInventoryBookedQuantity(
 					commerceInventoryBookedQuantityId);
-
-		if (commerceInventoryBookedQuantity.getMvccVersion() != mvccVersion) {
-			throw new MVCCException();
-		}
 
 		commerceInventoryBookedQuantity.setQuantity(quantity);
 
