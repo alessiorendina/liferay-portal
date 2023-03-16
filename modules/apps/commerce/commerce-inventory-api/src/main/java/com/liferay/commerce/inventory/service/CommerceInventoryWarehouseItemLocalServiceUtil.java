@@ -580,22 +580,22 @@ public class CommerceInventoryWarehouseItemLocalServiceUtil {
 	public static CommerceInventoryWarehouseItem
 			updateCommerceInventoryWarehouseItem(
 				long userId, long commerceInventoryWarehouseItemId,
-				int quantity, int reservedQuantity, long mvccVersion)
+				int quantity)
 		throws PortalException {
 
 		return getService().updateCommerceInventoryWarehouseItem(
-			userId, commerceInventoryWarehouseItemId, quantity,
-			reservedQuantity, mvccVersion);
+			userId, commerceInventoryWarehouseItemId, quantity);
 	}
 
 	public static CommerceInventoryWarehouseItem
 			updateCommerceInventoryWarehouseItem(
 				long userId, long commerceInventoryWarehouseItemId,
-				int quantity, long mvccVersion)
+				int quantity, int reservedQuantity)
 		throws PortalException {
 
 		return getService().updateCommerceInventoryWarehouseItem(
-			userId, commerceInventoryWarehouseItemId, quantity, mvccVersion);
+			userId, commerceInventoryWarehouseItemId, quantity,
+			reservedQuantity);
 	}
 
 	public static CommerceInventoryWarehouseItemLocalService getService() {

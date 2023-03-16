@@ -376,7 +376,7 @@ public interface CommerceInventoryReplenishmentItemLocalService
 			updateCommerceInventoryReplenishmentItem(
 				String externalReferenceCode,
 				long commerceInventoryReplenishmentItemId,
-				Date availabilityDate, int quantity, long mvccVersion)
+				Date availabilityDate, int quantity)
 		throws PortalException;
 
 }

@@ -487,8 +487,7 @@ public class CommerceInventoryReplenishmentItemServiceHttp {
 				updateCommerceInventoryReplenishmentItem(
 					HttpPrincipal httpPrincipal, String externalReferenceCode,
 					long commerceInventoryReplenishmentItemId,
-					java.util.Date availabilityDate, int quantity,
-					long mvccVersion)
+					java.util.Date availabilityDate, int quantity)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -500,7 +499,7 @@ public class CommerceInventoryReplenishmentItemServiceHttp {
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode,
 				commerceInventoryReplenishmentItemId, availabilityDate,
-				quantity, mvccVersion);
+				quantity);
 
 			Object returnObj = null;
 
@@ -571,8 +570,7 @@ public class CommerceInventoryReplenishmentItemServiceHttp {
 	private static final Class<?>[]
 		_updateCommerceInventoryReplenishmentItemParameterTypes10 =
 			new Class[] {
-				String.class, long.class, java.util.Date.class, int.class,
-				long.class
+				String.class, long.class, java.util.Date.class, int.class
 			};
 
 }

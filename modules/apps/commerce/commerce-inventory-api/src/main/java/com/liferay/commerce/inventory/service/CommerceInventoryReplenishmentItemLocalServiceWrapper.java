@@ -555,14 +555,13 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 				updateCommerceInventoryReplenishmentItem(
 					String externalReferenceCode,
 					long commerceInventoryReplenishmentItemId,
-					java.util.Date availabilityDate, int quantity,
-					long mvccVersion)
+					java.util.Date availabilityDate, int quantity)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceInventoryReplenishmentItemLocalService.
 			updateCommerceInventoryReplenishmentItem(
 				externalReferenceCode, commerceInventoryReplenishmentItemId,
-				availabilityDate, quantity, mvccVersion);
+				availabilityDate, quantity);
 	}
 
 	@Override

@@ -258,23 +258,21 @@ public class CommerceInventoryWarehouseItemServiceUtil {
 
 	public static CommerceInventoryWarehouseItem
 			updateCommerceInventoryWarehouseItem(
-				long commerceInventoryWarehouseItemId, int quantity,
-				int reservedQuantity, long mvccVersion)
+				long commerceInventoryWarehouseItemId, int quantity)
 		throws PortalException {
 
 		return getService().updateCommerceInventoryWarehouseItem(
-			commerceInventoryWarehouseItemId, quantity, reservedQuantity,
-			mvccVersion);
+			commerceInventoryWarehouseItemId, quantity);
 	}
 
 	public static CommerceInventoryWarehouseItem
 			updateCommerceInventoryWarehouseItem(
 				long commerceInventoryWarehouseItemId, int quantity,
-				long mvccVersion)
+				int reservedQuantity)
 		throws PortalException {
 
 		return getService().updateCommerceInventoryWarehouseItem(
-			commerceInventoryWarehouseItemId, quantity, mvccVersion);
+			commerceInventoryWarehouseItemId, quantity, reservedQuantity);
 	}
 
 	public static CommerceInventoryWarehouseItemService getService() {

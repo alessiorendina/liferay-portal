@@ -117,7 +117,7 @@ public interface CommerceInventoryReplenishmentItemService extends BaseService {
 			updateCommerceInventoryReplenishmentItem(
 				String externalReferenceCode,
 				long commerceInventoryReplenishmentItemId,
-				Date availabilityDate, int quantity, long mvccVersion)
+				Date availabilityDate, int quantity)
 		throws PortalException;
 
 }

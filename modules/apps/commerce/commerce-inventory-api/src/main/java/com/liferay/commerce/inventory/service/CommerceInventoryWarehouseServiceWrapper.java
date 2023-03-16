@@ -232,7 +232,6 @@ public class CommerceInventoryWarehouseServiceWrapper
 				boolean active, String street1, String street2, String street3,
 				String city, String zip, String commerceRegionCode,
 				String commerceCountryCode, double latitude, double longitude,
-				long mvccVersion,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -240,8 +239,7 @@ public class CommerceInventoryWarehouseServiceWrapper
 			updateCommerceInventoryWarehouse(
 				commerceInventoryWarehouseId, nameMap, descriptionMap, active,
 				street1, street2, street3, city, zip, commerceRegionCode,
-				commerceCountryCode, latitude, longitude, mvccVersion,
-				serviceContext);
+				commerceCountryCode, latitude, longitude, serviceContext);
 	}
 
 	@Override

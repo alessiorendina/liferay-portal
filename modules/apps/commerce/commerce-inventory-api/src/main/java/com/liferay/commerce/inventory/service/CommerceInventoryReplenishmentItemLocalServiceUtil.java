@@ -465,12 +465,12 @@ public class CommerceInventoryReplenishmentItemLocalServiceUtil {
 			updateCommerceInventoryReplenishmentItem(
 				String externalReferenceCode,
 				long commerceInventoryReplenishmentItemId,
-				java.util.Date availabilityDate, int quantity, long mvccVersion)
+				java.util.Date availabilityDate, int quantity)
 		throws PortalException {
 
 		return getService().updateCommerceInventoryReplenishmentItem(
 			externalReferenceCode, commerceInventoryReplenishmentItemId,
-			availabilityDate, quantity, mvccVersion);
+			availabilityDate, quantity);
 	}
 
 	public static CommerceInventoryReplenishmentItemLocalService getService() {

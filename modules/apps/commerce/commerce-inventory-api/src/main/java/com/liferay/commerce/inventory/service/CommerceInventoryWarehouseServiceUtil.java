@@ -193,15 +193,14 @@ public class CommerceInventoryWarehouseServiceUtil {
 			Map<java.util.Locale, String> descriptionMap, boolean active,
 			String street1, String street2, String street3, String city,
 			String zip, String commerceRegionCode, String commerceCountryCode,
-			double latitude, double longitude, long mvccVersion,
+			double latitude, double longitude,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().updateCommerceInventoryWarehouse(
 			commerceInventoryWarehouseId, nameMap, descriptionMap, active,
 			street1, street2, street3, city, zip, commerceRegionCode,
-			commerceCountryCode, latitude, longitude, mvccVersion,
-			serviceContext);
+			commerceCountryCode, latitude, longitude, serviceContext);
 	}
 
 	public static CommerceInventoryWarehouse

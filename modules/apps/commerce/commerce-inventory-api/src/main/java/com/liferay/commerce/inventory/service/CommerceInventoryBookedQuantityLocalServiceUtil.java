@@ -384,12 +384,11 @@ public class CommerceInventoryBookedQuantityLocalServiceUtil {
 	public static CommerceInventoryBookedQuantity
 			updateCommerceInventoryBookedQuantity(
 				long userId, long commerceInventoryBookedQuantityId,
-				int quantity, Map<String, String> context, long mvccVersion)
+				int quantity, Map<String, String> context)
 		throws PortalException {
 
 		return getService().updateCommerceInventoryBookedQuantity(
-			userId, commerceInventoryBookedQuantityId, quantity, context,
-			mvccVersion);
+			userId, commerceInventoryBookedQuantityId, quantity, context);
 	}
 
 	public static CommerceInventoryBookedQuantityLocalService getService() {
