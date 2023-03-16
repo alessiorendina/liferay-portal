@@ -131,8 +131,6 @@ public class EditCommerceInventoryReplenishmentItemMVCActionCommand
 		int month = ParamUtil.getInteger(actionRequest, "dateMonth");
 		int year = ParamUtil.getInteger(actionRequest, "dateYear");
 
-		long mvccVersion = ParamUtil.getLong(actionRequest, "mvccVersion");
-
 		Calendar calendar = Calendar.getInstance();
 
 		calendar.set(year, month, day);
@@ -140,7 +138,7 @@ public class EditCommerceInventoryReplenishmentItemMVCActionCommand
 		_commerceInventoryReplenishmentItemService.
 			updateCommerceInventoryReplenishmentItem(
 				null, commerceInventoryReplenishmentItemId, calendar.getTime(),
-				quantity, mvccVersion);
+				quantity);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

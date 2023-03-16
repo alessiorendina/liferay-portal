@@ -254,7 +254,6 @@ public class EditCommerceInventoryWarehouseMVCActionCommand
 			actionRequest, "countryTwoLettersISOCode");
 		double latitude = ParamUtil.getDouble(actionRequest, "latitude");
 		double longitude = ParamUtil.getDouble(actionRequest, "longitude");
-		long mvccVersion = ParamUtil.getLong(actionRequest, "mvccVersion");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			CommerceInventoryWarehouse.class.getName(), actionRequest);
@@ -281,7 +280,7 @@ public class EditCommerceInventoryWarehouseMVCActionCommand
 						commerceInventoryWarehouseId, nameMap, descriptionMap,
 						active, street1, street2, street3, city, zip,
 						commerceRegionCode, commerceCountryCode, latitude,
-						longitude, mvccVersion, serviceContext);
+						longitude, serviceContext);
 		}
 
 		return commerceInventoryWarehouse;

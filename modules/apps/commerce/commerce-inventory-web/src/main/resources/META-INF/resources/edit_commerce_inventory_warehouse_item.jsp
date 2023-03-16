@@ -18,11 +18,7 @@
 
 <%
 CommerceInventoryDisplayContext commerceInventoryDisplayContext = (CommerceInventoryDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
-
-CommerceInventoryWarehouseItem commerceInventoryWarehouseItem = commerceInventoryDisplayContext.getCommerceInventoryWarehouseItem();
 %>
-
-<liferay-ui:error exception="<%= MVCCException.class %>" message="this-item-is-no-longer-valid-please-try-again" />
 
 <portlet:actionURL name="/commerce_inventory/edit_commerce_inventory_warehouse_item" var="editCommerceInventoryWarehouseItemActionURL" />
 
@@ -36,9 +32,10 @@ CommerceInventoryWarehouseItem commerceInventoryWarehouseItem = commerceInventor
 			<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 			<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 			<aui:input name="commerceInventoryWarehouseItemId" type="hidden" value="<%= commerceInventoryDisplayContext.getCommerceInventoryWarehouseItemId() %>" />
-			<aui:input name="mvccVersion" type="hidden" value="<%= commerceInventoryWarehouseItem.getMvccVersion() %>" />
 
-			<aui:model-context bean="<%= commerceInventoryWarehouseItem %>" model="<%= CommerceInventoryWarehouseItem.class %>" />
+			<liferay-ui:error exception="<%= MVCCException.class %>" message="this-item-is-no-longer-valid-please-try-again" />
+
+			<aui:model-context bean="<%= commerceInventoryDisplayContext.getCommerceInventoryWarehouseItem() %>" model="<%= CommerceInventoryWarehouseItem.class %>" />
 
 			<aui:input label="quantity-on-hand" name="quantity">
 				<aui:validator name="min">0</aui:validator>

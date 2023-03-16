@@ -318,7 +318,6 @@ public class WarehouseResourceImpl extends BaseWarehouseResourceImpl {
 				GetterUtil.get(
 					warehouse.getLongitude(),
 					commerceInventoryWarehouse.getLongitude()),
-				commerceInventoryWarehouse.getMvccVersion(),
 				_serviceContextHelper.getServiceContext());
 
 		// Update nested resources

@@ -2055,8 +2055,7 @@ public class CommerceOrderItemLocalServiceImpl
 							CommerceInventoryAuditTypeConstants.ORDER_ITEM_ID,
 							String.valueOf(
 								commerceOrderItem.getCommerceOrderItemId())
-						).build(),
-						commerceInventoryBookedQuantity.getMvccVersion());
+						).build());
 			}
 		}
 	}

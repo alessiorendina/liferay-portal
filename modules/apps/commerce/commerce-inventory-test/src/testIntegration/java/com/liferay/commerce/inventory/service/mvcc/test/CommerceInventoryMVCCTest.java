@@ -91,16 +91,14 @@ public class CommerceInventoryMVCCTest {
 				null,
 				commerceInventoryReplenishmentItem.
 					getCommerceInventoryReplenishmentItemId(),
-				commerceInventoryReplenishmentItem.getAvailabilityDate(), 15,
-				commerceInventoryReplenishmentItem.getMvccVersion());
+				commerceInventoryReplenishmentItem.getAvailabilityDate(), 15);
 
 		_commerceInventoryReplenishmentItemLocalService.
 			updateCommerceInventoryReplenishmentItem(
 				null,
 				commerceInventoryReplenishmentItem.
 					getCommerceInventoryReplenishmentItemId(),
-				commerceInventoryReplenishmentItem.getAvailabilityDate(), 20,
-				commerceInventoryReplenishmentItem.getMvccVersion());
+				commerceInventoryReplenishmentItem.getAvailabilityDate(), 20);
 	}
 
 	@Test(expected = MVCCException.class)
@@ -126,14 +124,14 @@ public class CommerceInventoryMVCCTest {
 				commerceInventoryWarehouseItem.getUserId(),
 				commerceInventoryWarehouseItem.
 					getCommerceInventoryWarehouseItemId(),
-				1, commerceInventoryWarehouse.getMvccVersion());
+				1);
 
 		_commerceInventoryWarehouseItemLocalService.
 			updateCommerceInventoryWarehouseItem(
 				commerceInventoryWarehouseItem.getUserId(),
 				commerceInventoryWarehouseItem.
 					getCommerceInventoryWarehouseItemId(),
-				1, commerceInventoryWarehouse.getMvccVersion());
+				1);
 	}
 
 	@Test(expected = MVCCException.class)
@@ -156,8 +154,7 @@ public class CommerceInventoryMVCCTest {
 				commerceInventoryWarehouse.getCommerceRegionCode(),
 				commerceInventoryWarehouse.getCommerceRegionCode(),
 				commerceInventoryWarehouse.getLatitude(),
-				commerceInventoryWarehouse.getLongitude(),
-				commerceInventoryWarehouse.getMvccVersion(), _serviceContext);
+				commerceInventoryWarehouse.getLongitude(), _serviceContext);
 
 		_commerceInventoryWarehouseLocalService.
 			updateCommerceInventoryWarehouse(
@@ -173,8 +170,7 @@ public class CommerceInventoryMVCCTest {
 				commerceInventoryWarehouse.getCommerceRegionCode(),
 				commerceInventoryWarehouse.getCommerceRegionCode(),
 				commerceInventoryWarehouse.getLatitude(),
-				commerceInventoryWarehouse.getLongitude(),
-				commerceInventoryWarehouse.getMvccVersion(), _serviceContext);
+				commerceInventoryWarehouse.getLongitude(), _serviceContext);
 	}
 
 	private static User _user;

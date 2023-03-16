@@ -50,7 +50,6 @@ if (Validator.isNotNull(backURL)) {
 				<aui:input name="commerceInventoryWarehouseItemId" type="hidden" />
 				<aui:input name="sku" type="hidden" value="<%= cpInstance.getSku() %>" />
 				<aui:input name="quantity" type="hidden" />
-				<aui:input name="mvccVersion" type="hidden" />
 
 				<table class="show-quick-actions-on-hover table table-autofit table-list table-responsive-lg">
 					<thead>

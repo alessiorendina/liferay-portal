@@ -158,9 +158,6 @@ public class WarehouseHelper {
 				GetterUtil.get(
 					warehouse.getLongitude(),
 					commerceInventoryWarehouse.getLongitude()),
-				GetterUtil.get(
-					warehouse.getMvccVersion(),
-					commerceInventoryWarehouse.getMvccVersion()),
 				_serviceContextHelper.getServiceContext(
 					0, new long[0], user, true));
 	}

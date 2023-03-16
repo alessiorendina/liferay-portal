@@ -232,8 +232,7 @@ public class ReplenishmentItemResourceImpl
 					commerceInventoryReplenishmentItem.getAvailabilityDate()),
 				GetterUtil.getInteger(
 					replenishmentItem.getQuantity(),
-					commerceInventoryReplenishmentItem.getQuantity()),
-				commerceInventoryReplenishmentItem.getMvccVersion());
+					commerceInventoryReplenishmentItem.getQuantity()));
 	}
 
 	@Reference
