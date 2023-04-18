@@ -443,6 +443,12 @@ public class CommerceServiceUpgradeStepRegistrator
 			new com.liferay.commerce.internal.upgrade.v9_0_0.
 				CommerceOrderUpgradeProcess());
 
+		registry.register(
+			"9.0.0", "9.1.0",
+			UpgradeProcessFactory.addColumns(
+				"CommerceOrderItem", "replacedCPInstanceId LONG",
+				"replacedSku VARCHAR(75) null"));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce upgrade step registrator finished");
 		}
