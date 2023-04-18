@@ -230,7 +230,7 @@ public class PlacedOrderItemResourceTest
 			_commerceOrderItemLocalService.addCommerceOrderItem(
 				_user.getUserId(), _commerceOrder.getCommerceOrderId(),
 				placedOrderItem.getSkuId(), null, placedOrderItem.getQuantity(),
-				placedOrderItem.getQuantity(),
+				0, placedOrderItem.getQuantity(),
 				new TestCommerceContext(
 					_commerceCurrency, _commerceChannel, _user, testGroup,
 					commerceAccount, _commerceOrder),

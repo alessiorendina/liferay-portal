@@ -330,7 +330,7 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 		CommerceOrderItem commerceOrderItem =
 			_commerceOrderItemLocalService.addCommerceOrderItem(
 				_user.getUserId(), _commerceOrder.getCommerceOrderId(),
-				orderItem.getSkuId(), null, orderItem.getQuantity(),
+				orderItem.getSkuId(), null, orderItem.getQuantity(), 0,
 				orderItem.getQuantity(),
 				new TestCommerceContext(
 					_commerceCurrency, _commerceChannel, _user, testGroup,

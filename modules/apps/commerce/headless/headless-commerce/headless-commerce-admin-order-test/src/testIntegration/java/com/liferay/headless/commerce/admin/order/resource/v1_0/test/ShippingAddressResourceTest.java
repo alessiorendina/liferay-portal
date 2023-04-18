@@ -135,7 +135,7 @@ public class ShippingAddressResourceTest
 		CommerceOrderItem commerceOrderItem =
 			_commerceOrderItemLocalService.addCommerceOrderItem(
 				user.getUserId(), commerceOrder.getCommerceOrderId(),
-				cpInstance.getCPInstanceId(), null, 1, 1,
+				cpInstance.getCPInstanceId(), null, 1, 0, 1,
 				new TestCommerceContext(
 					commerceCurrency, commerceChannel, user, testGroup,
 					_commerceAccountLocalService.getCommerceAccount(
