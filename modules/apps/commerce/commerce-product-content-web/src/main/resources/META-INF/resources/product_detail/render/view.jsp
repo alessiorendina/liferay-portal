@@ -140,7 +140,7 @@ long cpDefinitionId = cpCatalogEntry.getCPDefinitionId();
 
 			<p class="mt-3 product-description"><%= HtmlUtil.escape(cpCatalogEntry.getShortDescription()) %></p>
 
-			<h4 class="commerce-subscription-info mt-3">
+			<h4 class="col commerce-subscription-info mt-3">
 				<c:if test="<%= cpSku != null %>">
 					<commerce-ui:product-subscription-info
 						CPInstanceId="<%= cpSku.getCPInstanceId() %>"
