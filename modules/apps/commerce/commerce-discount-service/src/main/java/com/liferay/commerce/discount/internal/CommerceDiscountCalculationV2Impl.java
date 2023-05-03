@@ -135,11 +135,13 @@ public class CommerceDiscountCalculationV2Impl
 			!commercePriceListDiscountRels.isEmpty()) {
 
 			List<CommerceDiscount> commerceDiscounts =
-				commerceDiscountLocalService.getPriceListCommerceDiscounts(
+				_getFilteredCommerceDiscounts(
+					commerceContext,
+					commerceDiscountLocalService.getPriceListCommerceDiscounts(
 					TransformUtil.transformToLongArray(
 						commercePriceListDiscountRels,
 						CommercePriceListDiscountRel::getCommerceDiscountId),
-					cpInstance.getCPDefinitionId());
+					cpInstance.getCPDefinitionId()));
 
 			if (commerceDiscounts.isEmpty()) {
 				return null;
@@ -158,9 +160,12 @@ public class CommerceDiscountCalculationV2Impl
 		}
 
 		List<CommerceDiscount> commerceDiscounts =
-			getProductCommerceDiscountByHierarchy(
-				cpInstance.getCompanyId(), commerceContext, commerceOrderTypeId,
-				cpInstance.getCPDefinitionId(), cpInstanceId);
+			_getFilteredCommerceDiscounts(
+				commerceContext,
+				getProductCommerceDiscountByHierarchy(
+					cpInstance.getCompanyId(), commerceContext,
+					commerceOrderTypeId, cpInstance.getCPDefinitionId(),
+					cpInstanceId));
 
 		if (commerceDiscounts.isEmpty()) {
 			return null;
