@@ -46,6 +46,11 @@ import {resolveCartViews} from './util/views';
 
 const CartResource = ServiceProvider.DeliveryCartAPI('v1');
 
+export const initialReplacementAlertState = {
+	currentReplacedSKU: null,
+	showReplacementAlert: false,
+};
+
 function MiniCart({
 	accountId,
 	cartActionURLs,
@@ -75,6 +80,10 @@ function MiniCart({
 
 	const closeCart = () => setIsOpen(false);
 	const openCart = () => setIsOpen(true);
+
+	const [replacementAlertState, setReplacementAlertState] = useState(
+		initialReplacementAlertState
+	);
 
 	const resetCartState = useCallback(
 		({accountId = 0}) =>
@@ -167,9 +176,11 @@ function MiniCart({
 				labels: {...DEFAULT_LABELS, ...labels},
 				openCart,
 				productURLSeparator,
+				replacementAlertState,
 				requestQuoteEnabled,
 				setCartState,
 				setIsUpdating,
+				setReplacementAlertState,
 				summaryDataMapper,
 				toggleable,
 				updateCartModel,

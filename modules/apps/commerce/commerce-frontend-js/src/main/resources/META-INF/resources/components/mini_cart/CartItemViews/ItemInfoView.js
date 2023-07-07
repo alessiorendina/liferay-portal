@@ -12,8 +12,12 @@
  * details.
  */
 
+import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useContext} from 'react';
+
+import MiniCartContext from '../MiniCartContext';
 
 function ItemInfoViewOptions({options}) {
 	return (
@@ -41,23 +45,53 @@ function ItemInfoViewBundle({childItems}) {
 	);
 }
 
-function ItemInfoViewBase({name, sku}) {
+function ItemInfoViewBase({name, replacedSku, sku}) {
+	const {replacementAlertState, setReplacementAlertState} = useContext(
+		MiniCartContext
+	);
+
+	const {showReplacementAlert} = replacementAlertState;
+
 	return (
 		<div className="item-info-base">
 			<h5 className="item-name">{name}</h5>
 
-			<p className="item-sku">{sku}</p>
+			{replacedSku ? (
+				<div className="item-info-replacement">
+					<p className="item-sku">{sku}</p>
+					<>
+						<ClayLabel displayType="info">
+							{Liferay.Language.get('replacement')}
+						</ClayLabel>
+						<ClayIcon
+							aria-label="Info"
+							onMouseEnter={
+								!showReplacementAlert
+									? () =>
+											setReplacementAlertState({
+												currentReplacedSKU: replacedSku,
+												showReplacementAlert: true,
+											})
+									: null
+							}
+							symbol="info-circle"
+						/>
+					</>
+				</div>
+			) : (
+				<p className="item-sku">{sku}</p>
+			)}
 		</div>
 	);
 }
 
-function ItemInfoView({childItems = [], name, options = '', sku}) {
+function ItemInfoView({childItems = [], name, options = '', replacedSku, sku}) {
 	const isBundle = !!childItems.length;
 	const hasOptions = !!options;
 
 	return (
 		<>
-			<ItemInfoViewBase name={name} sku={sku} />
+			<ItemInfoViewBase name={name} replacedSku={replacedSku} sku={sku} />
 
 			{isBundle && <ItemInfoViewBundle childItems={childItems} />}
 

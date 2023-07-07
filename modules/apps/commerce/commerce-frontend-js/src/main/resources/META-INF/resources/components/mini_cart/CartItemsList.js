@@ -14,9 +14,11 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
+import {sub} from 'frontend-js-web';
 import React, {useContext} from 'react';
 
 import CartQuickAdd from './CartQuickAdd';
+import {initialReplacementAlertState} from './MiniCart';
 import MiniCartContext from './MiniCartContext';
 import {ADD_PRODUCT} from './util/constants';
 
@@ -26,11 +28,15 @@ export default function CartItemsList({showPriceOnApplicationInfo = false}) {
 		cartState,
 		isUpdating,
 		labels,
+		replacementAlertState,
 		setCartState,
+		setReplacementAlertState,
 		summaryDataMapper,
 	} = useContext(MiniCartContext);
 
 	const {accountId, cartItems = [], summary = {}} = cartState;
+
+	const {currentReplacedSKU, showReplacementAlert} = replacementAlertState;
 
 	return (
 		<div className="mini-cart-items-list">
@@ -38,8 +44,28 @@ export default function CartItemsList({showPriceOnApplicationInfo = false}) {
 
 			{accountId ? <CartQuickAdd /> : null}
 
+			{showReplacementAlert ? (
+				<div className="info-wrapper">
+					<ClayAlert
+						displayType="info"
+						hideCloseIcon={false}
+						onClose={() =>
+							setReplacementAlertState(
+								initialReplacementAlertState
+							)
+						}
+						title={Liferay.Language.get('info')}
+					>
+						{sub(
+							Liferay.Language.get('replacement-product-for-x'),
+							currentReplacedSKU
+						)}
+					</ClayAlert>
+				</div>
+			) : null}
+
 			{showPriceOnApplicationInfo && (
-				<div className="price-on-application-info-wrapper">
+				<div className="info-wrapper">
 					<ClayAlert
 						displayType="info"
 						title={Liferay.Language.get('info')}
