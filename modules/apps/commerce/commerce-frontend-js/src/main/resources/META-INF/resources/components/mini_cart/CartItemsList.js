@@ -56,10 +56,7 @@ export default function CartItemsList({showPriceOnApplicationInfo = false}) {
 						}
 						title={Liferay.Language.get('info')}
 					>
-						{sub(
-							Liferay.Language.get('replacement-product-for-x'),
-							currentReplacedSKU
-						)}
+						{Liferay.Language.get('in-your-cart-there-are-replacement-products')}
 					</ClayAlert>
 				</div>
 			) : null}

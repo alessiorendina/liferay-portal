@@ -14,6 +14,8 @@
 
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
+import ClayTooltipProvider from '@clayui/tooltip';
+import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useContext} from 'react';
 
@@ -45,7 +47,7 @@ function ItemInfoViewBundle({childItems}) {
 	);
 }
 
-function ItemInfoViewBase({name, replacedSku, sku}) {
+function ItemInfoViewReplacement({replacedSku}) {
 	const {replacementAlertState, setReplacementAlertState} = useContext(
 		MiniCartContext
 	);
@@ -53,45 +55,64 @@ function ItemInfoViewBase({name, replacedSku, sku}) {
 	const {showReplacementAlert} = replacementAlertState;
 
 	return (
+			<div className="item-info-replacement">
+				<ClayLabel displayType="info">
+					{Liferay.Language.get('replacement')}
+				</ClayLabel>
+
+				<ClayIcon
+					aria-label="Info"
+					onMouseEnter={
+						!showReplacementAlert
+							? () =>
+								setReplacementAlertState({
+									currentReplacedSKU: replacedSku,
+									showReplacementAlert: true,
+								})
+							: null
+					}
+					style={{position: 'relative', margin: 0}}
+					symbol="info-circle"
+				/>
+
+				<ClayTooltipProvider
+					style={{position: 'absolute', right: '360px', padding: 0}}
+				>
+					<div
+						data-tooltip-align="left"
+						title={
+							sub(
+								Liferay.Language.get('replacement-product-for-x'),
+								replacedSku)
+						}
+					>
+						{"Hover"}
+					</div>
+				</ClayTooltipProvider>
+			</div>
+		);
+}
+
+function ItemInfoViewBase({name, sku}) {
+	return (
 		<div className="item-info-base">
 			<h5 className="item-name">{name}</h5>
 
-			{replacedSku ? (
-				<div className="item-info-replacement">
-					<p className="item-sku">{sku}</p>
-					<>
-						<ClayLabel displayType="info">
-							{Liferay.Language.get('replacement')}
-						</ClayLabel>
-						<ClayIcon
-							aria-label="Info"
-							onMouseEnter={
-								!showReplacementAlert
-									? () =>
-											setReplacementAlertState({
-												currentReplacedSKU: replacedSku,
-												showReplacementAlert: true,
-											})
-									: null
-							}
-							symbol="info-circle"
-						/>
-					</>
-				</div>
-			) : (
-				<p className="item-sku">{sku}</p>
-			)}
+			<p className="item-sku">{sku}</p>
 		</div>
 	);
 }
 
 function ItemInfoView({childItems = [], name, options = '', replacedSku, sku}) {
+	const hasReplacement = !!replacedSku;
 	const isBundle = !!childItems.length;
 	const hasOptions = !!options;
 
 	return (
 		<>
-			<ItemInfoViewBase name={name} replacedSku={replacedSku} sku={sku} />
+			<ItemInfoViewBase name={name} sku={sku} />
+
+			{hasReplacement && <ItemInfoViewReplacement replacedSku={replacedSku} />}
 
 			{isBundle && <ItemInfoViewBundle childItems={childItems} />}
 
