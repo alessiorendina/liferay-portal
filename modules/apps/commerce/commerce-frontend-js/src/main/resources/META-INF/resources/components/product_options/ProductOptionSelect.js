@@ -26,8 +26,8 @@ const ProductOptionSelect = ({
 	accountId,
 	channelId,
 	componentId,
-	forceRequired,
-	isAdmin,
+	forceRequired = false,
+	isAdmin = false,
 	json,
 	minQuantity,
 	namespace,
@@ -37,6 +37,7 @@ const ProductOptionSelect = ({
 }) => {
 	const [hasErrors, setHasErrors] = useState(false);
 	const isMounted = useIsMounted();
+	const optionIsRequired = isRequired(forceRequired, isAdmin, productOption);
 
 	const [skuOptionsAtomState, setSkuOptionsAtomState] = useLiferayState(
 		skuOptionsAtom
@@ -326,9 +327,7 @@ const ProductOptionSelect = ({
 			<label htmlFor={componentId}>
 				{getProductOptionName(productOption.name)}
 
-				<Asterisk
-					required={isRequired(forceRequired, isAdmin, productOption)}
-				/>
+				<Asterisk required={optionIsRequired} />
 			</label>
 
 			<ClaySelect
@@ -338,10 +337,12 @@ const ProductOptionSelect = ({
 				name={productOption.key}
 				onChange={handleChange}
 			>
-				<ClaySelect.Option
-					label={Liferay.Language.get('choose-an-option')}
-					selected={!selectedProductOptionValueKey}
-				/>
+				{optionIsRequired ? null : (
+					<ClaySelect.Option
+						label={Liferay.Language.get('choose-an-option')}
+						selected={!selectedProductOptionValueKey}
+					/>
+				)}
 
 				{productOptionValues.map(
 					({
