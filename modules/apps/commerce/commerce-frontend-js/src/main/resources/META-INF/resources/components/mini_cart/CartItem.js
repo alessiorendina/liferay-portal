@@ -333,7 +333,7 @@ function CartItem({
 					>
 						<ClayDropDown.ItemList>
 							<ClayDropDown.Item
-								onClick={() => setEditedItem({name, productId})}
+								onClick={() => setEditedItem({cartItemId, name, productId})}
 							>
 								{Liferay.Language.get('edit')}
 							</ClayDropDown.Item>
