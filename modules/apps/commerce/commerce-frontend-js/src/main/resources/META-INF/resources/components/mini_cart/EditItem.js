@@ -7,13 +7,7 @@ import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayForm from '@clayui/form';
 import {useLiferayState} from '@liferay/frontend-js-state-web';
 import {fetch, sub} from 'frontend-js-web';
-import React, {
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import ServiceProvider from '../../ServiceProvider/index';
 import {CommerceContext} from '../../index';
@@ -34,8 +28,7 @@ import ProductOptionSelect from '../product_options/ProductOptionSelect';
 import ProductOptionText from '../product_options/ProductOptionText';
 import MiniCartContext from './MiniCartContext';
 
-const CartResource = ServiceProvider.DeliveryCartAPI('v1');
-const miniCartNamespace = 'minicart_';
+const MINI_CART_NAMESPACE = 'minicart_';
 
 const getProductOptionsURL = (channelId, productId) => {
 	const url = new URL(
@@ -55,9 +48,7 @@ function EditItem() {
 
 	const {miniCartErrors} = skuOptionsAtomState;
 
-	const disabled = useMemo(() => miniCartErrors?.length, [
-		miniCartErrors,
-	]);
+	const disabled = useMemo(() => miniCartErrors?.length, [miniCartErrors]);
 
 	const {
 		cartState: {
@@ -87,7 +78,7 @@ function EditItem() {
 		});
 	}, [selectedItem]);
 
-	const handleSave = useCallback(() => {
+	const handleSave = () => {
 		if (disabled) {
 			return;
 		}
@@ -96,54 +87,45 @@ function EditItem() {
 
 		const formattedCartItem = formatCartItem(
 			cpInstance,
-			miniCartNamespace,
+			MINI_CART_NAMESPACE,
 			skuOptionsAtomState.miniCartSkuOptions,
-			miniCartNamespace
+			MINI_CART_NAMESPACE
 		);
 
 		const updatedCartItems = cartItems.map((cartItem) =>
 			cartItem.id === selectedItem.id
 				? {
-					...cartItem,
-					options: formattedCartItem.options,
-					replacedSkuId: formattedCartItem.replacedSkuId,
-					skuId: formattedCartItem.skuId,
-				}
+						...cartItem,
+						options: formattedCartItem.options,
+						replacedSkuId: formattedCartItem.replacedSkuId,
+						skuId: formattedCartItem.skuId,
+				  }
 				: cartItem
 		);
 
-		CartResource.updateCartById(cartId, {
-			cartItems: updatedCartItems,
-		})
-		.then((updatedCart) => {
-			Liferay.fire(CURRENT_ORDER_UPDATED, {order: updatedCart});
+		ServiceProvider.DeliveryCartAPI('v1')
+			.updateCartById(cartId, {
+				cartItems: updatedCartItems,
+			})
+			.then((updatedCart) => {
+				Liferay.fire(CURRENT_ORDER_UPDATED, {order: updatedCart});
 
-			setEditedItem(null);
-			setSkuOptionsAtomState({
-				...skuOptionsAtomState,
-				miniCartErrors: [],
-				miniCartSkuOptions: [],
-				updating: false,
+				setEditedItem(null);
+				setSkuOptionsAtomState({
+					...skuOptionsAtomState,
+					miniCartErrors: [],
+					miniCartSkuOptions: [],
+					updating: false,
+				});
+			})
+			.catch((error) => {
+				console.error(error);
 			});
-		})
-		.catch((error) => {
-			console.error(error);
-		});
-	}, [cpInstance, skuOptionsAtomState.miniCartSkuOptions]);
+	};
 
-	useEffect(() => {
-		const saveButton = document.getElementById(`${miniCartNamespace}saveButton`);
-
-		if (saveButton) {
-			saveButton.addEventListener('click', handleSave);
-		}
-
-		return () => {
-			saveButton.removeEventListener('click', handleSave);
-		};
-	}, [cpInstance, skuOptionsAtomState.miniCartSkuOptions]);
-
-	const [price, setPrice] = useState(selectedItem ? selectedItem.price : null);
+	const [price, setPrice] = useState(
+		selectedItem ? selectedItem.price : null
+	);
 
 	const handleCPInstanceChanged = ({cpInstance}) => {
 		setCPInstance(cpInstance);
@@ -151,7 +133,10 @@ function EditItem() {
 	};
 
 	useEffect(() => {
-		const productOptionsURL = getProductOptionsURL(channel.id, editedItem.productId);
+		const productOptionsURL = getProductOptionsURL(
+			channel.id,
+			editedItem.productId
+		);
 
 		fetch(productOptionsURL)
 			.then((response) => response.json())
@@ -160,12 +145,18 @@ function EditItem() {
 	}, [channel.id, editedItem.productId]);
 
 	useEffect(() => {
-		Liferay.on(`${miniCartNamespace}${CP_INSTANCE_CHANGED}`, handleCPInstanceChanged);
+		Liferay.on(
+			`${MINI_CART_NAMESPACE}${CP_INSTANCE_CHANGED}`,
+			handleCPInstanceChanged
+		);
 
 		return () => {
-			Liferay.detach(`${miniCartNamespace}${CP_INSTANCE_CHANGED}`, handleCPInstanceChanged);
+			Liferay.detach(
+				`${MINI_CART_NAMESPACE}${CP_INSTANCE_CHANGED}`,
+				handleCPInstanceChanged
+			);
 		};
-	}, [miniCartNamespace]);
+	}, []);
 
 	const hasDiscount = isNonnull(price.discountPercentage);
 	const hasPromoPrice = isNonnull(price.promoPrice);
@@ -193,7 +184,7 @@ function EditItem() {
 							<Options
 								cartItemId={editedItem.cartItemId}
 								channelId={channel.id}
-								namespace={miniCartNamespace}
+								namespace={MINI_CART_NAMESPACE}
 								productId={editedItem.productId}
 								productOptions={options.items}
 								selectedItem={selectedItem}
@@ -251,10 +242,7 @@ function EditItem() {
 						{Liferay.Language.get('cancel')}
 					</ClayButton>
 
-					<ClayButton
-						disabled={disabled}
-						id={`${miniCartNamespace}saveButton`}
-					>
+					<ClayButton disabled={disabled} onClick={handleSave}>
 						{Liferay.Language.get('save')}
 					</ClayButton>
 				</div>
@@ -265,15 +253,21 @@ function EditItem() {
 
 export default EditItem;
 
-const Options = ({cartItemId, channelId, productId, productOptions, selectedItem}) =>
+const Options = ({
+	cartItemId,
+	channelId,
+	productId,
+	productOptions,
+	selectedItem,
+}) =>
 	productOptions.map((productOption) => {
 		let Component = ProductOptionCheckbox;
 		let props = {
-			componentId: `${miniCartNamespace}${cartItemId}_${productOption.id}`,
+			componentId: `${MINI_CART_NAMESPACE}${cartItemId}_${productOption.id}`,
 			isFromMiniCart: true,
 			json: selectedItem.options,
-			namespace: miniCartNamespace,
-			productOption: productOption,
+			namespace: MINI_CART_NAMESPACE,
+			productOption,
 		};
 
 		if (productOption.fieldType === FIELD_TYPE.checkboxMultiple) {
