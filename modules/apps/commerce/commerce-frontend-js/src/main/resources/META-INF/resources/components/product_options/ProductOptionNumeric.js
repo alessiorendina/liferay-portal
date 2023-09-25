@@ -67,21 +67,23 @@ const ProductOptionNumeric = ({
 
 		setSkuOptionsAtomState({
 			...skuOptionsAtomState,
-			errors: getSkuOptionsErrors(
+			[errorsKey]: getSkuOptionsErrors(
 				productOption.required,
 				isFromMiniCart,
 				productOption,
 				skuOptionsAtomState
 			),
 			namespace,
-			skuOptions: [
-				...skuOptionsAtomState.skuOptions,
-				{
-					key: productOption.key,
-					skuOptionKey: productOption.key,
-					value: [value],
-				},
-			],
+			[skuOptionsKey]: isFromMiniCart
+				? JSON.parse(json)
+				: [
+						...(skuOptionsAtomState[skuOptionsKey] || []),
+						{
+							key: productOption.key,
+							skuOptionKey: productOption.key,
+							value: [value],
+						},
+				  ],
 		});
 
 		return () =>

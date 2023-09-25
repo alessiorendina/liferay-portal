@@ -71,7 +71,7 @@ const ProductOptionCheckbox = ({
 
 		setSkuOptionsAtomState({
 			...skuOptionsAtomState,
-			errors: getSkuOptionsErrors(
+			[errorsKey]: getSkuOptionsErrors(
 				productOption.required,
 				isFromMiniCart,
 				productOption,

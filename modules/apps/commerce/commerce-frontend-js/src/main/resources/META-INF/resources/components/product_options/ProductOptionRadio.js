@@ -76,19 +76,21 @@ const ProductOptionRadio = ({
 				skuOptionsAtomState
 			),
 			namespace,
-			skuOptions: [
-				...skuOptionsAtomState[skuOptionsKey],
-				{
-					key: productOption.key,
-					price: defaultProductOptionValue?.price,
-					priceType: defaultProductOptionValue?.priceType,
-					quantity: defaultProductOptionValue?.quantity,
-					skuId: defaultProductOptionValue?.skuId,
-					skuOptionKey: productOption.key,
-					skuOptionValueKey: defaultProductOptionValue?.key,
-					value: [defaultProductOptionValue?.key],
-				},
-			],
+			[skuOptionsKey]: isFromMiniCart
+				? JSON.parse(json)
+				: [
+						...(skuOptionsAtomState[skuOptionsKey] || []),
+						{
+							key: productOption.key,
+							price: defaultProductOptionValue?.price,
+							priceType: defaultProductOptionValue?.priceType,
+							quantity: defaultProductOptionValue?.quantity,
+							skuId: defaultProductOptionValue?.skuId,
+							skuOptionKey: productOption.key,
+							skuOptionValueKey: defaultProductOptionValue?.key,
+							value: [defaultProductOptionValue?.key],
+						},
+				  ],
 		});
 
 		return () =>
@@ -149,9 +151,9 @@ const ProductOptionRadio = ({
 			});
 		}
 
-		const currentProductOptionValue = productOptionValues.filter(
+		const currentProductOptionValue = productOptionValues.find(
 			(productOptionValue) => productOptionValue.key === valueArray[1]
-		)[0];
+		);
 
 		let currentSkuOptions = skuOptionsAtomState[skuOptionsKey];
 
