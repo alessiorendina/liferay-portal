@@ -73,7 +73,7 @@ const ProductOptionNumeric = ({
 				productOption,
 				skuOptionsAtomState
 			),
-			namespace,
+			...(!isFromMiniCart && {namespace}),
 			[skuOptionsKey]: isFromMiniCart
 				? JSON.parse(json)
 				: [

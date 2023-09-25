@@ -77,7 +77,7 @@ const ProductOptionCheckbox = ({
 				productOption,
 				skuOptionsAtomState
 			),
-			namespace,
+			...(!isFromMiniCart && {namespace}),
 		});
 
 		return () =>

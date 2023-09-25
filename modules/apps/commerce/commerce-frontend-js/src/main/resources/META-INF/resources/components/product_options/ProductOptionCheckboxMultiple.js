@@ -51,7 +51,7 @@ const ProductOptionCheckboxMultiple = ({
 					productOption,
 					skuOptionsAtomState
 				),
-				namespace,
+				...(!isFromMiniCart && {namespace}),
 			}),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[hasErrors]
@@ -113,7 +113,7 @@ const ProductOptionCheckboxMultiple = ({
 				productOption,
 				skuOptionsAtomState
 			),
-			namespace,
+			...(!isFromMiniCart && {namespace}),
 			[skuOptionsKey]: isFromMiniCart
 				? JSON.parse(json)
 				: initialSkuOptions,

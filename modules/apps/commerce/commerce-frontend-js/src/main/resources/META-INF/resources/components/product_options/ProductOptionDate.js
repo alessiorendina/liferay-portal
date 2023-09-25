@@ -73,7 +73,7 @@ const ProductOptionDate = ({
 				productOption,
 				skuOptionsAtomState
 			),
-			namespace,
+			...(!isFromMiniCart && {namespace}),
 			[skuOptionsKey]: isFromMiniCart
 				? JSON.parse(json)
 				: [

@@ -75,7 +75,7 @@ const ProductOptionRadio = ({
 				productOption,
 				skuOptionsAtomState
 			),
-			namespace,
+			...(!isFromMiniCart && {namespace}),
 			[skuOptionsKey]: isFromMiniCart
 				? JSON.parse(json)
 				: [
