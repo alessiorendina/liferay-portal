@@ -54,13 +54,13 @@ public class CommercePaymentEntryLocalServiceWrapper
 			addCommercePaymentEntry(
 				long userId, long classNameId, long classPK,
 				java.math.BigDecimal amount, String currencyCode,
-				String paymentIntegrationKey, String transactionCode,
+				String paymentIntegrationKey, String transactionCode, int type,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commercePaymentEntryLocalService.addCommercePaymentEntry(
 			userId, classNameId, classPK, amount, currencyCode,
-			paymentIntegrationKey, transactionCode, serviceContext);
+			paymentIntegrationKey, transactionCode, type, serviceContext);
 	}
 
 	/**
@@ -292,6 +292,21 @@ public class CommercePaymentEntryLocalServiceWrapper
 	public java.util.List
 		<com.liferay.commerce.payment.model.CommercePaymentEntry>
 			getCommercePaymentEntries(
+				long companyId, long classNameId, long classPK, int type,
+				int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.commerce.payment.model.CommercePaymentEntry>
+						orderByComparator) {
+
+		return _commercePaymentEntryLocalService.getCommercePaymentEntries(
+			companyId, classNameId, classPK, type, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.commerce.payment.model.CommercePaymentEntry>
+			getCommercePaymentEntries(
 				long companyId, long classNameId, long classPK, int start,
 				int end,
 				com.liferay.portal.kernel.util.OrderByComparator
@@ -319,6 +334,14 @@ public class CommercePaymentEntryLocalServiceWrapper
 
 		return _commercePaymentEntryLocalService.getCommercePaymentEntriesCount(
 			companyId, classNameId, classPK);
+	}
+
+	@Override
+	public int getCommercePaymentEntriesCount(
+		long companyId, long classNameId, long classPK, int type) {
+
+		return _commercePaymentEntryLocalService.getCommercePaymentEntriesCount(
+			companyId, classNameId, classPK, type);
 	}
 
 	/**

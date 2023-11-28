@@ -65,7 +65,7 @@ public class CommercePaymentEntryLocalServiceImpl
 	public CommercePaymentEntry addCommercePaymentEntry(
 			long userId, long classNameId, long classPK, BigDecimal amount,
 			String currencyCode, String paymentIntegrationKey,
-			String transactionCode, ServiceContext serviceContext)
+			String transactionCode, int type, ServiceContext serviceContext)
 		throws PortalException {
 
 		CommercePaymentEntry commercePaymentEntry =
@@ -86,6 +86,7 @@ public class CommercePaymentEntryLocalServiceImpl
 		commercePaymentEntry.setPaymentStatus(
 			CommercePaymentEntryConstants.STATUS_PENDING);
 		commercePaymentEntry.setTransactionCode(transactionCode);
+		commercePaymentEntry.setType(type);
 
 		commercePaymentEntry = commercePaymentEntryPersistence.update(
 			commercePaymentEntry);
@@ -142,11 +143,28 @@ public class CommercePaymentEntryLocalServiceImpl
 	}
 
 	@Override
+	public List<CommercePaymentEntry> getCommercePaymentEntries(
+		long companyId, long classNameId, long classPK, int type, int start,
+		int end, OrderByComparator<CommercePaymentEntry> orderByComparator) {
+
+		return commercePaymentEntryPersistence.findByC_C_C_T(
+			companyId, classNameId, classPK, type, start, end, orderByComparator);
+	}
+
+	@Override
 	public int getCommercePaymentEntriesCount(
 		long companyId, long classNameId, long classPK) {
 
 		return commercePaymentEntryPersistence.countByC_C_C(
 			companyId, classNameId, classPK);
+	}
+
+	@Override
+	public int getCommercePaymentEntriesCount(
+		long companyId, long classNameId, long classPK, int type) {
+
+		return commercePaymentEntryPersistence.countByC_C_C_T(
+			companyId, classNameId, classPK, type);
 	}
 
 	@Override
@@ -311,6 +329,12 @@ public class CommercePaymentEntryLocalServiceImpl
 			params.get("excludePaymentStatuses"));
 
 		searchContext.setAttribute("excludePaymentStatuses", excludeStatuses);
+
+		Integer type = (Integer)params.get("type");
+
+		if (type != null) {
+			searchContext.setAttribute("type", type);
+		}
 	}
 
 	@Reference

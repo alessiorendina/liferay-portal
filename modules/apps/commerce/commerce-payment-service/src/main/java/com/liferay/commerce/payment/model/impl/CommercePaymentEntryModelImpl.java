@@ -78,7 +78,7 @@ public class CommercePaymentEntryModelImpl
 		{"paymentIntegrationKey", Types.VARCHAR},
 		{"paymentIntegrationType", Types.INTEGER},
 		{"paymentStatus", Types.INTEGER}, {"redirectURL", Types.CLOB},
-		{"transactionCode", Types.VARCHAR}
+		{"transactionCode", Types.VARCHAR}, {"type_", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -103,10 +103,11 @@ public class CommercePaymentEntryModelImpl
 		TABLE_COLUMNS_MAP.put("paymentStatus", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("redirectURL", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("transactionCode", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommercePaymentEntry (mvccVersion LONG default 0 not null,commercePaymentEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,commerceChannelId LONG,amount BIGDECIMAL null,callbackURL TEXT null,currencyCode VARCHAR(75) null,paymentIntegrationKey VARCHAR(75) null,paymentIntegrationType INTEGER,paymentStatus INTEGER,redirectURL TEXT null,transactionCode VARCHAR(255) null)";
+		"create table CommercePaymentEntry (mvccVersion LONG default 0 not null,commercePaymentEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,commerceChannelId LONG,amount BIGDECIMAL null,callbackURL TEXT null,currencyCode VARCHAR(75) null,paymentIntegrationKey VARCHAR(75) null,paymentIntegrationType INTEGER,paymentStatus INTEGER,redirectURL TEXT null,transactionCode VARCHAR(255) null,type_ INTEGER)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CommercePaymentEntry";
@@ -142,11 +143,17 @@ public class CommercePaymentEntryModelImpl
 	public static final long COMPANYID_COLUMN_BITMASK = 4L;
 
 	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long TYPE_COLUMN_BITMASK = 8L;
+
+	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CREATEDATE_COLUMN_BITMASK = 8L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -298,6 +305,7 @@ public class CommercePaymentEntryModelImpl
 				"redirectURL", CommercePaymentEntry::getRedirectURL);
 			attributeGetterFunctions.put(
 				"transactionCode", CommercePaymentEntry::getTransactionCode);
+			attributeGetterFunctions.put("type", CommercePaymentEntry::getType);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -389,6 +397,10 @@ public class CommercePaymentEntryModelImpl
 				"transactionCode",
 				(BiConsumer<CommercePaymentEntry, String>)
 					CommercePaymentEntry::setTransactionCode);
+			attributeSetterBiConsumers.put(
+				"type",
+				(BiConsumer<CommercePaymentEntry, Integer>)
+					CommercePaymentEntry::setType);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -767,6 +779,31 @@ public class CommercePaymentEntryModelImpl
 		_transactionCode = transactionCode;
 	}
 
+	@JSON
+	@Override
+	public int getType() {
+		return _type;
+	}
+
+	@Override
+	public void setType(int type) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_type = type;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalType() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("type_"));
+	}
+
 	public long getColumnBitmask() {
 		if (_columnBitmask > 0) {
 			return _columnBitmask;
@@ -846,6 +883,7 @@ public class CommercePaymentEntryModelImpl
 		commercePaymentEntryImpl.setPaymentStatus(getPaymentStatus());
 		commercePaymentEntryImpl.setRedirectURL(getRedirectURL());
 		commercePaymentEntryImpl.setTransactionCode(getTransactionCode());
+		commercePaymentEntryImpl.setType(getType());
 
 		commercePaymentEntryImpl.resetOriginalValues();
 
@@ -893,6 +931,8 @@ public class CommercePaymentEntryModelImpl
 			this.<String>getColumnOriginalValue("redirectURL"));
 		commercePaymentEntryImpl.setTransactionCode(
 			this.<String>getColumnOriginalValue("transactionCode"));
+		commercePaymentEntryImpl.setType(
+			this.<Integer>getColumnOriginalValue("type_"));
 
 		return commercePaymentEntryImpl;
 	}
@@ -1067,6 +1107,8 @@ public class CommercePaymentEntryModelImpl
 			commercePaymentEntryCacheModel.transactionCode = null;
 		}
 
+		commercePaymentEntryCacheModel.type = getType();
+
 		return commercePaymentEntryCacheModel;
 	}
 
@@ -1148,8 +1190,11 @@ public class CommercePaymentEntryModelImpl
 	private int _paymentStatus;
 	private String _redirectURL;
 	private String _transactionCode;
+	private int _type;
 
 	public <T> T getColumnValue(String columnName) {
+		columnName = _attributeNames.getOrDefault(columnName, columnName);
+
 		Function<CommercePaymentEntry, Object> function =
 			AttributeGetterFunctionsHolder._attributeGetterFunctions.get(
 				columnName);
@@ -1198,6 +1243,17 @@ public class CommercePaymentEntryModelImpl
 		_columnOriginalValues.put("paymentStatus", _paymentStatus);
 		_columnOriginalValues.put("redirectURL", _redirectURL);
 		_columnOriginalValues.put("transactionCode", _transactionCode);
+		_columnOriginalValues.put("type_", _type);
+	}
+
+	private static final Map<String, String> _attributeNames;
+
+	static {
+		Map<String, String> attributeNames = new HashMap<>();
+
+		attributeNames.put("type_", "type");
+
+		_attributeNames = Collections.unmodifiableMap(attributeNames);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
@@ -1246,6 +1302,8 @@ public class CommercePaymentEntryModelImpl
 		columnBitmasks.put("redirectURL", 65536L);
 
 		columnBitmasks.put("transactionCode", 131072L);
+
+		columnBitmasks.put("type_", 262144L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

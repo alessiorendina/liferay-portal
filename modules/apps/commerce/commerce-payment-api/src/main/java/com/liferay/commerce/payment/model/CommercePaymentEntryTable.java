@@ -84,6 +84,8 @@ public class CommercePaymentEntryTable
 		createColumn(
 			"transactionCode", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
+	public final Column<CommercePaymentEntryTable, Integer> type = createColumn(
+		"type_", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CommercePaymentEntryTable() {
 		super("CommercePaymentEntry", CommercePaymentEntryTable::new);

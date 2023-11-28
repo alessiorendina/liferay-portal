@@ -45,6 +45,12 @@ public interface CommercePaymentEntryService extends BaseService {
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentEntry> getCommercePaymentEntries(
+			long companyId, long classNameId, long classPK, int type, int start,
+			int end, OrderByComparator<CommercePaymentEntry> orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommercePaymentEntry> getCommercePaymentEntries(
 			long companyId, long classNameId, long classPK, int start, int end,
 			OrderByComparator<CommercePaymentEntry> orderByComparator)
 		throws PortalException;

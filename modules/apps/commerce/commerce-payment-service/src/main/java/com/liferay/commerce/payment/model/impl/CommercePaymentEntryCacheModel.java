@@ -71,7 +71,7 @@ public class CommercePaymentEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -109,6 +109,8 @@ public class CommercePaymentEntryCacheModel
 		sb.append(redirectURL);
 		sb.append(", transactionCode=");
 		sb.append(transactionCode);
+		sb.append(", type=");
+		sb.append(type);
 		sb.append("}");
 
 		return sb.toString();
@@ -191,6 +193,8 @@ public class CommercePaymentEntryCacheModel
 			commercePaymentEntryImpl.setTransactionCode(transactionCode);
 		}
 
+		commercePaymentEntryImpl.setType(type);
+
 		commercePaymentEntryImpl.resetOriginalValues();
 
 		return commercePaymentEntryImpl;
@@ -226,6 +230,8 @@ public class CommercePaymentEntryCacheModel
 		paymentStatus = objectInput.readInt();
 		redirectURL = (String)objectInput.readObject();
 		transactionCode = objectInput.readUTF();
+
+		type = objectInput.readInt();
 	}
 
 	@Override
@@ -293,6 +299,8 @@ public class CommercePaymentEntryCacheModel
 		else {
 			objectOutput.writeUTF(transactionCode);
 		}
+
+		objectOutput.writeInt(type);
 	}
 
 	public long mvccVersion;
@@ -313,5 +321,6 @@ public class CommercePaymentEntryCacheModel
 	public int paymentStatus;
 	public String redirectURL;
 	public String transactionCode;
+	public int type;
 
 }

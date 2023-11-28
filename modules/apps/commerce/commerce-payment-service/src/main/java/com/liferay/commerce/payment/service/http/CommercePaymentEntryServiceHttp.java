@@ -91,6 +91,57 @@ public class CommercePaymentEntryServiceHttp {
 		}
 	}
 
+	public static java.util.List
+		<com.liferay.commerce.payment.model.CommercePaymentEntry>
+				getCommercePaymentEntries(
+					HttpPrincipal httpPrincipal, long companyId,
+					long classNameId, long classPK, int type, int start,
+					int end,
+					com.liferay.portal.kernel.util.OrderByComparator
+						<com.liferay.commerce.payment.model.
+							CommercePaymentEntry> orderByComparator)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommercePaymentEntryServiceUtil.class,
+				"getCommercePaymentEntries",
+				_getCommercePaymentEntriesParameterTypes1);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, classNameId, classPK, type, start, end,
+				orderByComparator);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List
+				<com.liferay.commerce.payment.model.CommercePaymentEntry>)
+					returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.commerce.payment.model.CommercePaymentEntry
 			getCommercePaymentEntry(
 				HttpPrincipal httpPrincipal, long commercePaymentEntryId)
@@ -100,7 +151,7 @@ public class CommercePaymentEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePaymentEntryServiceUtil.class,
 				"getCommercePaymentEntry",
-				_getCommercePaymentEntryParameterTypes1);
+				_getCommercePaymentEntryParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePaymentEntryId);
@@ -146,7 +197,7 @@ public class CommercePaymentEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommercePaymentEntryServiceUtil.class, "search",
-				_searchParameterTypes2);
+				_searchParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, classNameIds, classPKs, currencyCodes,
@@ -191,9 +242,14 @@ public class CommercePaymentEntryServiceHttp {
 			long.class, long.class, long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getCommercePaymentEntryParameterTypes1 =
+	private static final Class<?>[] _getCommercePaymentEntriesParameterTypes1 =
+		new Class[] {
+			long.class, long.class, long.class, int.class, int.class, int.class,
+			com.liferay.portal.kernel.util.OrderByComparator.class
+		};
+	private static final Class<?>[] _getCommercePaymentEntryParameterTypes2 =
 		new Class[] {long.class};
-	private static final Class<?>[] _searchParameterTypes2 = new Class[] {
+	private static final Class<?>[] _searchParameterTypes3 = new Class[] {
 		long.class, long[].class, long[].class, String[].class, String.class,
 		String[].class, int[].class, boolean.class, int.class, int.class,
 		String.class, boolean.class

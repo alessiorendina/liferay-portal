@@ -40,6 +40,7 @@ public class CommercePaymentEntryModelDocumentContributor
 				"transactionCode", commercePaymentEntry.getTransactionCode());
 			document.addKeyword(
 				"paymentStatus", commercePaymentEntry.getPaymentStatus());
+			document.addNumber("type", commercePaymentEntry.getType());
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {

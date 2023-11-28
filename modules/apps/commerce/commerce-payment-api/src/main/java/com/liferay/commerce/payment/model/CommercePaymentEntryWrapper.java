@@ -55,6 +55,7 @@ public class CommercePaymentEntryWrapper
 		attributes.put("paymentStatus", getPaymentStatus());
 		attributes.put("redirectURL", getRedirectURL());
 		attributes.put("transactionCode", getTransactionCode());
+		attributes.put("type", getType());
 
 		return attributes;
 	}
@@ -170,6 +171,12 @@ public class CommercePaymentEntryWrapper
 
 		if (transactionCode != null) {
 			setTransactionCode(transactionCode);
+		}
+
+		Integer type = (Integer)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
 		}
 	}
 
@@ -356,6 +363,16 @@ public class CommercePaymentEntryWrapper
 	@Override
 	public String getTransactionCode() {
 		return model.getTransactionCode();
+	}
+
+	/**
+	 * Returns the type of this commerce payment entry.
+	 *
+	 * @return the type of this commerce payment entry
+	 */
+	@Override
+	public int getType() {
+		return model.getType();
 	}
 
 	/**
@@ -566,6 +583,16 @@ public class CommercePaymentEntryWrapper
 	@Override
 	public void setTransactionCode(String transactionCode) {
 		model.setTransactionCode(transactionCode);
+	}
+
+	/**
+	 * Sets the type of this commerce payment entry.
+	 *
+	 * @param type the type of this commerce payment entry
+	 */
+	@Override
+	public void setType(int type) {
+		model.setType(type);
 	}
 
 	/**

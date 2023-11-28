@@ -76,7 +76,7 @@ public interface CommercePaymentEntryLocalService
 	public CommercePaymentEntry addCommercePaymentEntry(
 			long userId, long classNameId, long classPK, BigDecimal amount,
 			String currencyCode, String paymentIntegrationKey,
-			String transactionCode, ServiceContext serviceContext)
+			String transactionCode, int type, ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -231,6 +231,11 @@ public interface CommercePaymentEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentEntry> getCommercePaymentEntries(
+		long companyId, long classNameId, long classPK, int type, int start,
+		int end, OrderByComparator<CommercePaymentEntry> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommercePaymentEntry> getCommercePaymentEntries(
 		long companyId, long classNameId, long classPK, int start, int end,
 		OrderByComparator<CommercePaymentEntry> orderByComparator);
 
@@ -245,6 +250,10 @@ public interface CommercePaymentEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePaymentEntriesCount(
 		long companyId, long classNameId, long classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommercePaymentEntriesCount(
+		long companyId, long classNameId, long classPK, int type);
 
 	/**
 	 * Returns the commerce payment entry with the primary key.

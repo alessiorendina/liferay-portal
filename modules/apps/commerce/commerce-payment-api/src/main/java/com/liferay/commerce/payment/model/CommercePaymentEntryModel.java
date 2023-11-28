@@ -354,6 +354,20 @@ public interface CommercePaymentEntryModel
 	 */
 	public void setTransactionCode(String transactionCode);
 
+	/**
+	 * Returns the type of this commerce payment entry.
+	 *
+	 * @return the type of this commerce payment entry
+	 */
+	public int getType();
+
+	/**
+	 * Sets the type of this commerce payment entry.
+	 *
+	 * @param type the type of this commerce payment entry
+	 */
+	public void setType(int type);
+
 	@Override
 	public CommercePaymentEntry cloneWithOriginalValues();
 

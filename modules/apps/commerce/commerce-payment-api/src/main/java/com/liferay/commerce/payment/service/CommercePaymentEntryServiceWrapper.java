@@ -32,6 +32,22 @@ public class CommercePaymentEntryServiceWrapper
 	public java.util.List
 		<com.liferay.commerce.payment.model.CommercePaymentEntry>
 				getCommercePaymentEntries(
+					long companyId, long classNameId, long classPK, int type,
+					int start, int end,
+					com.liferay.portal.kernel.util.OrderByComparator
+						<com.liferay.commerce.payment.model.
+							CommercePaymentEntry> orderByComparator)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commercePaymentEntryService.getCommercePaymentEntries(
+			companyId, classNameId, classPK, type, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.commerce.payment.model.CommercePaymentEntry>
+				getCommercePaymentEntries(
 					long companyId, long classNameId, long classPK, int start,
 					int end,
 					com.liferay.portal.kernel.util.OrderByComparator

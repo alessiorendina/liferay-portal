@@ -29,7 +29,8 @@ create table CommercePaymentEntry (
 	paymentIntegrationType INTEGER,
 	paymentStatus INTEGER,
 	redirectURL TEXT null,
-	transactionCode VARCHAR(255) null
+	transactionCode VARCHAR(255) null,
+	type_ INTEGER
 );
 
 create table CommercePaymentEntryAudit (

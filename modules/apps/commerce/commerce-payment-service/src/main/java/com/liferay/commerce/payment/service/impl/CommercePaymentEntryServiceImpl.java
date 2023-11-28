@@ -57,6 +57,28 @@ public class CommercePaymentEntryServiceImpl
 	}
 
 	@Override
+	public List<CommercePaymentEntry> getCommercePaymentEntries(
+			long companyId, long classNameId, long classPK, int type, int start,
+			int end, OrderByComparator<CommercePaymentEntry> orderByComparator)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.hasPermission(
+			null, CommercePaymentEntry.class.getName(), companyId,
+			ActionKeys.VIEW)) {
+
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, CommercePaymentEntry.class.getName(), 0,
+				ActionKeys.VIEW);
+		}
+
+		return commercePaymentEntryLocalService.getCommercePaymentEntries(
+			companyId, classNameId, classPK, type, start, end,
+			orderByComparator);
+	}
+
+	@Override
 	public CommercePaymentEntry getCommercePaymentEntry(
 			long commercePaymentEntryId)
 		throws PortalException {

@@ -26,6 +26,7 @@
 		<field name="transactionCode" type="String">
 			<hint name="max-length">255</hint>
 		</field>
+		<field name="type" type="int" />
 	</model>
 	<model name="com.liferay.commerce.payment.model.CommercePaymentEntryAudit">
 		<field name="mvccVersion" type="long" />

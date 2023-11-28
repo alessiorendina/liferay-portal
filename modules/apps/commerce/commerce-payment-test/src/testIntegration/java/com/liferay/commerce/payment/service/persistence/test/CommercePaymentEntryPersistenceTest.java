@@ -156,6 +156,8 @@ public class CommercePaymentEntryPersistenceTest {
 		newCommercePaymentEntry.setTransactionCode(
 			RandomTestUtil.randomString());
 
+		newCommercePaymentEntry.setType(RandomTestUtil.nextInt());
+
 		_commercePaymentEntries.add(
 			_persistence.update(newCommercePaymentEntry));
 
@@ -219,6 +221,9 @@ public class CommercePaymentEntryPersistenceTest {
 		Assert.assertEquals(
 			existingCommercePaymentEntry.getTransactionCode(),
 			newCommercePaymentEntry.getTransactionCode());
+		Assert.assertEquals(
+			existingCommercePaymentEntry.getType(),
+			newCommercePaymentEntry.getType());
 	}
 
 	@Test
@@ -235,6 +240,15 @@ public class CommercePaymentEntryPersistenceTest {
 			RandomTestUtil.nextLong());
 
 		_persistence.countByC_C_C(0L, 0L, 0L);
+	}
+
+	@Test
+	public void testCountByC_C_C_T() throws Exception {
+		_persistence.countByC_C_C_T(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByC_C_C_T(0L, 0L, 0L, 0);
 	}
 
 	@Test
@@ -271,7 +285,7 @@ public class CommercePaymentEntryPersistenceTest {
 			"classNameId", true, "classPK", true, "commerceChannelId", true,
 			"amount", true, "currencyCode", true, "paymentIntegrationKey", true,
 			"paymentIntegrationType", true, "paymentStatus", true,
-			"transactionCode", true);
+			"transactionCode", true, "type", true);
 	}
 
 	@Test
@@ -551,6 +565,8 @@ public class CommercePaymentEntryPersistenceTest {
 		commercePaymentEntry.setRedirectURL(RandomTestUtil.randomString());
 
 		commercePaymentEntry.setTransactionCode(RandomTestUtil.randomString());
+
+		commercePaymentEntry.setType(RandomTestUtil.nextInt());
 
 		_commercePaymentEntries.add(_persistence.update(commercePaymentEntry));
 

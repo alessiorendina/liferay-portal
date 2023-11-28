@@ -55,13 +55,13 @@ public class CommercePaymentEntryLocalServiceUtil {
 	public static CommercePaymentEntry addCommercePaymentEntry(
 			long userId, long classNameId, long classPK,
 			java.math.BigDecimal amount, String currencyCode,
-			String paymentIntegrationKey, String transactionCode,
+			String paymentIntegrationKey, String transactionCode, int type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCommercePaymentEntry(
 			userId, classNameId, classPK, amount, currencyCode,
-			paymentIntegrationKey, transactionCode, serviceContext);
+			paymentIntegrationKey, transactionCode, type, serviceContext);
 	}
 
 	/**
@@ -251,6 +251,15 @@ public class CommercePaymentEntryLocalServiceUtil {
 	}
 
 	public static List<CommercePaymentEntry> getCommercePaymentEntries(
+		long companyId, long classNameId, long classPK, int type, int start,
+		int end, OrderByComparator<CommercePaymentEntry> orderByComparator) {
+
+		return getService().getCommercePaymentEntries(
+			companyId, classNameId, classPK, type, start, end,
+			orderByComparator);
+	}
+
+	public static List<CommercePaymentEntry> getCommercePaymentEntries(
 		long companyId, long classNameId, long classPK, int start, int end,
 		OrderByComparator<CommercePaymentEntry> orderByComparator) {
 
@@ -272,6 +281,13 @@ public class CommercePaymentEntryLocalServiceUtil {
 
 		return getService().getCommercePaymentEntriesCount(
 			companyId, classNameId, classPK);
+	}
+
+	public static int getCommercePaymentEntriesCount(
+		long companyId, long classNameId, long classPK, int type) {
+
+		return getService().getCommercePaymentEntriesCount(
+			companyId, classNameId, classPK, type);
 	}
 
 	/**

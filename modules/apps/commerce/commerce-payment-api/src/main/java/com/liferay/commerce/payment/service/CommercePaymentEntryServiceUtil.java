@@ -31,6 +31,16 @@ public class CommercePaymentEntryServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.commerce.payment.service.impl.CommercePaymentEntryServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static List<CommercePaymentEntry> getCommercePaymentEntries(
+			long companyId, long classNameId, long classPK, int type, int start,
+			int end, OrderByComparator<CommercePaymentEntry> orderByComparator)
+		throws PortalException {
+
+		return getService().getCommercePaymentEntries(
+			companyId, classNameId, classPK, type, start, end,
+			orderByComparator);
+	}
+
+	public static List<CommercePaymentEntry> getCommercePaymentEntries(
 			long companyId, long classNameId, long classPK, int start, int end,
 			OrderByComparator<CommercePaymentEntry> orderByComparator)
 		throws PortalException {
