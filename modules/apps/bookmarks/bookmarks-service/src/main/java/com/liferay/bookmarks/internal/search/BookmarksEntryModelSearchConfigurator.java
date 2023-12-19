@@ -6,6 +6,7 @@
 package com.liferay.bookmarks.internal.search;
 
 import com.liferay.bookmarks.internal.search.spi.model.index.contributor.BookmarksEntryModelIndexerWriterContributor;
+import com.liferay.bookmarks.internal.search.spi.model.result.contributor.BookmarksEntryModelSummaryContributor;
 import com.liferay.bookmarks.model.BookmarksEntry;
 import com.liferay.bookmarks.service.BookmarksEntryLocalService;
 import com.liferay.portal.kernel.search.Field;
@@ -71,10 +72,7 @@ public class BookmarksEntryModelSearchConfigurator
 
 	private ModelIndexerWriterContributor<BookmarksEntry>
 		_modelIndexWriterContributor;
-
-	@Reference(
-		target = "(indexer.class.name=com.liferay.bookmarks.model.BookmarksEntry)"
-	)
-	private ModelSummaryContributor _modelSummaryContributor;
+	private final ModelSummaryContributor _modelSummaryContributor =
+		new BookmarksEntryModelSummaryContributor();
 
 }

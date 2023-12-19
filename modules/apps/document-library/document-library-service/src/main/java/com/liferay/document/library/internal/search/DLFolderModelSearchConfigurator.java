@@ -6,6 +6,7 @@
 package com.liferay.document.library.internal.search;
 
 import com.liferay.document.library.internal.search.spi.model.index.contributor.DLFolderModelIndexerWriterContributor;
+import com.liferay.document.library.internal.search.spi.model.result.contributor.DLFolderModelSummaryContributor;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.portal.kernel.search.Field;
@@ -67,10 +68,7 @@ public class DLFolderModelSearchConfigurator
 
 	private ModelIndexerWriterContributor<DLFolder>
 		_modelIndexWriterContributor;
-
-	@Reference(
-		target = "(indexer.class.name=com.liferay.document.library.kernel.model.DLFolder)"
-	)
-	private ModelSummaryContributor _modelSummaryContributor;
+	private final ModelSummaryContributor _modelSummaryContributor =
+		new DLFolderModelSummaryContributor();
 
 }

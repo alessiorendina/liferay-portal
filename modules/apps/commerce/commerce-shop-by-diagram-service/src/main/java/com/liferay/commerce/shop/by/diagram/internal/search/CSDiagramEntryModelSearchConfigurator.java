@@ -6,6 +6,7 @@
 package com.liferay.commerce.shop.by.diagram.internal.search;
 
 import com.liferay.commerce.shop.by.diagram.internal.search.spi.model.index.contributor.CSDiagramEntryModelIndexerWriterContributor;
+import com.liferay.commerce.shop.by.diagram.internal.search.spi.model.result.contributor.CSDiagramEntryModelSummaryContributor;
 import com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry;
 import com.liferay.commerce.shop.by.diagram.service.CSDiagramEntryLocalService;
 import com.liferay.portal.kernel.search.Field;
@@ -73,11 +74,8 @@ public class CSDiagramEntryModelSearchConfigurator
 
 	private ModelIndexerWriterContributor<CSDiagramEntry>
 		_modelIndexWriterContributor;
-
-	@Reference(
-		target = "(indexer.class.name=com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry)"
-	)
-	private ModelSummaryContributor _modelSummaryContributor;
+	private final ModelSummaryContributor _modelSummaryContributor =
+		new CSDiagramEntryModelSummaryContributor();
 
 	@Reference(
 		target = "(indexer.class.name=com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry)"

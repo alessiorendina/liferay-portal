@@ -6,6 +6,7 @@
 package com.liferay.journal.internal.search;
 
 import com.liferay.journal.internal.search.spi.model.index.contributor.JournalFolderModelIndexerWriterContributor;
+import com.liferay.journal.internal.search.spi.model.result.contributor.JournalFolderModelSummaryContributor;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.portal.kernel.search.Field;
@@ -77,10 +78,7 @@ public class JournalFolderModelSearchConfigurator
 
 	private ModelIndexerWriterContributor<JournalFolder>
 		_modelIndexWriterContributor;
-
-	@Reference(
-		target = "(indexer.class.name=com.liferay.journal.model.JournalFolder)"
-	)
-	private ModelSummaryContributor _modelSummaryContributor;
+	private final ModelSummaryContributor _modelSummaryContributor =
+		new JournalFolderModelSummaryContributor();
 
 }
