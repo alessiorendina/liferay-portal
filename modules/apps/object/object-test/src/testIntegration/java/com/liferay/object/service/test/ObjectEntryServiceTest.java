@@ -10,9 +10,11 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.configuration.ObjectConfiguration;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.exception.ObjectEntryCountException;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -31,6 +33,8 @@ import com.liferay.object.tree.Tree;
 import com.liferay.object.tree.TreeFactory;
 import com.liferay.object.tree.constants.TreeConstants;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.exception.NoSuchResourceActionException;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -46,6 +50,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -55,6 +60,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -63,8 +69,13 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
+import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -81,7 +92,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Marco Leo
  */
-@FeatureFlags("LPS-187142")
+@FeatureFlags({"LPS-187142", "LPS-192957"})
 @RunWith(Arquillian.class)
 public class ObjectEntryServiceTest {
 
@@ -558,7 +569,8 @@ public class ObjectEntryServiceTest {
 
 		ObjectDefinition accountEntryObjectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinition(
-				TestPropsValues.getCompanyId(), "accountEntry");
+				TestPropsValues.getCompanyId(),
+				AccountEntry.class.getSimpleName());
 
 		ObjectRelationship objectRelationship =
 			_objectRelationshipLocalService.addObjectRelationship(
@@ -638,6 +650,208 @@ public class ObjectEntryServiceTest {
 
 		_objectEntryLocalService.deleteObjectEntry(objectEntry1);
 		_objectEntryLocalService.deleteObjectEntry(objectEntry2);
+	}
+
+	@Test
+	public void testValidateMaximumNumberOfGuestUserObjectEntriesPerObjectDefinition()
+		throws Exception {
+
+		_setUser(_guestUser);
+
+		Dictionary<String, Object> objectConfigurationDictionary =
+			HashMapDictionaryBuilder.<String, Object>put(
+				"duration", 1
+			).put(
+				"maximumFileSizeForGuestUsers", 25
+			).put(
+				"maximumNumberOfGuestUserObjectEntriesPerObjectDefinition", 1
+			).put(
+				"timeScale", "days"
+			).build();
+
+		ConfigurationTestUtil.saveConfiguration(
+			ObjectConfiguration.class.getName(), objectConfigurationDictionary);
+
+		Role guestRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
+
+		_resourcePermissionLocalService.addResourcePermission(
+			TestPropsValues.getCompanyId(), _objectDefinition.getResourceName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			guestRole.getRoleId(), ObjectActionKeys.ADD_OBJECT_ENTRY);
+
+		Assert.assertNotNull(
+			_objectEntryService.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				Collections.emptyMap(),
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+		AssertUtils.assertFailure(
+			ObjectEntryCountException.class,
+			StringBundler.concat(
+				"The limit of guest entries for ", _objectDefinition.getLabel(),
+				" has been reached and will no longer be accepted"),
+			() -> _objectEntryService.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				Collections.emptyMap(),
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+		String portletId =
+			_objectDefinition.isUnmodifiableSystemObject() ? StringPool.BLANK :
+				_objectDefinition.getPortletId();
+
+		Role role = _roleLocalService.getRole(
+			_objectDefinition.getCompanyId(), RoleConstants.ADMINISTRATOR);
+
+		long[] userIds = _userLocalService.getRoleUserIds(role.getRoleId());
+
+		for (long userId : userIds) {
+			int count =
+				_userNotificationLocalService.getUserNotificationEventsCount(
+					userId, portletId,
+					LocalDate.now(
+					).atStartOfDay(
+						ZoneId.systemDefault()
+					).toInstant(
+					).getEpochSecond(),
+					true);
+
+			Assert.assertTrue(count > 0);
+		}
+
+		ConfigurationTestUtil.deleteConfiguration(
+			ObjectConfiguration.class.getName());
+
+		objectConfigurationDictionary.put(
+			"maximumNumberOfGuestUserObjectEntriesPerObjectDefinition", 2);
+
+		ConfigurationTestUtil.saveConfiguration(
+			ObjectConfiguration.class.getName(), objectConfigurationDictionary);
+
+		ObjectEntry objectEntry = _objectEntryService.addObjectEntry(
+			0, _objectDefinition.getObjectDefinitionId(),
+			Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), _guestUser.getUserId()));
+
+		objectEntry.setCreateDate(
+			Date.from(
+				LocalDate.now(
+				).minusDays(
+					1
+				).atStartOfDay(
+					ZoneId.systemDefault()
+				).toInstant()));
+
+		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		Assert.assertNotNull(
+			_objectEntryService.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				Collections.emptyMap(),
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		ConfigurationTestUtil.deleteConfiguration(
+			ObjectConfiguration.class.getName());
+
+		objectConfigurationDictionary.put(
+			"maximumNumberOfGuestUserObjectEntriesPerObjectDefinition", 3);
+		objectConfigurationDictionary.put("timeScale", "weeks");
+
+		ConfigurationTestUtil.saveConfiguration(
+			ObjectConfiguration.class.getName(), objectConfigurationDictionary);
+
+		objectEntry = _objectEntryService.addObjectEntry(
+			0, _objectDefinition.getObjectDefinitionId(),
+			Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), _guestUser.getUserId()));
+
+		objectEntry.setCreateDate(
+			Date.from(
+				LocalDate.now(
+				).minusDays(
+					7
+				).atStartOfDay(
+					ZoneId.systemDefault()
+				).toInstant()));
+
+		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		Assert.assertNotNull(
+			_objectEntryService.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				Collections.emptyMap(),
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+		AssertUtils.assertFailure(
+			ObjectEntryCountException.class,
+			StringBundler.concat(
+				"The limit of guest entries for ", _objectDefinition.getLabel(),
+				" has been reached and will no longer be accepted"),
+			() -> _objectEntryService.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				Collections.emptyMap(),
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId(), _guestUser.getUserId())));
+
+		for (long userId : userIds) {
+			Assert.assertEquals(
+				1,
+				_userNotificationLocalService.getUserNotificationEventsCount(
+					userId, portletId,
+					LocalDate.now(
+					).atStartOfDay(
+						ZoneId.systemDefault()
+					).toInstant(
+					).getEpochSecond(),
+					true));
+		}
+
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		ConfigurationTestUtil.deleteConfiguration(
+			ObjectConfiguration.class.getName());
+
+		objectConfigurationDictionary.put("duration", "2");
+		objectConfigurationDictionary.put(
+			"maximumNumberOfGuestUserObjectEntriesPerObjectDefinition", 4);
+
+		ConfigurationTestUtil.saveConfiguration(
+			ObjectConfiguration.class.getName(), objectConfigurationDictionary);
+
+		objectEntry = _objectEntryService.addObjectEntry(
+			0, _objectDefinition.getObjectDefinitionId(),
+			Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), _guestUser.getUserId()));
+
+		objectEntry.setCreateDate(
+			Date.from(
+				LocalDate.now(
+				).minusDays(
+					14
+				).atStartOfDay(
+					ZoneId.systemDefault()
+				).toInstant()));
+
+		_objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		Assert.assertNotNull(
+			_objectEntryService.addObjectEntry(
+				0, _objectDefinition.getObjectDefinitionId(),
+				Collections.emptyMap(),
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId(), _guestUser.getUserId())));
 	}
 
 	private ObjectEntry _addObjectEntry(User user) throws Exception {
@@ -725,5 +939,8 @@ public class ObjectEntryServiceTest {
 
 	@Inject(type = UserLocalService.class)
 	private UserLocalService _userLocalService;
+
+	@Inject
+	private UserNotificationEventLocalService _userNotificationLocalService;
 
 }

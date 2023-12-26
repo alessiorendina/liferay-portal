@@ -9,6 +9,7 @@ import com.liferay.asset.auto.tagger.configuration.AssetAutoTaggerConfiguration;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryServiceUtil;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
+import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
 import com.liferay.document.library.configuration.DLFileOrderConfigurationProvider;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
@@ -731,9 +732,25 @@ public class DLAdminDisplayContext {
 		dlSearchContainer.setOrderByCol(getOrderByCol());
 		dlSearchContainer.setOrderByType(getOrderByType());
 
+		long repositoryId = getRepositoryId();
+
 		if (hasFilterParameters()) {
 			SearchContext searchContext = _getSearchContext(
 				dlSearchContainer, "none");
+
+			Repository repository = RepositoryLocalServiceUtil.fetchRepository(
+				repositoryId);
+
+			if ((repository == null) &&
+				(_themeDisplay.getScopeGroupId() != repositoryId) &&
+				ArrayUtil.contains(
+					SiteConnectedGroupGroupProviderUtil.
+						getCurrentAndAncestorSiteAndDepotGroupIds(
+							_themeDisplay.getScopeGroupId()),
+					repositoryId)) {
+
+				searchContext.setGroupIds(new long[] {repositoryId});
+			}
 
 			_initializeFilterSearchContext(searchContext);
 
@@ -753,7 +770,6 @@ public class DLAdminDisplayContext {
 				getOrderByCol(), getOrderByType(), true));
 
 		long folderId = getFolderId();
-		long repositoryId = getRepositoryId();
 
 		long categoryId = ParamUtil.getLong(_httpServletRequest, "categoryId");
 		String tagName = ParamUtil.getString(_httpServletRequest, "tag");
@@ -1012,6 +1028,13 @@ public class DLAdminDisplayContext {
 			_searchFolderId = ParamUtil.getLong(
 				_httpServletRequest, "searchFolderId",
 				ParamUtil.getLong(_httpServletRequest, "folderId"));
+
+			if ((_rootFolderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) &&
+				(_searchFolderId ==
+					DLFolderConstants.DEFAULT_PARENT_FOLDER_ID)) {
+
+				_searchFolderId = _rootFolderId;
+			}
 		}
 
 		return _searchFolderId;
@@ -1151,7 +1174,8 @@ public class DLAdminDisplayContext {
 				getAssetCategoryIds(), getAssetTagIds(), getExtensions(),
 				getFileEntryTypeId(), userId));
 
-		long folderId = ParamUtil.getLong(_httpServletRequest, "folderId");
+		long folderId = ParamUtil.getLong(
+			_httpServletRequest, "folderId", getFolderId());
 
 		if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
 			searchContext.setFolderIds(new long[] {folderId});

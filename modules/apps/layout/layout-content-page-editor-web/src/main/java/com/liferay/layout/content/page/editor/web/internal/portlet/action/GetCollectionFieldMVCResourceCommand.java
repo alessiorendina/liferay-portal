@@ -77,7 +77,6 @@ import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -511,22 +510,17 @@ public class GetCollectionFieldMVCResourceCommand
 
 			displayObjectJSONObject.put("fieldId", infoField.getUniqueId());
 
-			try {
-				Object value = _fragmentEntryProcessorHelper.getFieldValue(
-					displayObjectJSONObject, new HashMap<>(),
-					fragmentEntryProcessorContext);
+			Object value =
+				_fragmentEntryProcessorHelper.getMappedInfoItemFieldValue(
+					displayObjectJSONObject, infoField.getUniqueId(),
+					infoItemFieldValues,
+					fragmentEntryProcessorContext.getLocale());
 
-				displayObjectJSONObject.put(
-					infoField.getName(), value
-				).put(
-					infoField.getUniqueId(), value
-				);
-			}
-			catch (PortalException portalException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(portalException);
-				}
-			}
+			displayObjectJSONObject.put(
+				infoField.getName(), value
+			).put(
+				infoField.getUniqueId(), value
+			);
 		}
 
 		return displayObjectJSONObject;

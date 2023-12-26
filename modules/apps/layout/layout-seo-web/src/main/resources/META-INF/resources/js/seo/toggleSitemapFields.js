@@ -5,7 +5,9 @@
 
 import {debounce, toggleDisabled} from 'frontend-js-web';
 
-export default function ({namespace}) {
+const INCLUDE_SITEMAP_FIELD_DISABLED_VALUE = '0';
+
+export default function ({namespace, nondefaultAssetDisplayPage}) {
 	let disposed = false;
 	let robotsInputChangeEventHandler;
 	let robotsInputLocalized;
@@ -14,20 +16,38 @@ export default function ({namespace}) {
 		`${namespace}canonicalURLEnabled`
 	);
 
+	const includeSitemapField = document.getElementById(
+		`${namespace}sitemap-include`
+	);
+
 	const sitemapFields = [
-		document.getElementById(`${namespace}sitemap-include`),
+		includeSitemapField,
 		document.getElementById(`${namespace}sitemap-priority`),
 		document.getElementById(`${namespace}sitemap-changefreq`),
 	].filter((field) => !field.disabled);
 
+	const disableSitemapFields = () => {
+		includeSitemapField.value = INCLUDE_SITEMAP_FIELD_DISABLED_VALUE;
+
+		toggleDisabled(sitemapFields, true);
+	};
+
 	const toggleSitemapFields = () => {
+		if (nondefaultAssetDisplayPage) {
+			disableSitemapFields();
+
+			return;
+		}
+
 		if (canonicalURLEnabledCheck?.checked) {
-			toggleDisabled(sitemapFields, true);
+			disableSitemapFields();
 
 			return;
 		}
 
 		if (!robotsInputLocalized) {
+			toggleDisabled(sitemapFields, false);
+
 			return;
 		}
 
@@ -37,10 +57,12 @@ export default function ({namespace}) {
 			.map((languageId) => robotsInputLocalized.getValue(languageId))
 			.join('\n');
 
-		toggleDisabled(
-			sitemapFields,
-			/(noindex)|(nofollow)/i.test(robotsInputValue)
-		);
+		if (/(noindex)|(nofollow)/i.test(robotsInputValue)) {
+			disableSitemapFields();
+		}
+		else {
+			toggleDisabled(sitemapFields, false);
+		}
 	};
 
 	canonicalURLEnabledCheck?.addEventListener('change', toggleSitemapFields);

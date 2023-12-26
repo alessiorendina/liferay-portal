@@ -6,6 +6,7 @@
 package com.liferay.organizations.internal.search;
 
 import com.liferay.organizations.internal.search.spi.model.index.contributor.OrganizationModelIndexerWriterContributor;
+import com.liferay.organizations.internal.search.spi.model.result.contributor.OrganizationModelSummaryContributor;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
@@ -70,11 +71,8 @@ public class OrganizationModelSearchConfigurator
 
 	private ModelIndexerWriterContributor<Organization>
 		_modelIndexWriterContributor;
-
-	@Reference(
-		target = "(indexer.class.name=com.liferay.portal.kernel.model.Organization)"
-	)
-	private ModelSummaryContributor _modelSummaryContributor;
+	private final ModelSummaryContributor _modelSummaryContributor =
+		new OrganizationModelSummaryContributor();
 
 	@Reference
 	private OrganizationLocalService _organizationLocalService;

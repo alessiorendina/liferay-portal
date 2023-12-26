@@ -6,6 +6,7 @@
 package com.liferay.account.internal.search;
 
 import com.liferay.account.internal.search.spi.model.index.contributor.AccountGroupModelIndexerWriterContributor;
+import com.liferay.account.internal.search.spi.model.result.contributor.AccountGroupModelSummaryContributor;
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.portal.kernel.search.Field;
@@ -72,10 +73,7 @@ public class AccountGroupModelSearchConfigurator
 
 	private ModelIndexerWriterContributor<AccountGroup>
 		_modelIndexWriterContributor;
-
-	@Reference(
-		target = "(indexer.class.name=com.liferay.account.model.AccountGroup)"
-	)
-	private ModelSummaryContributor _modelSummaryContributor;
+	private final ModelSummaryContributor _modelSummaryContributor =
+		new AccountGroupModelSummaryContributor();
 
 }

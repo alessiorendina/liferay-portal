@@ -16,7 +16,10 @@ import {
 import {Scope} from '../ObjectDetails/EditObjectDetails';
 import {ModalAddObjectDefinition} from '../ViewObjectDefinitions/ModalAddObjectDefinition';
 import {ModalEditObjectFolder} from '../ViewObjectDefinitions/ModalEditObjectFolder';
-import {getUpdatedModelBuilderStructurePayload} from '../ViewObjectDefinitions/objectDefinitionUtil';
+import {
+	getDbTableName,
+	getUpdatedModelBuilderStructurePayload,
+} from '../ViewObjectDefinitions/objectDefinitionUtil';
 import Diagram from './Diagram/Diagram';
 import EditObjectFolderHeader from './EditObjectFolderHeader/EditObjectFolderHeader';
 import {ModalPublishObjectDefinitions} from './EditObjectFolderHeader/ModalPublishObjectDefinitions';
@@ -44,12 +47,14 @@ import {ObjectRelationshipEdgeData} from './types';
 
 interface EditObjectFolder {
 	companies: Scope[];
+	learnResourceContext: any;
 	objectRelationshipDeletionTypes: LabelValueObject[];
 	sites: Scope[];
 }
 
 export default function EditObjectFolder({
 	companies,
+	learnResourceContext,
 	objectRelationshipDeletionTypes,
 	sites,
 }: EditObjectFolder) {
@@ -99,6 +104,7 @@ export default function EditObjectFolder({
 		newObjectRelationshipId: number
 	) => {
 		const payload = await getUpdatedModelBuilderStructurePayload(
+			baseResourceURL,
 			selectedObjectFolder.name
 		);
 
@@ -149,6 +155,7 @@ export default function EditObjectFolder({
 
 		const updateModelBuilderStructure = async () => {
 			const payload = await getUpdatedModelBuilderStructurePayload(
+				baseResourceURL,
 				objectFolderName
 			);
 
@@ -198,15 +205,25 @@ export default function EditObjectFolder({
 							type: TYPES.UPDATE_VISIBILITY_MODEL_BUILDER_MODALS,
 						})
 					}
+					learnResourceContext={learnResourceContext}
 					objectDefinitionsStorageTypes={
 						objectDefinitionsStorageTypes
 					}
 					objectFolderExternalReferenceCode={
 						selectedObjectFolder.externalReferenceCode
 					}
-					onAfterSubmit={(newObjectDefinition) => {
+					onAfterSubmit={async (newObjectDefinition) => {
+						const dbTableName = await getDbTableName({
+							baseResourceURL,
+							objectDefinitionId: newObjectDefinition.id,
+						} as {
+							baseResourceURL: string;
+							objectDefinitionId: number;
+						});
+
 						dispatch({
 							payload: {
+								dbTableName,
 								newObjectDefinition,
 								objectDefinitionNodes: nodes,
 								selectedObjectFolderName:

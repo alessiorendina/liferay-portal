@@ -9,12 +9,22 @@ import com.liferay.jethr0.event.github.GitHubFactory;
 import com.liferay.jethr0.event.github.client.GitHubClient;
 import com.liferay.jethr0.event.github.comment.GitHubComment;
 import com.liferay.jethr0.event.github.commit.GitHubCommit;
+import com.liferay.jethr0.event.github.file.GitHubFile;
 import com.liferay.jethr0.event.github.repository.GitHubRepository;
+import com.liferay.jethr0.event.github.status.GitHubStatus;
 import com.liferay.jethr0.event.github.user.GitHubUser;
 import com.liferay.jethr0.util.StringUtil;
 
 import java.net.URL;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -91,12 +101,100 @@ public class GitHubPullRequest {
 		return _baseGitHubRepository.getName();
 	}
 
+	public String getBody() {
+		return _jsonObject.getString("body");
+	}
+
+	public GitHubFile getCIMergeGitHubFile() {
+		for (GitHubFile gitHubFile : getGitHubFiles()) {
+			String gitHubFileName = gitHubFile.getName();
+
+			if (gitHubFileName.endsWith("/ci-merge")) {
+				return gitHubFile;
+			}
+		}
+
+		return null;
+	}
+
 	public URL getCommentsURL() {
 		return StringUtil.toURL(_jsonObject.getString("comments_url"));
 	}
 
+	public Set<String> getCompletedTestSuites() {
+		Set<String> completedTestSuites = new HashSet<>();
+
+		for (GitHubStatus gitHubStatus : getGitHubStatuses()) {
+			Matcher matcher = _completedTestSuiteStatusPattern.matcher(
+				gitHubStatus.getDescription());
+
+			if (matcher.find()) {
+				completedTestSuites.add(matcher.group("testSuite"));
+			}
+		}
+
+		return completedTestSuites;
+	}
+
+	public URL getFilesURL() {
+		return StringUtil.toURL(_jsonObject.getString("url") + "/files");
+	}
+
 	public GitHubClient getGitHubClient() {
 		return _gitHubFactory.getGitHubClient();
+	}
+
+	public List<GitHubFile> getGitHubFiles() {
+		if (_gitHubFiles != null) {
+			return _gitHubFiles;
+		}
+
+		_gitHubFiles = new ArrayList<>();
+
+		GitHubClient gitHubClient = getGitHubClient();
+
+		JSONArray filesJSONArray = new JSONArray(
+			gitHubClient.requestGet(getFilesURL()));
+
+		for (int i = 0; i < filesJSONArray.length(); i++) {
+			_gitHubFiles.add(
+				_gitHubFactory.newGitHubFile(filesJSONArray.getJSONObject(i)));
+		}
+
+		return _gitHubFiles;
+	}
+
+	public Set<GitHubStatus> getGitHubStatuses() {
+		if (_gitHubStatuses != null) {
+			return _gitHubStatuses;
+		}
+
+		_gitHubStatuses = new HashSet<>();
+
+		GitHubClient gitHubClient = getGitHubClient();
+
+		JSONArray statusesJSONArray = new JSONArray(
+			gitHubClient.requestGet(getStatusesURL()));
+
+		for (int i = 0; i < statusesJSONArray.length(); i++) {
+			_gitHubStatuses.add(
+				_gitHubFactory.newGitHubStatus(
+					statusesJSONArray.getJSONObject(i)));
+		}
+
+		return _gitHubStatuses;
+	}
+
+	public String getGitRepoFilePath() {
+		GitHubFile ciMergeGitHubFile = getCIMergeGitHubFile();
+
+		if (ciMergeGitHubFile == null) {
+			return null;
+		}
+
+		String ciMergeGitHubFileName = ciMergeGitHubFile.getName();
+
+		return ciMergeGitHubFileName.replaceAll("/ci-merge", ".gitrepo");
 	}
 
 	public String getHeadBranchName() {
@@ -130,12 +228,31 @@ public class GitHubPullRequest {
 		return _originGitHubUser;
 	}
 
+	public Set<String> getPassingTestSuites() {
+		Set<String> passingTestSuites = new HashSet<>();
+
+		for (GitHubStatus gitHubStatus : getGitHubStatuses()) {
+			Matcher matcher = _passingTestSuiteStatusPattern.matcher(
+				gitHubStatus.getDescription());
+
+			if (matcher.find()) {
+				passingTestSuites.add(matcher.group("testSuite"));
+			}
+		}
+
+		return passingTestSuites;
+	}
+
 	public GitHubUser getReceiverGitHubUser() {
 		return _receiverGitHubUser;
 	}
 
 	public GitHubUser getSenderGitHubUser() {
 		return _senderGitHubUser;
+	}
+
+	public URL getStatusesURL() {
+		return StringUtil.toURL(_jsonObject.getString("statuses_url"));
 	}
 
 	public URL getUpstreamBranchURL() {
@@ -145,16 +262,34 @@ public class GitHubPullRequest {
 				"/tree/", getBaseBranchName()));
 	}
 
+	public boolean isMergeSubrepositoryPullRequest() {
+		GitHubFile ciMergeGitHubFile = getCIMergeGitHubFile();
+
+		if (ciMergeGitHubFile != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public void lock() {
 		GitHubClient gitHubClient = getGitHubClient();
 
 		gitHubClient.requestPut(getIssueLockURL(), null);
 	}
 
+	private static final Pattern _completedTestSuiteStatusPattern =
+		Pattern.compile(
+			"\"ci:test:(?<testSuite>[^\"]+)\"\\s*has (FAILED|PASSED).");
+	private static final Pattern _passingTestSuiteStatusPattern =
+		Pattern.compile("\"ci:test:(?<testSuite>[^\"]+)\"\\s*has PASSED.");
+
 	private final String _baseBranchName;
 	private final GitHubCommit _baseGitHubCommit;
 	private final GitHubRepository _baseGitHubRepository;
 	private final GitHubFactory _gitHubFactory;
+	private List<GitHubFile> _gitHubFiles;
+	private Set<GitHubStatus> _gitHubStatuses;
 	private final String _headBranchName;
 	private final GitHubCommit _headGitHubCommit;
 	private final GitHubRepository _headGitHubRepository;

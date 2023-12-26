@@ -5,11 +5,15 @@
 
 package com.liferay.jethr0.event.github;
 
+import com.liferay.jethr0.bui1d.queue.BuildQueue;
+import com.liferay.jethr0.bui1d.repository.BuildEntityRepository;
 import com.liferay.jethr0.event.BaseEventHandler;
 import com.liferay.jethr0.event.EventHandlerContext;
 import com.liferay.jethr0.event.github.repository.GitHubRepository;
 import com.liferay.jethr0.git.branch.GitBranchEntity;
 import com.liferay.jethr0.git.branch.repository.GitBranchEntityRepository;
+import com.liferay.jethr0.jenkins.JenkinsQueue;
+import com.liferay.jethr0.job.JobEntity;
 import com.liferay.jethr0.util.PropertiesUtil;
 import com.liferay.jethr0.util.StringUtil;
 
@@ -50,7 +54,8 @@ public abstract class BaseGitHubEventHandler extends BaseEventHandler {
 		return gitHubFactory.newGitHubRepository(repositoryJSONObject);
 	}
 
-	protected String getJenkinsBranchBuildPropertyValue(String propertyName)
+	protected String getJenkinsBranchBuildPropertyValue(
+			String propertyName, String... propertyOpts)
 		throws IOException {
 
 		GitBranchEntity gitBranchEntity = getJenkinsGitBranchEntity();
@@ -67,7 +72,8 @@ public abstract class BaseGitHubEventHandler extends BaseEventHandler {
 			return null;
 		}
 
-		return PropertiesUtil.getPropertyValue(properties, propertyName);
+		return PropertiesUtil.getPropertyValue(
+			properties, propertyName, propertyOpts);
 	}
 
 	protected GitBranchEntity getJenkinsGitBranchEntity() {
@@ -82,6 +88,28 @@ public abstract class BaseGitHubEventHandler extends BaseEventHandler {
 			_JENKINS_GITHUB_URL);
 
 		return _jenkinsGitBranchEntity;
+	}
+
+	protected void invokeJobEntity(JobEntity jobEntity) {
+		if (jobEntity == null) {
+			return;
+		}
+
+		BuildEntityRepository buildEntityRepository = getBuildRepository();
+
+		for (JSONObject initialBuildJSONObject :
+				jobEntity.getInitialBuildJSONObjects()) {
+
+			buildEntityRepository.create(jobEntity, initialBuildJSONObject);
+		}
+
+		BuildQueue buildQueue = getBuildQueue();
+
+		buildQueue.addJobEntity(jobEntity);
+
+		JenkinsQueue jenkinsQueue = getJenkinsQueue();
+
+		jenkinsQueue.invoke();
 	}
 
 	private static final URL _JENKINS_GITHUB_URL = StringUtil.toURL(

@@ -6,6 +6,7 @@
 package com.liferay.contacts.internal.search;
 
 import com.liferay.contacts.internal.search.spi.model.index.contributor.ContactModelIndexerWriterContributor;
+import com.liferay.contacts.internal.search.spi.model.result.contributor.ContactModelSummaryContributor;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.service.ContactLocalService;
 import com.liferay.portal.search.batch.DynamicQueryBatchIndexingActionableFactory;
@@ -55,10 +56,7 @@ public class ContactModelSearchConfigurator
 		_dynamicQueryBatchIndexingActionableFactory;
 
 	private ModelIndexerWriterContributor<Contact> _modelIndexWriterContributor;
-
-	@Reference(
-		target = "(indexer.class.name=com.liferay.portal.kernel.model.Contact)"
-	)
-	private ModelSummaryContributor _modelSummaryContributor;
+	private final ModelSummaryContributor _modelSummaryContributor =
+		new ContactModelSummaryContributor();
 
 }

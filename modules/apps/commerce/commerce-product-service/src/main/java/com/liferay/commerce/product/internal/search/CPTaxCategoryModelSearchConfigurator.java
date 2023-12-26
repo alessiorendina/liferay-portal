@@ -6,6 +6,7 @@
 package com.liferay.commerce.product.internal.search;
 
 import com.liferay.commerce.product.internal.search.spi.model.index.contributor.CPTaxCategoryModelIndexerWriterContributor;
+import com.liferay.commerce.product.internal.search.spi.model.result.contributor.CPTaxCategoryModelSummaryContributor;
 import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
 import com.liferay.portal.search.batch.DynamicQueryBatchIndexingActionableFactory;
@@ -63,10 +64,7 @@ public class CPTaxCategoryModelSearchConfigurator
 
 	private ModelIndexerWriterContributor<CPTaxCategory>
 		_modelIndexWriterContributor;
-
-	@Reference(
-		target = "(indexer.class.name=com.liferay.commerce.product.model.CPTaxCategory)"
-	)
-	private ModelSummaryContributor _modelSummaryContributor;
+	private final ModelSummaryContributor _modelSummaryContributor =
+		new CPTaxCategoryModelSummaryContributor();
 
 }

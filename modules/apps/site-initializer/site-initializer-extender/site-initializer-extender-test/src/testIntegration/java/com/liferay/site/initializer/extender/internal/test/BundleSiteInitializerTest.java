@@ -110,6 +110,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -3191,20 +3192,24 @@ public class BundleSiteInitializerTest {
 		SiteNavigationMenuItem siteNavigationMenuItem2 =
 			siteNavigationMenuItems.get(1);
 
-		Assert.assertEquals("Test URL", siteNavigationMenuItem2.getName());
 		Assert.assertEquals(
 			SiteNavigationMenuItemTypeConstants.URL,
 			siteNavigationMenuItem2.getType());
+		Assert.assertTrue(
+			StringUtil.contains(
+				siteNavigationMenuItem2.getTypeSettings(), "Test URL",
+				StringPool.BLANK));
 
 		SiteNavigationMenuItem siteNavigationMenuItem3 =
 			siteNavigationMenuItems.get(2);
 
-		Assert.assertEquals("Other Links", siteNavigationMenuItem3.getName());
 		Assert.assertEquals(
 			SiteNavigationMenuItemTypeConstants.NODE,
 			siteNavigationMenuItem3.getType());
-		Assert.assertEquals(
-			"name=Other Links\n", siteNavigationMenuItem3.getTypeSettings());
+		Assert.assertTrue(
+			StringUtil.contains(
+				siteNavigationMenuItem3.getTypeSettings(), "Other Links",
+				StringPool.BLANK));
 
 		SiteNavigationMenuItem siteNavigationMenuItem4 =
 			siteNavigationMenuItems.get(3);
@@ -3258,21 +3263,24 @@ public class BundleSiteInitializerTest {
 		SiteNavigationMenuItem siteNavigationMenuItem2 =
 			siteNavigationMenuItems.get(1);
 
-		Assert.assertEquals("Test URL", siteNavigationMenuItem2.getName());
 		Assert.assertEquals(
 			SiteNavigationMenuItemTypeConstants.URL,
 			siteNavigationMenuItem2.getType());
+		Assert.assertTrue(
+			StringUtil.contains(
+				siteNavigationMenuItem2.getTypeSettings(), "Test URL",
+				StringPool.BLANK));
 
 		SiteNavigationMenuItem siteNavigationMenuItem3 =
 			siteNavigationMenuItems.get(2);
 
-		Assert.assertEquals("Other Links", siteNavigationMenuItem3.getName());
 		Assert.assertEquals(
 			SiteNavigationMenuItemTypeConstants.NODE,
 			siteNavigationMenuItem3.getType());
-		Assert.assertEquals(
-			"name=Other Links Update\n",
-			siteNavigationMenuItem3.getTypeSettings());
+		Assert.assertTrue(
+			StringUtil.contains(
+				siteNavigationMenuItem3.getTypeSettings(), "Other Links Update",
+				StringPool.BLANK));
 
 		SiteNavigationMenuItem siteNavigationMenuItem4 =
 			siteNavigationMenuItems.get(3);
@@ -3421,8 +3429,8 @@ public class BundleSiteInitializerTest {
 			).build();
 
 		UserAccount userAccount =
-			userAccountResource.getUserAccountByExternalReferenceCode(
-				"TESTUSER1");
+			userAccountResource.getUserAccountByEmailAddress(
+				"test.user1@liferay.com");
 
 		Assert.assertNotNull(userAccount);
 
@@ -3434,7 +3442,7 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			"testalternatename1", userAccount.getAlternateName());
 		Assert.assertEquals(
-			"test.user1@liferay.com", userAccount.getEmailAddress());
+			UserAccount.Status.INACTIVE, userAccount.getStatus());
 
 		OrganizationBrief[] organizationBriefs =
 			userAccount.getOrganizationBriefs();
@@ -3444,8 +3452,8 @@ public class BundleSiteInitializerTest {
 
 		_assertUserSiteGroups(userAccount.getId());
 
-		userAccount = userAccountResource.getUserAccountByExternalReferenceCode(
-			"TESTUSER2");
+		userAccount = userAccountResource.getUserAccountByEmailAddress(
+			"test.user2@liferay.com");
 
 		Assert.assertNotNull(userAccount);
 
@@ -3457,7 +3465,7 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			"testalternatename2", userAccount.getAlternateName());
 		Assert.assertEquals(
-			"test.user2@liferay.com", userAccount.getEmailAddress());
+			UserAccount.Status.INACTIVE, userAccount.getStatus());
 
 		organizationBriefs = userAccount.getOrganizationBriefs();
 
@@ -3477,8 +3485,8 @@ public class BundleSiteInitializerTest {
 			).build();
 
 		UserAccount userAccount =
-			userAccountResource.getUserAccountByExternalReferenceCode(
-				"TESTUSER1");
+			userAccountResource.getUserAccountByEmailAddress(
+				"test.user1@liferay.com");
 
 		Assert.assertNotNull(userAccount);
 
@@ -3500,8 +3508,8 @@ public class BundleSiteInitializerTest {
 
 		_assertUserSiteGroups(userAccount.getId());
 
-		userAccount = userAccountResource.getUserAccountByExternalReferenceCode(
-			"TESTUSER2");
+		userAccount = userAccountResource.getUserAccountByEmailAddress(
+			"test.user2.update@liferay.com");
 
 		Assert.assertNotNull(userAccount);
 
@@ -3513,7 +3521,7 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			"testalternatename2update", userAccount.getAlternateName());
 		Assert.assertEquals(
-			"test.user2.update@liferay.com", userAccount.getEmailAddress());
+			UserAccount.Status.INACTIVE, userAccount.getStatus());
 
 		organizationBriefs = userAccount.getOrganizationBriefs();
 
@@ -3522,8 +3530,8 @@ public class BundleSiteInitializerTest {
 
 		_assertUserSiteGroups(userAccount.getId());
 
-		userAccount = userAccountResource.getUserAccountByExternalReferenceCode(
-			"TESTUSER3");
+		userAccount = userAccountResource.getUserAccountByEmailAddress(
+			"test.user3@liferay.com");
 
 		Assert.assertNotNull(userAccount);
 
@@ -3535,7 +3543,7 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			"testalternatename3", userAccount.getAlternateName());
 		Assert.assertEquals(
-			"test.user3@liferay.com", userAccount.getEmailAddress());
+			UserAccount.Status.INACTIVE, userAccount.getStatus());
 
 		organizationBriefs = userAccount.getOrganizationBriefs();
 
