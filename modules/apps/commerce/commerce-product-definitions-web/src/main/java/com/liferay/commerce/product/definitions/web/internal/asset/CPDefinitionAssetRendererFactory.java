@@ -38,6 +38,7 @@ import javax.portlet.WindowStateException;
 
 import javax.servlet.ServletContext;
 
+import com.liferay.portal.kernel.util.WebKeys;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -51,9 +52,6 @@ import org.osgi.service.component.annotations.Reference;
 public class CPDefinitionAssetRendererFactory
 	extends BaseAssetRendererFactory<CPDefinition> {
 
-	public static final String ASSET_RENDERER_FACTORY_GROUP =
-		"ASSET_RENDERER_FACTORY_GROUP";
-
 	public static final String TYPE = "product";
 
 	public CPDefinitionAssetRendererFactory() {
@@ -61,7 +59,6 @@ public class CPDefinitionAssetRendererFactory
 		setLinkable(true);
 		setPortletId(CPPortletKeys.CP_DEFINITIONS);
 		setSearchable(true);
-		setSelectable(false);
 	}
 
 	@Override
@@ -161,7 +158,7 @@ public class CPDefinitionAssetRendererFactory
 	@Override
 	protected Group getGroup(LiferayPortletRequest liferayPortletRequest) {
 		return (Group)liferayPortletRequest.getAttribute(
-			ASSET_RENDERER_FACTORY_GROUP);
+			WebKeys.ASSET_RENDERER_FACTORY_GROUP);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

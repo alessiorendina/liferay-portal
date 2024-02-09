@@ -16,6 +16,9 @@ import com.liferay.commerce.product.exception.CommerceCatalogSystemException;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.base.CommerceCatalogLocalServiceBaseImpl;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -100,13 +103,19 @@ public class CommerceCatalogLocalServiceImpl
 
 		// Group
 
-		_groupLocalService.addGroup(
+		Group commerceCatalogGroup = _groupLocalService.addGroup(
 			user.getUserId(), GroupConstants.DEFAULT_PARENT_GROUP_ID,
 			CommerceCatalog.class.getName(), commerceCatalogId,
 			GroupConstants.DEFAULT_LIVE_GROUP_ID, getLocalizationMap(name),
 			null, GroupConstants.TYPE_SITE_PRIVATE, false,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false, true,
 			null);
+
+		DepotEntry depotEntry =
+			_depotEntryLocalService.addDepotEntry(commerceCatalogGroup.getNameMap(), commerceCatalogGroup.getDescriptionMap(), serviceContext);
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			false, depotEntry.getDepotEntryId(), commerceCatalogGroup.getGroupId(), true);
 
 		commerceCatalog = commerceCatalogPersistence.update(commerceCatalog);
 
@@ -504,6 +513,12 @@ public class CommerceCatalogLocalServiceImpl
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Reference
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;
