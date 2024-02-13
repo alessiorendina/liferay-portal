@@ -155,7 +155,9 @@ public class CookiesManagerImpl implements CookiesManager {
 			}
 		}
 
-		cookie.setPath(_getContextPath(httpServletRequest));
+		if (Validator.isNull(cookie.getPath())) {
+			cookie.setPath(_getContextPath(httpServletRequest));
+		}
 
 		// LEP-5175
 
@@ -243,7 +245,11 @@ public class CookiesManagerImpl implements CookiesManager {
 			}
 
 			cookie.setMaxAge(0);
-			cookie.setPath(_getContextPath(httpServletRequest));
+
+			if (Validator.isNull(cookie.getPath())) {
+				cookie.setPath(_getContextPath(httpServletRequest));
+			}
+
 			cookie.setValue(StringPool.BLANK);
 
 			httpServletResponse.addCookie(cookie);
