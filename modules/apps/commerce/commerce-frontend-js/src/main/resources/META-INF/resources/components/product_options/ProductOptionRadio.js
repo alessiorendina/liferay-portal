@@ -208,19 +208,6 @@ const ProductOptionRadio = ({
 			];
 		}
 
-		if (!productOption.skuContributor) {
-			setSkuOptionsAtomState({
-				...skuOptionsAtomState,
-				[skuOptionsKey]: currentSkuOptions,
-				updating: false,
-			});
-
-			return Liferay.fire(`${namespace}${CP_OPTION_CHANGED}`, {
-				skuId: selectedSkuId,
-				skuOptions: currentSkuOptions,
-			});
-		}
-
 		let currentSkuId = selectedSkuId;
 
 		DeliveryCatalogAPIServiceProvider.postChannelProductSkuBySkuOption(
