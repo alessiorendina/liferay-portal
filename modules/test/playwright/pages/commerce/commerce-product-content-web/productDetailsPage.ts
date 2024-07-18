@@ -197,7 +197,7 @@ export class ProductDetailsPage {
 		await this.frameSubmitSpecification.click();
 	}
 
-	async changeValueInProductSPecification(
+	async changeValueInProductSpecification(
 		chooseAddOrCreate: string,
 		specificationValue: string
 	) {
