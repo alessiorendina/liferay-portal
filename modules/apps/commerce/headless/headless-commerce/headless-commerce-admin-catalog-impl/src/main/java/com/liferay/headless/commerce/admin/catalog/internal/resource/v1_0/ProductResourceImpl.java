@@ -118,6 +118,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
@@ -1085,9 +1086,7 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 				serviceContext.setExpandoBridgeAttributes(null);
 
-				if ((sku.getSkuUnitOfMeasures() == null) ||
-					(sku.getSkuUnitOfMeasures().length == 0)) {
-
+				if (ArrayUtil.isEmpty(sku.getSkuUnitOfMeasures())) {
 					SkuUtil.updateCommercePriceEntries(
 						_commercePriceEntryLocalService,
 						_commercePriceListLocalService, _configurationProvider,
