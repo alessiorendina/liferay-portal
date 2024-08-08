@@ -1364,24 +1364,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		serviceContext.setExpandoBridgeAttributes(
 			_getExpandoBridgeAttributes(product));
 
-		DateConfig displayDateConfig = new DateConfig(
-			DateConfigUtil.convertDateToCalendar(
-				GetterUtil.getDate(
-					product.getDisplayDate(),
-					DateFormatFactoryUtil.getDate(
-						contextAcceptLanguage.getPreferredLocale(),
-						contextUser.getTimeZone()),
-					cpDefinition.getDisplayDate())));
-
-		DateConfig expirationDateConfig = DateConfig.toExpirationDateConfig(
-			GetterUtil.getDate(
-				product.getExpirationDate(),
-				DateFormatFactoryUtil.getDate(
-					contextAcceptLanguage.getPreferredLocale(),
-					contextUser.getTimeZone()),
-				cpDefinition.getExpirationDate()),
-			contextUser.getTimeZone());
-
 		Category[] categories = product.getCategories();
 
 		if (categories == null) {
@@ -1458,6 +1440,23 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			metaKeywordsMap = LanguageUtils.getLanguageIdMap(
 				cpDefinition.getMetaKeywordsMap());
 		}
+
+		DateConfig displayDateConfig = new DateConfig(
+			DateConfigUtil.convertDateToCalendar(
+				GetterUtil.getDate(
+					product.getDisplayDate(),
+					DateFormatFactoryUtil.getDate(
+						contextAcceptLanguage.getPreferredLocale(),
+						contextUser.getTimeZone()),
+					cpDefinition.getDisplayDate())));
+		DateConfig expirationDateConfig = DateConfig.toExpirationDateConfig(
+			GetterUtil.getDate(
+				product.getExpirationDate(),
+				DateFormatFactoryUtil.getDate(
+					contextAcceptLanguage.getPreferredLocale(),
+					contextUser.getTimeZone()),
+				cpDefinition.getExpirationDate()),
+			contextUser.getTimeZone());
 
 		cpDefinition = _cpDefinitionService.updateCPDefinition(
 			cpDefinition.getCPDefinitionId(),
