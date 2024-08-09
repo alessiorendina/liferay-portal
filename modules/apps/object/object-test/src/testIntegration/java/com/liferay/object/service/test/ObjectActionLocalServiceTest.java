@@ -188,7 +188,7 @@ public class ObjectActionLocalServiceTest {
 			_group.getGroupId(), _commerceCurrency.getCode());
 
 		_objectDefinition = ObjectDefinitionTestUtil.addCustomObjectDefinition(
-			false, _objectDefinitionLocalService,
+			false,
 			Arrays.asList(
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_DATE,
@@ -802,7 +802,7 @@ public class ObjectActionLocalServiceTest {
 
 			ObjectDefinition objectDefinitionA =
 				ObjectDefinitionTestUtil.addCustomObjectDefinition(
-					false, _objectDefinitionLocalService,
+					false,
 					Collections.singletonList(
 						ObjectFieldUtil.createObjectField(
 							ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -811,8 +811,7 @@ public class ObjectActionLocalServiceTest {
 
 			ObjectDefinition objectDefinitionAA =
 				ObjectDefinitionTestUtil.addCustomObjectDefinition(
-					ObjectDefinitionTestUtil.getRandomName(),
-					_objectDefinitionLocalService);
+					ObjectDefinitionTestUtil.getRandomName());
 
 			ObjectRelationship objectRelationshipA_AA =
 				ObjectRelationshipTestUtil.addObjectRelationship(
@@ -821,8 +820,7 @@ public class ObjectActionLocalServiceTest {
 
 			ObjectDefinition objectDefinitionAAA =
 				ObjectDefinitionTestUtil.addCustomObjectDefinition(
-					ObjectDefinitionTestUtil.getRandomName(),
-					_objectDefinitionLocalService);
+					ObjectDefinitionTestUtil.getRandomName());
 
 			ObjectRelationship objectRelationshipAA_AAA =
 				ObjectRelationshipTestUtil.addObjectRelationship(
@@ -2199,7 +2197,7 @@ public class ObjectActionLocalServiceTest {
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				false, _objectDefinitionLocalService,
+				false,
 				Arrays.asList(
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,

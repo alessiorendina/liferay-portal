@@ -575,13 +575,12 @@ public class ObjectDefinitionLocalServiceTest {
 			NoSuchObjectFolderException.class,
 			"No ObjectFolder exists with the primary key " + objectFolderId,
 			() -> ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				objectFolderId, _objectDefinitionLocalService));
+				objectFolderId));
 
 		// Add object definition to default object folder
 
 		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				0, _objectDefinitionLocalService);
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(0);
 
 		Assert.assertEquals(
 			_defaultObjectFolder.getObjectFolderId(),
@@ -594,7 +593,7 @@ public class ObjectDefinitionLocalServiceTest {
 		ObjectFolder objectFolder = _addObjectFolder();
 
 		objectDefinition = ObjectDefinitionTestUtil.addCustomObjectDefinition(
-			objectFolder.getObjectFolderId(), _objectDefinitionLocalService);
+			objectFolder.getObjectFolderId());
 
 		Assert.assertEquals(
 			objectFolder.getObjectFolderId(),
@@ -978,7 +977,6 @@ public class ObjectDefinitionLocalServiceTest {
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					ObjectDefinitionConstants.SCOPE_COMPANY, null, 1,
-					_objectDefinitionLocalService,
 					Collections.<ObjectField>emptyList()));
 
 		// Label is null
@@ -1007,7 +1005,6 @@ public class ObjectDefinitionLocalServiceTest {
 				"Invalid Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionConstants.SCOPE_SITE, null, 1,
-				_objectDefinitionLocalService,
 				Arrays.asList(
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -1076,8 +1073,7 @@ public class ObjectDefinitionLocalServiceTest {
 					"Test", null, null,
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
-					"", null, 1, _objectDefinitionLocalService,
-					Collections.emptyList()));
+					"", null, 1, Collections.emptyList()));
 
 		// No object scope provider found with key
 
@@ -1094,8 +1090,7 @@ public class ObjectDefinitionLocalServiceTest {
 					"Test", null, null,
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
-					scope, null, 1, _objectDefinitionLocalService,
-					Collections.emptyList()));
+					scope, null, 1, Collections.emptyList()));
 
 		// Version must greater than 0
 
@@ -1111,7 +1106,6 @@ public class ObjectDefinitionLocalServiceTest {
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					ObjectDefinitionConstants.SCOPE_COMPANY, null, -1,
-					_objectDefinitionLocalService,
 					Collections.<ObjectField>emptyList()));
 
 		AssertUtils.assertFailure(
@@ -1126,7 +1120,6 @@ public class ObjectDefinitionLocalServiceTest {
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					ObjectDefinitionConstants.SCOPE_COMPANY, null, 0,
-					_objectDefinitionLocalService,
 					Collections.<ObjectField>emptyList()));
 
 		// Database table, messaging, resources, and status
@@ -1138,7 +1131,6 @@ public class ObjectDefinitionLocalServiceTest {
 				"Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionConstants.SCOPE_COMPANY, null, 1,
-				_objectDefinitionLocalService,
 				Collections.<ObjectField>emptyList());
 
 		ObjectFieldUtil.addCustomObjectField(
@@ -1220,7 +1212,6 @@ public class ObjectDefinitionLocalServiceTest {
 				"Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionConstants.SCOPE_SITE, null, 1,
-				_objectDefinitionLocalService,
 				Arrays.asList(
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -1258,7 +1249,6 @@ public class ObjectDefinitionLocalServiceTest {
 				"Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionConstants.SCOPE_COMPANY, null, 1,
-				_objectDefinitionLocalService,
 				Collections.<ObjectField>emptyList());
 
 		// Publish unmodifiable system object definition
@@ -1367,11 +1357,9 @@ public class ObjectDefinitionLocalServiceTest {
 		// Bind object definitions creating a new hierarchical structure
 
 		ObjectDefinition objectDefinitionA =
-			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				"A", _objectDefinitionLocalService);
+			ObjectDefinitionTestUtil.addCustomObjectDefinition("A");
 		ObjectDefinition objectDefinitionAA =
-			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				"AA", _objectDefinitionLocalService);
+			ObjectDefinitionTestUtil.addCustomObjectDefinition("AA");
 
 		ObjectRelationship objectRelationshipA_AA =
 			ObjectRelationshipTestUtil.addObjectRelationship(
@@ -1390,8 +1378,7 @@ public class ObjectDefinitionLocalServiceTest {
 			Arrays.asList(
 				ObjectRelationshipTestUtil.addObjectRelationship(
 					_objectRelationshipLocalService, objectDefinitionAA,
-					ObjectDefinitionTestUtil.addCustomObjectDefinition(
-						"AAA", _objectDefinitionLocalService),
+					ObjectDefinitionTestUtil.addCustomObjectDefinition("AAA"),
 					ObjectRelationshipConstants.DELETION_TYPE_PREVENT),
 				objectRelationshipA_AA),
 			objectDefinitionA.getObjectDefinitionId());
@@ -1411,8 +1398,7 @@ public class ObjectDefinitionLocalServiceTest {
 			Arrays.asList(
 				ObjectRelationshipTestUtil.addObjectRelationship(
 					_objectRelationshipLocalService, objectDefinitionAA,
-					ObjectDefinitionTestUtil.addCustomObjectDefinition(
-						"AAB", _objectDefinitionLocalService),
+					ObjectDefinitionTestUtil.addCustomObjectDefinition("AAB"),
 					ObjectRelationshipConstants.DELETION_TYPE_PREVENT),
 				objectRelationshipA_AA),
 			objectDefinitionA.getObjectDefinitionId());
@@ -1470,7 +1456,6 @@ public class ObjectDefinitionLocalServiceTest {
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					ObjectDefinitionConstants.SCOPE_SITE, null, 1,
-					_objectDefinitionLocalService,
 					Collections.singletonList(
 						ObjectFieldUtil.createObjectField(
 							ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -1588,7 +1573,6 @@ public class ObjectDefinitionLocalServiceTest {
 				"Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionConstants.SCOPE_SITE, null, 1,
-				_objectDefinitionLocalService,
 				Collections.singletonList(
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -1808,7 +1792,7 @@ public class ObjectDefinitionLocalServiceTest {
 	public void testPublishCustomObjectDefinition() throws Exception {
 		ObjectDefinition objectDefinition1 =
 			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				false, _objectDefinitionLocalService,
+				false,
 				Arrays.asList(
 					new TextObjectFieldBuilder(
 					).labelMap(
@@ -1875,7 +1859,6 @@ public class ObjectDefinitionLocalServiceTest {
 				"Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionConstants.SCOPE_COMPANY, null, 1,
-				_objectDefinitionLocalService,
 				Collections.<ObjectField>emptyList());
 
 		_testSystemObjectFields(objectDefinition);
@@ -2173,12 +2156,10 @@ public class ObjectDefinitionLocalServiceTest {
 	@Test
 	public void testUpdateRootObjectDefinitionId() throws Exception {
 		ObjectDefinition objectDefinition1 =
-			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				_objectDefinitionLocalService);
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
 
 		ObjectDefinition objectDefinition2 =
-			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				_objectDefinitionLocalService);
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
 
 		AssertUtils.assertFailure(
 			ObjectDefinitionRootObjectDefinitionIdException.class,
@@ -2204,7 +2185,6 @@ public class ObjectDefinitionLocalServiceTest {
 				"Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionConstants.SCOPE_SITE, null, 1,
-				_objectDefinitionLocalService,
 				Arrays.asList(
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -2277,7 +2257,6 @@ public class ObjectDefinitionLocalServiceTest {
 				"Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionConstants.SCOPE_SITE, null, 1,
-				_objectDefinitionLocalService,
 				Collections.singletonList(
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
@@ -2321,7 +2300,6 @@ public class ObjectDefinitionLocalServiceTest {
 				"Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionConstants.SCOPE_COMPANY, null, 1,
-				_objectDefinitionLocalService,
 				Collections.<ObjectField>emptyList());
 
 		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
@@ -2365,8 +2343,7 @@ public class ObjectDefinitionLocalServiceTest {
 	@Test
 	public void testUpdateTitleObjectFieldId() throws Exception {
 		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				_objectDefinitionLocalService);
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
 
 		try {
 			objectDefinition =
@@ -2452,7 +2429,6 @@ public class ObjectDefinitionLocalServiceTest {
 			LocalizedMapUtil.getLocalizedMap(label), name, null, null,
 			LocalizedMapUtil.getLocalizedMap(pluralLabel),
 			ObjectDefinitionConstants.SCOPE_COMPANY, null, 1,
-			_objectDefinitionLocalService,
 			Arrays.asList(
 				new TextObjectFieldBuilder(
 				).labelMap(
@@ -2849,7 +2825,7 @@ public class ObjectDefinitionLocalServiceTest {
 
 		ObjectDefinition objectDefinition2 =
 			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				false, _objectDefinitionLocalService,
+				false,
 				Arrays.asList(
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
