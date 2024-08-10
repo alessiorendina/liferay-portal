@@ -4,17 +4,25 @@
  */
 
 import {Locator, Page} from '@playwright/test';
+import {waitForSuccessAlert} from '../../utils/waitForSuccessAlert';
 
 export class EditAccountPage {
 	readonly contactLink: Locator;
 	readonly page: Page;
 	readonly rolesLink: Locator;
+	readonly saveButton: Locator;
 	readonly usersLink: Locator;
 
 	constructor(page: Page) {
 		this.contactLink = page.getByRole('link', {name: 'Contact'});
 		this.page = page;
 		this.rolesLink = page.getByRole('link', {exact: true, name: 'Roles'});
+		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.usersLink = page.getByRole('link', {exact: true, name: 'Users'});
+	}
+
+	async saveChange() {
+		await this.saveButton.click();
+		await waitForSuccessAlert(this.page);
 	}
 }

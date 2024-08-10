@@ -244,3 +244,23 @@ test('LPD-28161 Can view role and organization name escaped', async ({
 
 	await expect(await accountUsersPage.roleName(roleName)).toBeVisible();
 });
+
+test('LPD-33636 Email address is not deleted by saving in the UI', async ({
+	accountsPage,
+	apiHelpers,
+	editAccountPage,
+}) => {
+	const account = await apiHelpers.headlessAdminUser.postAccount({
+		emailAddress: getRandomString(),
+	});
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	await accountsPage.goto();
+	await (await accountsPage.accountsTableRowLink(account.name)).click();
+	await editAccountPage.saveChange();
+
+	const accountResponse = await apiHelpers.headlessAdminUser.getAccountByName(account.name);
+
+	expect(accountResponse.emailAddress).toEqual(account.emailAddress);
+});
