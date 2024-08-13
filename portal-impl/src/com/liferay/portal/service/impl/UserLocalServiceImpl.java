@@ -7283,8 +7283,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		throws PortalException {
 
 		User user = userPersistence.findByPrimaryKey(userId);
-
-		Set<Long> roleIdSet = SetUtil.fromArray(roleIds);
+		Set<Long> roleIdsSet = SetUtil.fromArray(roleIds);
 
 		String[] defaultRoleNames = PrefsPropsUtil.getStringArray(
 			user.getCompanyId(), PropsKeys.ADMIN_DEFAULT_ROLE_NAMES,
@@ -7297,11 +7296,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			if ((role != null) &&
 				(role.getType() == RoleConstants.TYPE_REGULAR)) {
 
-				roleIdSet.add(role.getRoleId());
+				roleIdsSet.add(role.getRoleId());
 			}
 		}
 
-		roleIds = ArrayUtil.toArray(roleIdSet.toArray(new Long[0]));
+		roleIds = ArrayUtil.toArray(roleIdsSet.toArray(new Long[0]));
 
 		return UsersAdminUtil.addRequiredRoles(user, roleIds);
 	}
