@@ -504,6 +504,14 @@ public class ObjectFieldLocalServiceImpl
 	}
 
 	@Override
+	public List<ObjectField> getObjectFieldsByBusinessType(
+		long objectDefinitionId, String businessType) {
+
+		return objectFieldPersistence.findByODI_BT(
+			objectDefinitionId, businessType);
+	}
+
+	@Override
 	public int getObjectFieldsCount(long objectDefinitionId) {
 		return objectFieldPersistence.countByObjectDefinitionId(
 			objectDefinitionId);
