@@ -39,10 +39,6 @@ export class SCIMConfigurationPage {
 		});
 	}
 
-	async goTo() {
-		await this.instanceSettingsPage.goToInstanceSetting('SCIM', 'SCIM');
-	}
-
 	async configureSCIM(oAuth2ApplicationName: string, matcherField: string) {
 		await this.oAuth2ApplicationNameField.fill(oAuth2ApplicationName);
 
@@ -55,6 +51,18 @@ export class SCIMConfigurationPage {
 
 	async generateToken() {
 		await this.page.getByLabel('Generate Access Token').click();
+
+		await expect(this.successMessage).toBeVisible();
+
+		await this.page.waitForTimeout(500);
+	}
+
+	async goTo() {
+		await this.instanceSettingsPage.goToInstanceSetting('SCIM', 'SCIM');
+
+		await this.oAuth2ApplicationNameField.waitFor();
+
+		await this.page.waitForTimeout(500);
 	}
 
 	async revokeToken() {
@@ -63,15 +71,9 @@ export class SCIMConfigurationPage {
 		await expect(revokeAllButton).toBeVisible();
 
 		await revokeAllButton.click();
-	}
 
-	async resetClientData() {
-		const revokeAllButton = this.page.getByLabel(
-			'Reset SCIM Client Provisioning Data'
-		);
+		await expect(this.successMessage).toBeVisible();
 
-		await expect(revokeAllButton).toBeVisible();
-
-		await revokeAllButton.click();
+		await this.page.waitForTimeout(500);
 	}
 }
