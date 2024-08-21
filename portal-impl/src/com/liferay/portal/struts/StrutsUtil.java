@@ -5,6 +5,7 @@
 
 package com.liferay.portal.struts;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
@@ -22,6 +23,13 @@ import javax.servlet.http.HttpServletResponse;
  * @author Brian Wing Shun Chan
  */
 public class StrutsUtil {
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no replacement
+	 */
+	@Deprecated
+	public static final String EXCEPTION =
+		StrutsUtil.class.getName() + "_EXCEPTION";
 
 	public static final String TEXT_HTML_DIR = "/html";
 
@@ -110,6 +118,23 @@ public class StrutsUtil {
 		else if (_log.isWarnEnabled()) {
 			_log.warn(uri + " is already committed");
 		}
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #forward(
+	 *             HttpServletRequest, HttpServletResponse, ServletContext,
+	 *             String, Throwable, String)}
+	 */
+	@Deprecated
+	public static void forward(
+			String uri, ServletContext servletContext,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws ServletException {
+
+		forward(
+			httpServletRequest, httpServletResponse, servletContext,
+			StringPool.BLANK, null, uri);
 	}
 
 	private static void _removeErrorPageAttributes(

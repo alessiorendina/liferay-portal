@@ -120,6 +120,17 @@ public class PortalRequestProcessor {
 				PropsUtil.getArray(PropsKeys.SESSION_TRACKER_IGNORE_PATHS)));
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #PortalRequestProcessor(ModuleConfig, ServletContext,String)}
+	 */
+	@Deprecated
+	public PortalRequestProcessor(
+		ServletContext servletContext, ModuleConfig moduleConfig) {
+
+		this(moduleConfig, servletContext, StringPool.BLANK);
+	}
+
 	public void process(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
