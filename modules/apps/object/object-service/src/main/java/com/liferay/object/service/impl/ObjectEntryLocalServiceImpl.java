@@ -4016,7 +4016,13 @@ public class ObjectEntryLocalServiceImpl
 			preparedStatement.setInt(index, GetterUtil.getInteger(value));
 		}
 		else if (sqlType == Types.VARCHAR) {
-			preparedStatement.setString(index, String.valueOf(value));
+			String string = null;
+
+			if (value != null) {
+				string = String.valueOf(value);
+			}
+
+			preparedStatement.setString(index, string);
 		}
 		else {
 			throw new IllegalArgumentException(
