@@ -1684,7 +1684,7 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 
 		_updateLayoutPageTemplateStructure(layout, layoutStructure);
 
-		_updateLayouts(plid);
+		_updateLayouts(plid, userId);
 	}
 
 	private boolean _processPageElement(
@@ -1864,7 +1864,7 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 		}
 	}
 
-	private void _updateLayouts(long plid) throws Exception {
+	private void _updateLayouts(long plid, long userId) throws Exception {
 		Layout layout = _layoutLocalService.fetchLayout(plid);
 
 		Layout draftLayout = layout.fetchDraftLayout();
@@ -1873,11 +1873,11 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 			layout, draftLayout);
 
 		_layoutLocalService.updateStatus(
-			draftLayout.getUserId(), draftLayout.getPlid(),
-			WorkflowConstants.STATUS_APPROVED,
+			userId, draftLayout.getPlid(), WorkflowConstants.STATUS_APPROVED,
 			ServiceContextThreadLocal.getServiceContext());
+
 		_layoutLocalService.updateStatus(
-			draftLayout.getUserId(), plid, WorkflowConstants.STATUS_APPROVED,
+			userId, plid, WorkflowConstants.STATUS_APPROVED,
 			ServiceContextThreadLocal.getServiceContext());
 	}
 
