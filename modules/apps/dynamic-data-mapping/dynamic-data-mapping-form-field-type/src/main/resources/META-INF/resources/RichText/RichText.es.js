@@ -44,6 +44,7 @@ const RichText = ({
 	editorConfig,
 	fieldName,
 	id,
+	label,
 	locale,
 	name,
 	localizedObjectField,
@@ -217,6 +218,7 @@ const RichText = ({
 			{...otherProps}
 			fieldName={fieldName}
 			id={id}
+			label={label}
 			name={name}
 			readOnly={readOnly}
 			style={readOnly ? {pointerEvents: 'none'} : null}
@@ -225,6 +227,7 @@ const RichText = ({
 			<ClayInput.Group>
 				<ClayInput.GroupItem>
 					<ClassicEditor
+						ariaLabel={label}
 						ariaRequired={otherProps.required}
 						className="w-100"
 						contents={
