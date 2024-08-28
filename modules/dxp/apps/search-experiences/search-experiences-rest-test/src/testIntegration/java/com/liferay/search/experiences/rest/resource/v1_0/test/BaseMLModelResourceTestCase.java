@@ -112,7 +112,32 @@ public abstract class BaseMLModelResourceTestCase {
 
 	@Test
 	public void testClientSerDesToDTO() throws Exception {
-		ObjectMapper objectMapper = new ObjectMapper() {
+		ObjectMapper objectMapper = getClientSerDesObjectMapper();
+
+		MLModel mlModel1 = randomMLModel();
+
+		String json = objectMapper.writeValueAsString(mlModel1);
+
+		MLModel mlModel2 = MLModelSerDes.toDTO(json);
+
+		Assert.assertTrue(equals(mlModel1, mlModel2));
+	}
+
+	@Test
+	public void testClientSerDesToJSON() throws Exception {
+		ObjectMapper objectMapper = getClientSerDesObjectMapper();
+
+		MLModel mlModel = randomMLModel();
+
+		String json1 = objectMapper.writeValueAsString(mlModel);
+		String json2 = MLModelSerDes.toJSON(mlModel);
+
+		Assert.assertEquals(
+			objectMapper.readTree(json1), objectMapper.readTree(json2));
+	}
+
+	protected ObjectMapper getClientSerDesObjectMapper() {
+		return new ObjectMapper() {
 			{
 				configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
 				configure(
@@ -127,40 +152,6 @@ public abstract class BaseMLModelResourceTestCase {
 					PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
 			}
 		};
-
-		MLModel mlModel1 = randomMLModel();
-
-		String json = objectMapper.writeValueAsString(mlModel1);
-
-		MLModel mlModel2 = MLModelSerDes.toDTO(json);
-
-		Assert.assertTrue(equals(mlModel1, mlModel2));
-	}
-
-	@Test
-	public void testClientSerDesToJSON() throws Exception {
-		ObjectMapper objectMapper = new ObjectMapper() {
-			{
-				configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
-				configure(
-					SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
-				setDateFormat(new ISO8601DateFormat());
-				setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-				setSerializationInclusion(JsonInclude.Include.NON_NULL);
-				setVisibility(
-					PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-				setVisibility(
-					PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
-			}
-		};
-
-		MLModel mlModel = randomMLModel();
-
-		String json1 = objectMapper.writeValueAsString(mlModel);
-		String json2 = MLModelSerDes.toJSON(mlModel);
-
-		Assert.assertEquals(
-			objectMapper.readTree(json1), objectMapper.readTree(json2));
 	}
 
 	@Test
