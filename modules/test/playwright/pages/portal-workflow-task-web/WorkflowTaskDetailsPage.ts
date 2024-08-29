@@ -19,6 +19,7 @@ export class WorkflowTaskDetailsPage {
 	readonly detailsMessage: Locator;
 	readonly doneAssigneeButton: Locator;
 	readonly doneButton: Locator;
+	readonly editAssetButton: Locator;
 	readonly page: Page;
 	readonly previewMessageBoards: Locator;
 	readonly rejectMenuItem: Locator;
@@ -47,6 +48,7 @@ export class WorkflowTaskDetailsPage {
 			{name: 'Done'}
 		);
 		this.doneButton = page.getByRole('button', {name: 'Done'});
+		this.editAssetButton = page.locator('[title="Edit"]');
 		this.page = page;
 		this.previewMessageBoards = page.getByRole('button', {
 			name: 'Preview of Message Boards',
