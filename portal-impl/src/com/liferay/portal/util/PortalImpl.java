@@ -1176,6 +1176,8 @@ public class PortalImpl implements Portal {
 			Set<Locale> availableLocales)
 		throws PortalException {
 
+		Map<Locale, String> alternateURLs = new HashMap<>();
+
 		String defaultVirtualHostname = _getDefaultVirtualHostname(
 			themeDisplay.getCompany());
 		String portalDomain = themeDisplay.getPortalDomain();
@@ -1195,8 +1197,6 @@ public class PortalImpl implements Portal {
 
 			virtualHostname = portalDomain;
 		}
-
-		Map<Locale, String> alternateURLs = new HashMap<>();
 
 		if (Validator.isNull(virtualHostname)) {
 			for (Locale locale : availableLocales) {
@@ -4057,14 +4057,14 @@ public class PortalImpl implements Portal {
 
 	@Override
 	public String getPortletTitle(PortletRequest portletRequest) {
+		String portletTitle = null;
+
 		String portletId = (String)portletRequest.getAttribute(
 			WebKeys.PORTLET_ID);
 
 		PortletConfig portletConfig = PortletConfigFactoryUtil.get(portletId);
 
 		Locale locale = portletRequest.getLocale();
-
-		String portletTitle = null;
 
 		if (portletConfig == null) {
 			Portlet portlet = PortletLocalServiceUtil.getPortletById(
@@ -4257,12 +4257,12 @@ public class PortalImpl implements Portal {
 			boolean checkStagingGroup)
 		throws PortalException {
 
+		long scopeGroupId = 0;
+
 		Layout layout = (Layout)httpServletRequest.getAttribute(WebKeys.LAYOUT);
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
-
-		long scopeGroupId = 0;
 
 		if (layout != null) {
 			Group group = layout.getGroup();
@@ -7786,14 +7786,7 @@ public class PortalImpl implements Portal {
 
 			friendlyURL = url.substring(0, position);
 
-			Map<String, String[]> actualParams;
-
-			if (params == null) {
-				actualParams = new HashMap<>();
-			}
-			else {
-				actualParams = new HashMap<>(params);
-			}
+			Map<String, String[]> actualParams = new HashMap<>();
 
 			Map<String, String> prpIdentifiers = new HashMap<>();
 
@@ -7822,6 +7815,10 @@ public class PortalImpl implements Portal {
 				friendlyURLMapper.populateParams(
 					url.substring(position), actualParams, requestContext);
 			}
+
+			Set<String> actualKeySet = actualParams.keySet();
+
+			actualKeySet.removeAll(params.keySet());
 
 			String actualParamsString = HttpComponentsUtil.parameterMapToString(
 				actualParams, false);
