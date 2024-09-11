@@ -315,6 +315,31 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 	}
 
 	@Test
+	public void testFreeMarkerNotificationWithCustomService() throws Exception {
+		List<NotificationQueueEntry> initialNotificationQueueEntries =
+			_getNotificationQueueEntries();
+
+		executeNotificationObjectAction(
+			0,
+			_addNotificationTemplate(
+				"${templateComponent}",
+				NotificationTemplateConstants.EDITOR_TYPE_FREEMARKER,
+				Collections.singletonMap(
+					LocaleUtil.US, "[%CURRENT_USER_FIRST_NAME%]"),
+				false,
+				Collections.singletonMap(
+					LocaleUtil.US, user1.getEmailAddress())));
+
+		List<NotificationQueueEntry> currentNotificationQueueEntries =
+			_getNotificationQueueEntries();
+
+		Assert.assertEquals(
+			currentNotificationQueueEntries.toString(),
+			initialNotificationQueueEntries.size() + 1,
+			currentNotificationQueueEntries.size());
+	}
+
+	@Test
 	public void testSendNotification() throws Exception {
 
 		// Multiples emails for each main recipient with a "," separator
@@ -972,6 +997,24 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 				notificationQueueEntry.getNotificationQueueEntryId()));
 	}
 
+	private List<NotificationQueueEntry> _getNotificationQueueEntries() {
+		return ListUtil.sort(
+			notificationQueueEntryLocalService.getNotificationEntries(
+				NotificationConstants.TYPE_EMAIL,
+				NotificationQueueEntryConstants.STATUS_SENT),
+			Comparator.comparing(
+				notificationQueueEntry -> {
+					Map<String, Object> notificationRecipientSettingsMap =
+						NotificationRecipientSettingUtil.
+							getNotificationRecipientSettingsMap(
+								notificationQueueEntry);
+
+					return String.valueOf(
+						notificationRecipientSettingsMap.get(
+							NotificationRecipientSettingConstants.NAME_TO));
+				}));
+	}
+
 	private void _testSendNotification(
 			int expectedNotificationQueueEntriesCount,
 			List<String> expectedToEmailAddresses, boolean singleRecipient,
@@ -996,21 +1039,8 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 					LocaleUtil.US, "[%CURRENT_USER_FIRST_NAME%]"),
 				singleRecipient, Collections.singletonMap(LocaleUtil.US, to)));
 
-		List<NotificationQueueEntry> notificationQueueEntries = ListUtil.sort(
-			notificationQueueEntryLocalService.getNotificationEntries(
-				NotificationConstants.TYPE_EMAIL,
-				NotificationQueueEntryConstants.STATUS_SENT),
-			Comparator.comparing(
-				notificationQueueEntry -> {
-					Map<String, Object> notificationRecipientSettingsMap =
-						NotificationRecipientSettingUtil.
-							getNotificationRecipientSettingsMap(
-								notificationQueueEntry);
-
-					return String.valueOf(
-						notificationRecipientSettingsMap.get(
-							NotificationRecipientSettingConstants.NAME_TO));
-				}));
+		List<NotificationQueueEntry> notificationQueueEntries =
+			_getNotificationQueueEntries();
 
 		Assert.assertEquals(
 			notificationQueueEntries.toString(),
