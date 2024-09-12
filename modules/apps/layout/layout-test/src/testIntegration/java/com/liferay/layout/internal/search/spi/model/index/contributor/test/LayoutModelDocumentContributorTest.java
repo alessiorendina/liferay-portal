@@ -124,7 +124,7 @@ public class LayoutModelDocumentContributorTest {
 	}
 
 	@Test
-	public void testContentLayoutSummary() throws Exception {
+	public void testGetContentLayoutSummary() throws Exception {
 		String defaultLocaleElementText = RandomTestUtil.randomString();
 		String spanishElementText = RandomTestUtil.randomString();
 
