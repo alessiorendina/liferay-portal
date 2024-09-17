@@ -1061,7 +1061,7 @@ public class StructuredContentResourceTest
 	}
 
 	private StructuredContent _randomCompleteStructuredContent(
-			boolean localizable)
+			long dlFileEntryId, boolean localizable)
 		throws Exception {
 
 		DDMStructureTestHelper ddmStructureTestHelper =
@@ -1085,7 +1085,7 @@ public class StructuredContentResourceTest
 		StructuredContent structuredContent = super.randomStructuredContent();
 
 		structuredContent.setContentFields(
-			_randomContentFields(journalArticle, localizable));
+			_randomContentFields(dlFileEntryId, journalArticle, localizable));
 		structuredContent.setContentStructureId(
 			complexDDMStructure.getStructureId());
 		structuredContent.setRelatedContents(
@@ -1104,7 +1104,8 @@ public class StructuredContentResourceTest
 	}
 
 	private ContentField[] _randomContentFields(
-		JournalArticle journalArticle, boolean localizable) {
+		long dlFileEntryId, JournalArticle journalArticle,
+		boolean localizable) {
 
 		return new ContentField[] {
 			new ContentField() {
@@ -1225,7 +1226,7 @@ public class StructuredContentResourceTest
 						{
 							image = new ContentDocument() {
 								{
-									id = _dlFileEntry.getPrimaryKey();
+									id = dlFileEntryId;
 								}
 							};
 						}
@@ -1249,7 +1250,7 @@ public class StructuredContentResourceTest
 						{
 							document = new ContentDocument() {
 								{
-									id = _dlFileEntry.getPrimaryKey();
+									id = _dlFileEntry.getFileEntryId();
 								}
 							};
 						}
@@ -1758,7 +1759,8 @@ public class StructuredContentResourceTest
 		StructuredContent postStructuredContent =
 			structuredContentResource.postSiteStructuredContent(
 				testGroup.getGroupId(),
-				_randomCompleteStructuredContent(localizable));
+				_randomCompleteStructuredContent(
+					_dlFileEntry.getFileEntryId(), localizable));
 
 		StructuredContent getStructuredContent =
 			structuredContentResource.getStructuredContent(
@@ -1780,7 +1782,8 @@ public class StructuredContentResourceTest
 			acceptAllLanguagesStructuredContentResource.
 				postSiteStructuredContent(
 					testGroup.getGroupId(),
-					_randomCompleteStructuredContent(localizable));
+					_randomCompleteStructuredContent(
+						_dlFileEntry.getFileEntryId(), localizable));
 
 		StructuredContent getStructuredContent =
 			acceptAllLanguagesStructuredContentResource.getStructuredContent(
@@ -1839,7 +1842,8 @@ public class StructuredContentResourceTest
 			structuredContentResource.
 				postStructuredContentFolderStructuredContent(
 					_journalFolder.getFolderId(),
-					_randomCompleteStructuredContent(true));
+					_randomCompleteStructuredContent(
+						_dlFileEntry.getFileEntryId(), true));
 
 		StructuredContent getStructuredContent =
 			structuredContentResource.getStructuredContent(
