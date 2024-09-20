@@ -8,10 +8,12 @@ import {Locator, Page, expect} from '@playwright/test';
 import {FormsPage} from './FormsPage';
 
 export class FormBuilderPage {
+	readonly entriesTab: Locator;
 	readonly formsPage: FormsPage;
 	readonly formSettingsButton: Locator;
 	readonly formSettingsDoneButton: Locator;
 	readonly formTitle: Locator;
+	readonly openFormButton: Locator;
 	readonly page: Page;
 	readonly previewButton: Locator;
 	readonly publishButton: Locator;
@@ -20,10 +22,14 @@ export class FormBuilderPage {
 	readonly requireCaptchaToggle: Locator;
 
 	constructor(page: Page) {
+		this.entriesTab = page.getByRole('button', {name: 'Entries'});
 		this.formsPage = new FormsPage(page);
 		this.formSettingsButton = page.getByRole('button', {name: 'Settings'});
 		this.formSettingsDoneButton = page.getByRole('button', {name: 'Done'});
 		this.formTitle = page.getByPlaceholder('Untitled Form');
+		this.openFormButton = page.getByRole('button', {
+			name: 'Open Form',
+		});
 		this.page = page;
 		this.previewButton = page.getByRole('button', {name: 'Preview'});
 		this.publishButton = page.getByRole('button', {name: 'Publish'});
@@ -46,5 +52,16 @@ export class FormBuilderPage {
 		await expect(this.formsPage.formsHeader).toBeVisible();
 
 		await this.formsPage.clickManagementToolbarNewButton();
+	}
+
+	async openFormSubmission() {
+		await this.publishButton.click();
+
+		await this.page
+			.locator('#ToastAlertContainer')
+			.getByLabel('Close')
+			.click();
+
+		await this.openFormButton.click();
 	}
 }
