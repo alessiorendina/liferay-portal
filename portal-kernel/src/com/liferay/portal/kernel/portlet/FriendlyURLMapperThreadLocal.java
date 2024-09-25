@@ -29,6 +29,15 @@ public class FriendlyURLMapperThreadLocal {
 		return _parentParameters.setWithSafeCloseable(parentParameters);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #setPRPIdentifiersWithSafeCloseable(Map)}
+	 */
+	@Deprecated
+	public static void setPRPIdentifiers(Map<String, String> prpIdentifiers) {
+		_prpIdentifiers.set(prpIdentifiers);
+	}
+
 	public static SafeCloseable setPRPIdentifiersWithSafeCloseable(
 		Map<String, String> prpIdentifiers) {
 
