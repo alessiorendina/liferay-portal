@@ -504,7 +504,7 @@ public class ObjectRelationshipLocalServiceTest {
 	}
 
 	@Test
-	public void testRegisterObjectRelationshipsRelatedInfoCollectionProviders()
+	public void testRegisterObjectRelationshipsRelatedInfoItemCollectionProviders()
 		throws Exception {
 
 		ObjectDefinition objectDefinition1 =
