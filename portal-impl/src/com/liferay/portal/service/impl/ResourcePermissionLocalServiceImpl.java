@@ -1199,7 +1199,7 @@ public class ResourcePermissionLocalServiceImpl
 				portlet.getRootPortletId());
 
 		List<String> ownerPortletActionIds =
-			ResourceActionsUtil.getPortletResourceActions(
+			ResourceActionsUtil.getPortletResourceOwnerDefaultActions(
 				portlet.getRootPortletId());
 
 		List<String> groupPortletActionIds =
@@ -1905,7 +1905,9 @@ public class ResourcePermissionLocalServiceImpl
 			List<String> actionIds = null;
 
 			if (portletActions) {
-				actionIds = ResourceActionsUtil.getPortletResourceActions(name);
+				actionIds =
+					ResourceActionsUtil.getPortletResourceOwnerDefaultActions(
+						name);
 			}
 			else {
 				actionIds =
