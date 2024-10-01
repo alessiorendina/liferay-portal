@@ -254,6 +254,20 @@ public class PlacedOrderSerDes {
 			sb.append(String.valueOf(placedOrder.getOrderStatusInfo()));
 		}
 
+		if (placedOrder.getOrderType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"orderType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(placedOrder.getOrderType()));
+
+			sb.append("\"");
+		}
+
 		if (placedOrder.getOrderTypeExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -691,6 +705,13 @@ public class PlacedOrderSerDes {
 				String.valueOf(placedOrder.getOrderStatusInfo()));
 		}
 
+		if (placedOrder.getOrderType() == null) {
+			map.put("orderType", null);
+		}
+		else {
+			map.put("orderType", String.valueOf(placedOrder.getOrderType()));
+		}
+
 		if (placedOrder.getOrderTypeExternalReferenceCode() == null) {
 			map.put("orderTypeExternalReferenceCode", null);
 		}
@@ -955,6 +976,9 @@ public class PlacedOrderSerDes {
 			else if (Objects.equals(jsonParserFieldName, "orderStatusInfo")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "orderType")) {
+				return false;
+			}
 			else if (Objects.equals(
 						jsonParserFieldName,
 						"orderTypeExternalReferenceCode")) {
@@ -1141,6 +1165,11 @@ public class PlacedOrderSerDes {
 				if (jsonParserFieldValue != null) {
 					placedOrder.setOrderStatusInfo(
 						StatusSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "orderType")) {
+				if (jsonParserFieldValue != null) {
+					placedOrder.setOrderType((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
