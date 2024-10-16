@@ -43,5 +43,24 @@
 			propsTransformer="<%= propsTransformer %>"
 			style="<%= displayStyle %>"
 		/>
+
+		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-10562") %>'>
+			<portlet:renderURL var="viewReturnableCommerceOrderItemsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+				<portlet:param name="mvcRenderCommandName" value="/commerce_order_content/view_returnable_commerce_order_items" />
+			</portlet:renderURL>
+
+			<liferay-frontend:component
+				context='<%=
+					HashMapBuilder.<String, Object>put(
+						"namespace", namespace
+					).put(
+						"returnableOrderItemsContextParams", returnableOrderItemsContextParams
+					).put(
+						"viewReturnableCommerceOrderItemsURL", viewReturnableCommerceOrderItemsURL
+					).build()
+				%>'
+				module="{viewCommerceOrderDetailsCTAs} from commerce-order-content-web"
+			/>
+		</c:if>
 	</c:otherwise>
 </c:choose>

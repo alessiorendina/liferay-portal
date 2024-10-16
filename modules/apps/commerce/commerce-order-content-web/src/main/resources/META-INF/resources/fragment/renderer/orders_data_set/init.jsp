@@ -7,6 +7,8 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+
 <%@ taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
@@ -16,9 +18,12 @@ page import="com.liferay.frontend.data.set.model.FDSActionDropdownItem" %><%@
 page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu" %><%@
 page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem" %><%@
 page import="com.liferay.portal.kernel.json.JSONArray" %><%@
-page import="com.liferay.portal.kernel.util.HashMapBuilder" %>
+page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %><%@
+page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@ page
+	import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %>
 
-<%@ page import="java.util.List" %><%@
+<%@ page import="java.util.HashMap" %><%@
+page import="java.util.List" %><%@
 page import="java.util.Map" %>
 
 <liferay-theme:defineObjects />
@@ -31,6 +36,8 @@ String displayStyle = (String)request.getAttribute("liferay-commerce:order-data-
 List<FDSActionDropdownItem> fdsActionDropdownItems = (List<FDSActionDropdownItem>)request.getAttribute("liferay-commerce:order-data-set:fdsActionDropdownItems");
 CreationMenu fdsCreationMenu = (CreationMenu)request.getAttribute("liferay-commerce:order-data-set:fdsCreationMenu");
 String name = (String)request.getAttribute("liferay-commerce:order-data-set:name");
+String namespace = (String)request.getAttribute("liferay-commerce:order-data-set:namespace");
 JSONArray orderTypesJSONArray = (JSONArray)request.getAttribute("liferay-commerce:order-data-set:orderTypes");
 String propsTransformer = (String)request.getAttribute("liferay-commerce:order-data-set:propsTransformer");
+HashMap<String, Object> returnableOrderItemsContextParams = (HashMap<String, Object>)request.getAttribute("liferay-commerce:order-data-set:returnableOrderItemsContextParams");
 %>
