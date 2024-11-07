@@ -23,14 +23,20 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface CPCategoryContentPortletInstanceConfiguration {
 
-	@Meta.AD(deflt = "0", name = "asset-category-id", required = false)
-	public long assetCategoryId();
+	@Meta.AD(
+		deflt = "", name = "asset-category-external-reference-code",
+		required = false
+	)
+	public String assetCategoryExternalReferenceCode();
 
 	@Meta.AD(name = "display-style", required = false)
 	public String displayStyle();
 
-	@Meta.AD(deflt = "0", name = "display-style-group-id", required = false)
-	public long displayStyleGroupId();
+	@Meta.AD(
+		deflt = "", name = "display-style-group-external-reference-code",
+		required = false
+	)
+	public String displayStyleGroupExternalReferenceCode();
 
 	@Meta.AD(deflt = "false", name = "use-asset-category", required = false)
 	public boolean useAssetCategory();
