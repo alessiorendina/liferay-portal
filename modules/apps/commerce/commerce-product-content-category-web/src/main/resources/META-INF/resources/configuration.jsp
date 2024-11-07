@@ -10,12 +10,12 @@
 <%
 CPCategoryContentDisplayContext cpCategoryContentDisplayContext = (CPCategoryContentDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
-long assetCategoryId = 0;
+String assetCategoryExternalReferenceCode = "";
 
 AssetCategory assetCategory = cpCategoryContentDisplayContext.getAssetCategory();
 
 if (assetCategory != null) {
-	assetCategoryId = assetCategory.getCategoryId();
+	assetCategoryExternalReferenceCode = assetCategory.getExternalReferenceCode();
 }
 %>
 
@@ -48,7 +48,7 @@ if (assetCategory != null) {
 							</div>
 
 							<div class="lfr-use-asset-category-content toggler-content-collapsed">
-								<aui:input id="preferencesAssetCategoryId" name="preferences--assetCategoryId--" type="number" value="<%= assetCategoryId %>" />
+								<aui:input id="preferencesAssetCategoryExternalReferenceCode" name="preferences--assetCategoryExternalReferenceCode--" type="text" value="<%= assetCategoryExternalReferenceCode %>" />
 							</div>
 						</div>
 					</aui:fieldset>
@@ -81,13 +81,13 @@ if (assetCategory != null) {
 				);
 
 				if (expanded) {
-					A.one('#<portlet:namespace />preferencesAssetCategoryId').attr(
+					A.one('#<portlet:namespace />preferencesAssetCategoryExternalReferenceCode').attr(
 						'disabled',
 						false
 					);
 				}
 				else {
-					A.one('#<portlet:namespace />preferencesAssetCategoryId').attr(
+					A.one('#<portlet:namespace />preferencesAssetCategoryExternalReferenceCode').attr(
 						'disabled',
 						true
 					);
