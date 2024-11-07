@@ -15,11 +15,12 @@ import com.liferay.commerce.product.content.category.web.internal.configuration.
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryService;
 import com.liferay.commerce.util.CommerceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -41,14 +42,16 @@ public class CPCategoryContentDisplayContext {
 			AssetCategoryService assetCategoryService,
 			CommerceMediaResolver commerceMediaResolver,
 			CPAttachmentFileEntryService cpAttachmentFileEntryService,
-			Portal portal)
+			GroupLocalService groupLocalService, Portal portal)
 		throws ConfigurationException {
 
 		_httpServletRequest = httpServletRequest;
 		_assetCategoryService = assetCategoryService;
 		_commerceMediaResolver = commerceMediaResolver;
 		_cpAttachmentFileEntryService = cpAttachmentFileEntryService;
+		_groupLocalService = groupLocalService;
 		_portal = portal;
+
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
@@ -60,16 +63,18 @@ public class CPCategoryContentDisplayContext {
 
 	public AssetCategory getAssetCategory() throws PortalException {
 		if (_cpCategoryContentPortletInstanceConfiguration.useAssetCategory()) {
-			_assetCategory = _assetCategoryService.fetchCategoryByExternalReferenceCode(
-				_cpCategoryContentPortletInstanceConfiguration.
-					assetCategoryExternalReferenceCode(),
-				_themeDisplay.getScopeGroupId());
-
-			if(_assetCategory == null){
-				_assetCategory = _assetCategoryService.fetchCategoryByExternalReferenceCode(
+			_assetCategory =
+				_assetCategoryService.fetchCategoryByExternalReferenceCode(
 					_cpCategoryContentPortletInstanceConfiguration.
 						assetCategoryExternalReferenceCode(),
-					_themeDisplay.getCompanyGroupId());
+					_themeDisplay.getScopeGroupId());
+
+			if (_assetCategory == null) {
+				_assetCategory =
+					_assetCategoryService.fetchCategoryByExternalReferenceCode(
+						_cpCategoryContentPortletInstanceConfiguration.
+							assetCategoryExternalReferenceCode(),
+						_themeDisplay.getCompanyGroupId());
 			}
 		}
 		else {
@@ -128,7 +133,7 @@ public class CPCategoryContentDisplayContext {
 		Group group = _themeDisplay.getScopeGroup();
 
 		if (Validator.isNotNull(displayStyleGroupExternalReferenceCode)) {
-			group = GroupLocalServiceUtil.fetchGroupByExternalReferenceCode(
+			group = _groupLocalService.fetchGroupByExternalReferenceCode(
 				displayStyleGroupExternalReferenceCode,
 				_themeDisplay.getCompanyId());
 		}
@@ -143,6 +148,33 @@ public class CPCategoryContentDisplayContext {
 		return _displayStyleGroupId;
 	}
 
+	public String getDisplayStyleGroupKey() {
+		if (Validator.isNotNull(_displayStyleGroupKey)) {
+			return _displayStyleGroupKey;
+		}
+
+		String displayStyleGroupExternalReferenceCode =
+			_cpCategoryContentPortletInstanceConfiguration.
+				displayStyleGroupExternalReferenceCode();
+
+		Group group = _themeDisplay.getScopeGroup();
+
+		if (Validator.isNotNull(displayStyleGroupExternalReferenceCode)) {
+			group = _groupLocalService.fetchGroupByExternalReferenceCode(
+				displayStyleGroupExternalReferenceCode,
+				_themeDisplay.getCompanyId());
+		}
+
+		if (group != null) {
+			_displayStyleGroupKey = group.getGroupKey();
+		}
+		else {
+			_displayStyleGroupKey = StringPool.BLANK;
+		}
+
+		return _displayStyleGroupKey;
+	}
+
 	public boolean useAssetCategory() {
 		return _cpCategoryContentPortletInstanceConfiguration.
 			useAssetCategory();
@@ -155,6 +187,8 @@ public class CPCategoryContentDisplayContext {
 	private final CPCategoryContentPortletInstanceConfiguration
 		_cpCategoryContentPortletInstanceConfiguration;
 	private Long _displayStyleGroupId;
+	private String _displayStyleGroupKey;
+	private final GroupLocalService _groupLocalService;
 	private final HttpServletRequest _httpServletRequest;
 	private final Portal _portal;
 	private final ThemeDisplay _themeDisplay;

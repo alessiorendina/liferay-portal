@@ -36,7 +36,7 @@ if (assetCategory != null) {
 							<liferay-template:template-selector
 								className="<%= CPCategoryContentPortlet.class.getName() %>"
 								displayStyle="<%= cpCategoryContentDisplayContext.getDisplayStyle() %>"
-								displayStyleGroupId="<%= cpCategoryContentDisplayContext.getDisplayStyleGroupId() %>"
+								displayStyleGroupKey="<%= cpCategoryContentDisplayContext.getDisplayStyleGroupKey() %>"
 								refreshURL="<%= PortalUtil.getCurrentURL(request) %>"
 								showEmptyOption="<%= true %>"
 							/>
