@@ -6,8 +6,10 @@
 package com.liferay.commerce.product.internal.upgrade.registry;
 
 import com.liferay.account.settings.AccountEntryGroupSettings;
+import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
+import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.internal.upgrade.v1_10_1.CommerceSiteTypeUpgradeProcess;
 import com.liferay.commerce.product.internal.upgrade.v1_11_0.CPAttachmentFileEntryGroupUpgradeProcess;
 import com.liferay.commerce.product.internal.upgrade.v1_11_1.CPDisplayLayoutUpgradeProcess;
@@ -57,8 +59,12 @@ import com.liferay.portal.kernel.upgrade.DummyUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
+import com.liferay.portlet.display.template.upgrade.BaseUpgradePortletPreferences;
+
+import javax.portlet.PortletPreferences;
 
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Component;
@@ -510,6 +516,35 @@ public class CommerceProductServiceUpgradeStepRegistrator
 		registry.register(
 			"5.20.0", "5.21.0", CPConfigurationEntryTable.create(),
 			CPConfigurationListTable.create());
+
+		registry.register(
+			"5.21.0", "5.21.1",
+			new BaseUpgradePortletPreferences() {
+
+				@Override
+				protected String[] getPortletIds() {
+					return new String[] {CPPortletKeys.CP_CATEGORY_CONTENT_WEB};
+				}
+
+				@Override
+				protected void upgradePreferences(
+						long companyId, long ownerId, int ownerType, long plid,
+						String portletId, PortletPreferences portletPreferences)
+					throws Exception {
+
+					long assetCategoryId = GetterUtil.getLong(
+						portletPreferences.getValue("assetCategoryId", null));
+
+					AssetCategory assetCategory =
+						_assetCategoryLocalService.fetchAssetCategory(
+							assetCategoryId);
+
+					portletPreferences.setValue(
+						"assetCategoryExternalReferenceCode",
+						assetCategory.getExternalReferenceCode());
+				}
+
+			});
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
