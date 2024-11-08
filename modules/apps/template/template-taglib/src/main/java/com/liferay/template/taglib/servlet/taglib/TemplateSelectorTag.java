@@ -227,6 +227,29 @@ public class TemplateSelectorTag extends IncludeTag {
 					return displayStyle;
 				}
 			).put(
+				"displayStyleGroupExternalReferenceCode",
+				() -> {
+					Group group = null;
+
+					DDMTemplate portletDisplayDDMTemplate =
+						getPortletDisplayDDMTemplate();
+
+					if (portletDisplayDDMTemplate != null) {
+						group = GroupLocalServiceUtil.fetchGroup(
+							portletDisplayDDMTemplate.getGroupId());
+					}
+					else {
+						group = GroupLocalServiceUtil.fetchGroup(
+							getDisplayStyleGroupId());
+					}
+
+					if (group == null) {
+						return StringPool.BLANK;
+					}
+
+					return group.getExternalReferenceCode();
+				}
+			).put(
 				"displayStyleGroupId",
 				() -> {
 					DDMTemplate portletDisplayDDMTemplate =
@@ -293,6 +316,18 @@ public class TemplateSelectorTag extends IncludeTag {
 
 			ddmTemplatesJSONArray.put(
 				JSONUtil.put(
+					"groupExternalReferenceCode",
+					() -> {
+						Group group = GroupLocalServiceUtil.fetchGroup(
+							ddmTemplate.getGroupId());
+
+						if (group != null) {
+							return group.getExternalReferenceCode();
+						}
+
+						return null;
+					}
+				).put(
 					"groupId", ddmTemplate.getGroupId()
 				).put(
 					"groupKey",

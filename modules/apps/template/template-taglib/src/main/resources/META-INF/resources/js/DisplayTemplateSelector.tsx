@@ -13,11 +13,13 @@ type Props = {
 	namespace: string;
 	props: {
 		displayStyle: string;
+		displayStyleGroupExternalReferenceCode: string;
 		displayStyleGroupId: string;
 		displayStyleGroupKey: string;
 		items: [
 			{
 				items: Array<{
+					groupExternalReferenceCode: string;
 					groupId: number;
 					groupKey: string;
 					label: string;
@@ -32,31 +34,43 @@ type Props = {
 const SEPARATOR = '__';
 
 export function getOptionData(option: string) {
-	const [groupId, groupKey, ...value] = option.split(SEPARATOR);
+	const [groupExternalReferenceCode, groupId, groupKey, ...value] =
+		option.split(SEPARATOR);
 
-	return {groupId, groupKey, value: value.join('-')};
+	return {
+		groupExternalReferenceCode,
+		groupId,
+		groupKey,
+		value: value.join('-'),
+	};
 }
 
 export default function DisplayTemplateSelector({namespace, props}: Props) {
-	const {displayStyle, displayStyleGroupId, displayStyleGroupKey, items} =
-		props;
-
+	const {
+		displayStyle,
+		displayStyleGroupExternalReferenceCode,
+		displayStyleGroupId,
+		displayStyleGroupKey,
+		items,
+	} = props;
 	const [selectedDisplayStyle, setSelectedDisplayStyle] = useState({
+		groupExternalReferenceCode: displayStyleGroupExternalReferenceCode,
 		groupId: displayStyleGroupId,
 		groupKey: displayStyleGroupKey,
 		name: displayStyle,
 	});
-
-	const onSelectionChangeHandlder: InternalDispatch<React.Key> = (
+	const onSelectionChangeHandler: InternalDispatch<React.Key> = (
 		option: React.Key
 	) => {
 		if (typeof option !== 'string') {
 			return;
 		}
 
-		const {groupId, groupKey, value} = getOptionData(option);
+		const {groupExternalReferenceCode, groupId, groupKey, value} =
+			getOptionData(option);
 
 		setSelectedDisplayStyle({
+			groupExternalReferenceCode,
 			groupId,
 			groupKey,
 			name: value,
@@ -74,6 +88,13 @@ export default function DisplayTemplateSelector({namespace, props}: Props) {
 				name={`${namespace}preferences--displayStyle--`}
 				type="hidden"
 				value={selectedDisplayStyle.name}
+			/>
+
+			<ClayInput
+				id={`${namespace}displayStyleGroupExternalReferenceCode`}
+				name={`${namespace}preferences--displayStyleGroupExternalReferenceCode--`}
+				type="hidden"
+				value={selectedDisplayStyle.groupExternalReferenceCode}
 			/>
 
 			<ClayInput
@@ -100,8 +121,8 @@ export default function DisplayTemplateSelector({namespace, props}: Props) {
 					className="display-template-selector"
 					id={`${namespace}displayStyle`}
 					items={items}
-					onSelectionChange={onSelectionChangeHandlder}
-					selectedKey={`${selectedDisplayStyle.groupId}${SEPARATOR}${selectedDisplayStyle.groupKey}${SEPARATOR}${selectedDisplayStyle.name}`}
+					onSelectionChange={onSelectionChangeHandler}
+					selectedKey={`${selectedDisplayStyle.groupExternalReferenceCode}${SEPARATOR}${selectedDisplayStyle.groupId}${SEPARATOR}${selectedDisplayStyle.groupKey}${SEPARATOR}${selectedDisplayStyle.name}`}
 				>
 					{(group) => (
 						<DropDown.Group
@@ -111,6 +132,10 @@ export default function DisplayTemplateSelector({namespace, props}: Props) {
 							{(item) => (
 								<Option
 									key={`${
+										item.groupExternalReferenceCode
+											? item.groupExternalReferenceCode
+											: displayStyleGroupExternalReferenceCode
+									}${SEPARATOR}${
 										item.groupId
 											? item.groupId
 											: displayStyleGroupId
