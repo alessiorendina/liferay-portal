@@ -59,8 +59,10 @@ import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersisten
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
@@ -68,6 +70,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import java.sql.Blob;
 
@@ -242,6 +245,172 @@ import org.osgi.service.component.annotations.Reference;
 
 			return ${entity.variableName}Persistence.update(${entity.variableName});
 		}
+
+		<#if entity.hasLazyReference() && entity.hasEntityColumn("companyId") && stringUtil.equals(entity.name, "User")>
+			/**
+			 * Adds the incomplete ${entity.humanName} to the database. Also notifies the appropriate model listeners.
+			 *
+			 * <p>
+			 * <strong>Important:</strong> Inspect ${entity.name}LocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+			 * </p>
+			 *
+			 * @param externalReferenceCode the external reference code of the ${entity.humanName}
+			 * @param companyId the primary key of the company
+			 * @param defaultValues the map containing the name of the field and the value to set on the ${entity.humanName}
+			 * @return the ${entity.humanName} that was added
+			<#list serviceBaseExceptions as exception>
+			 * @throws ${exception}
+			</#list>
+			 */
+			@Override
+			public ${entity.name} add${entity.name}(String externalReferenceCode, long companyId, Map<String, Object> defaultValues) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
+				${entity.name} ${entity.variableName} =
+					${entity.variableName}Persistence.create(
+						counterLocalService.increment());
+
+				${entity.variableName}.setExternalReferenceCode(externalReferenceCode);
+				${entity.variableName}.setCompanyId(companyId);
+
+				${entity.variableName}.setBatchImportStatus(1);
+
+				if (MapUtil.isNotEmpty(defaultValues)) {
+					for (Map.Entry<String, Object> entry : defaultValues.entrySet()) {
+						try {
+							Object entryValue = entry.getValue();
+
+							if (entryValue == null) {
+								continue;
+							}
+
+							Method method = ${entity.name}.class.getMethod(
+								"set" + StringUtil.upperCaseFirstLetter(entry.getKey()),
+								entryValue.getClass());
+
+							method.invoke(${entity.variableName}, entryValue);
+						}
+						catch (Exception exception) {
+							if (_log.isDebugEnabled()) {
+								_log.debug(exception);
+							}
+						}
+					}
+				}
+
+				return ${entity.variableName}Persistence.update(${entity.variableName});
+			}
+		</#if>
+
+		<#if entity.hasLazyReference() && entity.hasEntityColumn("companyId") && (!entity.hasEntityColumn("groupId") || stringUtil.equals(entity.name, "Group")) && entity.hasEntityColumn("userId") && !stringUtil.equals(entity.name, "User")>
+			/**
+			 * Adds the incomplete ${entity.humanName} to the database. Also notifies the appropriate model listeners.
+			 *
+			 * <p>
+			 * <strong>Important:</strong> Inspect ${entity.name}LocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+			 * </p>
+			 *
+			 * @param externalReferenceCode the external reference code of the ${entity.humanName}
+			 * @param companyId the primary key of the company
+			 * @param userId the primary key of the user
+			 * @param defaultValues the map containing the name of the field and the value to set on the ${entity.humanName}
+			 * @return the ${entity.humanName} that was added
+			<#list serviceBaseExceptions as exception>
+			 * @throws ${exception}
+			</#list>
+			 */
+			@Override
+			public ${entity.name} add${entity.name}(String externalReferenceCode, long companyId, long userId, Map<String, Object> defaultValues) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
+				${entity.name} ${entity.variableName} =
+					${entity.variableName}Persistence.create(
+						counterLocalService.increment());
+
+				${entity.variableName}.setExternalReferenceCode(externalReferenceCode);
+				${entity.variableName}.setCompanyId(companyId);
+				${entity.variableName}.setUserId(userId);
+
+				${entity.variableName}.setBatchImportStatus(1);
+
+				if (MapUtil.isNotEmpty(defaultValues)) {
+					for (Map.Entry<String, Object> entry : defaultValues.entrySet()) {
+						try {
+							Object entryValue = entry.getValue();
+
+							if (entryValue == null) {
+								continue;
+							}
+
+							Method method = ${entity.name}.class.getMethod(
+								"set" + StringUtil.upperCaseFirstLetter(entry.getKey()),
+								entryValue.getClass());
+
+							method.invoke(${entity.variableName}, entryValue);
+						}
+						catch (Exception exception) {
+							if (_log.isDebugEnabled()) {
+								_log.debug(exception);
+							}
+						}
+					}
+				}
+
+				return ${entity.variableName}Persistence.update(${entity.variableName});
+			}
+		</#if>
+
+		<#if entity.hasLazyReference() && entity.hasEntityColumn("groupId") && !stringUtil.equals(entity.name, "Group") && entity.hasEntityColumn("userId") && !stringUtil.equals(entity.name, "User")>
+			/**
+			 * Adds the incomplete ${entity.humanName} to the database. Also notifies the appropriate model listeners.
+			 *
+			 * <p>
+			 * <strong>Important:</strong> Inspect ${entity.name}LocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+			 * </p>
+			 *
+			 * @param externalReferenceCode the external reference code of the ${entity.humanName}
+			 * @param groupId the primary key of the group
+			 * @param userId the primary key of the user
+			 * @param defaultValues the map containing the name of the field and the value to set on the ${entity.humanName}
+			 * @return the ${entity.humanName} that was added
+			<#list serviceBaseExceptions as exception>
+			 * @throws ${exception}
+			</#list>
+			 */
+			@Override
+			public ${entity.name} add${entity.name}(String externalReferenceCode, long groupId, long userId, Map<String, Object> defaultValues) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
+				${entity.name} ${entity.variableName} =
+					${entity.variableName}Persistence.create(
+						counterLocalService.increment());
+
+				${entity.variableName}.setExternalReferenceCode(externalReferenceCode);
+				${entity.variableName}.setGroupId(groupId);
+				${entity.variableName}.setUserId(userId);
+
+				${entity.variableName}.setBatchImportStatus(1);
+
+				if (MapUtil.isNotEmpty(defaultValues)) {
+					for (Map.Entry<String, Object> entry : defaultValues.entrySet()) {
+						try {
+							Object entryValue = entry.getValue();
+
+							if (entryValue == null) {
+								continue;
+							}
+
+							Method method = ${entity.name}.class.getMethod(
+								"set" + StringUtil.upperCaseFirstLetter(entry.getKey()),
+								entryValue.getClass());
+
+							method.invoke(${entity.variableName}, entryValue);
+						}
+						catch (Exception exception) {
+							if (_log.isDebugEnabled()) {
+								_log.debug(exception);
+							}
+						}
+					}
+				}
+
+				return ${entity.variableName}Persistence.update(${entity.variableName});
+			}
+		</#if>
 
 		<#if entity.versionEntity??>
 			/**
@@ -537,6 +706,30 @@ import org.osgi.service.component.annotations.Reference;
 					return ${entity.variableName}Persistence.findBy${entity.externalReferenceCode?cap_first[0..0]}_ERC(${entity.externalReferenceCode}Id, externalReferenceCode);
 				}
 			</#if>
+		</#if>
+
+		<#if entity.hasLazyReference() && entity.hasEntityColumn("companyId") && (!entity.hasEntityColumn("groupId") || stringUtil.equals(entity.name, "Group"))>
+			@Override
+			public List<${entity.name}> getBatchImported${entity.pluralName}(long companyId, int batchImportStatus, int start, int end) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
+				return ${entity.variableName}Persistence.findByC_BIS(companyId, batchImportStatus, start, end);
+			}
+
+			@Override
+			public int getBatchImported${entity.pluralName}Count(long companyId, int batchImportStatus) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
+				return ${entity.variableName}Persistence.countByC_BIS(companyId, batchImportStatus);
+			}
+		</#if>
+
+		<#if entity.hasLazyReference() && entity.hasEntityColumn("groupId") && !stringUtil.equals(entity.name, "Group")>
+			@Override
+			public List<${entity.name}> getBatchImported${entity.pluralName}(long groupId, int batchImportStatus, int start, int end) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
+				return ${entity.variableName}Persistence.findByG_BIS(groupId, batchImportStatus, start, end);
+			}
+
+			@Override
+			public int getBatchImported${entity.pluralName}Count(long groupId, int batchImportStatus) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
+				return ${entity.variableName}Persistence.countByG_BIS(groupId, batchImportStatus);
+			}
 		</#if>
 
 		<#assign serviceBaseExceptions = serviceBuilder.getServiceBaseExceptions(methods, "get" + entity.name, [entity.PKClassName], ["PortalException"]) />
