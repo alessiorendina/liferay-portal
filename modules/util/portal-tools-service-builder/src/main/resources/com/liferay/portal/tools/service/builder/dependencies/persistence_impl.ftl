@@ -880,7 +880,7 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 				</#if>
 			}
 
-			<#if entity.hasLazyReference() && entity.hasEntityColumn("batchImportStatus", "int")>
+			<#if entity.hasLazyReference()>
 				if (!isNew) {
 					${entity.variableName}.setBatchImportStatus(0);
 				}
@@ -3108,6 +3108,10 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 
 			return date.getTime();
 		}
+	</#if>
+
+	<#if entity.hasLazyReference() && entity.isStrictLazyReference()>
+		private static final String _SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND = "batchImportStatus = 0 AND ";
 	</#if>
 
 	private static final String _SQL_SELECT_${entity.alias?upper_case} = "SELECT ${entity.alias} FROM ${entity.name} ${entity.alias}";

@@ -1,13 +1,23 @@
+<#assign initialCapacity = entityColumns?size />
+
+<#if entity.hasLazyReference() && entity.isStrictLazyReference() && !entityFinder.name?contains("_BIS")>
+	<#assign initialCapacity += 1 />
+</#if>
+
 StringBundler sb = null;
 
 if (orderByComparator != null) {
-	sb = new StringBundler(${entityColumns?size + 3} + (orderByComparator.getOrderByConditionFields().length * 3) + (orderByComparator.getOrderByFields().length * 3));
+	sb = new StringBundler(${initialCapacity + 3} + (orderByComparator.getOrderByConditionFields().length * 3) + (orderByComparator.getOrderByFields().length * 3));
 }
 else {
-	sb = new StringBundler(${entityColumns?size + 2});
+	sb = new StringBundler(${initialCapacity + 2});
 }
 
 sb.append(_SQL_SELECT_${entity.alias?upper_case}_WHERE);
+
+<#if entity.hasLazyReference() && entity.isStrictLazyReference() && !entityFinder.name?contains("_BIS")>
+	sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
+</#if>
 
 <#include "persistence_impl_finder_cols.ftl">
 
