@@ -6226,6 +6226,9 @@ public class ServiceBuilder {
 		externalReferenceCode = StringUtil.replace(
 			externalReferenceCode, "true", "company");
 
+		String lazyReference = GetterUtil.getString(
+			entityElement.attributeValue("lazy-reference"), "none");
+
 		boolean localService = GetterUtil.getBoolean(
 			entityElement.attributeValue("local-service"));
 		boolean remoteService = GetterUtil.getBoolean(
@@ -6383,6 +6386,21 @@ public class ServiceBuilder {
 			columnElement.addAttribute("type", "String");
 
 			derivedColumnElements.add(columnElement);
+
+			if (StringUtil.equals(lazyReference, "normal") ||
+				StringUtil.equals(lazyReference, "strict")) {
+
+				Element batchImportStatusColumnElement =
+					DocumentHelper.createElement("column");
+
+				batchImportStatusColumnElement.addAttribute(
+					"change-tracking-resolution-type", "STRICT");
+				batchImportStatusColumnElement.addAttribute(
+					"name", "batchImportStatus");
+				batchImportStatusColumnElement.addAttribute("type", "int");
+
+				derivedColumnElements.add(batchImportStatusColumnElement);
+			}
 		}
 
 		if (versioned) {
@@ -6758,6 +6776,41 @@ public class ServiceBuilder {
 			}
 
 			finderElements.add(finderElement);
+
+			if (StringUtil.equals(lazyReference, "normal") ||
+				StringUtil.equals(lazyReference, "strict")) {
+
+				String scope = "company";
+
+				if (entityColumns.contains(new EntityColumn(this, "groupId"))) {
+					scope = "group";
+				}
+
+				Element batchImportStatusFinderElement =
+					DocumentHelper.createElement("finder");
+
+				batchImportStatusFinderElement.addAttribute(
+					"name",
+					StringUtil.toUpperCase(String.valueOf(scope.charAt(0))) +
+						"_BIS");
+
+				batchImportStatusFinderElement.addAttribute(
+					"return-type", "Collection");
+
+				Element batchImportStatusFinderColumnElement =
+					batchImportStatusFinderElement.addElement("finder-column");
+
+				batchImportStatusFinderColumnElement.addAttribute(
+					"name", scope + "Id");
+
+				batchImportStatusFinderColumnElement =
+					batchImportStatusFinderElement.addElement("finder-column");
+
+				batchImportStatusFinderColumnElement.addAttribute(
+					"name", "batchImportStatus");
+
+				finderElements.add(batchImportStatusFinderElement);
+			}
 		}
 
 		if (permissionedModel) {
@@ -6985,16 +7038,16 @@ public class ServiceBuilder {
 		Entity entity = new Entity(
 			this, _packagePath, _apiPackagePath, _portletShortName, entityName,
 			variableName, pluralName, pluralVariableName, humanName, tableName,
-			alias, uuid, uuidAccessor, externalReferenceCode, localService,
-			remoteService, persistence, persistenceClassName, finderClassName,
-			dataSource, sessionFactory, txManager, cacheEnabled,
-			changeTrackingEnabled, dynamicUpdateEnabled, jsonEnabled,
-			mvccEnabled, trashEnabled, uadApplicationName, uadAutoDelete,
-			uadOutputPath, uadPackagePath, deprecated, pkEntityColumns,
-			regularEntityColumns, blobEntityColumns, collectionEntityColumns,
-			entityColumns, entityOrder, entityFinders, referenceEntities,
-			unresolvedReferenceEntityNames, txRequiredMethodNames,
-			resourceActionModel);
+			alias, uuid, uuidAccessor, externalReferenceCode, lazyReference,
+			localService, remoteService, persistence, persistenceClassName,
+			finderClassName, dataSource, sessionFactory, txManager,
+			cacheEnabled, changeTrackingEnabled, dynamicUpdateEnabled,
+			jsonEnabled, mvccEnabled, trashEnabled, uadApplicationName,
+			uadAutoDelete, uadOutputPath, uadPackagePath, deprecated,
+			pkEntityColumns, regularEntityColumns, blobEntityColumns,
+			collectionEntityColumns, entityColumns, entityOrder, entityFinders,
+			referenceEntities, unresolvedReferenceEntityNames,
+			txRequiredMethodNames, resourceActionModel);
 
 		if (changeTrackingEnabled && !columnElements.isEmpty()) {
 			if (!mvccEnabled) {

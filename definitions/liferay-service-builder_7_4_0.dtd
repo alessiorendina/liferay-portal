@@ -199,6 +199,16 @@ The deprecated value "true" maps to "company" and the deprecated "false" maps to
 >
 
 <!--
+The lazy-reference value specifies if the service will generate a batch import
+status column, finders and base methods for the service. The possible values are
+"normal" and "strict". This attribute depends on external-reference-code
+attribute.
+-->
+<!ATTLIST entity
+	lazy-reference CDATA #IMPLIED
+>
+
+<!--
 If the local-service value is true, then the service will generate the local
 interfaces for the service. The default value is false.
 -->

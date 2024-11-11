@@ -89,10 +89,10 @@ public class Entity implements Comparable<Entity> {
 	public Entity(ServiceBuilder serviceBuilder, String name) {
 		this(
 			serviceBuilder, null, null, null, name, null, null, null, null,
-			null, null, false, false, null, false, true, true, null, null, null,
-			null, null, true, false, false, false, false, false, null, false,
-			null, null, false, null, null, null, null, null, null, null, null,
-			null, null, false);
+			null, null, false, false, null, null, false, true, true, null, null,
+			null, null, null, true, false, false, false, false, false, null,
+			false, null, null, false, null, null, null, null, null, null, null,
+			null, null, null, false);
 	}
 
 	public Entity(
@@ -101,13 +101,13 @@ public class Entity implements Comparable<Entity> {
 		String variableName, String pluralName, String pluralVariableName,
 		String humanName, String table, String alias, boolean uuid,
 		boolean uuidAccessor, String externalReferenceCode,
-		boolean localService, boolean remoteService, boolean persistence,
-		String persistenceClassName, String finderClassName, String dataSource,
-		String sessionFactory, String txManager, boolean cacheEnabled,
-		boolean changeTrackingEnabled, boolean dynamicUpdateEnabled,
-		boolean jsonEnabled, boolean mvccEnabled, boolean trashEnabled,
-		String uadApplicationName, boolean uadAutoDelete, String uadOutputPath,
-		String uadPackagePath, boolean deprecated,
+		String lazyReference, boolean localService, boolean remoteService,
+		boolean persistence, String persistenceClassName,
+		String finderClassName, String dataSource, String sessionFactory,
+		String txManager, boolean cacheEnabled, boolean changeTrackingEnabled,
+		boolean dynamicUpdateEnabled, boolean jsonEnabled, boolean mvccEnabled,
+		boolean trashEnabled, String uadApplicationName, boolean uadAutoDelete,
+		String uadOutputPath, String uadPackagePath, boolean deprecated,
 		List<EntityColumn> pkEntityColumns,
 		List<EntityColumn> regularEntityColumns,
 		List<EntityColumn> blobEntityColumns,
@@ -146,6 +146,7 @@ public class Entity implements Comparable<Entity> {
 		_uuid = uuid;
 		_uuidAccessor = uuidAccessor;
 		_externalReferenceCode = externalReferenceCode;
+		_lazyReference = lazyReference;
 		_localService = localService;
 		_remoteService = remoteService;
 		_persistence = persistence;
@@ -393,6 +394,10 @@ public class Entity implements Comparable<Entity> {
 
 		interfaceNames.add("BaseModel<" + _name + ">");
 
+		if (isBatchImportStatusModel()) {
+			interfaceNames.add("BatchImportStatusModel");
+		}
+
 		if (isChangeTrackingEnabled()) {
 			interfaceNames.add("CTModel<" + _name + ">");
 		}
@@ -490,6 +495,10 @@ public class Entity implements Comparable<Entity> {
 			overrideColumnName.add("userId");
 			overrideColumnName.add("userName");
 			overrideColumnName.add("userUuid");
+		}
+
+		if (isBatchImportStatusModel()) {
+			overrideColumnName.add("batchImportStatus");
 		}
 
 		if (isChangeTrackingEnabled()) {
@@ -909,6 +918,21 @@ public class Entity implements Comparable<Entity> {
 		return false;
 	}
 
+	public boolean hasLazyReference() {
+		if (!hasExternalReferenceCode()) {
+			return false;
+		}
+
+		if ((StringUtil.equals(_lazyReference, "normal") ||
+			 StringUtil.equals(_lazyReference, "strict")) &&
+			hasEntityColumn("batchImportStatus", "int")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public boolean hasLocalService() {
 		return _localService;
 	}
@@ -970,6 +994,16 @@ public class Entity implements Comparable<Entity> {
 			hasEntityColumn("createDate", "Date") &&
 			hasEntityColumn("modifiedDate", "Date") &&
 			hasEntityColumn("userId") && hasEntityColumn("userName")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isBatchImportStatusModel() {
+		if (_serviceBuilder.isVersionGTE_7_4_0() &&
+			hasEntityColumn("batchImportStatus")) {
 
 			return true;
 		}
@@ -1214,6 +1248,10 @@ public class Entity implements Comparable<Entity> {
 		return false;
 	}
 
+	public boolean isStrictLazyReference() {
+		return StringUtil.equals(_lazyReference, "strict");
+	}
+
 	public boolean isTrashEnabled() {
 		return _trashEnabled;
 	}
@@ -1340,6 +1378,7 @@ public class Entity implements Comparable<Entity> {
 	private final List<EntityColumn> _finderEntityColumns;
 	private final String _humanName;
 	private final boolean _jsonEnabled;
+	private final String _lazyReference;
 	private Entity _localizedEntity;
 	private List<EntityColumn> _localizedEntityColumns;
 	private final boolean _localService;
