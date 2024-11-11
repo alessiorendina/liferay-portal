@@ -879,6 +879,12 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 					}
 				</#if>
 			}
+
+			<#if entity.hasLazyReference() && entity.hasEntityColumn("batchImportStatus", "int")>
+				if (!isNew) {
+					${entity.variableName}.setBatchImportStatus(0);
+				}
+			</#if>
 		</#if>
 
 		<#if entity.hasEntityColumn("createDate", "Date") && entity.hasEntityColumn("modifiedDate", "Date")>
