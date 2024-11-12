@@ -8,6 +8,7 @@ package com.liferay.portal.upgrade.v7_4_x;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.upgrade.BaseBatchImportStatusUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeProcess;
@@ -520,6 +521,17 @@ public class PortalUpgradeProcessRegistryImpl
 			new Version(31, 12, 1),
 			UpgradeModulesFactory.create(
 				new String[] {"com.liferay.feature.flag.web"}, null));
+
+		upgradeVersionTreeMap.put(
+			new Version(31, 13, 0),
+			new BaseBatchImportStatusUpgradeProcess() {
+
+				@Override
+				protected String[] getTableNames() {
+					return new String[] {"Organization_"};
+				}
+
+			});
 	}
 
 }
