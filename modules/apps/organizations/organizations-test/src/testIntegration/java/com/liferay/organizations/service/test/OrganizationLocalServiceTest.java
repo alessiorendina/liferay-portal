@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.OrganizationParentException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.OrganizationConstants;
@@ -44,6 +45,7 @@ import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -545,6 +547,70 @@ public class OrganizationLocalServiceTest {
 
 		_userLocalService.deleteOrganizationUser(
 			organizationAA.getOrganizationId(), TestPropsValues.getUser());
+	}
+
+	@Test
+	public void testIncompleteOrganization() throws Exception {
+		User user = TestPropsValues.getUser();
+
+		Hits initialHits = _organizationLocalService.search(
+			user.getCompanyId(),
+			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID,
+			StringPool.BLANK, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Organization organization = _organizationLocalService.addOrganization(
+			RandomTestUtil.randomString(), user.getCompanyId(),
+			user.getUserId(),
+			HashMapBuilder.<String, Object>put(
+				"type", OrganizationConstants.TYPE_ORGANIZATION
+			).build());
+
+		Assert.assertTrue(organization.getBatchImportStatus() == 1);
+
+		List<Organization> organizations =
+			_organizationLocalService.getOrganizations(
+				user.getCompanyId(),
+				OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
+
+		Assert.assertFalse(
+			organizations.toString(), organizations.contains(organization));
+
+		Hits hits = _organizationLocalService.search(
+			user.getCompanyId(),
+			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID,
+			StringPool.BLANK, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			hits.toString(), initialHits.getLength(), hits.getLength());
+
+		organization.setParentOrganizationId(
+			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
+		organization.setName("batchImportStatusOrganization");
+
+		ListType listType = _listTypeLocalService.getListType(
+			user.getCompanyId(), ListTypeConstants.ORGANIZATION_STATUS_DEFAULT,
+			ListTypeConstants.ORGANIZATION_STATUS);
+
+		organization.setStatusListTypeId(listType.getListTypeId());
+
+		organization = _updateOrganization(organization);
+
+		Assert.assertTrue(organization.getBatchImportStatus() == 0);
+
+		organizations = _organizationLocalService.getOrganizations(
+			user.getCompanyId(),
+			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
+
+		Assert.assertTrue(
+			organizations.toString(), organizations.contains(organization));
+
+		hits = _organizationLocalService.search(
+			user.getCompanyId(),
+			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID,
+			StringPool.BLANK, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			hits.toString(), initialHits.getLength() + 1, hits.getLength());
 	}
 
 	@Test
