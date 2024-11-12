@@ -102,6 +102,28 @@ public class OrganizationLocalServiceWrapper
 	}
 
 	/**
+	 * Adds the incomplete organization to the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect OrganizationLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
+	 * @param externalReferenceCode the external reference code of the organization
+	 * @param companyId the primary key of the company
+	 * @param userId the primary key of the user
+	 * @param defaultValues the map containing the name of the field and the value to set on the organization
+	 * @return the organization that was added
+	 */
+	@Override
+	public Organization addOrganization(
+		String externalReferenceCode, long companyId, long userId,
+		java.util.Map<String, Object> defaultValues) {
+
+		return _organizationLocalService.addOrganization(
+			externalReferenceCode, companyId, userId, defaultValues);
+	}
+
+	/**
 	 * Adds an organization.
 	 *
 	 * <p>
@@ -534,6 +556,22 @@ public class OrganizationLocalServiceWrapper
 		getActionableDynamicQuery() {
 
 		return _organizationLocalService.getActionableDynamicQuery();
+	}
+
+	@Override
+	public java.util.List<Organization> getBatchImportedOrganizations(
+		long companyId, int batchImportStatus, int start, int end) {
+
+		return _organizationLocalService.getBatchImportedOrganizations(
+			companyId, batchImportStatus, start, end);
+	}
+
+	@Override
+	public int getBatchImportedOrganizationsCount(
+		long companyId, int batchImportStatus) {
+
+		return _organizationLocalService.getBatchImportedOrganizationsCount(
+			companyId, batchImportStatus);
 	}
 
 	@Override

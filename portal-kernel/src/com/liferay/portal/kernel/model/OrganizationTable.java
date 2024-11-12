@@ -33,6 +33,10 @@ public class OrganizationTable extends BaseTable<OrganizationTable> {
 		createColumn(
 			"externalReferenceCode", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
+	public final Column<OrganizationTable, Integer> batchImportStatus =
+		createColumn(
+			"batchImportStatus", Integer.class, Types.INTEGER,
+			Column.FLAG_DEFAULT);
 	public final Column<OrganizationTable, Long> organizationId = createColumn(
 		"organizationId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
 	public final Column<OrganizationTable, Long> companyId = createColumn(

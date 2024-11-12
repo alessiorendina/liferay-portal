@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service utility for Organization. This utility wraps
@@ -97,6 +98,27 @@ public class OrganizationLocalServiceUtil {
 	 */
 	public static Organization addOrganization(Organization organization) {
 		return getService().addOrganization(organization);
+	}
+
+	/**
+	 * Adds the incomplete organization to the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect OrganizationLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
+	 * @param externalReferenceCode the external reference code of the organization
+	 * @param companyId the primary key of the company
+	 * @param userId the primary key of the user
+	 * @param defaultValues the map containing the name of the field and the value to set on the organization
+	 * @return the organization that was added
+	 */
+	public static Organization addOrganization(
+		String externalReferenceCode, long companyId, long userId,
+		Map<String, Object> defaultValues) {
+
+		return getService().addOrganization(
+			externalReferenceCode, companyId, userId, defaultValues);
 	}
 
 	/**
@@ -485,6 +507,20 @@ public class OrganizationLocalServiceUtil {
 		getActionableDynamicQuery() {
 
 		return getService().getActionableDynamicQuery();
+	}
+
+	public static List<Organization> getBatchImportedOrganizations(
+		long companyId, int batchImportStatus, int start, int end) {
+
+		return getService().getBatchImportedOrganizations(
+			companyId, batchImportStatus, start, end);
+	}
+
+	public static int getBatchImportedOrganizationsCount(
+		long companyId, int batchImportStatus) {
+
+		return getService().getBatchImportedOrganizationsCount(
+			companyId, batchImportStatus);
 	}
 
 	public static String[] getChildrenTypes(String type) {

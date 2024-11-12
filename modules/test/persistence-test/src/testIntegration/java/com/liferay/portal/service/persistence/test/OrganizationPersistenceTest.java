@@ -123,6 +123,8 @@ public class OrganizationPersistenceTest {
 
 		newOrganization.setExternalReferenceCode(RandomTestUtil.randomString());
 
+		newOrganization.setBatchImportStatus(RandomTestUtil.nextInt());
+
 		newOrganization.setCompanyId(RandomTestUtil.nextLong());
 
 		newOrganization.setUserId(RandomTestUtil.nextLong());
@@ -169,6 +171,9 @@ public class OrganizationPersistenceTest {
 		Assert.assertEquals(
 			existingOrganization.getExternalReferenceCode(),
 			newOrganization.getExternalReferenceCode());
+		Assert.assertEquals(
+			existingOrganization.getBatchImportStatus(),
+			newOrganization.getBatchImportStatus());
 		Assert.assertEquals(
 			existingOrganization.getOrganizationId(),
 			newOrganization.getOrganizationId());
@@ -327,6 +332,14 @@ public class OrganizationPersistenceTest {
 	}
 
 	@Test
+	public void testCountByC_BIS() throws Exception {
+		_persistence.countByC_BIS(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByC_BIS(0L, 0);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		Organization newOrganization = addOrganization();
 
@@ -352,12 +365,12 @@ public class OrganizationPersistenceTest {
 	protected OrderByComparator<Organization> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
 			"Organization_", "mvccVersion", true, "ctCollectionId", true,
-			"uuid", true, "externalReferenceCode", true, "organizationId", true,
-			"companyId", true, "userId", true, "userName", true, "createDate",
-			true, "modifiedDate", true, "parentOrganizationId", true,
-			"treePath", true, "name", true, "type", true, "recursable", true,
-			"regionId", true, "countryId", true, "statusListTypeId", true,
-			"comments", true, "logoId", true);
+			"uuid", true, "externalReferenceCode", true, "batchImportStatus",
+			true, "organizationId", true, "companyId", true, "userId", true,
+			"userName", true, "createDate", true, "modifiedDate", true,
+			"parentOrganizationId", true, "treePath", true, "name", true,
+			"type", true, "recursable", true, "regionId", true, "countryId",
+			true, "statusListTypeId", true, "comments", true, "logoId", true);
 	}
 
 	@Test
@@ -659,6 +672,8 @@ public class OrganizationPersistenceTest {
 		organization.setUuid(RandomTestUtil.randomString());
 
 		organization.setExternalReferenceCode(RandomTestUtil.randomString());
+
+		organization.setBatchImportStatus(RandomTestUtil.nextInt());
 
 		organization.setCompanyId(RandomTestUtil.nextLong());
 

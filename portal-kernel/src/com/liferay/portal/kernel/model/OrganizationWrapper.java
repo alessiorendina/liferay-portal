@@ -39,6 +39,7 @@ public class OrganizationWrapper
 		attributes.put("ctCollectionId", getCtCollectionId());
 		attributes.put("uuid", getUuid());
 		attributes.put("externalReferenceCode", getExternalReferenceCode());
+		attributes.put("batchImportStatus", getBatchImportStatus());
 		attributes.put("organizationId", getOrganizationId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
@@ -84,6 +85,13 @@ public class OrganizationWrapper
 
 		if (externalReferenceCode != null) {
 			setExternalReferenceCode(externalReferenceCode);
+		}
+
+		Integer batchImportStatus = (Integer)attributes.get(
+			"batchImportStatus");
+
+		if (batchImportStatus != null) {
+			setBatchImportStatus(batchImportStatus);
 		}
 
 		Long organizationId = (Long)attributes.get("organizationId");
@@ -218,6 +226,16 @@ public class OrganizationWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return model.getAncestors();
+	}
+
+	/**
+	 * Returns the batch import status of this organization.
+	 *
+	 * @return the batch import status of this organization
+	 */
+	@Override
+	public int getBatchImportStatus() {
+		return model.getBatchImportStatus();
 	}
 
 	@Override
@@ -550,6 +568,11 @@ public class OrganizationWrapper
 	}
 
 	@Override
+	public boolean isReindexAllowed() {
+		return model.isReindexAllowed();
+	}
+
+	@Override
 	public boolean isRoot() {
 		return model.isRoot();
 	}
@@ -557,6 +580,16 @@ public class OrganizationWrapper
 	@Override
 	public void persist() {
 		model.persist();
+	}
+
+	/**
+	 * Sets the batch import status of this organization.
+	 *
+	 * @param batchImportStatus the batch import status of this organization
+	 */
+	@Override
+	public void setBatchImportStatus(int batchImportStatus) {
+		model.setBatchImportStatus(batchImportStatus);
 	}
 
 	/**

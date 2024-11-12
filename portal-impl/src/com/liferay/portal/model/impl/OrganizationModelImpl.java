@@ -66,9 +66,10 @@ public class OrganizationModelImpl
 	public static final Object[][] TABLE_COLUMNS = {
 		{"mvccVersion", Types.BIGINT}, {"ctCollectionId", Types.BIGINT},
 		{"uuid_", Types.VARCHAR}, {"externalReferenceCode", Types.VARCHAR},
-		{"organizationId", Types.BIGINT}, {"companyId", Types.BIGINT},
-		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
-		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
+		{"batchImportStatus", Types.INTEGER}, {"organizationId", Types.BIGINT},
+		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
+		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
+		{"modifiedDate", Types.TIMESTAMP},
 		{"parentOrganizationId", Types.BIGINT}, {"treePath", Types.VARCHAR},
 		{"name", Types.VARCHAR}, {"type_", Types.VARCHAR},
 		{"recursable", Types.BOOLEAN}, {"regionId", Types.BIGINT},
@@ -84,6 +85,7 @@ public class OrganizationModelImpl
 		TABLE_COLUMNS_MAP.put("ctCollectionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("externalReferenceCode", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("batchImportStatus", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("organizationId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
@@ -103,7 +105,7 @@ public class OrganizationModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table Organization_ (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,organizationId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentOrganizationId LONG,treePath STRING null,name VARCHAR(100) null,type_ VARCHAR(75) null,recursable BOOLEAN,regionId LONG,countryId LONG,statusListTypeId LONG,comments STRING null,logoId LONG,primary key (organizationId, ctCollectionId))";
+		"create table Organization_ (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,batchImportStatus INTEGER,organizationId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentOrganizationId LONG,treePath STRING null,name VARCHAR(100) null,type_ VARCHAR(75) null,recursable BOOLEAN,regionId LONG,countryId LONG,statusListTypeId LONG,comments STRING null,logoId LONG,primary key (organizationId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table Organization_";
 
@@ -144,43 +146,49 @@ public class OrganizationModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
+	public static final long BATCHIMPORTSTATUS_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 2L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long NAME_COLUMN_BITMASK = 4L;
+	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long ORGANIZATIONID_COLUMN_BITMASK = 8L;
+	public static final long NAME_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PARENTORGANIZATIONID_COLUMN_BITMASK = 16L;
+	public static final long ORGANIZATIONID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TREEPATH_COLUMN_BITMASK = 32L;
+	public static final long PARENTORGANIZATIONID_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long TREEPATH_COLUMN_BITMASK = 64L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long UUID_COLUMN_BITMASK = 128L;
 
 	public static final String MAPPING_TABLE_GROUPS_ORGS_NAME = "Groups_Orgs";
 
@@ -322,6 +330,8 @@ public class OrganizationModelImpl
 				"externalReferenceCode",
 				Organization::getExternalReferenceCode);
 			attributeGetterFunctions.put(
+				"batchImportStatus", Organization::getBatchImportStatus);
+			attributeGetterFunctions.put(
 				"organizationId", Organization::getOrganizationId);
 			attributeGetterFunctions.put(
 				"companyId", Organization::getCompanyId);
@@ -376,6 +386,10 @@ public class OrganizationModelImpl
 				"externalReferenceCode",
 				(BiConsumer<Organization, String>)
 					Organization::setExternalReferenceCode);
+			attributeSetterBiConsumers.put(
+				"batchImportStatus",
+				(BiConsumer<Organization, Integer>)
+					Organization::setBatchImportStatus);
 			attributeSetterBiConsumers.put(
 				"organizationId",
 				(BiConsumer<Organization, Long>)
@@ -432,6 +446,17 @@ public class OrganizationModelImpl
 				(Map)attributeSetterBiConsumers);
 		}
 
+	}
+
+	@Override
+	public boolean isReindexAllowed() {
+		if (OrganizationModel.super.isReindexAllowed() ||
+			(getBatchImportStatus() == 0)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@JSON
@@ -520,6 +545,31 @@ public class OrganizationModelImpl
 	@Deprecated
 	public String getOriginalExternalReferenceCode() {
 		return getColumnOriginalValue("externalReferenceCode");
+	}
+
+	@JSON
+	@Override
+	public int getBatchImportStatus() {
+		return _batchImportStatus;
+	}
+
+	@Override
+	public void setBatchImportStatus(int batchImportStatus) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_batchImportStatus = batchImportStatus;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalBatchImportStatus() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("batchImportStatus"));
 	}
 
 	@JSON
@@ -929,6 +979,7 @@ public class OrganizationModelImpl
 		organizationImpl.setCtCollectionId(getCtCollectionId());
 		organizationImpl.setUuid(getUuid());
 		organizationImpl.setExternalReferenceCode(getExternalReferenceCode());
+		organizationImpl.setBatchImportStatus(getBatchImportStatus());
 		organizationImpl.setOrganizationId(getOrganizationId());
 		organizationImpl.setCompanyId(getCompanyId());
 		organizationImpl.setUserId(getUserId());
@@ -962,6 +1013,8 @@ public class OrganizationModelImpl
 		organizationImpl.setUuid(this.<String>getColumnOriginalValue("uuid_"));
 		organizationImpl.setExternalReferenceCode(
 			this.<String>getColumnOriginalValue("externalReferenceCode"));
+		organizationImpl.setBatchImportStatus(
+			this.<Integer>getColumnOriginalValue("batchImportStatus"));
 		organizationImpl.setOrganizationId(
 			this.<Long>getColumnOriginalValue("organizationId"));
 		organizationImpl.setCompanyId(
@@ -1089,6 +1142,8 @@ public class OrganizationModelImpl
 
 			organizationCacheModel.externalReferenceCode = null;
 		}
+
+		organizationCacheModel.batchImportStatus = getBatchImportStatus();
 
 		organizationCacheModel.organizationId = getOrganizationId();
 
@@ -1231,6 +1286,7 @@ public class OrganizationModelImpl
 	private long _ctCollectionId;
 	private String _uuid;
 	private String _externalReferenceCode;
+	private int _batchImportStatus;
 	private long _organizationId;
 	private long _companyId;
 	private long _userId;
@@ -1284,6 +1340,7 @@ public class OrganizationModelImpl
 		_columnOriginalValues.put("uuid_", _uuid);
 		_columnOriginalValues.put(
 			"externalReferenceCode", _externalReferenceCode);
+		_columnOriginalValues.put("batchImportStatus", _batchImportStatus);
 		_columnOriginalValues.put("organizationId", _organizationId);
 		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("userId", _userId);
@@ -1334,37 +1391,39 @@ public class OrganizationModelImpl
 
 		columnBitmasks.put("externalReferenceCode", 8L);
 
-		columnBitmasks.put("organizationId", 16L);
+		columnBitmasks.put("batchImportStatus", 16L);
 
-		columnBitmasks.put("companyId", 32L);
+		columnBitmasks.put("organizationId", 32L);
 
-		columnBitmasks.put("userId", 64L);
+		columnBitmasks.put("companyId", 64L);
 
-		columnBitmasks.put("userName", 128L);
+		columnBitmasks.put("userId", 128L);
 
-		columnBitmasks.put("createDate", 256L);
+		columnBitmasks.put("userName", 256L);
 
-		columnBitmasks.put("modifiedDate", 512L);
+		columnBitmasks.put("createDate", 512L);
 
-		columnBitmasks.put("parentOrganizationId", 1024L);
+		columnBitmasks.put("modifiedDate", 1024L);
 
-		columnBitmasks.put("treePath", 2048L);
+		columnBitmasks.put("parentOrganizationId", 2048L);
 
-		columnBitmasks.put("name", 4096L);
+		columnBitmasks.put("treePath", 4096L);
 
-		columnBitmasks.put("type_", 8192L);
+		columnBitmasks.put("name", 8192L);
 
-		columnBitmasks.put("recursable", 16384L);
+		columnBitmasks.put("type_", 16384L);
 
-		columnBitmasks.put("regionId", 32768L);
+		columnBitmasks.put("recursable", 32768L);
 
-		columnBitmasks.put("countryId", 65536L);
+		columnBitmasks.put("regionId", 65536L);
 
-		columnBitmasks.put("statusListTypeId", 131072L);
+		columnBitmasks.put("countryId", 131072L);
 
-		columnBitmasks.put("comments", 262144L);
+		columnBitmasks.put("statusListTypeId", 262144L);
 
-		columnBitmasks.put("logoId", 524288L);
+		columnBitmasks.put("comments", 524288L);
+
+		columnBitmasks.put("logoId", 1048576L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

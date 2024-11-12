@@ -38,6 +38,7 @@ import java.io.Serializable;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -113,6 +114,23 @@ public interface OrganizationLocalService
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public Organization addOrganization(Organization organization);
+
+	/**
+	 * Adds the incomplete organization to the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect OrganizationLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
+	 * @param externalReferenceCode the external reference code of the organization
+	 * @param companyId the primary key of the company
+	 * @param userId the primary key of the user
+	 * @param defaultValues the map containing the name of the field and the value to set on the organization
+	 * @return the organization that was added
+	 */
+	public Organization addOrganization(
+		String externalReferenceCode, long companyId, long userId,
+		Map<String, Object> defaultValues);
 
 	/**
 	 * Adds an organization.
@@ -383,6 +401,14 @@ public interface OrganizationLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Organization> getBatchImportedOrganizations(
+		long companyId, int batchImportStatus, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getBatchImportedOrganizationsCount(
+		long companyId, int batchImportStatus);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public String[] getChildrenTypes(String type);

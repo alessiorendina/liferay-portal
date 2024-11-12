@@ -222,13 +222,15 @@ public class OrganizationPersistenceImpl
 
 				if (orderByComparator != null) {
 					sb = new StringBundler(
-						3 + (orderByComparator.getOrderByFields().length * 2));
+						4 + (orderByComparator.getOrderByFields().length * 2));
 				}
 				else {
-					sb = new StringBundler(3);
+					sb = new StringBundler(4);
 				}
 
 				sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				boolean bindUuid = false;
 
@@ -446,14 +448,16 @@ public class OrganizationPersistenceImpl
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(3);
+			sb = new StringBundler(4);
 		}
 
 		sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+		sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 		boolean bindUuid = false;
 
@@ -949,9 +953,11 @@ public class OrganizationPersistenceImpl
 				finderPath, finderArgs, this);
 
 			if (count == null) {
-				StringBundler sb = new StringBundler(2);
+				StringBundler sb = new StringBundler(3);
 
 				sb.append(_SQL_COUNT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				boolean bindUuid = false;
 
@@ -1197,13 +1203,15 @@ public class OrganizationPersistenceImpl
 
 				if (orderByComparator != null) {
 					sb = new StringBundler(
-						4 + (orderByComparator.getOrderByFields().length * 2));
+						5 + (orderByComparator.getOrderByFields().length * 2));
 				}
 				else {
-					sb = new StringBundler(4);
+					sb = new StringBundler(5);
 				}
 
 				sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				boolean bindUuid = false;
 
@@ -1445,14 +1453,16 @@ public class OrganizationPersistenceImpl
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(4);
+			sb = new StringBundler(5);
 		}
 
 		sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+		sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 		boolean bindUuid = false;
 
@@ -1970,9 +1980,11 @@ public class OrganizationPersistenceImpl
 				finderPath, finderArgs, this);
 
 			if (count == null) {
-				StringBundler sb = new StringBundler(3);
+				StringBundler sb = new StringBundler(4);
 
 				sb.append(_SQL_COUNT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				boolean bindUuid = false;
 
@@ -2221,13 +2233,15 @@ public class OrganizationPersistenceImpl
 
 				if (orderByComparator != null) {
 					sb = new StringBundler(
-						3 + (orderByComparator.getOrderByFields().length * 2));
+						4 + (orderByComparator.getOrderByFields().length * 2));
 				}
 				else {
-					sb = new StringBundler(3);
+					sb = new StringBundler(4);
 				}
 
 				sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
@@ -2435,14 +2449,16 @@ public class OrganizationPersistenceImpl
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(3);
+			sb = new StringBundler(4);
 		}
 
 		sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+		sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 		sb.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
@@ -2900,9 +2916,11 @@ public class OrganizationPersistenceImpl
 				finderPath, finderArgs, this);
 
 			if (count == null) {
-				StringBundler sb = new StringBundler(2);
+				StringBundler sb = new StringBundler(3);
 
 				sb.append(_SQL_COUNT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
@@ -3108,13 +3126,15 @@ public class OrganizationPersistenceImpl
 
 				if (orderByComparator != null) {
 					sb = new StringBundler(
-						3 + (orderByComparator.getOrderByFields().length * 2));
+						4 + (orderByComparator.getOrderByFields().length * 2));
 				}
 				else {
-					sb = new StringBundler(3);
+					sb = new StringBundler(4);
 				}
 
 				sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_COMPANYIDLOCATIONS_COMPANYID_2);
 
@@ -3322,14 +3342,16 @@ public class OrganizationPersistenceImpl
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(3);
+			sb = new StringBundler(4);
 		}
 
 		sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+		sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 		sb.append(_FINDER_COLUMN_COMPANYIDLOCATIONS_COMPANYID_2);
 
@@ -3788,9 +3810,11 @@ public class OrganizationPersistenceImpl
 				finderPath, finderArgs, this);
 
 			if (count == null) {
-				StringBundler sb = new StringBundler(2);
+				StringBundler sb = new StringBundler(3);
 
 				sb.append(_SQL_COUNT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_COMPANYIDLOCATIONS_COMPANYID_2);
 
@@ -4007,13 +4031,15 @@ public class OrganizationPersistenceImpl
 
 				if (orderByComparator != null) {
 					sb = new StringBundler(
-						4 + (orderByComparator.getOrderByFields().length * 2));
+						5 + (orderByComparator.getOrderByFields().length * 2));
 				}
 				else {
-					sb = new StringBundler(4);
+					sb = new StringBundler(5);
 				}
 
 				sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_C_P_COMPANYID_2);
 
@@ -4244,14 +4270,16 @@ public class OrganizationPersistenceImpl
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(4);
+			sb = new StringBundler(5);
 		}
 
 		sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+		sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 		sb.append(_FINDER_COLUMN_C_P_COMPANYID_2);
 
@@ -4739,9 +4767,11 @@ public class OrganizationPersistenceImpl
 				finderPath, finderArgs, this);
 
 			if (count == null) {
-				StringBundler sb = new StringBundler(3);
+				StringBundler sb = new StringBundler(4);
 
 				sb.append(_SQL_COUNT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_C_P_COMPANYID_2);
 
@@ -4957,13 +4987,15 @@ public class OrganizationPersistenceImpl
 
 				if (orderByComparator != null) {
 					sb = new StringBundler(
-						4 + (orderByComparator.getOrderByFields().length * 2));
+						5 + (orderByComparator.getOrderByFields().length * 2));
 				}
 				else {
-					sb = new StringBundler(4);
+					sb = new StringBundler(5);
 				}
 
 				sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_C_LIKET_COMPANYID_2);
 
@@ -5206,14 +5238,16 @@ public class OrganizationPersistenceImpl
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(4);
+			sb = new StringBundler(5);
 		}
 
 		sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+		sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 		sb.append(_FINDER_COLUMN_C_LIKET_COMPANYID_2);
 
@@ -5735,9 +5769,11 @@ public class OrganizationPersistenceImpl
 				finderPath, finderArgs, this);
 
 			if (count == null) {
-				StringBundler sb = new StringBundler(3);
+				StringBundler sb = new StringBundler(4);
 
 				sb.append(_SQL_COUNT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_C_LIKET_COMPANYID_2);
 
@@ -6183,13 +6219,15 @@ public class OrganizationPersistenceImpl
 
 				if (orderByComparator != null) {
 					sb = new StringBundler(
-						4 + (orderByComparator.getOrderByFields().length * 2));
+						5 + (orderByComparator.getOrderByFields().length * 2));
 				}
 				else {
-					sb = new StringBundler(4);
+					sb = new StringBundler(5);
 				}
 
 				sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_C_LIKEN_COMPANYID_2);
 
@@ -6431,14 +6469,16 @@ public class OrganizationPersistenceImpl
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(4);
+			sb = new StringBundler(5);
 		}
 
 		sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+		sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 		sb.append(_FINDER_COLUMN_C_LIKEN_COMPANYID_2);
 
@@ -6957,9 +6997,11 @@ public class OrganizationPersistenceImpl
 				finderPath, finderArgs, this);
 
 			if (count == null) {
-				StringBundler sb = new StringBundler(3);
+				StringBundler sb = new StringBundler(4);
 
 				sb.append(_SQL_COUNT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_C_LIKEN_COMPANYID_2);
 
@@ -7212,13 +7254,15 @@ public class OrganizationPersistenceImpl
 
 				if (orderByComparator != null) {
 					sb = new StringBundler(
-						5 + (orderByComparator.getOrderByFields().length * 2));
+						6 + (orderByComparator.getOrderByFields().length * 2));
 				}
 				else {
-					sb = new StringBundler(5);
+					sb = new StringBundler(6);
 				}
 
 				sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_GTO_C_P_ORGANIZATIONID_2);
 
@@ -7610,9 +7654,11 @@ public class OrganizationPersistenceImpl
 				finderPath, finderArgs, this);
 
 			if (count == null) {
-				StringBundler sb = new StringBundler(4);
+				StringBundler sb = new StringBundler(5);
 
 				sb.append(_SQL_COUNT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_GTO_C_P_ORGANIZATIONID_2);
 
@@ -7856,13 +7902,15 @@ public class OrganizationPersistenceImpl
 
 				if (orderByComparator != null) {
 					sb = new StringBundler(
-						5 + (orderByComparator.getOrderByFields().length * 2));
+						6 + (orderByComparator.getOrderByFields().length * 2));
 				}
 				else {
-					sb = new StringBundler(5);
+					sb = new StringBundler(6);
 				}
 
 				sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_C_P_LIKEN_COMPANYID_2);
 
@@ -8121,14 +8169,16 @@ public class OrganizationPersistenceImpl
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				7 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(5);
+			sb = new StringBundler(6);
 		}
 
 		sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+		sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 		sb.append(_FINDER_COLUMN_C_P_LIKEN_COMPANYID_2);
 
@@ -8679,9 +8729,11 @@ public class OrganizationPersistenceImpl
 				finderPath, finderArgs, this);
 
 			if (count == null) {
-				StringBundler sb = new StringBundler(4);
+				StringBundler sb = new StringBundler(5);
 
 				sb.append(_SQL_COUNT_ORGANIZATION_WHERE);
+
+				sb.append(_SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND);
 
 				sb.append(_FINDER_COLUMN_C_P_LIKEN_COMPANYID_2);
 
@@ -9030,6 +9082,964 @@ public class OrganizationPersistenceImpl
 
 	private static final String _FINDER_COLUMN_ERC_C_COMPANYID_2 =
 		"organization.companyId = ?";
+
+	private FinderPath _finderPathWithPaginationFindByC_BIS;
+	private FinderPath _finderPathWithoutPaginationFindByC_BIS;
+	private FinderPath _finderPathCountByC_BIS;
+
+	/**
+	 * Returns all the organizations where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @return the matching organizations
+	 */
+	@Override
+	public List<Organization> findByC_BIS(
+		long companyId, int batchImportStatus) {
+
+		return findByC_BIS(
+			companyId, batchImportStatus, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the organizations where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param start the lower bound of the range of organizations
+	 * @param end the upper bound of the range of organizations (not inclusive)
+	 * @return the range of matching organizations
+	 */
+	@Override
+	public List<Organization> findByC_BIS(
+		long companyId, int batchImportStatus, int start, int end) {
+
+		return findByC_BIS(companyId, batchImportStatus, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the organizations where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param start the lower bound of the range of organizations
+	 * @param end the upper bound of the range of organizations (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching organizations
+	 */
+	@Override
+	public List<Organization> findByC_BIS(
+		long companyId, int batchImportStatus, int start, int end,
+		OrderByComparator<Organization> orderByComparator) {
+
+		return findByC_BIS(
+			companyId, batchImportStatus, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the organizations where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param start the lower bound of the range of organizations
+	 * @param end the upper bound of the range of organizations (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching organizations
+	 */
+	@Override
+	public List<Organization> findByC_BIS(
+		long companyId, int batchImportStatus, int start, int end,
+		OrderByComparator<Organization> orderByComparator,
+		boolean useFinderCache) {
+
+		try (SafeCloseable safeCloseable =
+				CTPersistenceHelperUtil.setCTCollectionIdWithSafeCloseable(
+					Organization.class)) {
+
+			FinderPath finderPath = null;
+			Object[] finderArgs = null;
+
+			if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+
+				if (useFinderCache) {
+					finderPath = _finderPathWithoutPaginationFindByC_BIS;
+					finderArgs = new Object[] {companyId, batchImportStatus};
+				}
+			}
+			else if (useFinderCache) {
+				finderPath = _finderPathWithPaginationFindByC_BIS;
+				finderArgs = new Object[] {
+					companyId, batchImportStatus, start, end, orderByComparator
+				};
+			}
+
+			List<Organization> list = null;
+
+			if (useFinderCache) {
+				list = (List<Organization>)FinderCacheUtil.getResult(
+					finderPath, finderArgs, this);
+
+				if ((list != null) && !list.isEmpty()) {
+					for (Organization organization : list) {
+						if ((companyId != organization.getCompanyId()) ||
+							(batchImportStatus !=
+								organization.getBatchImportStatus())) {
+
+							list = null;
+
+							break;
+						}
+					}
+				}
+			}
+
+			if (list == null) {
+				StringBundler sb = null;
+
+				if (orderByComparator != null) {
+					sb = new StringBundler(
+						4 + (orderByComparator.getOrderByFields().length * 2));
+				}
+				else {
+					sb = new StringBundler(4);
+				}
+
+				sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+				sb.append(_FINDER_COLUMN_C_BIS_COMPANYID_2);
+
+				sb.append(_FINDER_COLUMN_C_BIS_BATCHIMPORTSTATUS_2);
+
+				if (orderByComparator != null) {
+					appendOrderByComparator(
+						sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				}
+				else {
+					sb.append(OrganizationModelImpl.ORDER_BY_JPQL);
+				}
+
+				String sql = sb.toString();
+
+				Session session = null;
+
+				try {
+					session = openSession();
+
+					Query query = session.createQuery(sql);
+
+					QueryPos queryPos = QueryPos.getInstance(query);
+
+					queryPos.add(companyId);
+
+					queryPos.add(batchImportStatus);
+
+					list = (List<Organization>)QueryUtil.list(
+						query, getDialect(), start, end);
+
+					cacheResult(list);
+
+					if (useFinderCache) {
+						FinderCacheUtil.putResult(finderPath, finderArgs, list);
+					}
+				}
+				catch (Exception exception) {
+					throw processException(exception);
+				}
+				finally {
+					closeSession(session);
+				}
+			}
+
+			return list;
+		}
+	}
+
+	/**
+	 * Returns the first organization in the ordered set where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching organization
+	 * @throws NoSuchOrganizationException if a matching organization could not be found
+	 */
+	@Override
+	public Organization findByC_BIS_First(
+			long companyId, int batchImportStatus,
+			OrderByComparator<Organization> orderByComparator)
+		throws NoSuchOrganizationException {
+
+		Organization organization = fetchByC_BIS_First(
+			companyId, batchImportStatus, orderByComparator);
+
+		if (organization != null) {
+			return organization;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", batchImportStatus=");
+		sb.append(batchImportStatus);
+
+		sb.append("}");
+
+		throw new NoSuchOrganizationException(sb.toString());
+	}
+
+	/**
+	 * Returns the first organization in the ordered set where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching organization, or <code>null</code> if a matching organization could not be found
+	 */
+	@Override
+	public Organization fetchByC_BIS_First(
+		long companyId, int batchImportStatus,
+		OrderByComparator<Organization> orderByComparator) {
+
+		List<Organization> list = findByC_BIS(
+			companyId, batchImportStatus, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last organization in the ordered set where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching organization
+	 * @throws NoSuchOrganizationException if a matching organization could not be found
+	 */
+	@Override
+	public Organization findByC_BIS_Last(
+			long companyId, int batchImportStatus,
+			OrderByComparator<Organization> orderByComparator)
+		throws NoSuchOrganizationException {
+
+		Organization organization = fetchByC_BIS_Last(
+			companyId, batchImportStatus, orderByComparator);
+
+		if (organization != null) {
+			return organization;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", batchImportStatus=");
+		sb.append(batchImportStatus);
+
+		sb.append("}");
+
+		throw new NoSuchOrganizationException(sb.toString());
+	}
+
+	/**
+	 * Returns the last organization in the ordered set where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching organization, or <code>null</code> if a matching organization could not be found
+	 */
+	@Override
+	public Organization fetchByC_BIS_Last(
+		long companyId, int batchImportStatus,
+		OrderByComparator<Organization> orderByComparator) {
+
+		int count = countByC_BIS(companyId, batchImportStatus);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<Organization> list = findByC_BIS(
+			companyId, batchImportStatus, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the organizations before and after the current organization in the ordered set where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param organizationId the primary key of the current organization
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next organization
+	 * @throws NoSuchOrganizationException if a organization with the primary key could not be found
+	 */
+	@Override
+	public Organization[] findByC_BIS_PrevAndNext(
+			long organizationId, long companyId, int batchImportStatus,
+			OrderByComparator<Organization> orderByComparator)
+		throws NoSuchOrganizationException {
+
+		Organization organization = findByPrimaryKey(organizationId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Organization[] array = new OrganizationImpl[3];
+
+			array[0] = getByC_BIS_PrevAndNext(
+				session, organization, companyId, batchImportStatus,
+				orderByComparator, true);
+
+			array[1] = organization;
+
+			array[2] = getByC_BIS_PrevAndNext(
+				session, organization, companyId, batchImportStatus,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Organization getByC_BIS_PrevAndNext(
+		Session session, Organization organization, long companyId,
+		int batchImportStatus,
+		OrderByComparator<Organization> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		sb.append(_SQL_SELECT_ORGANIZATION_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_BIS_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_BIS_BATCHIMPORTSTATUS_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(OrganizationModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(companyId);
+
+		queryPos.add(batchImportStatus);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(organization)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<Organization> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the organizations that the user has permission to view where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @return the matching organizations that the user has permission to view
+	 */
+	@Override
+	public List<Organization> filterFindByC_BIS(
+		long companyId, int batchImportStatus) {
+
+		return filterFindByC_BIS(
+			companyId, batchImportStatus, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the organizations that the user has permission to view where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param start the lower bound of the range of organizations
+	 * @param end the upper bound of the range of organizations (not inclusive)
+	 * @return the range of matching organizations that the user has permission to view
+	 */
+	@Override
+	public List<Organization> filterFindByC_BIS(
+		long companyId, int batchImportStatus, int start, int end) {
+
+		return filterFindByC_BIS(
+			companyId, batchImportStatus, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the organizations that the user has permissions to view where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param start the lower bound of the range of organizations
+	 * @param end the upper bound of the range of organizations (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching organizations that the user has permission to view
+	 */
+	@Override
+	public List<Organization> filterFindByC_BIS(
+		long companyId, int batchImportStatus, int start, int end,
+		OrderByComparator<Organization> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByC_BIS(
+				companyId, batchImportStatus, start, end, orderByComparator);
+		}
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				4 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_ORGANIZATION_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_C_BIS_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_BIS_BATCHIMPORTSTATUS_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(OrganizationModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(OrganizationModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), Organization.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_ALIAS, OrganizationImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_TABLE, OrganizationImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			queryPos.add(batchImportStatus);
+
+			return (List<Organization>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the organizations before and after the current organization in the ordered set of organizations that the user has permission to view where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param organizationId the primary key of the current organization
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next organization
+	 * @throws NoSuchOrganizationException if a organization with the primary key could not be found
+	 */
+	@Override
+	public Organization[] filterFindByC_BIS_PrevAndNext(
+			long organizationId, long companyId, int batchImportStatus,
+			OrderByComparator<Organization> orderByComparator)
+		throws NoSuchOrganizationException {
+
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByC_BIS_PrevAndNext(
+				organizationId, companyId, batchImportStatus,
+				orderByComparator);
+		}
+
+		Organization organization = findByPrimaryKey(organizationId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Organization[] array = new OrganizationImpl[3];
+
+			array[0] = filterGetByC_BIS_PrevAndNext(
+				session, organization, companyId, batchImportStatus,
+				orderByComparator, true);
+
+			array[1] = organization;
+
+			array[2] = filterGetByC_BIS_PrevAndNext(
+				session, organization, companyId, batchImportStatus,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Organization filterGetByC_BIS_PrevAndNext(
+		Session session, Organization organization, long companyId,
+		int batchImportStatus,
+		OrderByComparator<Organization> orderByComparator, boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_ORGANIZATION_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_C_BIS_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_BIS_BATCHIMPORTSTATUS_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(OrganizationModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(OrganizationModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), Organization.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, OrganizationImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, OrganizationImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		queryPos.add(companyId);
+
+		queryPos.add(batchImportStatus);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(organization)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<Organization> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the organizations where companyId = &#63; and batchImportStatus = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 */
+	@Override
+	public void removeByC_BIS(long companyId, int batchImportStatus) {
+		for (Organization organization :
+				findByC_BIS(
+					companyId, batchImportStatus, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)) {
+
+			remove(organization);
+		}
+	}
+
+	/**
+	 * Returns the number of organizations where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @return the number of matching organizations
+	 */
+	@Override
+	public int countByC_BIS(long companyId, int batchImportStatus) {
+		try (SafeCloseable safeCloseable =
+				CTPersistenceHelperUtil.setCTCollectionIdWithSafeCloseable(
+					Organization.class)) {
+
+			FinderPath finderPath = _finderPathCountByC_BIS;
+
+			Object[] finderArgs = new Object[] {companyId, batchImportStatus};
+
+			Long count = (Long)FinderCacheUtil.getResult(
+				finderPath, finderArgs, this);
+
+			if (count == null) {
+				StringBundler sb = new StringBundler(3);
+
+				sb.append(_SQL_COUNT_ORGANIZATION_WHERE);
+
+				sb.append(_FINDER_COLUMN_C_BIS_COMPANYID_2);
+
+				sb.append(_FINDER_COLUMN_C_BIS_BATCHIMPORTSTATUS_2);
+
+				String sql = sb.toString();
+
+				Session session = null;
+
+				try {
+					session = openSession();
+
+					Query query = session.createQuery(sql);
+
+					QueryPos queryPos = QueryPos.getInstance(query);
+
+					queryPos.add(companyId);
+
+					queryPos.add(batchImportStatus);
+
+					count = (Long)query.uniqueResult();
+
+					FinderCacheUtil.putResult(finderPath, finderArgs, count);
+				}
+				catch (Exception exception) {
+					throw processException(exception);
+				}
+				finally {
+					closeSession(session);
+				}
+			}
+
+			return count.intValue();
+		}
+	}
+
+	/**
+	 * Returns the number of organizations that the user has permission to view where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @return the number of matching organizations that the user has permission to view
+	 */
+	@Override
+	public int filterCountByC_BIS(long companyId, int batchImportStatus) {
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return countByC_BIS(companyId, batchImportStatus);
+		}
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append(_FILTER_SQL_COUNT_ORGANIZATION_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_BIS_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_BIS_BATCHIMPORTSTATUS_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), Organization.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			queryPos.add(batchImportStatus);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_C_BIS_COMPANYID_2 =
+		"organization.companyId = ? AND ";
+
+	private static final String _FINDER_COLUMN_C_BIS_BATCHIMPORTSTATUS_2 =
+		"organization.batchImportStatus = ?";
 
 	public OrganizationPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
@@ -9383,6 +10393,10 @@ public class OrganizationPersistenceImpl
 								" and company " + organization.getCompanyId());
 				}
 			}
+		}
+
+		if (!isNew) {
+			organization.setBatchImportStatus(0);
 		}
 
 		ServiceContext serviceContext =
@@ -10567,6 +11581,7 @@ public class OrganizationPersistenceImpl
 		ctControlColumnNames.add("ctCollectionId");
 		ctStrictColumnNames.add("uuid_");
 		ctStrictColumnNames.add("externalReferenceCode");
+		ctStrictColumnNames.add("batchImportStatus");
 		ctStrictColumnNames.add("companyId");
 		ctStrictColumnNames.add("userId");
 		ctStrictColumnNames.add("userName");
@@ -10800,6 +11815,25 @@ public class OrganizationPersistenceImpl
 			new String[] {String.class.getName(), Long.class.getName()},
 			new String[] {"externalReferenceCode", "companyId"}, true);
 
+		_finderPathWithPaginationFindByC_BIS = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_BIS",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {"companyId", "batchImportStatus"}, true);
+
+		_finderPathWithoutPaginationFindByC_BIS = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_BIS",
+			new String[] {Long.class.getName(), Integer.class.getName()},
+			new String[] {"companyId", "batchImportStatus"}, true);
+
+		_finderPathCountByC_BIS = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_BIS",
+			new String[] {Long.class.getName(), Integer.class.getName()},
+			new String[] {"companyId", "batchImportStatus"}, false);
+
 		OrganizationUtil.setPersistence(this);
 	}
 
@@ -10823,6 +11857,9 @@ public class OrganizationPersistenceImpl
 
 	protected TableMapper<Organization, com.liferay.portal.kernel.model.User>
 		organizationToUserTableMapper;
+
+	private static final String _SQL_BATCH_IMPORT_STATUS_WHERE_CLAUSE_AND =
+		"batchImportStatus = 0 AND ";
 
 	private static final String _SQL_SELECT_ORGANIZATION =
 		"SELECT organization FROM Organization organization";

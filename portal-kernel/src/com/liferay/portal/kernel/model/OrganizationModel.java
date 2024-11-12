@@ -25,9 +25,9 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface OrganizationModel
-	extends BaseModel<Organization>, CTModel<Organization>,
-			ExternalReferenceCodeModel, MVCCModel, ShardedModel,
-			StagedAuditedModel {
+	extends BaseModel<Organization>, BatchImportStatusModel,
+			CTModel<Organization>, ExternalReferenceCodeModel, MVCCModel,
+			ShardedModel, StagedAuditedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -116,6 +116,22 @@ public interface OrganizationModel
 	 */
 	@Override
 	public void setExternalReferenceCode(String externalReferenceCode);
+
+	/**
+	 * Returns the batch import status of this organization.
+	 *
+	 * @return the batch import status of this organization
+	 */
+	@Override
+	public int getBatchImportStatus();
+
+	/**
+	 * Sets the batch import status of this organization.
+	 *
+	 * @param batchImportStatus the batch import status of this organization
+	 */
+	@Override
+	public void setBatchImportStatus(int batchImportStatus);
 
 	/**
 	 * Returns the organization ID of this organization.
@@ -377,6 +393,11 @@ public interface OrganizationModel
 	 * @param logoId the logo ID of this organization
 	 */
 	public void setLogoId(long logoId);
+
+	@Override
+	public default boolean isReindexAllowed() {
+		return false;
+	}
 
 	@Override
 	public Organization cloneWithOriginalValues();

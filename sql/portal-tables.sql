@@ -874,6 +874,7 @@ create table Organization_ (
 	ctCollectionId LONG default 0 not null,
 	uuid_ VARCHAR(75) null,
 	externalReferenceCode VARCHAR(75) null,
+	batchImportStatus INTEGER,
 	organizationId LONG not null,
 	companyId LONG,
 	userId LONG,

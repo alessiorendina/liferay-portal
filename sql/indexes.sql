@@ -262,6 +262,7 @@ create index IX_66D70879 on MembershipRequest (userId);
 
 create index IX_6AF0D434 on OrgLabor (organizationId);
 
+create index IX_B736974B on Organization_ (companyId, batchImportStatus);
 create unique index IX_87E47DA9 on Organization_ (companyId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
 create unique index IX_F1E40A53 on Organization_ (companyId, name[$COLUMN_LENGTH:100$], ctCollectionId);
 create index IX_4BCBAB21 on Organization_ (companyId, name[$COLUMN_LENGTH:100$], parentOrganizationId);

@@ -2637,6 +2637,282 @@ public class OrganizationUtil {
 	}
 
 	/**
+	 * Returns all the organizations where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @return the matching organizations
+	 */
+	public static List<Organization> findByC_BIS(
+		long companyId, int batchImportStatus) {
+
+		return getPersistence().findByC_BIS(companyId, batchImportStatus);
+	}
+
+	/**
+	 * Returns a range of all the organizations where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param start the lower bound of the range of organizations
+	 * @param end the upper bound of the range of organizations (not inclusive)
+	 * @return the range of matching organizations
+	 */
+	public static List<Organization> findByC_BIS(
+		long companyId, int batchImportStatus, int start, int end) {
+
+		return getPersistence().findByC_BIS(
+			companyId, batchImportStatus, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the organizations where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param start the lower bound of the range of organizations
+	 * @param end the upper bound of the range of organizations (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching organizations
+	 */
+	public static List<Organization> findByC_BIS(
+		long companyId, int batchImportStatus, int start, int end,
+		OrderByComparator<Organization> orderByComparator) {
+
+		return getPersistence().findByC_BIS(
+			companyId, batchImportStatus, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the organizations where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param start the lower bound of the range of organizations
+	 * @param end the upper bound of the range of organizations (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching organizations
+	 */
+	public static List<Organization> findByC_BIS(
+		long companyId, int batchImportStatus, int start, int end,
+		OrderByComparator<Organization> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByC_BIS(
+			companyId, batchImportStatus, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Returns the first organization in the ordered set where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching organization
+	 * @throws NoSuchOrganizationException if a matching organization could not be found
+	 */
+	public static Organization findByC_BIS_First(
+			long companyId, int batchImportStatus,
+			OrderByComparator<Organization> orderByComparator)
+		throws com.liferay.portal.kernel.exception.NoSuchOrganizationException {
+
+		return getPersistence().findByC_BIS_First(
+			companyId, batchImportStatus, orderByComparator);
+	}
+
+	/**
+	 * Returns the first organization in the ordered set where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching organization, or <code>null</code> if a matching organization could not be found
+	 */
+	public static Organization fetchByC_BIS_First(
+		long companyId, int batchImportStatus,
+		OrderByComparator<Organization> orderByComparator) {
+
+		return getPersistence().fetchByC_BIS_First(
+			companyId, batchImportStatus, orderByComparator);
+	}
+
+	/**
+	 * Returns the last organization in the ordered set where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching organization
+	 * @throws NoSuchOrganizationException if a matching organization could not be found
+	 */
+	public static Organization findByC_BIS_Last(
+			long companyId, int batchImportStatus,
+			OrderByComparator<Organization> orderByComparator)
+		throws com.liferay.portal.kernel.exception.NoSuchOrganizationException {
+
+		return getPersistence().findByC_BIS_Last(
+			companyId, batchImportStatus, orderByComparator);
+	}
+
+	/**
+	 * Returns the last organization in the ordered set where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching organization, or <code>null</code> if a matching organization could not be found
+	 */
+	public static Organization fetchByC_BIS_Last(
+		long companyId, int batchImportStatus,
+		OrderByComparator<Organization> orderByComparator) {
+
+		return getPersistence().fetchByC_BIS_Last(
+			companyId, batchImportStatus, orderByComparator);
+	}
+
+	/**
+	 * Returns the organizations before and after the current organization in the ordered set where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param organizationId the primary key of the current organization
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next organization
+	 * @throws NoSuchOrganizationException if a organization with the primary key could not be found
+	 */
+	public static Organization[] findByC_BIS_PrevAndNext(
+			long organizationId, long companyId, int batchImportStatus,
+			OrderByComparator<Organization> orderByComparator)
+		throws com.liferay.portal.kernel.exception.NoSuchOrganizationException {
+
+		return getPersistence().findByC_BIS_PrevAndNext(
+			organizationId, companyId, batchImportStatus, orderByComparator);
+	}
+
+	/**
+	 * Returns all the organizations that the user has permission to view where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @return the matching organizations that the user has permission to view
+	 */
+	public static List<Organization> filterFindByC_BIS(
+		long companyId, int batchImportStatus) {
+
+		return getPersistence().filterFindByC_BIS(companyId, batchImportStatus);
+	}
+
+	/**
+	 * Returns a range of all the organizations that the user has permission to view where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param start the lower bound of the range of organizations
+	 * @param end the upper bound of the range of organizations (not inclusive)
+	 * @return the range of matching organizations that the user has permission to view
+	 */
+	public static List<Organization> filterFindByC_BIS(
+		long companyId, int batchImportStatus, int start, int end) {
+
+		return getPersistence().filterFindByC_BIS(
+			companyId, batchImportStatus, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the organizations that the user has permissions to view where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param start the lower bound of the range of organizations
+	 * @param end the upper bound of the range of organizations (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching organizations that the user has permission to view
+	 */
+	public static List<Organization> filterFindByC_BIS(
+		long companyId, int batchImportStatus, int start, int end,
+		OrderByComparator<Organization> orderByComparator) {
+
+		return getPersistence().filterFindByC_BIS(
+			companyId, batchImportStatus, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns the organizations before and after the current organization in the ordered set of organizations that the user has permission to view where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param organizationId the primary key of the current organization
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next organization
+	 * @throws NoSuchOrganizationException if a organization with the primary key could not be found
+	 */
+	public static Organization[] filterFindByC_BIS_PrevAndNext(
+			long organizationId, long companyId, int batchImportStatus,
+			OrderByComparator<Organization> orderByComparator)
+		throws com.liferay.portal.kernel.exception.NoSuchOrganizationException {
+
+		return getPersistence().filterFindByC_BIS_PrevAndNext(
+			organizationId, companyId, batchImportStatus, orderByComparator);
+	}
+
+	/**
+	 * Removes all the organizations where companyId = &#63; and batchImportStatus = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 */
+	public static void removeByC_BIS(long companyId, int batchImportStatus) {
+		getPersistence().removeByC_BIS(companyId, batchImportStatus);
+	}
+
+	/**
+	 * Returns the number of organizations where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @return the number of matching organizations
+	 */
+	public static int countByC_BIS(long companyId, int batchImportStatus) {
+		return getPersistence().countByC_BIS(companyId, batchImportStatus);
+	}
+
+	/**
+	 * Returns the number of organizations that the user has permission to view where companyId = &#63; and batchImportStatus = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param batchImportStatus the batch import status
+	 * @return the number of matching organizations that the user has permission to view
+	 */
+	public static int filterCountByC_BIS(
+		long companyId, int batchImportStatus) {
+
+		return getPersistence().filterCountByC_BIS(
+			companyId, batchImportStatus);
+	}
+
+	/**
 	 * Caches the organization in the entity cache if it is enabled.
 	 *
 	 * @param organization the organization

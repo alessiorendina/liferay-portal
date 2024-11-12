@@ -68,7 +68,7 @@ public class OrganizationCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(41);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -78,6 +78,8 @@ public class OrganizationCacheModel
 		sb.append(uuid);
 		sb.append(", externalReferenceCode=");
 		sb.append(externalReferenceCode);
+		sb.append(", batchImportStatus=");
+		sb.append(batchImportStatus);
 		sb.append(", organizationId=");
 		sb.append(organizationId);
 		sb.append(", companyId=");
@@ -136,6 +138,7 @@ public class OrganizationCacheModel
 			organizationImpl.setExternalReferenceCode(externalReferenceCode);
 		}
 
+		organizationImpl.setBatchImportStatus(batchImportStatus);
 		organizationImpl.setOrganizationId(organizationId);
 		organizationImpl.setCompanyId(companyId);
 		organizationImpl.setUserId(userId);
@@ -211,6 +214,8 @@ public class OrganizationCacheModel
 		uuid = objectInput.readUTF();
 		externalReferenceCode = objectInput.readUTF();
 
+		batchImportStatus = objectInput.readInt();
+
 		organizationId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
@@ -256,6 +261,8 @@ public class OrganizationCacheModel
 		else {
 			objectOutput.writeUTF(externalReferenceCode);
 		}
+
+		objectOutput.writeInt(batchImportStatus);
 
 		objectOutput.writeLong(organizationId);
 
@@ -318,6 +325,7 @@ public class OrganizationCacheModel
 	public long ctCollectionId;
 	public String uuid;
 	public String externalReferenceCode;
+	public int batchImportStatus;
 	public long organizationId;
 	public long companyId;
 	public long userId;

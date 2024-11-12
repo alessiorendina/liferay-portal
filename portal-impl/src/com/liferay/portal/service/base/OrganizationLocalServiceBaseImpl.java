@@ -43,12 +43,17 @@ import com.liferay.portal.kernel.service.persistence.OrganizationPersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.Serializable;
 
+import java.lang.reflect.Method;
+
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -87,6 +92,59 @@ public abstract class OrganizationLocalServiceBaseImpl
 	@Override
 	public Organization addOrganization(Organization organization) {
 		organization.setNew(true);
+
+		return organizationPersistence.update(organization);
+	}
+
+	/**
+	 * Adds the incomplete organization to the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect OrganizationLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
+	 * @param externalReferenceCode the external reference code of the organization
+	 * @param companyId the primary key of the company
+	 * @param userId the primary key of the user
+	 * @param defaultValues the map containing the name of the field and the value to set on the organization
+	 * @return the organization that was added
+	 */
+	@Override
+	public Organization addOrganization(
+		String externalReferenceCode, long companyId, long userId,
+		Map<String, Object> defaultValues) {
+
+		Organization organization = organizationPersistence.create(
+			counterLocalService.increment());
+
+		organization.setExternalReferenceCode(externalReferenceCode);
+		organization.setCompanyId(companyId);
+		organization.setUserId(userId);
+
+		organization.setBatchImportStatus(1);
+
+		if (MapUtil.isNotEmpty(defaultValues)) {
+			for (Map.Entry<String, Object> entry : defaultValues.entrySet()) {
+				try {
+					Object entryValue = entry.getValue();
+
+					if (entryValue == null) {
+						continue;
+					}
+
+					Method method = Organization.class.getMethod(
+						"set" + StringUtil.upperCaseFirstLetter(entry.getKey()),
+						entryValue.getClass());
+
+					method.invoke(organization, entryValue);
+				}
+				catch (Exception exception) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(exception);
+					}
+				}
+			}
+		}
 
 		return organizationPersistence.update(organization);
 	}
@@ -275,6 +333,22 @@ public abstract class OrganizationLocalServiceBaseImpl
 
 		return organizationPersistence.findByERC_C(
 			externalReferenceCode, companyId);
+	}
+
+	@Override
+	public List<Organization> getBatchImportedOrganizations(
+		long companyId, int batchImportStatus, int start, int end) {
+
+		return organizationPersistence.findByC_BIS(
+			companyId, batchImportStatus, start, end);
+	}
+
+	@Override
+	public int getBatchImportedOrganizationsCount(
+		long companyId, int batchImportStatus) {
+
+		return organizationPersistence.countByC_BIS(
+			companyId, batchImportStatus);
 	}
 
 	/**
