@@ -250,6 +250,33 @@ public class OrganizationLocalServiceImpl
 			listType.getListTypeId(), StringPool.BLANK, site, null);
 	}
 
+	@Override
+	public Organization addOrganization(
+		String externalReferenceCode, long companyId, long userId,
+		Map<String, Object> defaultValues) {
+
+		Organization organization = super.addOrganization(
+			externalReferenceCode, companyId, userId, defaultValues);
+
+		try {
+			_groupLocalService.addGroup(
+				userId, GroupConstants.DEFAULT_PARENT_GROUP_ID,
+				Organization.class.getName(), organization.getOrganizationId(),
+				GroupConstants.DEFAULT_LIVE_GROUP_ID,
+				getLocalizationMap(organization.getExternalReferenceCode()),
+				null, GroupConstants.TYPE_SITE_PRIVATE, false,
+				GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false,
+				true, null);
+
+			addOrganizationResources(userId, organization);
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
+
+		return organization;
+	}
+
 	/**
 	 * Adds an organization.
 	 *
