@@ -1210,7 +1210,7 @@
 			<finder-column name="statusId" />
 		</finder>
 	</entity>
-	<entity change-tracking-enabled="true" external-reference-code="company" local-service="true" name="Organization" remote-service="true" uuid="true">
+	<entity change-tracking-enabled="true" external-reference-code="company" lazy-reference="strict" local-service="true" name="Organization" remote-service="true" uuid="true">
 
 		<!-- PK fields -->
 
