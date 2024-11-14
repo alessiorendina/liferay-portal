@@ -29,6 +29,17 @@ public interface CPCategoryContentPortletInstanceConfiguration {
 	)
 	public String assetCategoryExternalReferenceCode();
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #assetCategoryExternalReferenceCode()}
+	 */
+	@Deprecated
+	@Meta.AD(
+		deflt = "", name = "asset-category-id",
+		required = false
+	)
+	public String assetCategoryId();
+
 	@Meta.AD(name = "display-style", required = false)
 	public String displayStyle();
 
@@ -37,6 +48,23 @@ public interface CPCategoryContentPortletInstanceConfiguration {
 		required = false
 	)
 	public String displayStyleGroupExternalReferenceCode();
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #displayStyleGroupExternalReferenceCode()}
+	 */
+	@Deprecated
+	@Meta.AD(
+		deflt = "0", description = "display-style-group-id-description",
+		name = "display-style-group-id", required = false
+	)
+	public long displayStyleGroupId();
+
+	@Meta.AD(
+		description = "display-style-group-key-description",
+		name = "display-style-group-key", required = false
+	)
+	public String displayStyleGroupKey();
 
 	@Meta.AD(deflt = "false", name = "use-asset-category", required = false)
 	public boolean useAssetCategory();

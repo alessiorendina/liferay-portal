@@ -539,9 +539,11 @@ public class CommerceProductServiceUpgradeStepRegistrator
 						_assetCategoryLocalService.fetchAssetCategory(
 							assetCategoryId);
 
-					portletPreferences.setValue(
-						"assetCategoryExternalReferenceCode",
-						assetCategory.getExternalReferenceCode());
+					if (assetCategory != null) {
+						portletPreferences.setValue(
+							"assetCategoryExternalReferenceCode",
+							assetCategory.getExternalReferenceCode());
+					}
 				}
 
 			});
