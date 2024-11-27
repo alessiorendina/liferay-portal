@@ -22,6 +22,7 @@ import com.liferay.headless.admin.user.client.dto.v1_0.Organization;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -376,6 +377,60 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		_testPostOrganizationWithCustomFields();
 		_testPostOrganizationWithNameOverMaximumLength();
 		_testPostOrganizationWithImageExternalReferenceCode();
+	}
+
+	@Test
+	public void testPostOrganizationBatch() throws Exception {
+		organizationResource.postOrganizationBatch(
+			null,
+			_jsonFactory.createJSONObject(
+			).put(
+				"items",
+				_jsonFactory.createJSONArray(
+				).put(
+					_jsonFactory.createJSONObject(
+					).put(
+						"externalReferenceCode", "childOrganizationERC"
+					).put(
+						"name", "childOrganizationName"
+					).put(
+						"parentOrganization",
+						_jsonFactory.createJSONObject(
+						).put(
+							"externalReferenceCode", "parentOrganizationERC"
+						)
+					)
+				)
+			));
+
+		com.liferay.portal.kernel.model.Organization organization = null;
+
+		for (int i = 0; i < 10; i++) {
+			if (organization != null) {
+				break;
+			}
+
+			Thread.sleep(1000);
+
+			organization =
+				_organizationLocalService.
+					fetchOrganizationByExternalReferenceCode(
+						"parentOrganizationERC", testCompany.getCompanyId());
+		}
+
+		Assert.assertNotNull(organization);
+		Assert.assertTrue(organization.getBatchImportStatus() == 1);
+
+		long parentOrganizationId = organization.getOrganizationId();
+
+		organization =
+			_organizationLocalService.fetchOrganizationByExternalReferenceCode(
+				"childOrganizationERC", testCompany.getCompanyId());
+
+		Assert.assertNotNull(organization);
+		Assert.assertEquals(
+			parentOrganizationId, organization.getParentOrganizationId());
+		Assert.assertTrue(organization.getBatchImportStatus() == 0);
 	}
 
 	@Override
@@ -989,6 +1044,9 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 
 	@Inject
 	private ExpandoTableLocalService _expandoTableLocalService;
+
+	@Inject
+	private JSONFactory _jsonFactory;
 
 	@Inject
 	private OrganizationLocalService _organizationLocalService;
