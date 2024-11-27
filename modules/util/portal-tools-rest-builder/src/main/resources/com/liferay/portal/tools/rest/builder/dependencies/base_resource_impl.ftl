@@ -58,6 +58,7 @@ import com.liferay.portal.odata.sort.SortParser;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineThreadLocal;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
@@ -455,9 +456,12 @@ public abstract class Base${schemaName}ResourceImpl
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		public void create(Collection<${javaDataType}> ${schemaVarNames}, Map<String, Serializable> parameters) throws Exception {
 			<#if createStrategies?has_content>
-				UnsafeFunction<${javaDataType}, ${javaDataType}, Exception> ${schemaVarName}UnsafeFunction = null;
+				try {
+					VulcanBatchEngineThreadLocal.setLazyLoad(true);
 
-				String createStrategy = (String)parameters.getOrDefault("createStrategy", "INSERT");
+					UnsafeFunction<${javaDataType}, ${javaDataType}, Exception> ${schemaVarName}UnsafeFunction = null;
+
+					String createStrategy = (String)parameters.getOrDefault("createStrategy", "INSERT");
 			</#if>
 
 			<#if createStrategies?seq_contains("INSERT")>
@@ -840,20 +844,24 @@ public abstract class Base${schemaName}ResourceImpl
 			</#if>
 
 			<#if createStrategies?has_content>
-				if (${schemaVarName}UnsafeFunction == null) {
-					throw new NotSupportedException("Create strategy \"" + createStrategy + "\" is not supported for ${schemaVarName?cap_first}");
-				}
-
-				if (contextBatchUnsafeBiConsumer != null) {
-					contextBatchUnsafeBiConsumer.accept(${schemaVarNames}, ${schemaVarName}UnsafeFunction);
-				}
-				else if (contextBatchUnsafeConsumer != null) {
-					contextBatchUnsafeConsumer.accept(${schemaVarNames}, ${schemaVarName}UnsafeFunction::apply);
-				}
-				else {
-					for (${javaDataType} ${schemaVarName} : ${schemaVarNames}) {
-						${schemaVarName}UnsafeFunction.apply(${schemaVarName});
+					if (${schemaVarName}UnsafeFunction == null) {
+						throw new NotSupportedException("Create strategy \"" + createStrategy + "\" is not supported for ${schemaVarName?cap_first}");
 					}
+
+					if (contextBatchUnsafeBiConsumer != null) {
+						contextBatchUnsafeBiConsumer.accept(${schemaVarNames}, ${schemaVarName}UnsafeFunction);
+					}
+					else if (contextBatchUnsafeConsumer != null) {
+						contextBatchUnsafeConsumer.accept(${schemaVarNames}, ${schemaVarName}UnsafeFunction::apply);
+					}
+					else {
+						for (${javaDataType} ${schemaVarName} : ${schemaVarNames}) {
+							${schemaVarName}UnsafeFunction.apply(${schemaVarName});
+						}
+					}
+				}
+				finally {
+					VulcanBatchEngineThreadLocal.setLazyLoad(false);
 				}
 			<#else>
 				throw new UnsupportedOperationException("This method needs to be implemented");
