@@ -291,6 +291,17 @@ public interface ${entity.name}Model extends ${entity.getModelBaseInterfaceNames
 		</#if>
 	</#list>
 
+	<#if entity.hasLazyReference()>
+		@Override
+		public default boolean isReindexAllowed() {
+			<#if entity.isStrictLazyReference()>
+				return false;
+			<#else>
+				return true;
+			</#if>
+		}
+	</#if>
+
 	<#if entity.localizedEntity??>
 		public String[] getAvailableLanguageIds();
 

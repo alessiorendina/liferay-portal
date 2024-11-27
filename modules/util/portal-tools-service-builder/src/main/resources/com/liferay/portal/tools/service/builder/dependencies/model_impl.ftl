@@ -697,6 +697,19 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 		}
 	</#if>
 
+	<#if entity.hasLazyReference()>
+		@Override
+		public boolean isReindexAllowed() {
+			if (${entity.name}Model.super.isReindexAllowed() ||
+				(getBatchImportStatus() == 0)) {
+
+				return true;
+			}
+
+			return false;
+		}
+	</#if>
+
 	<#if entity.localizedEntity??>
 		<#assign localizedEntity = entity.localizedEntity />
 
