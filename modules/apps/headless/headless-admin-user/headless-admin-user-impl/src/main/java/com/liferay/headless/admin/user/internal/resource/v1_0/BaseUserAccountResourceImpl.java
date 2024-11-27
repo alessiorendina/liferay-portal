@@ -33,6 +33,7 @@ import com.liferay.portal.odata.sort.SortParser;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineThreadLocal;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
@@ -2266,85 +2267,97 @@ public abstract class BaseUserAccountResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeFunction<UserAccount, UserAccount, Exception>
-			userAccountUnsafeFunction = null;
+		try {
+			VulcanBatchEngineThreadLocal.setLazyLoad(true);
 
-		String createStrategy = (String)parameters.getOrDefault(
-			"createStrategy", "INSERT");
+			UnsafeFunction<UserAccount, UserAccount, Exception>
+				userAccountUnsafeFunction = null;
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			userAccountUnsafeFunction = userAccount -> postUserAccount(
-				userAccount);
+			String createStrategy = (String)parameters.getOrDefault(
+				"createStrategy", "INSERT");
 
-			if (parameters.containsKey("accountId")) {
-				userAccountUnsafeFunction =
-					userAccount -> postAccountUserAccount(
-						_parseLong((String)parameters.get("accountId")),
-						userAccount);
-			}
-		}
+			if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+				userAccountUnsafeFunction = userAccount -> postUserAccount(
+					userAccount);
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
-			String updateStrategy = (String)parameters.getOrDefault(
-				"updateStrategy", "UPDATE");
-
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
-				userAccountUnsafeFunction =
-					userAccount -> putUserAccountByExternalReferenceCode(
-						userAccount.getExternalReferenceCode(), userAccount);
-			}
-
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
-				userAccountUnsafeFunction = userAccount -> {
-					UserAccount persistedUserAccount = null;
-
-					try {
-						UserAccount getUserAccount =
-							getUserAccountByExternalReferenceCode(
-								userAccount.getExternalReferenceCode());
-
-						persistedUserAccount = patchUserAccount(
-							getUserAccount.getId() != null ?
-								getUserAccount.getId() :
-									_parseLong(
-										(String)parameters.get(
-											"userAccountId")),
+				if (parameters.containsKey("accountId")) {
+					userAccountUnsafeFunction =
+						userAccount -> postAccountUserAccount(
+							_parseLong((String)parameters.get("accountId")),
 							userAccount);
-					}
-					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("accountId")) {
-							persistedUserAccount = postAccountUserAccount(
-								_parseLong((String)parameters.get("accountId")),
+				}
+			}
+
+			if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+				String updateStrategy = (String)parameters.getOrDefault(
+					"updateStrategy", "UPDATE");
+
+				if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+					userAccountUnsafeFunction =
+						userAccount -> putUserAccountByExternalReferenceCode(
+							userAccount.getExternalReferenceCode(),
+							userAccount);
+				}
+
+				if (StringUtil.equalsIgnoreCase(
+						updateStrategy, "PARTIAL_UPDATE")) {
+
+					userAccountUnsafeFunction = userAccount -> {
+						UserAccount persistedUserAccount = null;
+
+						try {
+							UserAccount getUserAccount =
+								getUserAccountByExternalReferenceCode(
+									userAccount.getExternalReferenceCode());
+
+							persistedUserAccount = patchUserAccount(
+								getUserAccount.getId() != null ?
+									getUserAccount.getId() :
+										_parseLong(
+											(String)parameters.get(
+												"userAccountId")),
 								userAccount);
 						}
-						else {
-							persistedUserAccount = postUserAccount(userAccount);
+						catch (NoSuchModelException noSuchModelException) {
+							if (parameters.containsKey("accountId")) {
+								persistedUserAccount = postAccountUserAccount(
+									_parseLong(
+										(String)parameters.get("accountId")),
+									userAccount);
+							}
+							else {
+								persistedUserAccount = postUserAccount(
+									userAccount);
+							}
 						}
-					}
 
-					return persistedUserAccount;
-				};
+						return persistedUserAccount;
+					};
+				}
+			}
+
+			if (userAccountUnsafeFunction == null) {
+				throw new NotSupportedException(
+					"Create strategy \"" + createStrategy +
+						"\" is not supported for UserAccount");
+			}
+
+			if (contextBatchUnsafeBiConsumer != null) {
+				contextBatchUnsafeBiConsumer.accept(
+					userAccounts, userAccountUnsafeFunction);
+			}
+			else if (contextBatchUnsafeConsumer != null) {
+				contextBatchUnsafeConsumer.accept(
+					userAccounts, userAccountUnsafeFunction::apply);
+			}
+			else {
+				for (UserAccount userAccount : userAccounts) {
+					userAccountUnsafeFunction.apply(userAccount);
+				}
 			}
 		}
-
-		if (userAccountUnsafeFunction == null) {
-			throw new NotSupportedException(
-				"Create strategy \"" + createStrategy +
-					"\" is not supported for UserAccount");
-		}
-
-		if (contextBatchUnsafeBiConsumer != null) {
-			contextBatchUnsafeBiConsumer.accept(
-				userAccounts, userAccountUnsafeFunction);
-		}
-		else if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(
-				userAccounts, userAccountUnsafeFunction::apply);
-		}
-		else {
-			for (UserAccount userAccount : userAccounts) {
-				userAccountUnsafeFunction.apply(userAccount);
-			}
+		finally {
+			VulcanBatchEngineThreadLocal.setLazyLoad(false);
 		}
 	}
 

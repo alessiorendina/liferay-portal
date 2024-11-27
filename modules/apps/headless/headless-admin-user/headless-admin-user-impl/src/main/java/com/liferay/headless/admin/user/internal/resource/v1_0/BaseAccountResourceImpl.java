@@ -33,6 +33,7 @@ import com.liferay.portal.odata.sort.SortParser;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineThreadLocal;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -1606,66 +1607,79 @@ public abstract class BaseAccountResourceImpl
 			Collection<Account> accounts, Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeFunction<Account, Account, Exception> accountUnsafeFunction =
-			null;
+		try {
+			VulcanBatchEngineThreadLocal.setLazyLoad(true);
 
-		String createStrategy = (String)parameters.getOrDefault(
-			"createStrategy", "INSERT");
+			UnsafeFunction<Account, Account, Exception> accountUnsafeFunction =
+				null;
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			accountUnsafeFunction = account -> postAccount(account);
-		}
+			String createStrategy = (String)parameters.getOrDefault(
+				"createStrategy", "INSERT");
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
-			String updateStrategy = (String)parameters.getOrDefault(
-				"updateStrategy", "UPDATE");
-
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
-				accountUnsafeFunction =
-					account -> putAccountByExternalReferenceCode(
-						account.getExternalReferenceCode(), account);
+			if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+				accountUnsafeFunction = account -> postAccount(account);
 			}
 
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
-				accountUnsafeFunction = account -> {
-					Account persistedAccount = null;
+			if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+				String updateStrategy = (String)parameters.getOrDefault(
+					"updateStrategy", "UPDATE");
 
-					try {
-						Account getAccount = getAccountByExternalReferenceCode(
-							account.getExternalReferenceCode());
+				if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+					accountUnsafeFunction =
+						account -> putAccountByExternalReferenceCode(
+							account.getExternalReferenceCode(), account);
+				}
 
-						persistedAccount = patchAccount(
-							getAccount.getId() != null ? getAccount.getId() :
-								_parseLong((String)parameters.get("accountId")),
-							account);
-					}
-					catch (NoSuchModelException noSuchModelException) {
-						persistedAccount = postAccount(account);
-					}
+				if (StringUtil.equalsIgnoreCase(
+						updateStrategy, "PARTIAL_UPDATE")) {
 
-					return persistedAccount;
-				};
+					accountUnsafeFunction = account -> {
+						Account persistedAccount = null;
+
+						try {
+							Account getAccount =
+								getAccountByExternalReferenceCode(
+									account.getExternalReferenceCode());
+
+							persistedAccount = patchAccount(
+								getAccount.getId() != null ?
+									getAccount.getId() :
+										_parseLong(
+											(String)parameters.get(
+												"accountId")),
+								account);
+						}
+						catch (NoSuchModelException noSuchModelException) {
+							persistedAccount = postAccount(account);
+						}
+
+						return persistedAccount;
+					};
+				}
+			}
+
+			if (accountUnsafeFunction == null) {
+				throw new NotSupportedException(
+					"Create strategy \"" + createStrategy +
+						"\" is not supported for Account");
+			}
+
+			if (contextBatchUnsafeBiConsumer != null) {
+				contextBatchUnsafeBiConsumer.accept(
+					accounts, accountUnsafeFunction);
+			}
+			else if (contextBatchUnsafeConsumer != null) {
+				contextBatchUnsafeConsumer.accept(
+					accounts, accountUnsafeFunction::apply);
+			}
+			else {
+				for (Account account : accounts) {
+					accountUnsafeFunction.apply(account);
+				}
 			}
 		}
-
-		if (accountUnsafeFunction == null) {
-			throw new NotSupportedException(
-				"Create strategy \"" + createStrategy +
-					"\" is not supported for Account");
-		}
-
-		if (contextBatchUnsafeBiConsumer != null) {
-			contextBatchUnsafeBiConsumer.accept(
-				accounts, accountUnsafeFunction);
-		}
-		else if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(
-				accounts, accountUnsafeFunction::apply);
-		}
-		else {
-			for (Account account : accounts) {
-				accountUnsafeFunction.apply(account);
-			}
+		finally {
+			VulcanBatchEngineThreadLocal.setLazyLoad(false);
 		}
 	}
 

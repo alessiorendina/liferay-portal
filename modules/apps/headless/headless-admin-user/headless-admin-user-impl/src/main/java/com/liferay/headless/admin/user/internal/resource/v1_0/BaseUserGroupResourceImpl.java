@@ -33,6 +33,7 @@ import com.liferay.portal.odata.sort.SortParser;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineThreadLocal;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -796,69 +797,79 @@ public abstract class BaseUserGroupResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeFunction<UserGroup, UserGroup, Exception>
-			userGroupUnsafeFunction = null;
+		try {
+			VulcanBatchEngineThreadLocal.setLazyLoad(true);
 
-		String createStrategy = (String)parameters.getOrDefault(
-			"createStrategy", "INSERT");
+			UnsafeFunction<UserGroup, UserGroup, Exception>
+				userGroupUnsafeFunction = null;
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			userGroupUnsafeFunction = userGroup -> postUserGroup(userGroup);
-		}
+			String createStrategy = (String)parameters.getOrDefault(
+				"createStrategy", "INSERT");
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
-			String updateStrategy = (String)parameters.getOrDefault(
-				"updateStrategy", "UPDATE");
-
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
-				userGroupUnsafeFunction =
-					userGroup -> putUserGroupByExternalReferenceCode(
-						userGroup.getExternalReferenceCode(), userGroup);
+			if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+				userGroupUnsafeFunction = userGroup -> postUserGroup(userGroup);
 			}
 
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
-				userGroupUnsafeFunction = userGroup -> {
-					UserGroup persistedUserGroup = null;
+			if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+				String updateStrategy = (String)parameters.getOrDefault(
+					"updateStrategy", "UPDATE");
 
-					try {
-						UserGroup getUserGroup =
-							getUserGroupByExternalReferenceCode(
-								userGroup.getExternalReferenceCode());
+				if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+					userGroupUnsafeFunction =
+						userGroup -> putUserGroupByExternalReferenceCode(
+							userGroup.getExternalReferenceCode(), userGroup);
+				}
 
-						persistedUserGroup = patchUserGroup(
-							getUserGroup.getId() != null ?
-								getUserGroup.getId() :
-									_parseLong(
-										(String)parameters.get("userGroupId")),
-							userGroup);
-					}
-					catch (NoSuchModelException noSuchModelException) {
-						persistedUserGroup = postUserGroup(userGroup);
-					}
+				if (StringUtil.equalsIgnoreCase(
+						updateStrategy, "PARTIAL_UPDATE")) {
 
-					return persistedUserGroup;
-				};
+					userGroupUnsafeFunction = userGroup -> {
+						UserGroup persistedUserGroup = null;
+
+						try {
+							UserGroup getUserGroup =
+								getUserGroupByExternalReferenceCode(
+									userGroup.getExternalReferenceCode());
+
+							persistedUserGroup = patchUserGroup(
+								getUserGroup.getId() != null ?
+									getUserGroup.getId() :
+										_parseLong(
+											(String)parameters.get(
+												"userGroupId")),
+								userGroup);
+						}
+						catch (NoSuchModelException noSuchModelException) {
+							persistedUserGroup = postUserGroup(userGroup);
+						}
+
+						return persistedUserGroup;
+					};
+				}
+			}
+
+			if (userGroupUnsafeFunction == null) {
+				throw new NotSupportedException(
+					"Create strategy \"" + createStrategy +
+						"\" is not supported for UserGroup");
+			}
+
+			if (contextBatchUnsafeBiConsumer != null) {
+				contextBatchUnsafeBiConsumer.accept(
+					userGroups, userGroupUnsafeFunction);
+			}
+			else if (contextBatchUnsafeConsumer != null) {
+				contextBatchUnsafeConsumer.accept(
+					userGroups, userGroupUnsafeFunction::apply);
+			}
+			else {
+				for (UserGroup userGroup : userGroups) {
+					userGroupUnsafeFunction.apply(userGroup);
+				}
 			}
 		}
-
-		if (userGroupUnsafeFunction == null) {
-			throw new NotSupportedException(
-				"Create strategy \"" + createStrategy +
-					"\" is not supported for UserGroup");
-		}
-
-		if (contextBatchUnsafeBiConsumer != null) {
-			contextBatchUnsafeBiConsumer.accept(
-				userGroups, userGroupUnsafeFunction);
-		}
-		else if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(
-				userGroups, userGroupUnsafeFunction::apply);
-		}
-		else {
-			for (UserGroup userGroup : userGroups) {
-				userGroupUnsafeFunction.apply(userGroup);
-			}
+		finally {
+			VulcanBatchEngineThreadLocal.setLazyLoad(false);
 		}
 	}
 

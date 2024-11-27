@@ -33,6 +33,7 @@ import com.liferay.portal.odata.sort.SortParser;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineThreadLocal;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -1244,62 +1245,73 @@ public abstract class BaseRoleResourceImpl
 			Collection<Role> roles, Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeFunction<Role, Role, Exception> roleUnsafeFunction = null;
+		try {
+			VulcanBatchEngineThreadLocal.setLazyLoad(true);
 
-		String createStrategy = (String)parameters.getOrDefault(
-			"createStrategy", "INSERT");
+			UnsafeFunction<Role, Role, Exception> roleUnsafeFunction = null;
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			roleUnsafeFunction = role -> postRole(role);
-		}
+			String createStrategy = (String)parameters.getOrDefault(
+				"createStrategy", "INSERT");
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
-			String updateStrategy = (String)parameters.getOrDefault(
-				"updateStrategy", "UPDATE");
-
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
-				roleUnsafeFunction = role -> putRoleByExternalReferenceCode(
-					role.getExternalReferenceCode(), role);
+			if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+				roleUnsafeFunction = role -> postRole(role);
 			}
 
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
-				roleUnsafeFunction = role -> {
-					Role persistedRole = null;
+			if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+				String updateStrategy = (String)parameters.getOrDefault(
+					"updateStrategy", "UPDATE");
 
-					try {
-						Role getRole = getRoleByExternalReferenceCode(
-							role.getExternalReferenceCode());
+				if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+					roleUnsafeFunction = role -> putRoleByExternalReferenceCode(
+						role.getExternalReferenceCode(), role);
+				}
 
-						persistedRole = patchRole(
-							getRole.getId() != null ? getRole.getId() :
-								_parseLong((String)parameters.get("roleId")),
-							role);
-					}
-					catch (NoSuchModelException noSuchModelException) {
-						persistedRole = postRole(role);
-					}
+				if (StringUtil.equalsIgnoreCase(
+						updateStrategy, "PARTIAL_UPDATE")) {
 
-					return persistedRole;
-				};
+					roleUnsafeFunction = role -> {
+						Role persistedRole = null;
+
+						try {
+							Role getRole = getRoleByExternalReferenceCode(
+								role.getExternalReferenceCode());
+
+							persistedRole = patchRole(
+								getRole.getId() != null ? getRole.getId() :
+									_parseLong(
+										(String)parameters.get("roleId")),
+								role);
+						}
+						catch (NoSuchModelException noSuchModelException) {
+							persistedRole = postRole(role);
+						}
+
+						return persistedRole;
+					};
+				}
+			}
+
+			if (roleUnsafeFunction == null) {
+				throw new NotSupportedException(
+					"Create strategy \"" + createStrategy +
+						"\" is not supported for Role");
+			}
+
+			if (contextBatchUnsafeBiConsumer != null) {
+				contextBatchUnsafeBiConsumer.accept(roles, roleUnsafeFunction);
+			}
+			else if (contextBatchUnsafeConsumer != null) {
+				contextBatchUnsafeConsumer.accept(
+					roles, roleUnsafeFunction::apply);
+			}
+			else {
+				for (Role role : roles) {
+					roleUnsafeFunction.apply(role);
+				}
 			}
 		}
-
-		if (roleUnsafeFunction == null) {
-			throw new NotSupportedException(
-				"Create strategy \"" + createStrategy +
-					"\" is not supported for Role");
-		}
-
-		if (contextBatchUnsafeBiConsumer != null) {
-			contextBatchUnsafeBiConsumer.accept(roles, roleUnsafeFunction);
-		}
-		else if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(roles, roleUnsafeFunction::apply);
-		}
-		else {
-			for (Role role : roles) {
-				roleUnsafeFunction.apply(role);
-			}
+		finally {
+			VulcanBatchEngineThreadLocal.setLazyLoad(false);
 		}
 	}
 

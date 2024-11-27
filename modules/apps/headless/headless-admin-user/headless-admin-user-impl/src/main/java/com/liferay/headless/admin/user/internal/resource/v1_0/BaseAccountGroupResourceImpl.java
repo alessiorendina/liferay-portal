@@ -33,6 +33,7 @@ import com.liferay.portal.odata.sort.SortParser;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineThreadLocal;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -904,71 +905,82 @@ public abstract class BaseAccountGroupResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeFunction<AccountGroup, AccountGroup, Exception>
-			accountGroupUnsafeFunction = null;
+		try {
+			VulcanBatchEngineThreadLocal.setLazyLoad(true);
 
-		String createStrategy = (String)parameters.getOrDefault(
-			"createStrategy", "INSERT");
+			UnsafeFunction<AccountGroup, AccountGroup, Exception>
+				accountGroupUnsafeFunction = null;
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			accountGroupUnsafeFunction = accountGroup -> postAccountGroup(
-				accountGroup);
-		}
+			String createStrategy = (String)parameters.getOrDefault(
+				"createStrategy", "INSERT");
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
-			String updateStrategy = (String)parameters.getOrDefault(
-				"updateStrategy", "UPDATE");
-
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
-				accountGroupUnsafeFunction =
-					accountGroup -> putAccountGroupByExternalReferenceCode(
-						accountGroup.getExternalReferenceCode(), accountGroup);
+			if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+				accountGroupUnsafeFunction = accountGroup -> postAccountGroup(
+					accountGroup);
 			}
 
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
-				accountGroupUnsafeFunction = accountGroup -> {
-					AccountGroup persistedAccountGroup = null;
+			if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+				String updateStrategy = (String)parameters.getOrDefault(
+					"updateStrategy", "UPDATE");
 
-					try {
-						AccountGroup getAccountGroup =
-							getAccountGroupByExternalReferenceCode(
-								accountGroup.getExternalReferenceCode());
-
-						persistedAccountGroup = patchAccountGroup(
-							getAccountGroup.getId() != null ?
-								getAccountGroup.getId() :
-									_parseLong(
-										(String)parameters.get(
-											"accountGroupId")),
+				if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+					accountGroupUnsafeFunction =
+						accountGroup -> putAccountGroupByExternalReferenceCode(
+							accountGroup.getExternalReferenceCode(),
 							accountGroup);
-					}
-					catch (NoSuchModelException noSuchModelException) {
-						persistedAccountGroup = postAccountGroup(accountGroup);
-					}
+				}
 
-					return persistedAccountGroup;
-				};
+				if (StringUtil.equalsIgnoreCase(
+						updateStrategy, "PARTIAL_UPDATE")) {
+
+					accountGroupUnsafeFunction = accountGroup -> {
+						AccountGroup persistedAccountGroup = null;
+
+						try {
+							AccountGroup getAccountGroup =
+								getAccountGroupByExternalReferenceCode(
+									accountGroup.getExternalReferenceCode());
+
+							persistedAccountGroup = patchAccountGroup(
+								getAccountGroup.getId() != null ?
+									getAccountGroup.getId() :
+										_parseLong(
+											(String)parameters.get(
+												"accountGroupId")),
+								accountGroup);
+						}
+						catch (NoSuchModelException noSuchModelException) {
+							persistedAccountGroup = postAccountGroup(
+								accountGroup);
+						}
+
+						return persistedAccountGroup;
+					};
+				}
+			}
+
+			if (accountGroupUnsafeFunction == null) {
+				throw new NotSupportedException(
+					"Create strategy \"" + createStrategy +
+						"\" is not supported for AccountGroup");
+			}
+
+			if (contextBatchUnsafeBiConsumer != null) {
+				contextBatchUnsafeBiConsumer.accept(
+					accountGroups, accountGroupUnsafeFunction);
+			}
+			else if (contextBatchUnsafeConsumer != null) {
+				contextBatchUnsafeConsumer.accept(
+					accountGroups, accountGroupUnsafeFunction::apply);
+			}
+			else {
+				for (AccountGroup accountGroup : accountGroups) {
+					accountGroupUnsafeFunction.apply(accountGroup);
+				}
 			}
 		}
-
-		if (accountGroupUnsafeFunction == null) {
-			throw new NotSupportedException(
-				"Create strategy \"" + createStrategy +
-					"\" is not supported for AccountGroup");
-		}
-
-		if (contextBatchUnsafeBiConsumer != null) {
-			contextBatchUnsafeBiConsumer.accept(
-				accountGroups, accountGroupUnsafeFunction);
-		}
-		else if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(
-				accountGroups, accountGroupUnsafeFunction::apply);
-		}
-		else {
-			for (AccountGroup accountGroup : accountGroups) {
-				accountGroupUnsafeFunction.apply(accountGroup);
-			}
+		finally {
+			VulcanBatchEngineThreadLocal.setLazyLoad(false);
 		}
 	}
 

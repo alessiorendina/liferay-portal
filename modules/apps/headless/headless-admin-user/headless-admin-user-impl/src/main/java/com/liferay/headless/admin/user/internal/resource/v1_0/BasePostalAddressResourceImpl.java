@@ -33,6 +33,7 @@ import com.liferay.portal.odata.sort.SortParser;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineThreadLocal;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -1113,88 +1114,101 @@ public abstract class BasePostalAddressResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeFunction<PostalAddress, PostalAddress, Exception>
-			postalAddressUnsafeFunction = null;
+		try {
+			VulcanBatchEngineThreadLocal.setLazyLoad(true);
 
-		String createStrategy = (String)parameters.getOrDefault(
-			"createStrategy", "INSERT");
+			UnsafeFunction<PostalAddress, PostalAddress, Exception>
+				postalAddressUnsafeFunction = null;
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("accountId")) {
-				postalAddressUnsafeFunction =
-					postalAddress -> postAccountPostalAddress(
-						_parseLong((String)parameters.get("accountId")),
-						postalAddress);
-			}
-			else {
-				throw new NotSupportedException(
-					"One of the following parameters must be specified: [accountId]");
-			}
-		}
+			String createStrategy = (String)parameters.getOrDefault(
+				"createStrategy", "INSERT");
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
-			String updateStrategy = (String)parameters.getOrDefault(
-				"updateStrategy", "UPDATE");
-
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
-				postalAddressUnsafeFunction =
-					postalAddress -> putPostalAddressByExternalReferenceCode(
-						postalAddress.getExternalReferenceCode(),
-						postalAddress);
-			}
-
-			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
-				postalAddressUnsafeFunction = postalAddress -> {
-					PostalAddress persistedPostalAddress = null;
-
-					try {
-						PostalAddress getPostalAddress =
-							getPostalAddressByExternalReferenceCode(
-								postalAddress.getExternalReferenceCode());
-
-						persistedPostalAddress = patchPostalAddress(
-							getPostalAddress.getId() != null ?
-								getPostalAddress.getId() :
-									_parseLong(
-										(String)parameters.get(
-											"postalAddressId")),
+			if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+				if (parameters.containsKey("accountId")) {
+					postalAddressUnsafeFunction =
+						postalAddress -> postAccountPostalAddress(
+							_parseLong((String)parameters.get("accountId")),
 							postalAddress);
-					}
-					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("accountId")) {
-							persistedPostalAddress = postAccountPostalAddress(
-								_parseLong((String)parameters.get("accountId")),
+				}
+				else {
+					throw new NotSupportedException(
+						"One of the following parameters must be specified: [accountId]");
+				}
+			}
+
+			if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+				String updateStrategy = (String)parameters.getOrDefault(
+					"updateStrategy", "UPDATE");
+
+				if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+					postalAddressUnsafeFunction =
+						postalAddress ->
+							putPostalAddressByExternalReferenceCode(
+								postalAddress.getExternalReferenceCode(),
+								postalAddress);
+				}
+
+				if (StringUtil.equalsIgnoreCase(
+						updateStrategy, "PARTIAL_UPDATE")) {
+
+					postalAddressUnsafeFunction = postalAddress -> {
+						PostalAddress persistedPostalAddress = null;
+
+						try {
+							PostalAddress getPostalAddress =
+								getPostalAddressByExternalReferenceCode(
+									postalAddress.getExternalReferenceCode());
+
+							persistedPostalAddress = patchPostalAddress(
+								getPostalAddress.getId() != null ?
+									getPostalAddress.getId() :
+										_parseLong(
+											(String)parameters.get(
+												"postalAddressId")),
 								postalAddress);
 						}
-						else {
-							throw new NotSupportedException(
-								"One of the following parameters must be specified: [accountId]");
+						catch (NoSuchModelException noSuchModelException) {
+							if (parameters.containsKey("accountId")) {
+								persistedPostalAddress =
+									postAccountPostalAddress(
+										_parseLong(
+											(String)parameters.get(
+												"accountId")),
+										postalAddress);
+							}
+							else {
+								throw new NotSupportedException(
+									"One of the following parameters must be specified: [accountId]");
+							}
 						}
-					}
 
-					return persistedPostalAddress;
-				};
+						return persistedPostalAddress;
+					};
+				}
+			}
+
+			if (postalAddressUnsafeFunction == null) {
+				throw new NotSupportedException(
+					"Create strategy \"" + createStrategy +
+						"\" is not supported for PostalAddress");
+			}
+
+			if (contextBatchUnsafeBiConsumer != null) {
+				contextBatchUnsafeBiConsumer.accept(
+					postalAddresses, postalAddressUnsafeFunction);
+			}
+			else if (contextBatchUnsafeConsumer != null) {
+				contextBatchUnsafeConsumer.accept(
+					postalAddresses, postalAddressUnsafeFunction::apply);
+			}
+			else {
+				for (PostalAddress postalAddress : postalAddresses) {
+					postalAddressUnsafeFunction.apply(postalAddress);
+				}
 			}
 		}
-
-		if (postalAddressUnsafeFunction == null) {
-			throw new NotSupportedException(
-				"Create strategy \"" + createStrategy +
-					"\" is not supported for PostalAddress");
-		}
-
-		if (contextBatchUnsafeBiConsumer != null) {
-			contextBatchUnsafeBiConsumer.accept(
-				postalAddresses, postalAddressUnsafeFunction);
-		}
-		else if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(
-				postalAddresses, postalAddressUnsafeFunction::apply);
-		}
-		else {
-			for (PostalAddress postalAddress : postalAddresses) {
-				postalAddressUnsafeFunction.apply(postalAddress);
-			}
+		finally {
+			VulcanBatchEngineThreadLocal.setLazyLoad(false);
 		}
 	}
 

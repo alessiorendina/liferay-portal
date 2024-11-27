@@ -32,6 +32,7 @@ import com.liferay.portal.odata.sort.SortParser;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineThreadLocal;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -992,43 +993,50 @@ public abstract class BaseAccountRoleResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeFunction<AccountRole, AccountRole, Exception>
-			accountRoleUnsafeFunction = null;
+		try {
+			VulcanBatchEngineThreadLocal.setLazyLoad(true);
 
-		String createStrategy = (String)parameters.getOrDefault(
-			"createStrategy", "INSERT");
+			UnsafeFunction<AccountRole, AccountRole, Exception>
+				accountRoleUnsafeFunction = null;
 
-		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("accountId")) {
-				accountRoleUnsafeFunction =
-					accountRole -> postAccountAccountRole(
-						_parseLong((String)parameters.get("accountId")),
-						accountRole);
+			String createStrategy = (String)parameters.getOrDefault(
+				"createStrategy", "INSERT");
+
+			if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
+				if (parameters.containsKey("accountId")) {
+					accountRoleUnsafeFunction =
+						accountRole -> postAccountAccountRole(
+							_parseLong((String)parameters.get("accountId")),
+							accountRole);
+				}
+				else {
+					throw new NotSupportedException(
+						"One of the following parameters must be specified: [accountId]");
+				}
+			}
+
+			if (accountRoleUnsafeFunction == null) {
+				throw new NotSupportedException(
+					"Create strategy \"" + createStrategy +
+						"\" is not supported for AccountRole");
+			}
+
+			if (contextBatchUnsafeBiConsumer != null) {
+				contextBatchUnsafeBiConsumer.accept(
+					accountRoles, accountRoleUnsafeFunction);
+			}
+			else if (contextBatchUnsafeConsumer != null) {
+				contextBatchUnsafeConsumer.accept(
+					accountRoles, accountRoleUnsafeFunction::apply);
 			}
 			else {
-				throw new NotSupportedException(
-					"One of the following parameters must be specified: [accountId]");
+				for (AccountRole accountRole : accountRoles) {
+					accountRoleUnsafeFunction.apply(accountRole);
+				}
 			}
 		}
-
-		if (accountRoleUnsafeFunction == null) {
-			throw new NotSupportedException(
-				"Create strategy \"" + createStrategy +
-					"\" is not supported for AccountRole");
-		}
-
-		if (contextBatchUnsafeBiConsumer != null) {
-			contextBatchUnsafeBiConsumer.accept(
-				accountRoles, accountRoleUnsafeFunction);
-		}
-		else if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(
-				accountRoles, accountRoleUnsafeFunction::apply);
-		}
-		else {
-			for (AccountRole accountRole : accountRoles) {
-				accountRoleUnsafeFunction.apply(accountRole);
-			}
+		finally {
+			VulcanBatchEngineThreadLocal.setLazyLoad(false);
 		}
 	}
 
