@@ -61,11 +61,11 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 			long companyId, Document document, boolean commitImmediately)
 		throws SearchException {
 
-		_enforceStandardUID(document);
-
 		if (_indexStatusManager.isIndexReadOnly() || (document == null)) {
 			return;
 		}
+
+		_enforceStandardUID(document);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Add document " + document.toString());
@@ -92,13 +92,13 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 			boolean commitImmediately)
 		throws SearchException {
 
-		_enforceStandardUID(documents);
-
 		if (_indexStatusManager.isIndexReadOnly() || (documents == null) ||
 			documents.isEmpty()) {
 
 			return;
 		}
+
+		_enforceStandardUID(documents);
 
 		SearchEngine searchEngine = _searchEngineHelper.getSearchEngine();
 
@@ -340,11 +340,11 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 			long companyId, Document document, boolean commitImmediately)
 		throws SearchException {
 
-		_enforceStandardUID(document);
-
 		if (_indexStatusManager.isIndexReadOnly() || (document == null)) {
 			return;
 		}
+
+		_enforceStandardUID(document);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Document " + document.toString());
@@ -371,13 +371,13 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 			boolean commitImmediately)
 		throws SearchException {
 
-		_enforceStandardUID(documents);
-
 		if (_indexStatusManager.isIndexReadOnly() || (documents == null) ||
 			documents.isEmpty()) {
 
 			return;
 		}
+
+		_enforceStandardUID(documents);
 
 		SearchEngine searchEngine = _searchEngineHelper.getSearchEngine();
 
@@ -484,11 +484,11 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 	public void updateDocument(long companyId, Document document)
 		throws SearchException {
 
-		_enforceStandardUID(document);
-
 		if (_indexStatusManager.isIndexReadOnly() || (document == null)) {
 			return;
 		}
+
+		_enforceStandardUID(document);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Document " + document.toString());
@@ -515,13 +515,13 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 			boolean commitImmediately)
 		throws SearchException {
 
-		_enforceStandardUID(documents);
-
 		if (_indexStatusManager.isIndexReadOnly() || (documents == null) ||
 			documents.isEmpty()) {
 
 			return;
 		}
+
+		_enforceStandardUID(documents);
 
 		SearchEngine searchEngine = _searchEngineHelper.getSearchEngine();
 
