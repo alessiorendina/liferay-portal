@@ -40,9 +40,9 @@ import javax.servlet.http.HttpServletRequest;
 public class CommerceOrganizationDisplayContext {
 
 	public CommerceOrganizationDisplayContext(
-			HttpServletRequest httpServletRequest,
-			OrganizationService organizationService,
-			UserLocalService userLocalService)
+		HttpServletRequest httpServletRequest,
+		OrganizationService organizationService,
+		UserLocalService userLocalService)
 		throws PortalException {
 
 		_organizationService = organizationService;
@@ -172,9 +172,24 @@ public class CommerceOrganizationDisplayContext {
 			GetterUtil.getLong(rootOrganizationIdString));
 	}
 
-	public String getRootOrganizationId() {
-		return _commerceOrganizationPortletInstanceConfiguration.
-			rootOrganizationId();
+	public String getRootOrganizationId() throws PortalException {
+		Organization organization = null;
+
+		String rootOrganizationExternalReferenceCode =
+			_commerceOrganizationPortletInstanceConfiguration.
+				rootOrganizationExternalReferenceCode();
+
+		if(Validator.isNotNull(rootOrganizationExternalReferenceCode)) {
+			organization = _organizationService.fetchOrganizationByExternalReferenceCode(
+				rootOrganizationExternalReferenceCode, _themeDisplay.getCompanyId()
+			);
+		}
+
+		if(organization != null) {
+			return String.valueOf(organization.getOrganizationId());
+		}
+
+		return StringPool.BLANK;
 	}
 
 	public User getSelectedUser() throws PortalException {
