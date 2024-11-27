@@ -75,6 +75,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineThreadLocal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -597,8 +598,23 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 		com.liferay.portal.kernel.model.Organization
 			serviceBuilderOrganization =
 				_organizationResourceDTOConverter.getObject(organizationId);
+
 		long countryId = _getCountryId(0, organization);
-		Group group = serviceBuilderOrganization.getGroup();
+
+		long statusListTypeId = _listTypeLocalService.getListTypeId(
+			contextCompany.getCompanyId(),
+			ListTypeConstants.ORGANIZATION_STATUS_DEFAULT,
+			ListTypeConstants.ORGANIZATION_STATUS);
+
+		boolean site = false;
+
+		if (serviceBuilderOrganization.getBatchImportStatus() == 0) {
+			statusListTypeId = serviceBuilderOrganization.getStatusListTypeId();
+
+			Group group = serviceBuilderOrganization.getGroup();
+
+			site = group.isSite();
+		}
 
 		return _organizationResourceDTOConverter.toDTO(
 			_getDTOConverterContext(organizationId),
@@ -610,10 +626,10 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 					organization),
 				organization.getName(), serviceBuilderOrganization.getType(),
 				_getRegionId(countryId, 0, organization), countryId,
-				serviceBuilderOrganization.getStatusListTypeId(),
-				organization.getComment(), _hasLogo(organization, null),
+				statusListTypeId, organization.getComment(),
+				_hasLogo(organization, null),
 				_getLogoBytes(organization, serviceBuilderOrganization, false),
-				group.isSite(), _getAddresses(organization, null),
+				site, _getAddresses(organization, null),
 				_getEmailAddresses(organization, null),
 				_getOrgLabors(organization, null),
 				_getPhones(organization, null),
@@ -702,6 +718,10 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			contextHttpServletRequest);
 
+		if (serviceContext.getUserId() == 0) {
+			serviceContext.setUserId(contextUser.getUserId());
+		}
+
 		serviceContext.setExpandoBridgeAttributes(
 			CustomFieldsUtil.toMap(
 				com.liferay.portal.kernel.model.Organization.class.getName(),
@@ -776,7 +796,17 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 					contextCompany.getCompanyId());
 
 		if (parentOrganizationByExternalReferenceCode == null) {
-			return defaultValue;
+			if (!VulcanBatchEngineThreadLocal.isLazyLoad()) {
+				return defaultValue;
+			}
+
+			parentOrganizationByExternalReferenceCode =
+				_organizationLocalService.addOrganization(
+					parentOrganization.getExternalReferenceCode(),
+					contextCompany.getCompanyId(), contextUser.getUserId(),
+					HashMapBuilder.<String, Object>put(
+						"type", OrganizationConstants.TYPE_ORGANIZATION
+					).build());
 		}
 
 		return parentOrganizationByExternalReferenceCode.getOrganizationId();
