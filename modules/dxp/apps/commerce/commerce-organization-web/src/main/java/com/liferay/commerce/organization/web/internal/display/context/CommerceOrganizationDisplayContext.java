@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletQName;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.OrganizationService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.OrganizationPermissionUtil;
@@ -40,11 +41,13 @@ import javax.servlet.http.HttpServletRequest;
 public class CommerceOrganizationDisplayContext {
 
 	public CommerceOrganizationDisplayContext(
-		HttpServletRequest httpServletRequest,
-		OrganizationService organizationService,
-		UserLocalService userLocalService)
+			HttpServletRequest httpServletRequest,
+			OrganizationLocalService organizationLocalService,
+			OrganizationService organizationService,
+			UserLocalService userLocalService)
 		throws PortalException {
 
+		_organizationLocalService = organizationLocalService;
 		_organizationService = organizationService;
 		_userLocalService = userLocalService;
 
@@ -180,12 +183,16 @@ public class CommerceOrganizationDisplayContext {
 				rootOrganizationExternalReferenceCode();
 
 		if(Validator.isNotNull(rootOrganizationExternalReferenceCode)) {
-			organization = _organizationService.fetchOrganizationByExternalReferenceCode(
+			organization = _organizationLocalService.fetchOrganizationByExternalReferenceCode(
 				rootOrganizationExternalReferenceCode, _themeDisplay.getCompanyId()
 			);
 		}
 
-		if(organization != null) {
+		if((organization != null) &&
+		   OrganizationPermissionUtil.contains(
+			   _themeDisplay.getPermissionChecker(), organization,
+			   ActionKeys.VIEW)) {
+
 			return String.valueOf(organization.getOrganizationId());
 		}
 
@@ -258,6 +265,7 @@ public class CommerceOrganizationDisplayContext {
 	private final CommerceOrganizationRequestHelper
 		_commerceOrganizationRequestHelper;
 	private String _keywords;
+	private final OrganizationLocalService _organizationLocalService;
 	private final OrganizationService _organizationService;
 	private final ThemeDisplay _themeDisplay;
 	private final UserLocalService _userLocalService;
