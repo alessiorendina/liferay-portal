@@ -37,8 +37,10 @@ import com.liferay.portal.kernel.util.Validator;
 import java.math.BigDecimal;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -111,6 +113,8 @@ public class CPConfigurationListLocalServiceImpl
 				IndexerRegistryUtil.nullSafeGetIndexer(
 					CPConfigurationEntry.class);
 
+			Set<Long> visited = new HashSet<>();
+
 			while (parentCPConfigurationListId > 0) {
 				for (CPConfigurationEntry cpConfigurationEntry :
 						_cpConfigurationEntryLocalService.
@@ -119,7 +123,8 @@ public class CPConfigurationListLocalServiceImpl
 
 					if (Objects.equals(
 							cpConfigurationEntry.getClassName(),
-							CPConfigurationList.class.getName())) {
+							CPConfigurationList.class.getName()) ||
+						visited.contains(cpConfigurationEntry.getClassPK())) {
 
 						continue;
 					}
@@ -156,6 +161,8 @@ public class CPConfigurationListLocalServiceImpl
 							updateCPConfigurationEntrySetting(
 								cpConfigurationEntrySetting);
 					}
+
+					visited.add(cpConfigurationEntry.getClassPK());
 
 					indexer.reindex(
 						CPConfigurationEntry.class.getName(),
@@ -278,11 +285,15 @@ public class CPConfigurationListLocalServiceImpl
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPConfigurationList forceDeleteCPConfigurationList(
-			CPConfigurationList cpConfigurationList)
-		throws PortalException {
+		CPConfigurationList cpConfigurationList) {
 
-		_cpConfigurationEntryLocalService.deleteCPConfigurationEntries(
-			cpConfigurationList.getCPConfigurationListId());
+		for (CPConfigurationEntry cpConfigurationEntry :
+				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+					cpConfigurationList.getCPConfigurationListId())) {
+
+			_cpConfigurationEntryLocalService.forceDeleteCPConfigurationEntry(
+				cpConfigurationEntry);
+		}
 
 		return cpConfigurationListPersistence.remove(cpConfigurationList);
 	}
