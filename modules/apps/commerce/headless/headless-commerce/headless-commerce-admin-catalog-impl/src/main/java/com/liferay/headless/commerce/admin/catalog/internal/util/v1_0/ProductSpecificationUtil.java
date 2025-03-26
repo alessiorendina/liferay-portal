@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Alessio Antonio Rendina
@@ -68,6 +69,48 @@ public class ProductSpecificationUtil {
 					productSpecification.getVisible(),
 					cpSpecificationOption.isVisible()),
 				serviceContext);
+	}
+
+	public static CPDefinitionSpecificationOptionValue
+			addOrUpdateCPDefinitionSpecificationOptionValue(
+				CPDefinitionSpecificationOptionValueService
+					cpDefinitionSpecificationOptionValueService,
+				CPOptionCategoryService cpOptionCategoryService,
+				CPSpecificationOptionService cpSpecificationOptionService,
+				long cpDefinitionId, ProductSpecification productSpecification,
+				ServiceContext serviceContext)
+		throws PortalException {
+
+		CPDefinitionSpecificationOptionValue
+			cpDefinitionSpecificationOptionValue = null;
+
+		if (Validator.isNotNull(
+				productSpecification.getExternalReferenceCode())) {
+
+			cpDefinitionSpecificationOptionValue =
+				cpDefinitionSpecificationOptionValueService.
+					fetchCPDefinitionSpecificationOptionValueByExternalReferenceCode(
+						productSpecification.getExternalReferenceCode(),
+						serviceContext.getCompanyId());
+		}
+		else {
+			cpDefinitionSpecificationOptionValue =
+				cpDefinitionSpecificationOptionValueService.
+					fetchCPDefinitionSpecificationOptionValue(
+						productSpecification.getId());
+		}
+
+		if (cpDefinitionSpecificationOptionValueService == null) {
+			return addCPDefinitionSpecificationOptionValue(
+				cpDefinitionSpecificationOptionValueService,
+				cpOptionCategoryService, cpSpecificationOptionService,
+				cpDefinitionId, productSpecification, serviceContext);
+		}
+
+		return updateCPDefinitionSpecificationOptionValue(
+			cpDefinitionSpecificationOptionValueService,
+			cpDefinitionSpecificationOptionValue, cpOptionCategoryService,
+			cpSpecificationOptionService, productSpecification, serviceContext);
 	}
 
 	public static CPDefinitionSpecificationOptionValue

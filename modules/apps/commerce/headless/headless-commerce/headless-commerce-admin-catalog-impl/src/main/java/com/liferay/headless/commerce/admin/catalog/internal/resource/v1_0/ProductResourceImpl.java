@@ -1154,15 +1154,11 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			product.getProductSpecifications();
 
 		if (productSpecifications != null) {
-			_cpDefinitionSpecificationOptionValueService.
-				deleteCPDefinitionSpecificationOptionValues(
-					cpDefinition.getCPDefinitionId());
-
 			for (ProductSpecification productSpecification :
 					productSpecifications) {
 
 				ProductSpecificationUtil.
-					addCPDefinitionSpecificationOptionValue(
+					addOrUpdateCPDefinitionSpecificationOptionValue(
 						_cpDefinitionSpecificationOptionValueService,
 						_cpOptionCategoryService, _cpSpecificationOptionService,
 						cpDefinition.getCPDefinitionId(), productSpecification,
