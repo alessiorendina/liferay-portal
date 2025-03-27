@@ -346,11 +346,15 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				"Unable to find product with ID " + id);
 		}
 
-		_updateProduct(cpDefinition, product);
+		try (SafeCloseable safeCloseable =
+				 LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
-		Response.ResponseBuilder responseBuilder = Response.ok();
+			_updateProduct(cpDefinition, product);
 
-		return responseBuilder.build();
+			Response.ResponseBuilder responseBuilder = Response.ok();
+
+			return responseBuilder.build();
+		}
 	}
 
 	@Override
