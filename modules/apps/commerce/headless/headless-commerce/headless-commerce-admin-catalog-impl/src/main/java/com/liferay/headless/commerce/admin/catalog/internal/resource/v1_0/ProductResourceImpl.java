@@ -25,6 +25,7 @@ import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
+import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -111,8 +112,11 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -126,6 +130,7 @@ import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -150,6 +155,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -990,6 +996,10 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	}
 
 	private Product _toProduct(Long cpDefinitionId) throws Exception {
+		if (LazyReferencingThreadLocal.isEnabled()) {
+			return new Product();
+		}
+
 		CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
 			cpDefinitionId);
 
@@ -1154,19 +1164,40 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			product.getProductSpecifications();
 
 		if (productSpecifications != null) {
-			_cpDefinitionSpecificationOptionValueService.
-				deleteCPDefinitionSpecificationOptionValues(
-					cpDefinition.getCPDefinitionId());
+			List<Long> cpDefinitionSpecificationOptionValueIds = transform(
+				_cpDefinitionSpecificationOptionValueService.
+					getCPDefinitionSpecificationOptionValues(
+						cpDefinition.getCPDefinitionId(), null,
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+				CPDefinitionSpecificationOptionValue::
+					getCPDefinitionSpecificationOptionValueId);
 
 			for (ProductSpecification productSpecification :
 					productSpecifications) {
 
-				ProductSpecificationUtil.
-					addCPDefinitionSpecificationOptionValue(
-						_cpDefinitionSpecificationOptionValueService,
-						_cpOptionCategoryService, _cpSpecificationOptionService,
-						cpDefinition.getCPDefinitionId(), productSpecification,
-						serviceContext);
+				CPDefinitionSpecificationOptionValue
+					cpDefinitionSpecificationOptionValue =
+						ProductSpecificationUtil.
+							addOrUpdateCPDefinitionSpecificationOptionValue(
+								_cpDefinitionSpecificationOptionValueService,
+								_cpOptionCategoryService,
+								_cpSpecificationOptionService,
+								cpDefinition.getCPDefinitionId(),
+								productSpecification, serviceContext);
+
+				cpDefinitionSpecificationOptionValueIds.remove(
+					cpDefinitionSpecificationOptionValue.
+						getCPDefinitionSpecificationOptionValueId());
+			}
+
+			if (ListUtil.isNotEmpty(cpDefinitionSpecificationOptionValueIds)) {
+				for (long cpDefinitionSpecificationOptionValueId :
+						cpDefinitionSpecificationOptionValueIds) {
+
+					_cpDefinitionSpecificationOptionValueService.
+						deleteCPDefinitionSpecificationOptionValue(
+							cpDefinitionSpecificationOptionValueId);
+				}
 			}
 		}
 
@@ -1472,6 +1503,14 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			else {
 				throw new CPDefinitionProductTypeNameException();
 			}
+		}
+
+		if (LazyReferencingThreadLocal.isEnabled()) {
+			Indexer<CPDefinition> indexer =
+				IndexerRegistryUtil.nullSafeGetIndexer(CPDefinition.class);
+
+			indexer.reindex(
+				CPDefinition.class.getName(), cpDefinition.getCPDefinitionId());
 		}
 
 		return cpDefinition;

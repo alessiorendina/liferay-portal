@@ -21,6 +21,7 @@ import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -353,7 +354,9 @@ public class CPDefinitionLinkLocalServiceImpl
 
 		cpDefinitionLink = cpDefinitionLinkPersistence.update(cpDefinitionLink);
 
-		_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
+		}
 
 		CProduct cProduct = _cProductPersistence.findByPrimaryKey(
 			cpDefinitionLink.getCProductId());
@@ -422,7 +425,9 @@ public class CPDefinitionLinkLocalServiceImpl
 			_reindexCPDefinition(cProduct.getPublishedCPDefinitionId());
 		}
 
-		_reindexCPDefinition(cpDefinitionId);
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			_reindexCPDefinition(cpDefinitionId);
+		}
 	}
 
 	@Override
@@ -471,7 +476,9 @@ public class CPDefinitionLinkLocalServiceImpl
 
 		_reindexCPDefinition(cProduct.getPublishedCPDefinitionId());
 
-		_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
+		}
 
 		return cpDefinitionLink;
 	}
@@ -558,7 +565,9 @@ public class CPDefinitionLinkLocalServiceImpl
 
 		_reindexCPDefinition(cProduct.getPublishedCPDefinitionId());
 
-		_reindexCPDefinition(cpDefinitionId);
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			_reindexCPDefinition(cpDefinitionId);
+		}
 
 		if (serviceContext != null) {
 			_updateAsset(cpDefinitionLink, serviceContext);
@@ -655,7 +664,9 @@ public class CPDefinitionLinkLocalServiceImpl
 			_reindexCPDefinition(cProduct.getPublishedCPDefinitionId());
 		}
 
-		_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			_reindexCPDefinition(cpDefinitionLink.getCPDefinitionId());
+		}
 
 		return cpDefinitionLink;
 	}
