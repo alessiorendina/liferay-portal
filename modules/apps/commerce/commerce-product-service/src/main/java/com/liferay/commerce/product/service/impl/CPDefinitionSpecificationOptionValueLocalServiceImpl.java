@@ -11,6 +11,7 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.service.base.CPDefinitionSpecificationOptionValueLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPDefinitionPersistence;
+import com.liferay.commerce.product.util.LazyReferencingThreadLocal;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -420,6 +421,10 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 
 	private void _reindexCPDefinition(long cpDefinitionId)
 		throws PortalException {
+
+		if (LazyReferencingThreadLocal.isEnabled()) {
+			return;
+		}
 
 		Indexer<CPDefinition> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			CPDefinition.class);

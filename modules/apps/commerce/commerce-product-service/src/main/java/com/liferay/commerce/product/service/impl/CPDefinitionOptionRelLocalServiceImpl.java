@@ -24,6 +24,7 @@ import com.liferay.commerce.product.service.base.CPDefinitionOptionRelLocalServi
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionValueRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPInstanceOptionValueRelPersistence;
 import com.liferay.commerce.product.util.CPJSONUtil;
+import com.liferay.commerce.product.util.LazyReferencingThreadLocal;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -1029,6 +1030,10 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 	private void _reindexCPDefinition(long cpDefinitionId)
 		throws PortalException {
+
+		if (LazyReferencingThreadLocal.isEnabled()) {
+			return;
+		}
 
 		Indexer<CPDefinition> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			CPDefinition.class);
