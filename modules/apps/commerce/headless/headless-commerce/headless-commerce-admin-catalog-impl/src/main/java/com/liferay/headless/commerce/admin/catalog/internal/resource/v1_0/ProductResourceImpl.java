@@ -172,6 +172,18 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class ProductResourceImpl extends BaseProductResourceImpl {
 
 	@Override
+	public void create(
+			Collection<Product> products, Map<String, Serializable> parameters)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			super.create(products, parameters);
+		}
+	}
+
+	@Override
 	public void delete(
 			Collection<Product> products, Map<String, Serializable> parameters)
 		throws Exception {
@@ -346,15 +358,11 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				"Unable to find product with ID " + id);
 		}
 
-		try (SafeCloseable safeCloseable =
-				 LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+		_updateProduct(cpDefinition, product);
 
-			_updateProduct(cpDefinition, product);
+		Response.ResponseBuilder responseBuilder = Response.ok();
 
-			Response.ResponseBuilder responseBuilder = Response.ok();
-
-			return responseBuilder.build();
-		}
+		return responseBuilder.build();
 	}
 
 	@Override
@@ -392,13 +400,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 	@Override
 	public Product postProduct(Product product) throws Exception {
-		try (SafeCloseable safeCloseable =
-				 LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+		CPDefinition cpDefinition = _addOrUpdateProduct(product);
 
-			CPDefinition cpDefinition = _addOrUpdateProduct(product);
-
-			return _toProduct(cpDefinition.getCPDefinitionId());
-		}
+		return _toProduct(cpDefinition.getCPDefinitionId());
 	}
 
 	@Override
@@ -466,8 +470,12 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			Collection<Product> products, Map<String, Serializable> parameters)
 		throws Exception {
 
-		for (Product product : products) {
-			patchProduct(product.getProductId(), product);
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			for (Product product : products) {
+				patchProduct(product.getProductId(), product);
+			}
 		}
 	}
 
@@ -933,6 +941,10 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	}
 
 	private Product _toProduct(Long cpDefinitionId) throws Exception {
+		if (LazyReferencingThreadLocal.isEnabled()) {
+			return new Product();
+		}
+
 		CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
 			cpDefinitionId);
 
