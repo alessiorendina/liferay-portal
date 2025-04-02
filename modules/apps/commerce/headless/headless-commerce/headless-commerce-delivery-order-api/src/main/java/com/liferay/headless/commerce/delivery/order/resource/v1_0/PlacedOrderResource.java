@@ -50,7 +50,8 @@ public interface PlacedOrderResource {
 	public Page<PlacedOrder>
 			getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodePlacedOrdersPage(
 				String accountExternalReferenceCode,
-				String channelExternalReferenceCode, Pagination pagination)
+				String channelExternalReferenceCode, String search,
+				Filter filter, Pagination pagination, Sort[] sorts)
 		throws Exception;
 
 	public Page<PlacedOrder> getChannelByExternalReferenceCodePlacedOrdersPage(
@@ -59,7 +60,8 @@ public interface PlacedOrderResource {
 		throws Exception;
 
 	public Page<PlacedOrder> getChannelAccountPlacedOrdersPage(
-			Long accountId, Long channelId, Pagination pagination)
+			Long accountId, Long channelId, String search, Filter filter,
+			Pagination pagination, Sort[] sorts)
 		throws Exception;
 
 	public Page<PlacedOrder> getChannelPlacedOrdersPage(

@@ -152,14 +152,14 @@ public interface CartResource {
 			getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPage(
 				String accountExternalReferenceCode,
 				String channelExternalReferenceCode, String search,
-				Pagination pagination)
+				String filterString, Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPageHttpResponse(
 				String accountExternalReferenceCode,
 				String channelExternalReferenceCode, String search,
-				Pagination pagination)
+				String filterString, Pagination pagination, String sortString)
 		throws Exception;
 
 	public Cart postChannelCartByExternalReferenceCode(
@@ -172,13 +172,13 @@ public interface CartResource {
 		throws Exception;
 
 	public Page<Cart> getChannelAccountCartsPage(
-			Long accountId, Long channelId, String search,
-			Pagination pagination)
+			Long accountId, Long channelId, String search, String filterString,
+			Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getChannelAccountCartsPageHttpResponse(
-			Long accountId, Long channelId, String search,
-			Pagination pagination)
+			Long accountId, Long channelId, String search, String filterString,
+			Pagination pagination, String sortString)
 		throws Exception;
 
 	public Page<Cart> getChannelCartsPage(
@@ -1956,13 +1956,14 @@ public interface CartResource {
 				getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPage(
 					String accountExternalReferenceCode,
 					String channelExternalReferenceCode, String search,
-					Pagination pagination)
+					String filterString, Pagination pagination,
+					String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPageHttpResponse(
 					accountExternalReferenceCode, channelExternalReferenceCode,
-					search, pagination);
+					search, filterString, pagination, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -2027,7 +2028,8 @@ public interface CartResource {
 				getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPageHttpResponse(
 					String accountExternalReferenceCode,
 					String channelExternalReferenceCode, String search,
-					Pagination pagination)
+					String filterString, Pagination pagination,
+					String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -2055,11 +2057,19 @@ public interface CartResource {
 				httpInvoker.parameter("search", String.valueOf(search));
 			}
 
+			if (filterString != null) {
+				httpInvoker.parameter("filter", filterString);
+			}
+
 			if (pagination != null) {
 				httpInvoker.parameter(
 					"page", String.valueOf(pagination.getPage()));
 				httpInvoker.parameter(
 					"pageSize", String.valueOf(pagination.getPageSize()));
+			}
+
+			if (sortString != null) {
+				httpInvoker.parameter("sort", sortString);
 			}
 
 			httpInvoker.path(
@@ -2188,12 +2198,13 @@ public interface CartResource {
 
 		public Page<Cart> getChannelAccountCartsPage(
 				Long accountId, Long channelId, String search,
-				Pagination pagination)
+				String filterString, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getChannelAccountCartsPageHttpResponse(
-					accountId, channelId, search, pagination);
+					accountId, channelId, search, filterString, pagination,
+					sortString);
 
 			String content = httpResponse.getContent();
 
@@ -2256,7 +2267,7 @@ public interface CartResource {
 
 		public HttpInvoker.HttpResponse getChannelAccountCartsPageHttpResponse(
 				Long accountId, Long channelId, String search,
-				Pagination pagination)
+				String filterString, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -2284,11 +2295,19 @@ public interface CartResource {
 				httpInvoker.parameter("search", String.valueOf(search));
 			}
 
+			if (filterString != null) {
+				httpInvoker.parameter("filter", filterString);
+			}
+
 			if (pagination != null) {
 				httpInvoker.parameter(
 					"page", String.valueOf(pagination.getPage()));
 				httpInvoker.parameter(
 					"pageSize", String.valueOf(pagination.getPageSize()));
+			}
+
+			if (sortString != null) {
+				httpInvoker.parameter("sort", sortString);
 			}
 
 			httpInvoker.path(

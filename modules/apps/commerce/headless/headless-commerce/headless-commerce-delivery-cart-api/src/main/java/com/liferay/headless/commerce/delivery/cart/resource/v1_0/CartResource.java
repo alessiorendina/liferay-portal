@@ -102,7 +102,7 @@ public interface CartResource {
 			getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPage(
 				String accountExternalReferenceCode,
 				String channelExternalReferenceCode, String search,
-				Pagination pagination)
+				Filter filter, Pagination pagination, Sort[] sorts)
 		throws Exception;
 
 	public Cart postChannelCartByExternalReferenceCode(
@@ -110,8 +110,8 @@ public interface CartResource {
 		throws Exception;
 
 	public Page<Cart> getChannelAccountCartsPage(
-			Long accountId, Long channelId, String search,
-			Pagination pagination)
+			Long accountId, Long channelId, String search, Filter filter,
+			Pagination pagination, Sort[] sorts)
 		throws Exception;
 
 	public Page<Cart> getChannelCartsPage(
