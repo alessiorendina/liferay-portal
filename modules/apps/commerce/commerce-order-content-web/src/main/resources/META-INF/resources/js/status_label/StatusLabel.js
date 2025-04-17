@@ -4,11 +4,10 @@
  */
 
 import ClayLabel from '@clayui/label';
-import {commerceEvents} from 'commerce-frontend-js';
+import StatusLabelsUtils, {commerceEvents} from 'commerce-frontend-js';
 import {openToast} from 'frontend-js-components-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
-import {getLabelDisplay} from '../getLabelDisplay';
 import {getOrder} from '../util';
 
 const StatusLabel = ({isOpenOrder, namespace, orderId, selectedStatus}) => {
@@ -18,7 +17,7 @@ const StatusLabel = ({isOpenOrder, namespace, orderId, selectedStatus}) => {
 		({order = null}) => {
 			getOrder(isOpenOrder, order, orderId)
 				.then((order) => {
-					setStatus(getLabelDisplay(order[selectedStatus]));
+					setStatus(StatusLabelsUtils.getOrderStatusLabel(order[selectedStatus]));
 				})
 				.catch((error) => {
 					openToast({

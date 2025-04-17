@@ -3,40 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import StatusLabelsUtils from 'commerce-frontend-js';
 import ClayLabel from '@clayui/label';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-function getLabelDisplay(value) {
-	let label = {...value};
-
-	if ('key' in label && 'name' in label) {
-		label = {
-			label: value.key,
-			label_i18n: value.name,
-		};
-	}
-
-	label.displayType = 'secondary';
-
-	if (label.label === 'delivered') {
-		label.displayType = 'info';
-	}
-	else if (
-		label.label === 'processing' ||
-		label.label === 'ready-to-ship'
-	) {
-		label.displayType = 'warning';
-	}
-	else if (label.label === 'shipped') {
-		label.displayType = 'success';
-	}
-
-	return label;
-}
-
 const CommerceShipmentStatusDataRenderer = ({value}) => {
-	const {displayType, label_i18n} = getLabelDisplay(value);
+	const {displayType, label_i18n} = StatusLabelsUtils.getShipmentStatusLabel(value);
 
 	return (
 		<ClayLabel displayType={displayType}>
