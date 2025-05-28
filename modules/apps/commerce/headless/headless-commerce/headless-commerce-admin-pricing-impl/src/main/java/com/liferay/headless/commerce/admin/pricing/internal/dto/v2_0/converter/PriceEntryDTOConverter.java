@@ -10,7 +10,9 @@ import com.liferay.commerce.currency.util.CommercePriceFormatter;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceEntryService;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceEntry;
@@ -54,7 +56,7 @@ public class PriceEntryDTOConverter
 		CommerceCurrency commerceCurrency =
 			commercePriceList.getCommerceCurrency();
 
-		CPInstance cpInstance = _cpInstanceLocalService.fetchCProductInstance(
+		CPInstance cpInstance = _cpInstanceLocalService.fetchCPInstance(
 			commercePriceEntry.getCProductId(),
 			commercePriceEntry.getCPInstanceUuid());
 
@@ -166,6 +168,9 @@ public class PriceEntryDTOConverter
 
 	@Reference
 	private CommercePriceFormatter _commercePriceFormatter;
+
+	@Reference
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Reference
 	private CPInstanceLocalService _cpInstanceLocalService;

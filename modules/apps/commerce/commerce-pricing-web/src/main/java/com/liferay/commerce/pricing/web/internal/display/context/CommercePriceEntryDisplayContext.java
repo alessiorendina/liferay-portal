@@ -145,7 +145,7 @@ public class CommercePriceEntryDisplayContext
 
 		CommercePriceEntry commercePriceEntry = getCommercePriceEntry();
 
-		_cpInstance = _cpInstanceLocalService.getCProductInstance(
+		_cpInstance = _cpInstanceLocalService.fetchCPInstance(
 			commercePriceEntry.getCProductId(),
 			commercePriceEntry.getCPInstanceUuid());
 
