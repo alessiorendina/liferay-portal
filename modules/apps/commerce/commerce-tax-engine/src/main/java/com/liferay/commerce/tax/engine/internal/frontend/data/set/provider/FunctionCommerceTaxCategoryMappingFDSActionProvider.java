@@ -92,10 +92,11 @@ public class FunctionCommerceTaxCategoryMappingFDSActionProvider
 
 		return PortletURLBuilder.create(
 			_portal.getControlPanelPortletURL(
-				httpServletRequest, CommercePortletKeys.COMMERCE_TAX_METHODS,
+				httpServletRequest,
+				CommercePortletKeys.COMMERCE_TAX_METHOD_ADMIN,
 				PortletRequest.ACTION_PHASE)
 		).setActionName(
-			"/commerce_tax_methods/edit_commerce_tax_category_mapping"
+			"/commerce_tax_method_admin/edit_commerce_tax_category_mapping"
 		).setCMD(
 			Constants.DELETE
 		).setRedirect(
@@ -116,7 +117,7 @@ public class FunctionCommerceTaxCategoryMappingFDSActionProvider
 				httpServletRequest, CommerceTaxMethod.class.getName(),
 				PortletProvider.Action.EDIT)
 		).setMVCRenderCommandName(
-			"/commerce_tax_methods/edit_commerce_tax_category_mapping"
+			"/commerce_tax_method_admin/edit_commerce_tax_category_mapping"
 		).setParameter(
 			"commerceTaxCategoryMappingId", taxCategoryMappingId
 		).setParameter(

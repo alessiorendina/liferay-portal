@@ -25,7 +25,7 @@ export class CommerceAdminProductConfigurationListsPage extends CommerceDNDTable
 	constructor(page: Page) {
 		super(
 			page,
-			'#_com_liferay_commerce_product_definitions_web_internal_portlet_CPConfigurationListsPortlet_fm .fds table'
+			'#_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPConfigurationListsAdminPortlet_fm .fds table'
 		);
 		this.addConfigurationList = page
 			.getByTestId('management-toolbar')

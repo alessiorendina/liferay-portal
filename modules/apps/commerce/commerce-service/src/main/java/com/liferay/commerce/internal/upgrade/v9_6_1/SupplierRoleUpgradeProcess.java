@@ -69,16 +69,16 @@ public class SupplierRoleUpgradeProcess extends UpgradeProcess {
 
 			if (_resourcePermissionLocalService.hasResourcePermission(
 					companyId,
-					"com_liferay_commerce_inventory_web_internal_portlet_" +
-						"CommerceInventoryPortlet",
+					"com_liferay_commerce_inventory_admin_web_internal_portlet_" +
+						"CommerceInventoryAdminPortlet",
 					1, String.valueOf(companyId),
 					accountSupplierRole.getRoleId(),
 					ActionKeys.ACCESS_IN_CONTROL_PANEL)) {
 
 				_resourcePermissionLocalService.removeResourcePermission(
 					companyId,
-					"com_liferay_commerce_inventory_web_internal_portlet_" +
-						"CommerceInventoryPortlet",
+					"com_liferay_commerce_inventory_admin_web_internal_portlet_" +
+						"CommerceInventoryAdminPortlet",
 					1, String.valueOf(companyId),
 					accountSupplierRole.getRoleId(),
 					ActionKeys.ACCESS_IN_CONTROL_PANEL);

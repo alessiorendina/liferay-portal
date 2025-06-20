@@ -82,7 +82,7 @@ test('LPD-34906 Verify wishlist visibility rules', async ({
 			getWidgetDefinition({
 				id: getRandomString(),
 				widgetName:
-					'com_liferay_commerce_wish_list_web_internal_portlet_CommerceWishListContentPortlet',
+					'com_liferay_commerce_wish_list_web_internal_portlet_CommerceWishListPortlet',
 			}),
 		]),
 		siteId: site.id,

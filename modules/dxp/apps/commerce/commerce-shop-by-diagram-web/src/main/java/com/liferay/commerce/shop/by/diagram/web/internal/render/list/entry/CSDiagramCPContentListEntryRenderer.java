@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 	property = {
 		"commerce.product.content.list.entry.renderer.key=" + CSDiagramCPContentListEntryRenderer.KEY,
 		"commerce.product.content.list.entry.renderer.order=" + Integer.MIN_VALUE,
-		"commerce.product.content.list.entry.renderer.portlet.name=" + CPPortletKeys.CP_PUBLISHER_WEB,
+		"commerce.product.content.list.entry.renderer.portlet.name=" + CPPortletKeys.CP_PUBLISHER,
 		"commerce.product.content.list.entry.renderer.portlet.name=" + CPPortletKeys.CP_SEARCH_RESULTS,
 		"commerce.product.content.list.entry.renderer.type=diagram"
 	},

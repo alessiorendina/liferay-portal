@@ -12,7 +12,7 @@ import com.liferay.frontend.data.set.view.list.BaseListFDSView;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Alessio Antonio Rendina
+ * @author Luca Pellizzon
  */
 @Component(
 	property = "frontend.data.set.name=" + CommerceOrderFDSNames.SHIPPING_ADDRESSES,

@@ -5,7 +5,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.catalog</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_catalog_admin_web_internal_portlet_CommerceCatalogsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -26,7 +26,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.channel</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_channel_admin_web_internal_portlet_CommerceChannelsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -58,10 +58,10 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.product</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet</portlet-name>
 			<portlet-name>com_liferay_commerce_product_options_web_internal_portlet_CPOptionCategoriesPortlet</portlet-name>
-			<portlet-name>com_liferay_commerce_product_options_web_internal_portlet_CPOptionsPortlet</portlet-name>
-			<portlet-name>com_liferay_commerce_product_options_web_internal_portlet_CPSpecificationOptionsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_product_options_admin_web_internal_portlet_CPOptionsAdminPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_product_options_admin_web_internal_portlet_CPSpecificationOptionsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -106,7 +106,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.product.model.CommerceCatalog</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_catalog_admin_web_internal_portlet_CommerceCatalogsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
 		<permissions>
@@ -135,7 +135,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.product.model.CommerceChannel</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_channel_admin_web_internal_portlet_CommerceChannelsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
 		<permissions>
@@ -163,7 +163,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.product.model.CPDefinition</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
 		<permissions>
@@ -192,7 +192,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.product.model.CPInstance</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
 		<permissions>
@@ -221,7 +221,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.product.model.CPOption</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_catalog_admin_web_internal_portlet_CommerceCatalogsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>3</weight>
 		<permissions>
@@ -250,7 +250,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.product.model.CPOptionCategory</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_catalog_admin_web_internal_portlet_CommerceCatalogsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>3</weight>
 		<permissions>
@@ -279,7 +279,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.product.model.CPSpecificationOption</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_catalog_admin_web_internal_portlet_CommerceCatalogsAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>4</weight>
 		<permissions>
@@ -308,7 +308,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.tax</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_product_tax_category_web_internal_portlet_CPTaxCategoryPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_product_tax_category_admin_web_internal_portlet_CPTaxCategoryAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>

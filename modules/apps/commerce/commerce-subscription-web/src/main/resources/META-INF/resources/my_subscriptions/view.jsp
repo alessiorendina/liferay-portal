@@ -8,11 +8,11 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CommerceSubscriptionContentDisplayContext commerceSubscriptionContentDisplayContext = (CommerceSubscriptionContentDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+CommerceSubscriptionDisplayContext commerceSubscriptionDisplayContext = (CommerceSubscriptionDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 %>
 
 <c:choose>
-	<c:when test="<%= !commerceSubscriptionContentDisplayContext.hasCommerceChannel() %>">
+	<c:when test="<%= !commerceSubscriptionDisplayContext.hasCommerceChannel() %>">
 		<div class="alert alert-info mx-auto">
 			<liferay-ui:message key="this-site-does-not-have-a-channel" />
 		</div>
@@ -22,8 +22,8 @@ CommerceSubscriptionContentDisplayContext commerceSubscriptionContentDisplayCont
 			<div class="commerce-product-subscription-entries-container" id="<portlet:namespace />entriesContainer">
 				<liferay-ui:search-container
 					id="commerceSubscriptionEntries"
-					iteratorURL="<%= commerceSubscriptionContentDisplayContext.getPortletURL() %>"
-					searchContainer="<%= commerceSubscriptionContentDisplayContext.getSearchContainer() %>"
+					iteratorURL="<%= commerceSubscriptionDisplayContext.getPortletURL() %>"
+					searchContainer="<%= commerceSubscriptionDisplayContext.getSearchContainer() %>"
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.commerce.model.CommerceSubscriptionEntry"
@@ -34,11 +34,11 @@ CommerceSubscriptionContentDisplayContext commerceSubscriptionContentDisplayCont
 						<%
 						CommerceOrderItem commerceOrderItem = commerceSubscriptionEntry.fetchCommerceOrderItem();
 
-						String thumbnailSrc = commerceSubscriptionContentDisplayContext.getCommerceSubscriptionEntryThumbnailSrc(commerceSubscriptionEntry);
+						String thumbnailSrc = commerceSubscriptionDisplayContext.getCommerceSubscriptionEntryThumbnailSrc(commerceSubscriptionEntry);
 
 						StringJoiner stringJoiner = new StringJoiner(StringPool.COMMA);
 
-						for (KeyValuePair keyValuePair : commerceSubscriptionContentDisplayContext.getKeyValuePairs(commerceSubscriptionEntry)) {
+						for (KeyValuePair keyValuePair : commerceSubscriptionDisplayContext.getKeyValuePairs(commerceSubscriptionEntry)) {
 							stringJoiner.add(keyValuePair.getValue());
 						}
 						%>
@@ -51,7 +51,7 @@ CommerceSubscriptionContentDisplayContext commerceSubscriptionContentDisplayCont
 						<liferay-ui:search-container-column-text
 							name="description"
 						>
-							<a class="font-weight-bold" href="<%= HtmlUtil.escapeHREF(commerceSubscriptionContentDisplayContext.getCPDefinitionURL(commerceSubscriptionEntry, themeDisplay)) %>">
+							<a class="font-weight-bold" href="<%= HtmlUtil.escapeHREF(commerceSubscriptionDisplayContext.getCPDefinitionURL(commerceSubscriptionEntry, themeDisplay)) %>">
 								<%= (commerceOrderItem == null) ? StringPool.BLANK : HtmlUtil.escape(commerceOrderItem.getName(languageId)) %>
 							</a>
 
@@ -82,11 +82,11 @@ CommerceSubscriptionContentDisplayContext commerceSubscriptionContentDisplayCont
 						CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
 						%>
 
-						<c:if test="<%= commerceSubscriptionContentDisplayContext.isPaymentMethodActive(commerceOrder.getCommercePaymentMethodKey()) %>">
+						<c:if test="<%= commerceSubscriptionDisplayContext.isPaymentMethodActive(commerceOrder.getCommercePaymentMethodKey()) %>">
 							<liferay-ui:search-container-column-text>
 
 								<%
-								DropdownItemList commerceSubscriptionEntryActionItemList = commerceSubscriptionContentDisplayContext.getCommerceSubscriptionEntryActionItemList(commerceSubscriptionEntry, renderRequest, renderResponse);
+								DropdownItemList commerceSubscriptionEntryActionItemList = commerceSubscriptionDisplayContext.getCommerceSubscriptionEntryActionItemList(commerceSubscriptionEntry, renderRequest, renderResponse);
 								%>
 
 								<c:if test="<%= commerceSubscriptionEntryActionItemList != null %>">

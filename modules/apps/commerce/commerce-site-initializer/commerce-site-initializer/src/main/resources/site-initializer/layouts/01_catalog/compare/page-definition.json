@@ -101,7 +101,7 @@
 															"simple--cpTypeListEntryRendererKey": "list-entry-default",
 															"virtual--cpTypeListEntryRendererKey": "list-entry-default"
 														},
-														"widgetName": "com_liferay_commerce_product_content_web_internal_portlet_CPCompareContentPortlet"
+														"widgetName": "com_liferay_commerce_product_web_internal_portlet_CPComparePortlet"
 													}
 												},
 												"type": "Widget"

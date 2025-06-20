@@ -1209,7 +1209,7 @@ definition {
 		var amount = 0;
 
 		while (IsElementPresent(key_value1 = ${count1}, locator1 = "CommerceEntry#WAREHOUSE_INVENTORY_ITEM_QUANTITY")) {
-			var temp1 = selenium.getAttribute("//input[contains(@id,'_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_commerceInventoryWarehouseItemQuantity${count1}')]@value");
+			var temp1 = selenium.getAttribute("//input[contains(@id,'_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet_commerceInventoryWarehouseItemQuantity${count1}')]@value");
 
 			var amount = ${temp1} + ${amount};
 			var count1 = ${count1} + 1;

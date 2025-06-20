@@ -4,8 +4,8 @@
 	title = ''
 />
 
-<#if cpCategoryContentDisplayContext.getDefaultImageSrc()??>
-	<#assign image = cpCategoryContentDisplayContext.getDefaultImageSrc() />
+<#if cpCategoryDisplayContext.getDefaultImageSrc()??>
+	<#assign image = cpCategoryDisplayContext.getDefaultImageSrc() />
 </#if>
 
 <#if assetCategory??>

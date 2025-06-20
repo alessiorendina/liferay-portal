@@ -21,7 +21,7 @@ CSDiagramType csDiagramType = csDiagramSettingDisplayContext.getCSDiagramType(ty
 
 <aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/commerce-shop-by-diagram-web/css/shop-by-diagram-edit-page.css") %>' rel="stylesheet" />
 
-<portlet:actionURL name="/cp_definitions/edit_cs_diagram_setting" var="editProductDefinitionDiagramSettingActionURL" />
+<portlet:actionURL name="/cp_definitions_admin/edit_cs_diagram_setting" var="editProductDefinitionDiagramSettingActionURL" />
 
 <aui:form action="<%= editProductDefinitionDiagramSettingActionURL %>" cssClass="mt-4" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="updateCSDiagramSetting" />
@@ -69,7 +69,7 @@ CSDiagramType csDiagramType = csDiagramSettingDisplayContext.getCSDiagramType(ty
 				<aui:model-context bean="<%= fileEntry %>" model="<%= FileEntry.class %>" />
 
 				<div class="lfr-attachment-cover-image-selector">
-					<portlet:actionURL name="/cp_definitions/upload_cs_diagram_setting_image" var="uploadCSDiagramSettingImageActionURL" />
+					<portlet:actionURL name="/cp_definitions_admin/upload_cs_diagram_setting_image" var="uploadCSDiagramSettingImageActionURL" />
 
 					<liferay-item-selector:image-selector
 						draggableImage="vertical"

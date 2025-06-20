@@ -19,7 +19,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.availability</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_availability_estimate_web_internal_portlet_CommerceAvailabilityEstimatePortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_availability_estimate_admin_web_internal_portlet_CommerceAvailabilityEstimateAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -37,7 +37,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.health</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_health_status_web_internal_portlet_CommerceHealthCheckPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_health_status_admin_web_internal_portlet_CommerceHealthCheckAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -55,8 +55,8 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.model.CommerceOrder</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet</portlet-name>
-			<portlet-name>com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_admin_web_internal_portlet_CommerceOrderAdminPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_web_internal_portlet_CommerceOpenOrderPortlet</portlet-name>
 			<portlet-name>com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
@@ -75,10 +75,10 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.model.CommerceOrderType</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet</portlet-name>
-			<portlet-name>com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_admin_web_internal_portlet_CommerceOrderAdminPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_admin_web_internal_portlet_CommerceOrderTypeAdminPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_web_internal_portlet_CommerceOpenOrderPortlet</portlet-name>
 			<portlet-name>com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet</portlet-name>
-			<portlet-name>com_liferay_commerce_order_web_internal_portlet_CommerceOrderTypePortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
 		<permissions>
@@ -107,8 +107,8 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.order</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet</portlet-name>
-			<portlet-name>com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_admin_web_internal_portlet_CommerceOrderAdminPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_web_internal_portlet_CommerceOpenOrderPortlet</portlet-name>
 			<portlet-name>com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
@@ -159,7 +159,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.order.type</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_order_web_internal_portlet_CommerceOrderTypePortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_admin_web_internal_portlet_CommerceOrderTypeAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -179,7 +179,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.return</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_order_web_internal_portlet_CommerceReturnPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_admin_web_internal_portlet_CommerceReturnAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -197,7 +197,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.shipment</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_shipment_web_internal_portlet_CommerceShipmentPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_shipment_admin_web_internal_portlet_CommerceShipmentAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -217,7 +217,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.subscription</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_subscription_web_internal_portlet_CommerceSubscriptionContentPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_subscription_web_internal_portlet_CommerceSubscriptionPortlet</portlet-name>
 			<portlet-name>com_liferay_commerce_subscription_web_internal_portlet_CommerceSubscriptionEntryPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>

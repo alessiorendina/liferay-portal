@@ -6,7 +6,7 @@
 			{
 				"layoutColumnId": "column-1",
 				"layoutColumnPos": 0,
-				"portletName": "com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet"
+				"portletName": "com_liferay_commerce_product_web_internal_portlet_CPContentPortlet"
 			}
 		],
 		"privateLayout": false
@@ -18,7 +18,7 @@
 			{
 				"layoutColumnId": "column-1",
 				"layoutColumnPos": 0,
-				"portletName": "com_liferay_commerce_product_content_web_internal_portlet_CPCategoryContentPortlet"
+				"portletName": "com_liferay_commerce_product_category_web_internal_portlet_CPCategoryPortlet"
 			}
 		],
 		"privateLayout": false

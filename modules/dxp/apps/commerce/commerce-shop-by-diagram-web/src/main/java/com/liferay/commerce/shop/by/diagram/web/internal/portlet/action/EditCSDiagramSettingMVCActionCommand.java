@@ -61,8 +61,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	configurationPid = "com.liferay.commerce.shop.by.diagram.configuration.CSDiagramSettingImageConfiguration",
 	property = {
-		"javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS,
-		"mvc.command.name=/cp_definitions/edit_cs_diagram_setting"
+		"javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS_ADMIN,
+		"mvc.command.name=/cp_definitions_admin/edit_cs_diagram_setting"
 	},
 	service = MVCActionCommand.class
 )

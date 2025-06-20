@@ -282,7 +282,7 @@
 																			{
 																				"definition": {
 																					"fragment": {
-																						"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.StatusLabelFragmentRenderer"
+																						"key": "com.liferay.commerce.order.web.internal.fragment.renderer.StatusLabelFragmentRenderer"
 																					},
 																					"fragmentConfig": {
 																						"selectedStatus": "orderStatusInfo"
@@ -296,7 +296,7 @@
 																			{
 																				"definition": {
 																					"fragment": {
-																						"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.StatusLabelFragmentRenderer"
+																						"key": "com.liferay.commerce.order.web.internal.fragment.renderer.StatusLabelFragmentRenderer"
 																					},
 																					"fragmentConfig": {
 																						"selectedStatus": "workflowStatusInfo"
@@ -363,7 +363,7 @@
 														"definition": {
 															"customCSS": ".[$FRAGMENT_CLASS$] {\nmargin: -5px 0;\n}",
 															"fragment": {
-																"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InlineEditableOrderFieldFragmentRenderer"
+																"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InlineEditableOrderFieldFragmentRenderer"
 															},
 															"fragmentConfig": {
 																"field": "name",
@@ -385,7 +385,7 @@
 														"definition": {
 															"customCSS": ".[$FRAGMENT_CLASS$] {\nmargin: -5px 0;\n}",
 															"fragment": {
-																"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InlineEditableOrderFieldFragmentRenderer"
+																"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InlineEditableOrderFieldFragmentRenderer"
 															},
 															"fragmentConfig": {
 																"field": "externalReferenceCode",
@@ -450,7 +450,7 @@
 																"d-flex"
 															],
 															"fragment": {
-																"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderActionsFragmentRenderer"
+																"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderActionsFragmentRenderer"
 															},
 															"fragmentConfig": {
 																"csv": true,
@@ -604,7 +604,7 @@
 																	{
 																		"definition": {
 																			"fragment": {
-																				"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.StepTrackerFragmentRenderer"
+																				"key": "com.liferay.commerce.order.web.internal.fragment.renderer.StepTrackerFragmentRenderer"
 																			},
 																			"fragmentConfig": {
 																			},
@@ -769,7 +769,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -787,7 +787,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -805,7 +805,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -825,7 +825,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -843,7 +843,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -908,7 +908,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -926,7 +926,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -944,7 +944,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -962,7 +962,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -1024,7 +1024,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -1042,7 +1042,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -1060,7 +1060,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -1078,7 +1078,7 @@
 																							{
 																								"definition": {
 																									"fragment": {
-																										"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
+																										"key": "com.liferay.commerce.order.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 																									},
 																									"fragmentConfig": {
 																										"buttonStyle": "secondary",
@@ -1201,7 +1201,7 @@
 																					{
 																						"definition": {
 																							"fragment": {
-																								"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderItemsDataSetFragmentRenderer"
+																								"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderItemsDataSetFragmentRenderer"
 																							},
 																							"fragmentConfig": {
 																								"displayStyle": "fluid"
@@ -1220,7 +1220,7 @@
 																					{
 																						"definition": {
 																							"fragment": {
-																								"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.MultishippingFragmentRenderer"
+																								"key": "com.liferay.commerce.order.web.internal.fragment.renderer.MultishippingFragmentRenderer"
 																							},
 																							"fragmentConfig": {
 																								"displayStyle": "fluid"
@@ -1394,7 +1394,7 @@
 																				"definition": {
 																					"customCSS": ".[$FRAGMENT_CLASS$] {\n}",
 																					"fragment": {
-																						"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
+																						"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
 																					},
 																					"fragmentConfig": {
 																						"field": "subtotalFormatted",
@@ -1413,7 +1413,7 @@
 																					],
 																					"customCSS": ".[$FRAGMENT_CLASS$] {\n.order-summary-label {}\n}",
 																					"fragment": {
-																						"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
+																						"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
 																					},
 																					"fragmentConfig": {
 																						"field": "subtotalDiscountValueFormatted",
@@ -1428,7 +1428,7 @@
 																			{
 																				"definition": {
 																					"fragment": {
-																						"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
+																						"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
 																					},
 																					"fragmentConfig": {
 																						"field": "totalDiscountValueFormatted",
@@ -1443,7 +1443,7 @@
 																			{
 																				"definition": {
 																					"fragment": {
-																						"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
+																						"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
 																					},
 																					"fragmentConfig": {
 																						"field": "couponCode",
@@ -1458,7 +1458,7 @@
 																			{
 																				"definition": {
 																					"fragment": {
-																						"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
+																						"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
 																					},
 																					"fragmentConfig": {
 																						"field": "taxValueFormatted",
@@ -1473,7 +1473,7 @@
 																			{
 																				"definition": {
 																					"fragment": {
-																						"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
+																						"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
 																					},
 																					"fragmentConfig": {
 																						"field": "shippingValueFormatted",
@@ -1488,7 +1488,7 @@
 																			{
 																				"definition": {
 																					"fragment": {
-																						"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
+																						"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
 																					},
 																					"fragmentConfig": {
 																						"field": "shippingDiscountValueFormatted",
@@ -1609,7 +1609,7 @@
 																				"definition": {
 																					"customCSS": ".[$FRAGMENT_CLASS$] {\nwidth: auto;\nblock-size: auto;\n}",
 																					"fragment": {
-																						"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
+																						"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderSummaryFragmentRenderer"
 																					},
 																					"fragmentConfig": {
 																						"field": "totalFormatted",
@@ -1650,7 +1650,7 @@
 									{
 										"definition": {
 											"fragment": {
-												"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.OrderReturnsDataSetFragmentRenderer"
+												"key": "com.liferay.commerce.order.web.internal.fragment.renderer.OrderReturnsDataSetFragmentRenderer"
 											},
 											"fragmentConfig": {
 												"displayStyle": "fluid"
@@ -1672,7 +1672,7 @@
 									{
 										"definition": {
 											"fragment": {
-												"key": "com.liferay.commerce.order.content.web.internal.fragment.renderer.PlacedOrderShipmentsDataSetFragmentRenderer"
+												"key": "com.liferay.commerce.order.web.internal.fragment.renderer.PlacedOrderShipmentsDataSetFragmentRenderer"
 											},
 											"fragmentConfig": {
 												"displayStyle": "fluid"

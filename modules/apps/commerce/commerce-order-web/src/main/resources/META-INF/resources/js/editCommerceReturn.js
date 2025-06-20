@@ -3,34 +3,87 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export default function editCommerceReturn({namespace}) {
-	let refreshPage = false;
+import {CommerceServiceProvider} from 'commerce-frontend-js';
+import {openToast} from 'frontend-js-components-web';
 
-	Liferay.on('return-item-updated', () => {
-		refreshPage = true;
-	});
+function handleEvent(
+	{commerceReturnId, fieldName, namespace, redirectURL, returnStatus},
+	form
+) {
+	const CommerceReturnResource = CommerceServiceProvider.ReturnAPI();
 
-	Liferay.on('side-panel-closed', () => {
-		if (refreshPage) {
-			window.location.reload();
-		}
-	});
+	const field = form.querySelector(`#${namespace}${fieldName}`);
 
+	const returnData = {
+		...(field && fieldName && {[fieldName]: field.value}),
+		...(returnStatus && {returnStatus}),
+	};
+
+	return CommerceReturnResource.updateItemById(commerceReturnId, returnData)
+		.then(() => {
+			window.top.location.href = redirectURL;
+
+			openToast({
+				message: Liferay.Language.get(
+					'your-request-completed-successfully'
+				),
+				type: 'success',
+			});
+		})
+		.catch((error) => {
+			openToast({
+				message:
+					error.message ||
+					Liferay.Language.get('an-unexpected-error-occurred'),
+				type: 'danger',
+			});
+		});
+}
+
+export default function ({
+	commerceReturnId,
+	fieldName,
+	namespace,
+	redirectURL,
+	returnStatus,
+}) {
 	const form = document.getElementById(`${namespace}fm`);
 
-	const markAsCompletedButton = document.getElementById(
-		`${namespace}markAsCompletedButton`
-	);
-
-	if (form && markAsCompletedButton) {
-		markAsCompletedButton.addEventListener('click', (event) => {
+	if (form) {
+		form.addEventListener('submit', (event) => {
 			event.preventDefault();
 
-			const cmd = form.querySelector(`#${namespace}cmd`);
+			handleEvent(
+				{
+					commerceReturnId,
+					fieldName,
+					namespace,
+					redirectURL,
+					returnStatus,
+				},
+				form
+			);
+		});
+	}
 
-			cmd.value = 'markAsCompleted';
+	const submitReturnRequestButton = document.getElementById(
+		`${namespace}submitReturnRequestButton`
+	);
 
-			submitForm(form);
+	if (form && submitReturnRequestButton) {
+		submitReturnRequestButton.addEventListener('click', (event) => {
+			event.preventDefault();
+
+			handleEvent(
+				{
+					commerceReturnId,
+					fieldName,
+					namespace,
+					redirectURL,
+					returnStatus,
+				},
+				form
+			);
 		});
 	}
 }

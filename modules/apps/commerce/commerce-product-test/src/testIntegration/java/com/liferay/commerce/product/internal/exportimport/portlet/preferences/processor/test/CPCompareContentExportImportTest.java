@@ -23,8 +23,7 @@ public class CPCompareContentExportImportTest extends BaseExportImportTestCase {
 	@Override
 	public String getPortletId() throws Exception {
 		return PortletIdCodec.encode(
-			CPPortletKeys.CP_COMPARE_CONTENT_WEB,
-			RandomTestUtil.randomString());
+			CPPortletKeys.CP_COMPARE, RandomTestUtil.randomString());
 	}
 
 	@Override

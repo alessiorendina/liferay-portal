@@ -78,13 +78,13 @@ public class ReturnsManagerRoleUpgradeProcess extends UpgradeProcess {
 			}
 
 			if (!_resourcePermissionLocalService.hasResourcePermission(
-					companyId, CommercePortletKeys.COMMERCE_PAYMENT,
+					companyId, CommercePortletKeys.COMMERCE_PAYMENT_ADMIN,
 					ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 					returnsManagerRole.getRoleId(),
 					ActionKeys.ACCESS_IN_CONTROL_PANEL)) {
 
 				_resourcePermissionLocalService.addResourcePermission(
-					companyId, CommercePortletKeys.COMMERCE_PAYMENT,
+					companyId, CommercePortletKeys.COMMERCE_PAYMENT_ADMIN,
 					ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 					returnsManagerRole.getRoleId(),
 					ActionKeys.ACCESS_IN_CONTROL_PANEL);

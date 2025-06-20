@@ -7,7 +7,6 @@ package com.liferay.commerce.order.web.internal.portlet.action;
 
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.exception.CommerceOrderNoteContentException;
-import com.liferay.commerce.exception.DuplicateCommerceOrderExternalReferenceCodeException;
 import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.CommerceOrderService;
@@ -28,8 +27,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
-		"mvc.command.name=/commerce_order/edit_commerce_order_external_reference_code"
+		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_OPEN_ORDER,
+		"mvc.command.name=/commerce_open_order/edit_commerce_order_external_reference_code"
 	},
 	service = MVCActionCommand.class
 )
@@ -45,9 +44,7 @@ public class EditCommerceOrderExternalReferenceCodeMVCActionCommand
 			_updateCommerceOrderExternalReferenceCode(actionRequest);
 		}
 		catch (Exception exception) {
-			if (exception instanceof
-					DuplicateCommerceOrderExternalReferenceCodeException ||
-				exception instanceof NoSuchOrderException ||
+			if (exception instanceof NoSuchOrderException ||
 				exception instanceof PrincipalException) {
 
 				SessionErrors.add(actionRequest, exception.getClass());

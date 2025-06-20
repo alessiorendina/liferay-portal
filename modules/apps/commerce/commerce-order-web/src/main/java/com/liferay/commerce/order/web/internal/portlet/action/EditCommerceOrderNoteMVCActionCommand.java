@@ -30,8 +30,9 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
+		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_OPEN_ORDER,
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
-		"mvc.command.name=/commerce_order/edit_commerce_order_note"
+		"mvc.command.name=/commerce_open_order/edit_commerce_order_note"
 	},
 	service = MVCActionCommand.class
 )
@@ -56,15 +57,15 @@ public class EditCommerceOrderNoteMVCActionCommand
 			}
 		}
 		catch (Exception exception) {
-			if (exception instanceof NoSuchOrderNoteException ||
-				exception instanceof PrincipalException) {
+			if (exception instanceof CommerceOrderNoteContentException) {
+				SessionErrors.add(actionRequest, exception.getClass());
+			}
+			else if (exception instanceof NoSuchOrderNoteException ||
+					 exception instanceof PrincipalException) {
 
 				SessionErrors.add(actionRequest, exception.getClass());
 
 				actionResponse.setRenderParameter("mvcPath", "/error.jsp");
-			}
-			else if (exception instanceof CommerceOrderNoteContentException) {
-				SessionErrors.add(actionRequest, exception.getClass());
 			}
 			else {
 				throw exception;
@@ -84,11 +85,11 @@ public class EditCommerceOrderNoteMVCActionCommand
 	private void _updateCommerceOrderNote(ActionRequest actionRequest)
 		throws Exception {
 
-		long commerceOrderNoteId = ParamUtil.getLong(
-			actionRequest, "commerceOrderNoteId");
-
 		String content = ParamUtil.getString(actionRequest, "content");
 		boolean restricted = ParamUtil.getBoolean(actionRequest, "restricted");
+
+		long commerceOrderNoteId = ParamUtil.getLong(
+			actionRequest, "commerceOrderNoteId");
 
 		if (commerceOrderNoteId <= 0) {
 			long commerceOrderId = ParamUtil.getLong(

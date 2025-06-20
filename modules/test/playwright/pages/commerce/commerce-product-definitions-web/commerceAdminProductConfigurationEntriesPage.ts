@@ -15,7 +15,7 @@ export class CommerceAdminProductConfigurationEntriesPage extends CommerceDNDTab
 	constructor(page: Page) {
 		super(
 			page,
-			'#portlet_com_liferay_commerce_product_definitions_web_internal_portlet_CPConfigurationListsPortlet .fds table'
+			'#portlet_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPConfigurationListsAdminPortlet .fds table'
 		);
 		this.differenceIcon = (locator = page) => {
 			return locator.locator('.product-configuration-value .icon');

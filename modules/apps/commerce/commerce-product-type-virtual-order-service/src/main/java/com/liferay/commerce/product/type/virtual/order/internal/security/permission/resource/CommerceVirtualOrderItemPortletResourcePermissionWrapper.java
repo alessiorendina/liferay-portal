@@ -32,8 +32,7 @@ public class CommerceVirtualOrderItemPortletResourcePermissionWrapper
 			CommerceVirtualOrderConstants.RESOURCE_NAME,
 			new StagedPortletPermissionLogic(
 				_stagingPermission,
-				CommerceVirtualOrderPortletKeys.
-					COMMERCE_VIRTUAL_ORDER_ITEM_CONTENT));
+				CommerceVirtualOrderPortletKeys.COMMERCE_VIRTUAL_ORDER_ITEM));
 	}
 
 	@Reference

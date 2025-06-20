@@ -19,7 +19,7 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 
-		FileInstall.deleteConfigFile(configFile = "com.liferay.commerce.product.definitions.web.internal.configuration.CPInstanceConfiguration.config");
+		FileInstall.deleteConfigFile(configFile = "com.liferay.commerce.product.definitions.admin.web.internal.configuration.CPInstanceConfiguration.config");
 
 		for (var config : list "default,original,test1,test2,") {
 			FileInstall.deleteConfigFile(configFile = "com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration~${config}.config");
@@ -96,7 +96,7 @@ definition {
 		property test.run.type = "single";
 
 		task ("Given no osgi config file exists for a specific config") {
-			var configName = "com.liferay.commerce.product.definitions.web.internal.configuration.CPInstanceConfiguration";
+			var configName = "com.liferay.commerce.product.definitions.admin.web.internal.configuration.CPInstanceConfiguration";
 
 			OSGiConfig.assertOSGiConfigDoesNotExist(osgiConfigFileName = "${configName}.config");
 		}
@@ -134,13 +134,13 @@ definition {
 	@priority = 3
 	test ConfigAddedViaUIUpdatesExistingOSGIConfigFile {
 		property database.types = "mysql";
-		property osgi.module.configuration.file.names = "com.liferay.commerce.product.definitions.web.internal.configuration.CPInstanceConfiguration.config";
+		property osgi.module.configuration.file.names = "com.liferay.commerce.product.definitions.admin.web.internal.configuration.CPInstanceConfiguration.config";
 		property osgi.module.configurations = "checkInterval=I\"33\"";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
 		task ("Given an osgi config file exists for a specific config") {
-			var configName = "com.liferay.commerce.product.definitions.web.internal.configuration.CPInstanceConfiguration";
+			var configName = "com.liferay.commerce.product.definitions.admin.web.internal.configuration.CPInstanceConfiguration";
 
 			OSGiConfig.assertTextInOSGiConfig(
 				osgiConfigFileName = "${configName}.config",
@@ -193,7 +193,7 @@ definition {
 			var config = "checkInterval=I\"44\"";
 
 			var config = '''${config}''';
-			var configName = "com.liferay.commerce.product.definitions.web.internal.configuration.CPInstanceConfiguration";
+			var configName = "com.liferay.commerce.product.definitions.admin.web.internal.configuration.CPInstanceConfiguration";
 			var liferayHome = PropsUtil.get("liferay.home.dir.name");
 
 			FileUtil.write("${liferayHome}/osgi/modules/${configName}.config", ${config});
@@ -265,7 +265,7 @@ definition {
 		property test.run.type = "sequential";
 
 		task ("Given no osgi config file exists for a specific config") {
-			var configName = "com.liferay.commerce.product.definitions.web.internal.configuration.CPInstanceConfiguration";
+			var configName = "com.liferay.commerce.product.definitions.admin.web.internal.configuration.CPInstanceConfiguration";
 
 			OSGiConfig.assertOSGiConfigDoesNotExist(osgiConfigFileName = "${configName}.config");
 		}

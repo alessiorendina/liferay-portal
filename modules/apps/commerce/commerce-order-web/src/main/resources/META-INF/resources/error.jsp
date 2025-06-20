@@ -9,10 +9,23 @@
 
 <liferay-ui:error-header />
 
-<liferay-ui:error exception="<%= DuplicateCommerceOrderExternalReferenceCodeException.class %>" message="please-enter-a-unique-external-reference-code" />
-<liferay-ui:error exception="<%= DuplicateCommerceOrderTypeExternalReferenceCodeException.class %>" message="please-enter-a-unique-external-reference-code" />
-<liferay-ui:error exception="<%= DuplicateObjectEntryExternalReferenceCodeException.class %>" message="please-enter-a-unique-external-reference-code" />
-<liferay-ui:error exception="<%= NoSuchObjectEntryException.class %>" message="the-object-could-not-be-found" />
+<liferay-ui:error exception="<%= CommerceOrderImporterTypeException.class %>">
+
+	<%
+	String commerceOrderImporterTypeKey = (String)SessionErrors.get(renderRequest, CommerceOrderImporterTypeException.class);
+	%>
+
+	<c:choose>
+		<c:when test="<%= Validator.isNull(commerceOrderImporterTypeKey) %>">
+			<liferay-ui:message key="the-import-process-failed" />
+		</c:when>
+		<c:otherwise>
+			<liferay-ui:message arguments="<%= commerceOrderImporterTypeKey %>" key="the-x-could-not-be-imported" />
+		</c:otherwise>
+	</c:choose>
+</liferay-ui:error>
+
+<liferay-ui:error exception="<%= NoSuchEntryException.class %>" message="to-add-a-product-to-an-order,-first-select-an-account" />
 <liferay-ui:error exception="<%= NoSuchOrderException.class %>" message="the-order-could-not-be-found" />
 <liferay-ui:error exception="<%= NoSuchOrderNoteException.class %>" message="the-note-could-not-be-found" />
 

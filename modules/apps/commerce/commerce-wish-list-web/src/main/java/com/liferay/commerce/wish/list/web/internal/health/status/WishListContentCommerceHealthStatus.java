@@ -76,7 +76,7 @@ public class WishListContentCommerceHealthStatus
 
 		layoutTypePortlet.addPortletId(
 			_portal.getUserId(httpServletRequest),
-			CommerceWishListPortletKeys.COMMERCE_WISH_LIST_CONTENT);
+			CommerceWishListPortletKeys.COMMERCE_WISH_LIST);
 
 		_layoutService.updateLayout(
 			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
@@ -122,8 +122,7 @@ public class WishListContentCommerceHealthStatus
 		throws PortalException {
 
 		long plid = _portal.getPlidFromPortletId(
-			commerceChannelId,
-			CommerceWishListPortletKeys.COMMERCE_WISH_LIST_CONTENT);
+			commerceChannelId, CommerceWishListPortletKeys.COMMERCE_WISH_LIST);
 
 		if (plid > 0) {
 			return true;

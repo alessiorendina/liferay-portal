@@ -41,7 +41,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 	constructor(page: Page) {
 		super(
 			page,
-			'#portlet_com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet .fds table'
+			'#portlet_com_liferay_commerce_order_web_internal_portlet_CommerceOpenOrderPortlet .fds table'
 		);
 
 		this.approveButton = page.getByText('Approve');
@@ -73,7 +73,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 		this.orderItemExpandButton = (productName) =>
 			page.getByRole('gridcell', {name: productName}).getByRole('button');
 		this.orderItemsTable = page.locator(
-			'#portlet_com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet .fds table'
+			'#portlet_com_liferay_commerce_order_web_internal_portlet_CommerceOpenOrderPortlet .fds table'
 		);
 		this.orderItemsTableRow = async (
 			colPosition: number,

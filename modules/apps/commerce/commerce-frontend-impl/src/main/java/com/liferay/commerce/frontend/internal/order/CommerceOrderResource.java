@@ -62,7 +62,7 @@ public class CommerceOrderResource {
 				httpServletRequest, CommerceOrder.class.getName(),
 				PortletProvider.Action.EDIT)
 		).setActionName(
-			"/commerce_open_order_content/edit_commerce_order"
+			"/commerce_open_order/edit_commerce_order"
 		).setCMD(
 			"setCurrent"
 		).setParameter(

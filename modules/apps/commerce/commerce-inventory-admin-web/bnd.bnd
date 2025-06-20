@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Commerce Inventory Admin Web
+Bundle-SymbolicName: com.liferay.commerce.inventory.admin.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /commerce-inventory-admin-web
+-dsannotations-options: inherit

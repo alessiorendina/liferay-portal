@@ -14,7 +14,7 @@ public class FunctionCommerceTaxEngineFDSNames {
 
 	public static final String
 		FUNCTION_COMMERCE_TAX_ENGINE_TAX_CATEGORY_MAPPINGS =
-			CommercePortletKeys.COMMERCE_TAX_METHODS +
+			CommercePortletKeys.COMMERCE_TAX_METHOD_ADMIN +
 				"-functionCommerceTaxEngineTaxCategoryMappings";
 
 }

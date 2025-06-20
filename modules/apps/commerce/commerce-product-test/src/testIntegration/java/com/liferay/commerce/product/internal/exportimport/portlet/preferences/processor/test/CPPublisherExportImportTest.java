@@ -23,7 +23,7 @@ public class CPPublisherExportImportTest extends BaseExportImportTestCase {
 	@Override
 	public String getPortletId() throws Exception {
 		return PortletIdCodec.encode(
-			CPPortletKeys.CP_PUBLISHER_WEB, RandomTestUtil.randomString());
+			CPPortletKeys.CP_PUBLISHER, RandomTestUtil.randomString());
 	}
 
 	@Override

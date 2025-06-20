@@ -109,7 +109,8 @@ public class ReturnsManagerRoleUpgradeProcessTest {
 		Assert.assertTrue(
 			ListUtil.exists(
 				_resourcePermissionLocalService.getRoles(
-					_group.getCompanyId(), CommercePortletKeys.COMMERCE_PAYMENT,
+					_group.getCompanyId(),
+					CommercePortletKeys.COMMERCE_PAYMENT_ADMIN,
 					ResourceConstants.SCOPE_COMPANY,
 					String.valueOf(_group.getCompanyId()),
 					ActionKeys.ACCESS_IN_CONTROL_PANEL),
@@ -158,7 +159,7 @@ public class ReturnsManagerRoleUpgradeProcessTest {
 			String.valueOf(_group.getCompanyId()), role.getRoleId(),
 			ActionKeys.VIEW);
 		_resourcePermissionLocalService.removeResourcePermission(
-			_group.getCompanyId(), CommercePortletKeys.COMMERCE_PAYMENT,
+			_group.getCompanyId(), CommercePortletKeys.COMMERCE_PAYMENT_ADMIN,
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(_group.getCompanyId()), role.getRoleId(),
 			ActionKeys.ACCESS_IN_CONTROL_PANEL);

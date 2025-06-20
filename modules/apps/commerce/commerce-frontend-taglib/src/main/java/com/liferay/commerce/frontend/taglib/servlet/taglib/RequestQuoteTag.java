@@ -259,15 +259,15 @@ public class RequestQuoteTag extends IncludeTag {
 
 		long plid = PortalUtil.getPlidFromPortletId(
 			themeDisplay.getScopeGroupId(),
-			CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT);
+			CommercePortletKeys.COMMERCE_OPEN_ORDER);
 
 		if (plid > 0) {
 			return PortletURLBuilder.create(
 				_getPortletURL(
 					themeDisplay.getRequest(),
-					CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT)
+					CommercePortletKeys.COMMERCE_OPEN_ORDER)
 			).setActionName(
-				"/commerce_open_order_content/edit_commerce_order"
+				"/commerce_open_order/edit_commerce_order"
 			).setCMD(
 				"setCurrent"
 			).setParameter(

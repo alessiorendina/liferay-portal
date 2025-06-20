@@ -94,7 +94,7 @@ public class BaseCommerceAvalaraTaxRateDisplayContext {
 		return PortletURLBuilder.create(
 			liferayPortletResponse.createRenderURL()
 		).setMVCPath(
-			"/commerce_tax_methods/edit_commerce_tax_method"
+			"/commerce_tax_method_admin/edit_commerce_tax_method"
 		).setRedirect(
 			ParamUtil.getString(
 				commerceAvalaraTaxRateRequestHelper.getRequest(), "redirect")

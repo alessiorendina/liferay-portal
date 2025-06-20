@@ -448,7 +448,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "com.liferay.commerce.product.content.web.internal.fragment.renderer.ImageGalleryFragmentRenderer"
+														"key": "com.liferay.commerce.product.web.internal.fragment.renderer.ImageGalleryFragmentRenderer"
 													},
 													"fragmentConfig": {
 													},
@@ -815,7 +815,7 @@
 												"definition": {
 													"collectionConfig": {
 														"collectionReference": {
-															"className": "com.liferay.commerce.product.content.web.internal.info.collection.provider.CPDefinitionSpecificationOptionValuesRelatedInfoItemCollectionProvider"
+															"className": "com.liferay.commerce.product.web.internal.info.collection.provider.CPDefinitionSpecificationOptionValuesRelatedInfoItemCollectionProvider"
 														},
 														"collectionType": "CollectionProvider"
 													},

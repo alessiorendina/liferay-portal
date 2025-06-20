@@ -5,55 +5,43 @@
 
 package com.liferay.commerce.order.web.internal.portlet.action;
 
-import com.liferay.commerce.configuration.CommerceOrderItemDecimalQuantityConfiguration;
-import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommercePortletKeys;
-import com.liferay.commerce.currency.util.CommercePriceFormatter;
 import com.liferay.commerce.exception.NoSuchOrderException;
-import com.liferay.commerce.frontend.helper.CommerceOrderStepTrackerHelper;
 import com.liferay.commerce.model.CommerceOrder;
-import com.liferay.commerce.notification.service.CommerceNotificationQueueEntryLocalService;
-import com.liferay.commerce.order.engine.CommerceOrderEngine;
-import com.liferay.commerce.order.status.CommerceOrderStatusRegistry;
-import com.liferay.commerce.order.web.internal.display.context.CommerceOrderEditDisplayContext;
-import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
-import com.liferay.commerce.product.service.CPMeasurementUnitService;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
+import com.liferay.commerce.order.web.internal.display.context.CommerceOrderDisplayContext;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
-import com.liferay.commerce.service.CommerceOrderItemService;
-import com.liferay.commerce.service.CommerceOrderNoteService;
-import com.liferay.commerce.service.CommerceOrderService;
-import com.liferay.commerce.service.CommerceOrderTypeService;
-import com.liferay.commerce.service.CommerceShipmentService;
-import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
-import com.liferay.commerce.util.CommerceOrderItemQuantityFormatter;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.commerce.util.CommerceAccountHelper;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.portlet.PortletURLFactory;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
-import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.util.Map;
-
 import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import org.osgi.service.component.annotations.Activate;
+import javax.servlet.http.HttpServletResponse;
+
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Di Giorgi
- * @author Alessio Antonio Rendina
  */
 @Component(
-	configurationPid = "com.liferay.commerce.configuration.CommerceOrderItemDecimalQuantityConfiguration",
 	property = {
-		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
-		"mvc.command.name=/commerce_order/edit_commerce_order"
+		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_OPEN_ORDER,
+		"mvc.command.name=/commerce_open_order/edit_commerce_order"
 	},
 	service = MVCRenderCommand.class
 )
@@ -65,25 +53,65 @@ public class EditCommerceOrderMVCRenderCommand implements MVCRenderCommand {
 		throws PortletException {
 
 		try {
-			CommerceOrderEditDisplayContext commerceOrderEditDisplayContext =
-				new CommerceOrderEditDisplayContext(
-					_commerceChannelLocalService,
-					_commerceNotificationQueueEntryLocalService,
-					_commerceOrderEngine,
-					_commerceOrderItemDecimalQuantityConfiguration,
-					_commerceOrderItemQuantityFormatter,
-					_commerceOrderItemService, _commerceOrderNoteService,
-					_commerceOrderPortletResourcePermission,
-					_commerceOrderService, _commerceOrderStatusRegistry,
-					_commerceOrderStepTrackerHelper, _commerceOrderTypeService,
-					_commercePaymentMethodGroupRelLocalService,
-					_commercePriceFormatter, _commerceShipmentService,
-					_commerceTermEntryLocalService, _cpMeasurementUnitService,
-					_modelResourcePermission, renderRequest);
+			_populatePortletDisplay(renderRequest);
 
-			renderRequest.setAttribute(
-				WebKeys.PORTLET_DISPLAY_CONTEXT,
-				commerceOrderEditDisplayContext);
+			CommerceOrderDisplayContext commerceOrderDisplayContext =
+				(CommerceOrderDisplayContext)renderRequest.getAttribute(
+					WebKeys.PORTLET_DISPLAY_CONTEXT);
+
+			CommerceOrder commerceOrder =
+				commerceOrderDisplayContext.getCommerceOrder();
+
+			if ((commerceOrder != null) && commerceOrder.isOpen()) {
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)renderRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
+
+				long commerceChannelGroupId =
+					_commerceChannelLocalService.
+						getCommerceChannelGroupIdBySiteGroupId(
+							themeDisplay.getScopeGroupId());
+
+				AccountEntry accountEntry =
+					_commerceAccountHelper.getCurrentAccountEntry(
+						commerceChannelGroupId,
+						_portal.getHttpServletRequest(renderRequest));
+
+				if (accountEntry.getAccountEntryId() !=
+						commerceOrder.getCommerceAccountId()) {
+
+					HttpServletResponse httpServletResponse =
+						_portal.getHttpServletResponse(renderResponse);
+
+					httpServletResponse.sendRedirect(
+						_portletURLFactory.create(
+							_portal.getHttpServletRequest(renderRequest),
+							CommercePortletKeys.COMMERCE_OPEN_ORDER,
+							PortletRequest.RENDER_PHASE
+						).toString());
+
+					return "/pending_commerce_orders/view.jsp";
+				}
+
+				CommerceOrder currentCommerceOrder =
+					_commerceOrderHttpHelper.getCurrentCommerceOrder(
+						_portal.getHttpServletRequest(renderRequest));
+
+				if ((currentCommerceOrder == null) ||
+					(commerceOrder.getCommerceOrderId() !=
+						currentCommerceOrder.getCommerceOrderId())) {
+
+					_commerceOrderHttpHelper.setCurrentCommerceOrder(
+						_portal.getHttpServletRequest(renderRequest),
+						commerceOrder);
+				}
+			}
+
+			if (FeatureFlagManagerUtil.isEnabled("COMMERCE-8949")) {
+				return "/pending_commerce_orders/new_view.jsp";
+			}
+
+			return "/pending_commerce_orders/edit_commerce_order.jsp";
 		}
 		catch (Exception exception) {
 			if (exception instanceof NoSuchOrderException ||
@@ -96,78 +124,37 @@ public class EditCommerceOrderMVCRenderCommand implements MVCRenderCommand {
 
 			throw new PortletException(exception);
 		}
-
-		return "/edit_commerce_order.jsp";
 	}
 
-	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) {
-		_commerceOrderItemDecimalQuantityConfiguration =
-			ConfigurableUtil.createConfigurable(
-				CommerceOrderItemDecimalQuantityConfiguration.class,
-				properties);
+	private void _populatePortletDisplay(RenderRequest renderRequest) {
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		portletDisplay.setShowBackIcon(true);
+		portletDisplay.setURLBack(
+			PortletURLBuilder.create(
+				PortletURLFactoryUtil.create(
+					themeDisplay.getRequest(),
+					CommercePortletKeys.COMMERCE_OPEN_ORDER,
+					themeDisplay.getPlid(), PortletRequest.RENDER_PHASE)
+			).buildString());
 	}
+
+	@Reference
+	private CommerceAccountHelper _commerceAccountHelper;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
-	private CommerceNotificationQueueEntryLocalService
-		_commerceNotificationQueueEntryLocalService;
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
-	private CommerceOrderEngine _commerceOrderEngine;
-
-	private volatile CommerceOrderItemDecimalQuantityConfiguration
-		_commerceOrderItemDecimalQuantityConfiguration;
+	private Portal _portal;
 
 	@Reference
-	private CommerceOrderItemQuantityFormatter
-		_commerceOrderItemQuantityFormatter;
-
-	@Reference
-	private CommerceOrderItemService _commerceOrderItemService;
-
-	@Reference
-	private CommerceOrderNoteService _commerceOrderNoteService;
-
-	@Reference(
-		target = "(resource.name=" + CommerceOrderConstants.RESOURCE_NAME + ")"
-	)
-	private PortletResourcePermission _commerceOrderPortletResourcePermission;
-
-	@Reference
-	private CommerceOrderService _commerceOrderService;
-
-	@Reference
-	private CommerceOrderStatusRegistry _commerceOrderStatusRegistry;
-
-	@Reference
-	private CommerceOrderStepTrackerHelper _commerceOrderStepTrackerHelper;
-
-	@Reference
-	private CommerceOrderTypeService _commerceOrderTypeService;
-
-	@Reference
-	private CommercePaymentMethodGroupRelLocalService
-		_commercePaymentMethodGroupRelLocalService;
-
-	@Reference
-	private CommercePriceFormatter _commercePriceFormatter;
-
-	@Reference
-	private CommerceShipmentService _commerceShipmentService;
-
-	@Reference
-	private CommerceTermEntryLocalService _commerceTermEntryLocalService;
-
-	@Reference
-	private CPMeasurementUnitService _cpMeasurementUnitService;
-
-	@Reference(
-		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"
-	)
-	private ModelResourcePermission<CommerceOrder> _modelResourcePermission;
+	private PortletURLFactory _portletURLFactory;
 
 }

@@ -35,7 +35,7 @@ export class CommerceAdminShipmentsPage extends CommerceIframeDNDTablePage {
 		super(
 			page,
 			'iframe >> nth=1',
-			'#_com_liferay_commerce_shipment_web_internal_portlet_CommerceShipmentPortlet_fm .fds table'
+			'#_com_liferay_commerce_shipment_admin_web_internal_portlet_CommerceShipmentAdminPortlet_fm .fds table'
 		);
 		this.addQuantityInShipment = page
 			.frameLocator('iframe')

@@ -1,11 +1,11 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.commerce.order.web.internal.frontend.data.set.filter;
 
-import com.liferay.commerce.order.web.internal.constants.CommerceOrderFDSNames;
+import com.liferay.commerce.order.web.internal.constants.CommerceOrderFragmentFDSNames;
 import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
@@ -13,10 +13,13 @@ import com.liferay.frontend.data.set.filter.FDSFilter;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Marco Leo
+ * @author Gianmarco Brunialti Masera
  */
 @Component(
-	property = "frontend.data.set.name=" + CommerceOrderFDSNames.ALL_ORDERS,
+	property = {
+		"frontend.data.set.name=" + CommerceOrderFragmentFDSNames.PENDING_ORDERS,
+		"frontend.data.set.name=" + CommerceOrderFragmentFDSNames.PLACED_ORDERS
+	},
 	service = FDSFilter.class
 )
 public class CommerceAccountSelectionFDSFilter extends BaseSelectionFDSFilter {

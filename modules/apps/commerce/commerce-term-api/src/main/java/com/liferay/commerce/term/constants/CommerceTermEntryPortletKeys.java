@@ -10,8 +10,8 @@ package com.liferay.commerce.term.constants;
  */
 public class CommerceTermEntryPortletKeys {
 
-	public static final String COMMERCE_TERM_ENTRY =
-		"com_liferay_commerce_term_web_internal_portlet_" +
-			"CommerceTermEntryPortlet";
+	public static final String COMMERCE_TERM_ENTRY_ADMIN =
+		"com_liferay_commerce_term_admin_web_internal_portlet_" +
+			"CommerceTermEntryAdminPortlet";
 
 }

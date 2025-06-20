@@ -48,7 +48,7 @@ public class CommerceProductTypeVirtualOrderServiceUpgradeStepRegistrator
 				protected String[] getPortletIds() {
 					return new String[] {
 						CommerceVirtualOrderPortletKeys.
-							COMMERCE_VIRTUAL_ORDER_ITEM_CONTENT
+							COMMERCE_VIRTUAL_ORDER_ITEM
 					};
 				}
 

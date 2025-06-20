@@ -55,7 +55,7 @@ public class CPInstanceSubscriptionInfoDisplayContext
 		return PortletURLBuilder.createRenderURL(
 			liferayPortletResponse
 		).setMVCRenderCommandName(
-			"/cp_definitions/edit_cp_instance"
+			"/cp_definitions_admin/edit_cp_instance"
 		).setParameter(
 			"cpDefinitionId", getCPDefinitionId()
 		).setParameter(

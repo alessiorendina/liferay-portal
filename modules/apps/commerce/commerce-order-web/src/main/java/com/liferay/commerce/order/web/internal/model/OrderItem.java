@@ -5,7 +5,7 @@
 
 package com.liferay.commerce.order.web.internal.model;
 
-import com.liferay.commerce.frontend.model.ImageField;
+import java.math.BigDecimal;
 
 import java.util.List;
 
@@ -15,17 +15,18 @@ import java.util.List;
 public class OrderItem {
 
 	public OrderItem(
-		String deliveryGroupName, String discount, String formattedQuantity,
-		ImageField image, String name, String options, long orderId,
-		long orderItemId, List<OrderItem> orderItems, long parentOrderItemId,
-		String price, String requestedDeliveryDate, String sku,
-		String subscriptionDuration, String subscriptionPeriod, String total,
-		String unitOfMeasureKey) {
+		long cpInstanceId, String discount, String[] errorMessages,
+		String formattedQuantity, String formattedSubscriptionPeriod,
+		String name, String options, long orderId, long orderItemId,
+		List<OrderItem> orderItems, long parentOrderItemId, String price,
+		String promoPrice, BigDecimal shippedQuantity, String sku,
+		String thumbnail, String total, String unitOfMeasureKey) {
 
-		_deliveryGroupName = deliveryGroupName;
+		_cpInstanceId = cpInstanceId;
 		_discount = discount;
+		_errorMessages = errorMessages;
 		_formattedQuantity = formattedQuantity;
-		_image = image;
+		_formattedSubscriptionPeriod = formattedSubscriptionPeriod;
 		_name = name;
 		_options = options;
 		_orderId = orderId;
@@ -33,28 +34,32 @@ public class OrderItem {
 		_orderItems = orderItems;
 		_parentOrderItemId = parentOrderItemId;
 		_price = price;
-		_requestedDeliveryDate = requestedDeliveryDate;
+		_promoPrice = promoPrice;
+		_shippedQuantity = shippedQuantity;
 		_sku = sku;
-		_subscriptionDuration = subscriptionDuration;
-		_subscriptionPeriod = subscriptionPeriod;
+		_thumbnail = thumbnail;
 		_total = total;
 		_unitOfMeasureKey = unitOfMeasureKey;
 	}
 
-	public String getDeliveryGroupName() {
-		return _deliveryGroupName;
+	public long getCPInstanceId() {
+		return _cpInstanceId;
 	}
 
 	public String getDiscount() {
 		return _discount;
 	}
 
+	public String[] getErrorMessages() {
+		return _errorMessages;
+	}
+
 	public String getFormattedQuantity() {
 		return _formattedQuantity;
 	}
 
-	public ImageField getImage() {
-		return _image;
+	public String getFormattedSubscriptionPeriod() {
+		return _formattedSubscriptionPeriod;
 	}
 
 	public String getName() {
@@ -85,20 +90,20 @@ public class OrderItem {
 		return _price;
 	}
 
-	public String getRequestedDeliveryDate() {
-		return _requestedDeliveryDate;
+	public String getPromoPrice() {
+		return _promoPrice;
+	}
+
+	public BigDecimal getShippedQuantity() {
+		return _shippedQuantity;
 	}
 
 	public String getSku() {
 		return _sku;
 	}
 
-	public String getSubscriptionDuration() {
-		return _subscriptionDuration;
-	}
-
-	public String getSubscriptionPeriod() {
-		return _subscriptionPeriod;
+	public String getThumbnail() {
+		return _thumbnail;
 	}
 
 	public String getTotal() {
@@ -109,10 +114,11 @@ public class OrderItem {
 		return _unitOfMeasureKey;
 	}
 
-	private final String _deliveryGroupName;
+	private final long _cpInstanceId;
 	private final String _discount;
+	private final String[] _errorMessages;
 	private final String _formattedQuantity;
-	private final ImageField _image;
+	private final String _formattedSubscriptionPeriod;
 	private final String _name;
 	private final String _options;
 	private final long _orderId;
@@ -120,10 +126,10 @@ public class OrderItem {
 	private final List<OrderItem> _orderItems;
 	private final long _parentOrderItemId;
 	private final String _price;
-	private final String _requestedDeliveryDate;
+	private final String _promoPrice;
+	private final BigDecimal _shippedQuantity;
 	private final String _sku;
-	private final String _subscriptionDuration;
-	private final String _subscriptionPeriod;
+	private final String _thumbnail;
 	private final String _total;
 	private final String _unitOfMeasureKey;
 

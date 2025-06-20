@@ -8,16 +8,18 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CommerceOrderEditDisplayContext commerceOrderEditDisplayContext = (CommerceOrderEditDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
-
-CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder();
+CommerceOrder commerceOrder = commerceOrderDisplayContext.getCommerceOrder();
 %>
 
-<portlet:actionURL name="/commerce_order/edit_commerce_order" var="editCommerceOrderBillingAddressActionURL" />
+<portlet:actionURL name="/commerce_open_order/edit_commerce_order" var="editCommerceOrderBillingAddressActionURL" />
 
-<div class="container-fluid container-fluid-max-xl p-4">
+<commerce-ui:modal-content
+	contentCssClasses="p-0"
+	title='<%= LanguageUtil.get(request, "billing-address") %>'
+>
 	<aui:form action="<%= editCommerceOrderBillingAddressActionURL %>" method="post" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="selectBillingAddress" />
+		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 		<aui:input name="commerceOrderId" type="hidden" value="<%= commerceOrder.getCommerceOrderId() %>" />
 
 		<frontend-data-set:classic-display
@@ -26,14 +28,14 @@ CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder()
 					"commerceOrderId", String.valueOf(commerceOrder.getCommerceOrderId())
 				).build()
 			%>'
-			creationMenu='<%= commerceOrderEditDisplayContext.getCommerceAddressCreationMenu("/commerce_order/edit_commerce_order_billing_address") %>'
+			creationMenu='<%= commerceOrderDisplayContext.getCommerceAddressCreationMenu("/commerce_open_order/edit_commerce_order_billing_address") %>'
 			dataProviderKey="<%= CommerceOrderFDSNames.BILLING_ADDRESSES %>"
 			formName="fm"
 			id="<%= CommerceOrderFDSNames.BILLING_ADDRESSES %>"
 			itemsPerPage="<%= 10 %>"
-			selectedItems="<%= Collections.singletonList(Math.toIntExact(commerceOrder.getBillingAddressId())) %>"
+			selectedItems="<%= Collections.singletonList(String.valueOf(commerceOrder.getBillingAddressId())) %>"
 			selectedItemsKey="addressId"
 			selectionType="single"
 		/>
 	</aui:form>
-</div>
+</commerce-ui:modal-content>

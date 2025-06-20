@@ -32,7 +32,7 @@ public class CommerceNotificationPortletResourcePermissionWrapper
 		return PortletResourcePermissionFactory.create(
 			CPConstants.RESOURCE_NAME_CHANNEL,
 			new StagedPortletPermissionLogic(
-				_stagingPermission, CPPortletKeys.COMMERCE_CHANNELS));
+				_stagingPermission, CPPortletKeys.COMMERCE_CHANNELS_ADMIN));
 	}
 
 	@Reference

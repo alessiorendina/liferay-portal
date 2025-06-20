@@ -7,7 +7,7 @@
 					"widgetInstance": {
 						"widgetConfig": {
 						},
-						"widgetName": "com_liferay_commerce_order_content_web_internal_portlet_CommerceReturnContentPortlet"
+						"widgetName": "com_liferay_commerce_order_web_internal_portlet_CommerceReturnPortlet"
 					}
 				},
 				"type": "Widget"

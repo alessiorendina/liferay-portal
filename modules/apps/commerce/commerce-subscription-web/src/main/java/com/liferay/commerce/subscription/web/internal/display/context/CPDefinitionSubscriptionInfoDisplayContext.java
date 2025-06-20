@@ -40,7 +40,7 @@ public class CPDefinitionSubscriptionInfoDisplayContext
 		return PortletURLBuilder.create(
 			super.getPortletURL()
 		).setMVCRenderCommandName(
-			"/cp_definitions/edit_cp_definition"
+			"/cp_definitions_admin/edit_cp_definition"
 		).setParameter(
 			"screenNavigationCategoryKey",
 			getSelectedScreenNavigationCategoryKey()

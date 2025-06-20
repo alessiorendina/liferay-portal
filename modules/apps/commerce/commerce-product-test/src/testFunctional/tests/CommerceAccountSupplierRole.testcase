@@ -630,7 +630,7 @@ definition {
 		task ("When admin removes the supplier's permission with Access in Control Panel for Channel") {
 			Permissions.removePermissionViaAPI(
 				resourceAction = "ACCESS_IN_CONTROL_PANEL",
-				resourceName = "com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet",
+				resourceName = "com_liferay_commerce_channel_admin_web_internal_portlet_CommerceChannelsAdminPortlet",
 				roleTitle = "Supplier");
 		}
 

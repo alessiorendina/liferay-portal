@@ -136,7 +136,7 @@ public abstract class BaseCPDefinitionsDisplayContext {
 		return PortletURLBuilder.createRenderURL(
 			liferayPortletResponse
 		).setMVCRenderCommandName(
-			"/cp_definitions/edit_cp_definition"
+			"/cp_definitions_admin/edit_cp_definition"
 		).setParameter(
 			"cpDefinitionId", getCPDefinitionId()
 		).buildPortletURL();

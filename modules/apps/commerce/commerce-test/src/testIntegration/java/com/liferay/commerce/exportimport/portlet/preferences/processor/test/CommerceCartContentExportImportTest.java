@@ -24,8 +24,7 @@ public class CommerceCartContentExportImportTest
 	@Override
 	public String getPortletId() throws Exception {
 		return PortletIdCodec.encode(
-			CommercePortletKeys.COMMERCE_CART_CONTENT,
-			RandomTestUtil.randomString());
+			CommercePortletKeys.COMMERCE_CART, RandomTestUtil.randomString());
 	}
 
 	@Override

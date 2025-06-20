@@ -120,7 +120,7 @@ export class CommerceAdminChannelDetailsPage {
 			});
 		this.commerceChannelHealthChecksTable = page
 			.locator(
-				'#_com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet_editChannelContainer .fds table'
+				'#_com_liferay_commerce_channel_admin_web_internal_portlet_CommerceChannelsAdminPortlet_editChannelContainer .fds table'
 			)
 			.filter({hasText: 'Fix Issue'});
 		this.commerceChannelHealthChecksTableRow = async (

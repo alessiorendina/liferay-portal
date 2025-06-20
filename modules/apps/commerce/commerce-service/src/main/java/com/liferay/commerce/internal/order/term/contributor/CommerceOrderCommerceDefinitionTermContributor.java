@@ -504,13 +504,13 @@ public class CommerceOrderCommerceDefinitionTermContributor
 				layout = _layoutLocalService.getLayout(
 					_portal.getPlidFromPortletId(
 						commerceChannel.getSiteGroupId(),
-						CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT));
+						CommercePortletKeys.COMMERCE_OPEN_ORDER));
 			}
 			else {
 				layout = _layoutLocalService.getLayout(
 					_portal.getPlidFromPortletId(
 						commerceChannel.getSiteGroupId(),
-						CommercePortletKeys.COMMERCE_ORDER_CONTENT));
+						CommercePortletKeys.COMMERCE_ORDER));
 			}
 
 			if (layout.isPublicLayout()) {

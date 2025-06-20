@@ -7,7 +7,7 @@
 
 <%@ include file="/init.jsp" %>
 
-<portlet:actionURL name="/commerce_tax_methods/edit_commerce_tax_avalara" var="editCommerceAvalaraConnectorActionURL" />
+<portlet:actionURL name="/commerce_tax_method_admin/edit_commerce_tax_avalara" var="editCommerceAvalaraConnectorActionURL" />
 
 <aui:form action="<%= editCommerceAvalaraConnectorActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />

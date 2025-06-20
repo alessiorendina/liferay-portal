@@ -24,8 +24,7 @@ public class CPCompareContentMiniExportImportTest
 	@Override
 	public String getPortletId() throws Exception {
 		return PortletIdCodec.encode(
-			CPPortletKeys.CP_COMPARE_CONTENT_MINI_WEB,
-			RandomTestUtil.randomString());
+			CPPortletKeys.CP_COMPARE_MINI, RandomTestUtil.randomString());
 	}
 
 	@Override

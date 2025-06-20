@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Commerce Product Asset Categories Admin Web
+Bundle-SymbolicName: com.liferay.commerce.product.asset.categories.admin.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /commerce-product-asset-categories-admin-web
+-dsannotations-options: inherit

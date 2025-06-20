@@ -1,50 +1,35 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {CommerceServiceProvider} from 'commerce-frontend-js';
-import {openToast} from 'frontend-js-components-web';
+import CommerceCurrencyDataRenderer from './CommerceCurrencyDataRenderer';
+import CommerceReturnItemStatusDataRenderer from './CommerceReturnItemStatusDataRenderer';
 
-import {CommerceReturnItemPicklistDataRenderer} from './CommerceReturnItemPicklistDataRenderer';
-import {CommerceReturnItemReceivedDataRenderer} from './CommerceReturnItemReceivedDataRenderer';
-import {CommerceReturnItemStatusDataRenderer} from './CommerceReturnItemStatusDataRenderer';
-import CommerceStatusDataRenderer from './CommerceStatusDataRenderer';
+function handleRefreshPage() {
+	Liferay.detach('fds-display-updated', handleRefreshPage);
 
-const CommerceReturnItemResource = CommerceServiceProvider.ReturnItemAPI();
+	window.top.location.reload();
+}
 
-export default function propsTransformer({...otherProps}) {
+function commerceReturnItemsPropsTransformer({...props}) {
 	return {
-		...otherProps,
+		...props,
 		customDataRenderers: {
-			commerceReturnItemPicklistDataRenderer:
-				CommerceReturnItemPicklistDataRenderer,
-			commerceReturnItemReceivedDataRenderer:
-				CommerceReturnItemReceivedDataRenderer,
+			commerceCurrencyDataRenderer: CommerceCurrencyDataRenderer,
 			commerceReturnItemStatusDataRenderer:
 				CommerceReturnItemStatusDataRenderer,
-			commerceStatusDataRenderer: CommerceStatusDataRenderer,
 		},
 		onActionDropdownItemClick: ({
 			action: {
-				data: {id: actionId},
+				data: {id},
 			},
-			itemData: {id: itemId},
 		}) => {
-			if (actionId === 'removeReturnItem') {
-				CommerceReturnItemResource.deleteItemById(itemId)
-					.then(() => {
-						window.location.reload();
-					})
-					.catch(() => {
-						openToast({
-							message: Liferay.Language.get(
-								'an-unexpected-error-occurred'
-							),
-							type: 'danger',
-						});
-					});
+			if (id === 'delete') {
+				Liferay.on('fds-display-updated', handleRefreshPage);
 			}
 		},
 	};
 }
+
+export default commerceReturnItemsPropsTransformer;

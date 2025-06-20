@@ -5,7 +5,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.order.rule</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_order_rule_web_internal_portlet_COREntryPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_rule_admin_web_internal_portlet_COREntryAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -25,7 +25,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.order.rule.model.COREntry</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_order_rule_web_internal_portlet_COREntryPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_order_rule_admin_web_internal_portlet_COREntryAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
 		<permissions>

@@ -335,16 +335,16 @@ public class CommerceAccountResource {
 		throws PortalException {
 
 		long plid = _portal.getPlidFromPortletId(
-			groupId, CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT);
+			groupId, CommercePortletKeys.COMMERCE_OPEN_ORDER);
 
 		LiferayPortletURL editURL = PortletURLFactoryUtil.create(
 			_portal.getOriginalServletRequest(httpServletRequest),
-			CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT, plid,
+			CommercePortletKeys.COMMERCE_OPEN_ORDER, plid,
 			PortletRequest.ACTION_PHASE);
 
 		editURL.setParameter(
 			ActionRequest.ACTION_NAME,
-			"/commerce_open_order_content/edit_commerce_order");
+			"/commerce_open_order/edit_commerce_order");
 		editURL.setParameter(Constants.CMD, "setCurrent");
 		editURL.setParameter(
 			"commerceOrderId", String.valueOf(commerceOrderId));

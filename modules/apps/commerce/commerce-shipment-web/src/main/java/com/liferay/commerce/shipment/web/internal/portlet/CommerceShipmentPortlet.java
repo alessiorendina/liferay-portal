@@ -5,22 +5,14 @@
 
 package com.liferay.commerce.shipment.web.internal.portlet;
 
-import com.liferay.commerce.address.CommerceAddressFormatter;
-import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommercePortletKeys;
-import com.liferay.commerce.product.service.CommerceChannelService;
-import com.liferay.commerce.service.CommerceAddressService;
-import com.liferay.commerce.service.CommerceOrderItemService;
-import com.liferay.commerce.service.CommerceOrderLocalService;
-import com.liferay.commerce.service.CommerceShipmentItemService;
-import com.liferay.commerce.service.CommerceShippingMethodService;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.service.CommerceShipmentItemLocalService;
+import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.commerce.shipment.web.internal.display.context.CommerceShipmentDisplayContext;
-import com.liferay.commerce.shipment.web.internal.portlet.action.helper.ActionHelper;
+import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
-import com.liferay.portal.kernel.service.CountryService;
-import com.liferay.portal.kernel.service.RegionService;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
@@ -39,15 +31,14 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
-		"com.liferay.portlet.css-class-wrapper=portlet-commerce-shipment",
-		"com.liferay.portlet.display-category=category.hidden",
+		"com.liferay.portlet.css-class-wrapper=portlet-commerce-shipment-content",
+		"com.liferay.portlet.display-category=commerce",
 		"com.liferay.portlet.layout-cacheable=true",
 		"com.liferay.portlet.preferences-owned-by-group=true",
-		"com.liferay.portlet.preferences-unique-per-layout=false",
 		"com.liferay.portlet.private-request-attributes=false",
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.render-weight=50",
-		"com.liferay.portlet.scopeable=true",
+		"com.liferay.portlet.scopeable=true", "jakarta.portlet.version=4.0",
 		"javax.portlet.display-name=Shipments",
 		"javax.portlet.expiration-cache=0",
 		"javax.portlet.init-param.view-template=/view.jsp",
@@ -67,12 +58,10 @@ public class CommerceShipmentPortlet extends MVCPortlet {
 
 		CommerceShipmentDisplayContext commerceShipmentDisplayContext =
 			new CommerceShipmentDisplayContext(
-				_actionHelper, _commerceAddressFormatter,
-				_commerceAddressService, _commerceChannelService,
-				_commerceOrderItemService, _commerceOrderLocalService,
-				_commerceShipmentItemService, _commerceShippingMethodService,
-				_countryService, _portal.getHttpServletRequest(renderRequest),
-				_portletResourcePermission, _regionService);
+				_commerceChannelLocalService, _commerceOrderHttpHelper,
+				_commerceShipmentItemLocalService,
+				_commerceShipmentLocalService, _commerceShippingEngineRegistry,
+				renderRequest);
 
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT, commerceShipmentDisplayContext);
@@ -81,41 +70,18 @@ public class CommerceShipmentPortlet extends MVCPortlet {
 	}
 
 	@Reference
-	private ActionHelper _actionHelper;
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
-	private CommerceAddressFormatter _commerceAddressFormatter;
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
-	private CommerceAddressService _commerceAddressService;
+	private CommerceShipmentItemLocalService _commerceShipmentItemLocalService;
 
 	@Reference
-	private CommerceChannelService _commerceChannelService;
+	private CommerceShipmentLocalService _commerceShipmentLocalService;
 
 	@Reference
-	private CommerceOrderItemService _commerceOrderItemService;
-
-	@Reference
-	private CommerceOrderLocalService _commerceOrderLocalService;
-
-	@Reference
-	private CommerceShipmentItemService _commerceShipmentItemService;
-
-	@Reference
-	private CommerceShippingMethodService _commerceShippingMethodService;
-
-	@Reference
-	private CountryService _countryService;
-
-	@Reference
-	private Portal _portal;
-
-	@Reference(
-		target = "(resource.name=" + CommerceConstants.RESOURCE_NAME_COMMERCE_SHIPMENT + ")"
-	)
-	private PortletResourcePermission _portletResourcePermission;
-
-	@Reference
-	private RegionService _regionService;
+	private CommerceShippingEngineRegistry _commerceShippingEngineRegistry;
 
 }

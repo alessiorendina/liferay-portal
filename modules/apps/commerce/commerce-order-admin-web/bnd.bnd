@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Commerce Order Admin Web
+Bundle-SymbolicName: com.liferay.commerce.order.admin.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /commerce-order-admin-web
+-dsannotations-options: inherit

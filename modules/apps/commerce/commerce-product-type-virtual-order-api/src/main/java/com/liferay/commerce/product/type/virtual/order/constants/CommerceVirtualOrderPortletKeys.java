@@ -10,8 +10,8 @@ package com.liferay.commerce.product.type.virtual.order.constants;
  */
 public class CommerceVirtualOrderPortletKeys {
 
-	public static final String COMMERCE_VIRTUAL_ORDER_ITEM_CONTENT =
-		"com_liferay_commerce_product_type_virtual_order_content_web_" +
-			"internal_portlet_CommerceVirtualOrderItemContentPortlet";
+	public static final String COMMERCE_VIRTUAL_ORDER_ITEM =
+		"com_liferay_commerce_product_type_virtual_order_web_internal_" +
+			"portlet_CommerceVirtualOrderItemPortlet";
 
 }

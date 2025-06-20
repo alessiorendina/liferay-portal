@@ -210,7 +210,7 @@ public class CommerceSubscriptionEntryDisplayContext {
 				_httpServletRequest, themeDisplay.getScopeGroup(),
 				CommerceOrder.class.getName(), PortletProvider.Action.MANAGE)
 		).setMVCRenderCommandName(
-			"/commerce_order/edit_commerce_order"
+			"/commerce_order_admin/edit_commerce_order"
 		).setRedirect(
 			themeDisplay.getURLCurrent()
 		).setParameter(
@@ -370,7 +370,7 @@ public class CommerceSubscriptionEntryDisplayContext {
 		return PortletURLBuilder.createActionURL(
 			_cpRequestHelper.getLiferayPortletResponse()
 		).setActionName(
-			"/commerce_open_order_content/edit_commerce_order"
+			"/commerce_open_order/edit_commerce_order"
 		).setCMD(
 			ActionKeys.UPDATE
 		).setRedirect(

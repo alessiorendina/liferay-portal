@@ -13,7 +13,7 @@ import com.liferay.commerce.constants.CommercePortletKeys;
 public class FunctionCommerceShippingEngineFDSNames {
 
 	public static final String FUNCTION_COMMERCE_SHIPPING_ENGINE_OPTIONS =
-		CommercePortletKeys.COMMERCE_SHIPPING_METHODS +
+		CommercePortletKeys.COMMERCE_SHIPPING_METHOD_ADMIN +
 			"-functionCommerceShippingEngineOptions";
 
 }

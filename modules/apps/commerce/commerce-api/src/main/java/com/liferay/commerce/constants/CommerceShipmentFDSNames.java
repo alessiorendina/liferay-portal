@@ -11,24 +11,25 @@ package com.liferay.commerce.constants;
 public class CommerceShipmentFDSNames {
 
 	public static final String INVENTORY_WAREHOUSE_ITEM =
-		CommercePortletKeys.COMMERCE_SHIPMENT + "-inventoryWarehouseItem";
+		CommercePortletKeys.COMMERCE_SHIPMENT_ADMIN + "-inventoryWarehouseItem";
 
 	public static final String ORDER_SHIPMENTS =
-		CommercePortletKeys.COMMERCE_SHIPMENT + "-orderShipments";
+		CommercePortletKeys.COMMERCE_SHIPMENT_ADMIN + "-orderShipments";
 
 	public static final String PROCESSING_SHIPMENT_ITEMS =
-		CommercePortletKeys.COMMERCE_SHIPMENT + "-processingShipmentItems";
+		CommercePortletKeys.COMMERCE_SHIPMENT_ADMIN +
+			"-processingShipmentItems";
 
 	public static final String SHIPMENT_ITEMS =
-		CommercePortletKeys.COMMERCE_SHIPMENT + "-shipmentItems";
+		CommercePortletKeys.COMMERCE_SHIPMENT_ADMIN + "-shipmentItems";
 
 	public static final String SHIPMENTS =
-		CommercePortletKeys.COMMERCE_SHIPMENT + "-shipments";
+		CommercePortletKeys.COMMERCE_SHIPMENT_ADMIN + "-shipments";
 
 	public static final String SHIPPABLE_ORDER_ITEMS =
-		CommercePortletKeys.COMMERCE_SHIPMENT + "-shippableOrderItems";
+		CommercePortletKeys.COMMERCE_SHIPMENT_ADMIN + "-shippableOrderItems";
 
 	public static final String SHIPPED_SHIPMENT_ITEMS =
-		CommercePortletKeys.COMMERCE_SHIPMENT + "-shippedShipmentItems";
+		CommercePortletKeys.COMMERCE_SHIPMENT_ADMIN + "-shippedShipmentItems";
 
 }

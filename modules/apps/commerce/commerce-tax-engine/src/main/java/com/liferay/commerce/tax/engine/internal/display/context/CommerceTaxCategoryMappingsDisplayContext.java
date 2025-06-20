@@ -60,10 +60,10 @@ public class CommerceTaxCategoryMappingsDisplayContext {
 		return PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
 				_commerceTaxCategoryMappingsRequestHelper.getRequest(),
-				CommercePortletKeys.COMMERCE_TAX_METHODS,
+				CommercePortletKeys.COMMERCE_TAX_METHOD_ADMIN,
 				PortletRequest.RENDER_PHASE)
 		).setMVCRenderCommandName(
-			"/commerce_tax_methods/edit_commerce_tax_category_mapping"
+			"/commerce_tax_method_admin/edit_commerce_tax_category_mapping"
 		).setParameter(
 			"commerceTaxMethodId", getCommerceTaxMethodId()
 		).setWindowState(

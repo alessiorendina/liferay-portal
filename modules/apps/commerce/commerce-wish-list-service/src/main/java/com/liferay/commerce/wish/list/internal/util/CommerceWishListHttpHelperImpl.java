@@ -46,8 +46,7 @@ public class CommerceWishListHttpHelperImpl
 
 		long groupId = _portal.getScopeGroupId(httpServletRequest);
 
-		String portletId =
-			CommerceWishListPortletKeys.COMMERCE_WISH_LIST_CONTENT;
+		String portletId = CommerceWishListPortletKeys.COMMERCE_WISH_LIST;
 
 		long plid = _portal.getPlidFromPortletId(groupId, portletId);
 

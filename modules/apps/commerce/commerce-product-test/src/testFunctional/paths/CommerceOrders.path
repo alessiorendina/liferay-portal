@@ -317,7 +317,7 @@
 </tr>
 <tr>
 	<td>PRINT_ORDER_TEMPLATE_FILE_NAME</td>
-	<td>//span[@id='_com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet_fileEntryNameInput' and contains(.,'${value1}')]</td>
+	<td>//span[@id='_com_liferay_commerce_channel_admin_web_internal_portlet_CommerceChannelsAdminPortlet_fileEntryNameInput' and contains(.,'${value1}')]</td>
 	<td></td>
 </tr>
 <tr>

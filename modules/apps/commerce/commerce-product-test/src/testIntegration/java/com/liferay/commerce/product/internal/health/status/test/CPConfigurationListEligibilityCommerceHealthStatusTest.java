@@ -392,7 +392,7 @@ public class CPConfigurationListEligibilityCommerceHealthStatusTest {
 	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 	@Inject(
-		filter = "component.name=com.liferay.commerce.product.definitions.web.internal.health.status.CPConfigurationListEligibilityCommerceHealthStatus"
+		filter = "component.name=com.liferay.commerce.product.definitions.admin.web.internal.health.status.CPConfigurationListEligibilityCommerceHealthStatus"
 	)
 	private CommerceHealthStatus _commerceHealthStatus;
 

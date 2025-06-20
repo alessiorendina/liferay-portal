@@ -24,23 +24,23 @@ import {config as captchaWebConfig} from './tests/captcha-web/main/config';
 import {config as changeTrackingWebConfig} from './tests/change-tracking-web/main/config';
 import {config as clientExtensionWebClusterConfig} from './tests/client-extension-web/cluster/config';
 import {config as clientExtensionWebConfig} from './tests/client-extension-web/main/config';
-import {config as commerceAccountWebConfig} from './tests/commerce/commerce-account-web/main/config';
-import {config as commerceCartContentWebConfig} from './tests/commerce/commerce-cart-content-web/main/config';
-import {config as commerceChannelWebConfig} from './tests/commerce/commerce-channel-web/main/config';
+import {config as commerceAccountAdminWebConfig} from './tests/commerce/commerce-account-admin-web/main/config';
+import {config as commerceCartWebConfig} from './tests/commerce/commerce-cart-web/main/config';
+import {config as commerceChannelAdminWebConfig} from './tests/commerce/commerce-channel-admin-web/main/config';
 import {config as commerceCheckoutWebConfig} from './tests/commerce/commerce-checkout-web/main/config';
-import {config as commerceCurrencyWebConfig} from './tests/commerce/commerce-currency-web/main/config';
-import {config as commerceDiscountContentWebConfig} from './tests/commerce/commerce-discount-content-web/main/config';
-import {config as commerceOrderContentWebConfig} from './tests/commerce/commerce-order-content-web/main/config';
+import {config as commerceCurrencyAdminWebConfig} from './tests/commerce/commerce-currency-admin-web/main/config';
+import {config as commerceDiscountWebConfig} from './tests/commerce/commerce-discount-web/main/config';
 import {config as commerceOrderWebConfig} from './tests/commerce/commerce-order-web/main/config';
-import {config as commercePaymentsWebConfig} from './tests/commerce/commerce-payment-web/main/config';
-import {config as commerceProductContentSearchWebConfig} from './tests/commerce/commerce-product-content-search-web/main/config';
-import {config as commerceProductContentWebConfig} from './tests/commerce/commerce-product-content-web/main/config';
-import {config as commerceProductDefinitionsWebConfig} from './tests/commerce/commerce-product-definitions-web/main/config';
-import {config as commerceProductOptionsWebConfig} from './tests/commerce/commerce-product-options-web/main/config';
-import {config as commerceShippingEngineWebConfig} from './tests/commerce/commerce-shipping-engine-fixed-web/main/config';
+import {config as commerceOrderAdminWebConfig} from './tests/commerce/commerce-order-admin-web/main/config';
+import {config as commercePaymentAdminWebConfig} from './tests/commerce/commerce-payment-admin-web/main/config';
+import {config as commerceProductSearchWebConfig} from './tests/commerce/commerce-product-search-web/main/config';
+import {config as commerceProductWebConfig} from './tests/commerce/commerce-product-web/main/config';
+import {config as commerceProductDefinitionsAdminWebConfig} from './tests/commerce/commerce-product-definitions-admin-web/main/config';
+import {config as commerceProductOptionsAdminWebConfig} from './tests/commerce/commerce-product-options-admin-web/main/config';
+import {config as commerceShippingEngineFixedAdminWebConfig} from './tests/commerce/commerce-shipping-engine-fixed-admin-web/main/config';
 import {config as commerceSiteInitializerWebConfig} from './tests/commerce/commerce-site-initializer/main/config';
-import {config as commerceTaxEngineWebConfig} from './tests/commerce/commerce-tax-engine-web/main/config';
-import {config as commerceThemeMiniumWebConfig} from './tests/commerce/commerce-theme-minium/main/config';
+import {config as commerceTaxEngineAdminWebConfig} from './tests/commerce/commerce-tax-engine-admin-web/main/config';
+import {config as commerceThemeMiniumConfig} from './tests/commerce/commerce-theme-minium/main/config';
 import {config as commerceWishListWebConfig} from './tests/commerce/commerce-wish-list-web/main/config';
 import {config as configurationAdminWebConfig} from './tests/configuration-admin-web/main/config';
 import {config as contentDashboardWebConfig} from './tests/content-dashboard-web/main/config';
@@ -166,23 +166,23 @@ export default defineConfig({
 		changeTrackingWebConfig,
 		clientExtensionWebConfig,
 		clientExtensionWebClusterConfig,
-		commerceAccountWebConfig,
-		commerceCartContentWebConfig,
-		commerceChannelWebConfig,
+		commerceAccountAdminWebConfig,
+		commerceCartWebConfig,
+		commerceChannelAdminWebConfig,
 		commerceCheckoutWebConfig,
-		commerceCurrencyWebConfig,
-		commerceDiscountContentWebConfig,
+		commerceCurrencyAdminWebConfig,
+		commerceDiscountWebConfig,
+		commerceOrderAdminWebConfig,
 		commerceOrderWebConfig,
-		commerceOrderContentWebConfig,
-		commercePaymentsWebConfig,
-		commerceProductContentSearchWebConfig,
-		commerceProductContentWebConfig,
-		commerceProductDefinitionsWebConfig,
-		commerceProductOptionsWebConfig,
-		commerceShippingEngineWebConfig,
+		commercePaymentAdminWebConfig,
+		commerceProductSearchWebConfig,
+		commerceProductWebConfig,
+		commerceProductDefinitionsAdminWebConfig,
+		commerceProductOptionsAdminWebConfig,
+		commerceShippingEngineFixedAdminWebConfig,
 		commerceSiteInitializerWebConfig,
-		commerceTaxEngineWebConfig,
-		commerceThemeMiniumWebConfig,
+		commerceTaxEngineAdminWebConfig,
+		commerceThemeMiniumConfig,
 		commerceWishListWebConfig,
 		commerceWorkspaceConfig,
 		configurationAdminWebConfig,

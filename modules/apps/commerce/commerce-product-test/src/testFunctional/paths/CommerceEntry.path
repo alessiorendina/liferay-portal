@@ -992,7 +992,7 @@
 </tr>
 <tr>
 	<td>FILE_ENTRY_ID_FROM_PRODUCT_MEDIA</td>
-	<td>//input[@id="_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fileEntryId"]</td>
+	<td>//input[@id="_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet_fileEntryId"]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1599,7 +1599,7 @@
 
 <tr>
 	<td>WAREHOUSE_INVENTORY_ITEM_QUANTITY</td>
-	<td>//input[contains(@id,'_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_commerceInventoryWarehouseItemQuantity${key_value1}')]</td>
+	<td>//input[contains(@id,'_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet_commerceInventoryWarehouseItemQuantity${key_value1}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1619,7 +1619,7 @@
 </tr>
 <tr>
 	<td>WAREHOUSE_INVENTORY_SAVE_BUTTON</td>
-	<td>//td[contains(@class, 'text-center')]//button[contains(@id,'_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_saveButton${key_value1}')]</td>
+	<td>//td[contains(@class, 'text-center')]//button[contains(@id,'_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet_saveButton${key_value1}')]</td>
 	<td></td>
 </tr>
 <tr>

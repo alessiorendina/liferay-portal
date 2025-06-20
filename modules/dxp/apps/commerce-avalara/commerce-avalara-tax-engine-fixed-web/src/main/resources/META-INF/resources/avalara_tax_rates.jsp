@@ -11,7 +11,7 @@
 CommerceAvalaraTaxRateRelsDisplayContext commerceAvalaraTaxRateRelsDisplayContext = (CommerceAvalaraTaxRateRelsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 %>
 
-<portlet:actionURL name="/commerce_tax_methods/edit_commerce_tax_fixed_rate_address_rel" var="editCommerceTaxFixedRateAddressRelActionURL" />
+<portlet:actionURL name="/commerce_tax_method_admin/edit_commerce_tax_fixed_rate_address_rel" var="editCommerceTaxFixedRateAddressRelActionURL" />
 
 <aui:form action="<%= editCommerceTaxFixedRateAddressRelActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="updateConfiguration" />
@@ -27,8 +27,8 @@ CommerceAvalaraTaxRateRelsDisplayContext commerceAvalaraTaxRateRelsDisplayContex
 				"commerceTaxMethodId", String.valueOf(commerceAvalaraTaxRateRelsDisplayContext.getCommerceTaxMethodId())
 			).build()
 		%>'
-		dataProviderKey='<%= CommercePortletKeys.COMMERCE_TAX_METHODS + "-taxRateSetting" %>'
-		id='<%= CommercePortletKeys.COMMERCE_TAX_METHODS + "-taxRateSetting" %>'
+		dataProviderKey='<%= CommercePortletKeys.COMMERCE_TAX_METHOD_ADMIN + "-taxRateSetting" %>'
+		id='<%= CommercePortletKeys.COMMERCE_TAX_METHOD_ADMIN + "-taxRateSetting" %>'
 		itemsPerPage="<%= 10 %>"
 		namespace="<%= liferayPortletResponse.getNamespace() %>"
 		pageNumber="<%= 1 %>"

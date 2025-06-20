@@ -5,7 +5,7 @@
 
 import {test} from '@playwright/test';
 
-import {AttachmentsPage} from '../pages/commerce/commerce-product-definitions-web/attachmentsPage';
+import {AttachmentsPage} from '../pages/commerce/commerce-product-definitions-admin-web/attachmentsPage';
 import {DocumentLibraryEditDocumentTypesPage} from '../pages/document-library-web/DocumentLibraryEditDocumentTypesPage';
 import {DocumentLibraryEditFilePage} from '../pages/document-library-web/DocumentLibraryEditFilePage';
 import {DocumentLibraryEditFolderPage} from '../pages/document-library-web/DocumentLibraryEditFolderPage';

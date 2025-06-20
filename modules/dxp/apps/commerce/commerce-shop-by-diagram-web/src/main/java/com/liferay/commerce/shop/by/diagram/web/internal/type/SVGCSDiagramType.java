@@ -122,7 +122,7 @@ public class SVGCSDiagramType implements CSDiagramType {
 
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
-		boolean admin = CPPortletKeys.CP_DEFINITIONS.equals(
+		boolean admin = CPPortletKeys.CP_DEFINITIONS_ADMIN.equals(
 			portletDisplay.getPortletName());
 
 		HashMapBuilder.HashMapWrapper<String, Object> hashMapWrapper =

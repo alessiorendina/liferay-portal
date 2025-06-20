@@ -413,7 +413,7 @@
 										"key": "menu-display"
 									},
 									{
-										"key": "com.liferay.commerce.product.content.web.internal.fragment.renderer.AddToCartFragmentRenderer"
+										"key": "com.liferay.commerce.product.web.internal.fragment.renderer.AddToCartFragmentRenderer"
 									},
 									{
 										"key": "commerce-product"

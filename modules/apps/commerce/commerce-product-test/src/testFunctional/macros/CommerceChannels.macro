@@ -902,14 +902,14 @@ definition {
 	macro openChannelsAdmin(baseURL = null) {
 		Navigator.openWithAppendToBaseURL(
 			baseURL = ${baseURL},
-			urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet");
+			urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_channel_admin_web_internal_portlet_CommerceChannelsAdminPortlet");
 	}
 
 	@summary = "Default summary"
 	macro openMercanetConfigurationFrame(baseURL = null, channelId = null) {
 		Navigator.openWithAppendToBaseURL(
 			baseURL = ${baseURL},
-			urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_payment_web_internal_portlet_CommercePaymentMethodPortlet&p_p_lifecycle=0&p_p_state=pop_up&p_p_mode=view&_com_liferay_commerce_payment_web_internal_portlet_CommercePaymentMethodPortlet_screenNavigationCategoryKey=configuration&_com_liferay_commerce_payment_web_internal_portlet_CommercePaymentMethodPortlet_commerceChannelId=${channelId}&_com_liferay_commerce_payment_web_internal_portlet_CommercePaymentMethodPortlet_commercePaymentMethodEngineKey=mercanet&p_p_auth=wSmJjGYh");
+			urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_payment_admin_web_internal_portlet_CommercePaymentMethodAdminPortlet&p_p_lifecycle=0&p_p_state=pop_up&p_p_mode=view&_com_liferay_commerce_payment_admin_web_internal_portlet_CommercePaymentMethodAdminPortlet_screenNavigationCategoryKey=configuration&_com_liferay_commerce_payment_admin_web_internal_portlet_CommercePaymentMethodAdminPortlet_commerceChannelId=${channelId}&_com_liferay_commerce_payment_admin_web_internal_portlet_CommercePaymentMethodAdminPortlet_commercePaymentMethodEngineKey=mercanet&p_p_auth=wSmJjGYh");
 	}
 
 	@summary = "Default summary"

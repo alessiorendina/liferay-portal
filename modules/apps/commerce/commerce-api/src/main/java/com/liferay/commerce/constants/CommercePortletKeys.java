@@ -11,25 +11,24 @@ package com.liferay.commerce.constants;
  */
 public class CommercePortletKeys {
 
-	public static final String COMMERCE_ADDRESS_CONTENT =
-		"com_liferay_commerce_address_content_web_internal_portlet_" +
-			"CommerceAddressContentPortlet";
+	public static final String COMMERCE_ADDRESS =
+		"com_liferay_commerce_address_web_internal_portlet_" +
+			"CommerceAddressPortlet";
 
-	public static final String COMMERCE_AVAILABILITY_ESTIMATE =
+	public static final String COMMERCE_AVAILABILITY_ESTIMATE_ADMIN =
 		"com_liferay_commerce_availability_estimate_web_internal_portlet_" +
 			"CommerceAvailabilityEstimatePortlet";
 
-	public static final String COMMERCE_CART_CONTENT =
-		"com_liferay_commerce_cart_content_web_internal_portlet_" +
-			"CommerceCartContentPortlet";
+	public static final String COMMERCE_CART =
+		"com_liferay_commerce_cart_web_internal_portlet_CommerceCartPortlet";
 
-	public static final String COMMERCE_CART_CONTENT_MINI =
-		"com_liferay_commerce_cart_content_web_internal_portlet_" +
-			"CommerceCartContentMiniPortlet";
+	public static final String COMMERCE_CART_MINI =
+		"com_liferay_commerce_cart_web_internal_portlet_" +
+			"CommerceCartMiniPortlet";
 
-	public static final String COMMERCE_CART_CONTENT_TOTAL =
-		"com_liferay_commerce_cart_content_web_internal_portlet_" +
-			"CommerceCartContentTotalPortlet";
+	public static final String COMMERCE_CART_TOTAL =
+		"com_liferay_commerce_cart_web_internal_portlet_" +
+			"CommerceCartTotalPortlet";
 
 	public static final String COMMERCE_CHECKOUT =
 		"com_liferay_commerce_checkout_web_internal_portlet_" +
@@ -39,50 +38,51 @@ public class CommercePortletKeys {
 		"com_liferay_commerce_dashboard_web_internal_portlet_" +
 			"CommerceDashboardForecastsChartPortlet";
 
-	public static final String COMMERCE_HEALTH_CHECK =
-		"com_liferay_commerce_health_status_web_internal_portlet_" +
-			"CommerceHealthCheckPortlet";
+	public static final String COMMERCE_HEALTH_CHECK_ADMIN =
+		"com_liferay_commerce_health_status_admin_web_internal_portlet_" +
+			"CommerceHealthCheckAdminPortlet";
 
-	public static final String COMMERCE_OPEN_ORDER_CONTENT =
-		"com_liferay_commerce_order_content_web_internal_portlet_" +
-			"CommerceOpenOrderContentPortlet";
+	public static final String COMMERCE_OPEN_ORDER =
+		"com_liferay_commerce_order_web_internal_portlet_" +
+			"CommerceOpenOrderPortlet";
 
 	public static final String COMMERCE_ORDER =
 		"com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet";
 
-	public static final String COMMERCE_ORDER_CONTENT =
-		"com_liferay_commerce_order_content_web_internal_portlet_" +
-			"CommerceOrderContentPortlet";
+	public static final String COMMERCE_ORDER_ADMIN =
+		"com_liferay_commerce_order_admin_web_internal_portlet_" +
+			"CommerceOrderAdminPortlet";
 
-	public static final String COMMERCE_ORDER_TYPE =
-		"com_liferay_commerce_order_web_internal_portlet_" +
-			"CommerceOrderTypePortlet";
+	public static final String COMMERCE_ORDER_TYPE_ADMIN =
+		"com_liferay_commerce_order_admin_web_internal_portlet_" +
+			"CommerceOrderTypeAdminPortlet";
 
-	public static final String COMMERCE_PAYMENT =
-		"com_liferay_commerce_payment_web_internal_portlet_" +
-			"CommercePaymentPortlet";
+	public static final String COMMERCE_PAYMENT_ADMIN =
+		"com_liferay_commerce_payment_admin_web_internal_portlet_" +
+			"CommercePaymentAdminPortlet";
 
 	public static final String COMMERCE_RETURN =
-		"com_liferay_commerce_order_web_internal_portlet_CommerceReturnPortlet";
+		"com_liferay_commerce_order_web_internal_portlet_" +
+			"CommerceReturnPortlet";
 
-	public static final String COMMERCE_RETURN_CONTENT =
-		"com_liferay_commerce_order_content_web_internal_portlet_" +
-			"CommerceReturnContentPortlet";
+	public static final String COMMERCE_RETURN_ADMIN =
+		"com_liferay_commerce_order_admin_web_internal_portlet_" +
+			"CommerceReturnAdminPortlet";
 
 	public static final String COMMERCE_SHIPMENT =
 		"com_liferay_commerce_shipment_web_internal_portlet_" +
 			"CommerceShipmentPortlet";
 
-	public static final String COMMERCE_SHIPMENT_CONTENT =
-		"com_liferay_commerce_shipment_content_web_internal_portlet_" +
-			"CommerceShipmentContentPortlet";
+	public static final String COMMERCE_SHIPMENT_ADMIN =
+		"com_liferay_commerce_shipment_admin_web_internal_portlet_" +
+			"CommerceShipmentAdminPortlet";
 
-	public static final String COMMERCE_SHIPPING_METHODS =
-		"com_liferay_commerce_shipping_web_internal_portlet_" +
-			"CommerceShippingMethodPortlet";
+	public static final String COMMERCE_SHIPPING_METHOD_ADMIN =
+		"com_liferay_commerce_shipping_admin_web_internal_portlet_" +
+			"CommerceShippingMethodAdminPortlet";
 
-	public static final String COMMERCE_TAX_METHODS =
-		"com_liferay_commerce_tax_web_internal_portlet_" +
-			"CommerceTaxMethodPortlet";
+	public static final String COMMERCE_TAX_METHOD_ADMIN =
+		"com_liferay_commerce_tax_admin_web_internal_portlet_" +
+			"CommerceTaxMethodAdminPortlet";
 
 }

@@ -812,13 +812,12 @@ public class CommerceServiceUpgradeStepRegistrator
 				@Override
 				protected String[] getPortletIds() {
 					return new String[] {
-						CommercePortletKeys.COMMERCE_ADDRESS_CONTENT,
-						CommercePortletKeys.COMMERCE_CART_CONTENT +
-							"_INSTANCE_%",
-						CommercePortletKeys.COMMERCE_CART_CONTENT_MINI,
-						CommercePortletKeys.COMMERCE_CART_CONTENT_TOTAL,
-						CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT,
-						CommercePortletKeys.COMMERCE_ORDER_CONTENT
+						CommercePortletKeys.COMMERCE_ADDRESS,
+						CommercePortletKeys.COMMERCE_CART + "_INSTANCE_%",
+						CommercePortletKeys.COMMERCE_CART_MINI,
+						CommercePortletKeys.COMMERCE_CART_TOTAL,
+						CommercePortletKeys.COMMERCE_OPEN_ORDER,
+						CommercePortletKeys.COMMERCE_ORDER
 					};
 				}
 

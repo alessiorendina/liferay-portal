@@ -74,7 +74,7 @@ export class CommerceAdminProductDetailsPage {
 		) => {
 			return this.ellipsisFrameProductSpecification
 				.locator(
-					'select[name="_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_listTypeEntriesSelect"]'
+					'select[name="_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet_listTypeEntriesSelect"]'
 				)
 				.selectOption(specificationValue);
 		};
@@ -89,7 +89,7 @@ export class CommerceAdminProductDetailsPage {
 			});
 		this.editFrameSpecificationProductValue =
 			this.ellipsisFrameProductSpecification.locator(
-				'[id="_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_value"]'
+				'[id="_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet_value"]'
 			);
 		this.editSuccessMessage =
 			this.ellipsisFrameProductSpecification.getByText(

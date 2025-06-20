@@ -5,7 +5,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.discount</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_pricing_web_internal_portlet_CommerceDiscountPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_pricing_admin_web_internal_portlet_CommerceDiscountAdminPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -25,8 +25,8 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.discount.model.CommerceDiscount</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_pricing_web_internal_portlet_CommerceDiscountPortlet</portlet-name>
-			<portlet-name>com_liferay_commerce_pricing_web_internal_portlet_CommercePricingClassesPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_pricing_admin_web_internal_portlet_CommerceDiscountAdminPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_pricing_admin_web_internal_portlet_CommercePricingClassesAdminPortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
 		<permissions>

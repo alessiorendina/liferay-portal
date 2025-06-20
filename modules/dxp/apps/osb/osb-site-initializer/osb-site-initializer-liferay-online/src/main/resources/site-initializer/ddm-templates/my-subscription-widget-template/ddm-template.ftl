@@ -38,7 +38,7 @@
 			<tbody>
 				<tr>
 					<td class="border-0">
-						<img src="${cpDefinition.getDefaultImageThumbnailSrc(commerceOrderContentDisplayContext.getCommerceAccountId())}" title="${commerceOrderItem.getName(locale)}" width="80" />
+						<img src="${cpDefinition.getDefaultImageThumbnailSrc(commerceOrderDisplayContext.getCommerceAccountId())}" title="${commerceOrderItem.getName(locale)}" width="80" />
 					</td>
 					<td class="border-0">
 						${getJsonKeyValue(commerceOrderItem.getJson(), "site-domain")}

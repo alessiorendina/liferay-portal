@@ -226,7 +226,7 @@ definition {
 						key_orderAuthor = "Buyer User",
 						locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");
 
-					AssertLocation.assertPartialLocation(value1 = "${portalURL}/web/minium/pending-orders?p_p_id=com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet");
+					AssertLocation.assertPartialLocation(value1 = "${portalURL}/web/minium/pending-orders?p_p_id=com_liferay_commerce_order_web_internal_portlet_CommerceOpenOrderPortlet");
 				}
 			}
 		}

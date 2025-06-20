@@ -20,7 +20,7 @@ export class TaxCategoriesPage extends CommerceDNDTablePage {
 	constructor(page: Page) {
 		super(
 			page,
-			'#_com_liferay_commerce_product_tax_category_web_internal_portlet_CPTaxCategoryPortlet_cpTaxCategoriesSearchContainer'
+			'#_com_liferay_commerce_product_tax_category_admin_web_internal_portlet_CPTaxCategoryAdminPortlet_cpTaxCategoriesSearchContainer'
 		);
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.deleteMenuItem = page.getByRole('link', {
@@ -42,7 +42,7 @@ export class TaxCategoriesPage extends CommerceDNDTablePage {
 	async goto(siteName?: string) {
 		if (siteName) {
 			await this.page.goto(
-				`/group/${siteName}/~/control_panel/manage?p_p_id=com_liferay_commerce_product_tax_category_web_internal_portlet_CPTaxCategoryPortlet`
+				`/group/${siteName}/~/control_panel/manage?p_p_id=com_liferay_commerce_product_tax_category_admin_web_internal_portlet_CPTaxCategoryAdminPortlet`
 			);
 		}
 		else {

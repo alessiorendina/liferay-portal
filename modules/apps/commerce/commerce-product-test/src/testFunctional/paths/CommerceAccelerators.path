@@ -937,7 +937,7 @@
 </tr>
 <tr>
 	<td>CART_PORTLET_ORDER_QUANTITY</td>
-	<td>//input[@id='_com_liferay_commerce_cart_content_web_internal_portlet_CommerceCartContentPortlet_moil_column_2d_1_1_Quantity']</td>
+	<td>//input[@id='_com_liferay_commerce_cart_web_internal_portlet_CommerceCartPortlet_moil_column_2d_1_1_Quantity']</td>
 	<td></td>
 </tr>
 <tr>

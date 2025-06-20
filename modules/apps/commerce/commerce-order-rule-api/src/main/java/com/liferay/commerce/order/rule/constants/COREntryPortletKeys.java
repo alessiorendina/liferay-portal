@@ -10,7 +10,8 @@ package com.liferay.commerce.order.rule.constants;
  */
 public class COREntryPortletKeys {
 
-	public static final String COR_ENTRY =
-		"com_liferay_commerce_order_rule_web_internal_portlet_COREntryPortlet";
+	public static final String COR_ENTRY_ADMIN =
+		"com_liferay_commerce_order_rule_admin_web_internal_portlet_" +
+			"COREntryAdminPortlet";
 
 }

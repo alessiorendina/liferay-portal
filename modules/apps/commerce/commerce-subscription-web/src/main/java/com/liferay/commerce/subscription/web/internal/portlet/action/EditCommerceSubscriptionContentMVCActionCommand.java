@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CPPortletKeys.COMMERCE_SUBSCRIPTION_CONTENT_WEB,
+		"javax.portlet.name=" + CPPortletKeys.COMMERCE_SUBSCRIPTION,
 		"mvc.command.name=/commerce_subscription_content_web/edit_commerce_subscription_content"
 	},
 	service = MVCActionCommand.class

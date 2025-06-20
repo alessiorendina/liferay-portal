@@ -5,67 +5,91 @@
 
 package com.liferay.commerce.order.web.internal.model;
 
-import com.liferay.commerce.frontend.model.LabelField;
-
 /**
  * @author Alessio Antonio Rendina
  */
 public class Order {
 
 	public Order(
-		String account, String accountCode, String amount, String channel,
-		String createDateString, LabelField fulfillmentWorkflow, long orderId,
-		LabelField orderStatus) {
+		String externalReferenceCode, long orderId, String accountName,
+		String amount, String author, String date, String name,
+		String orderStatus, String orderType, String purchaseOrderNumber,
+		String status) {
 
-		_account = account;
-		_accountCode = accountCode;
-		_amount = amount;
-		_channel = channel;
-		_createDateString = createDateString;
-		_fulfillmentWorkflow = fulfillmentWorkflow;
+		_externalReferenceCode = externalReferenceCode;
 		_orderId = orderId;
+		_accountName = accountName;
+		_amount = amount;
+		_author = author;
+		_date = date;
+		_name = name;
 		_orderStatus = orderStatus;
+		_orderType = orderType;
+		_purchaseOrderNumber = purchaseOrderNumber;
+		_status = status;
+
+		_title = String.valueOf(orderId);
 	}
 
-	public String getAccount() {
-		return _account;
-	}
-
-	public String getAccountCode() {
-		return _accountCode;
+	public String getAccountName() {
+		return _accountName;
 	}
 
 	public String getAmount() {
 		return _amount;
 	}
 
-	public String getChannel() {
-		return _channel;
+	public String getAuthor() {
+		return _author;
 	}
 
-	public String getCreateDateString() {
-		return _createDateString;
+	public String getDate() {
+		return _date;
 	}
 
-	public LabelField getFulfillmentWorkflow() {
-		return _fulfillmentWorkflow;
+	public String getExternalReferenceCode() {
+		return _externalReferenceCode;
+	}
+
+	public String getName() {
+		return _name;
 	}
 
 	public long getOrderId() {
 		return _orderId;
 	}
 
-	public LabelField getOrderStatus() {
+	public String getOrderStatus() {
 		return _orderStatus;
 	}
 
-	private final String _account;
-	private final String _accountCode;
+	public String getOrderType() {
+		return _orderType;
+	}
+
+	public String getPurchaseOrderNumber() {
+		return _purchaseOrderNumber;
+	}
+
+	public String getStatus() {
+		return _status;
+	}
+
+	public String getTitle() {
+		return _title;
+	}
+
+	private final String _accountName;
 	private final String _amount;
-	private final String _channel;
-	private final String _createDateString;
-	private final LabelField _fulfillmentWorkflow;
+	private final String _author;
+	private final String _date;
+	private final String _externalReferenceCode;
+	private final String _name;
 	private final long _orderId;
-	private final LabelField _orderStatus;
+	private final String _orderStatus;
+	private final String _orderType;
+	private final String _purchaseOrderNumber;
+	private final String _status;
+	private final String _title;
 
 }

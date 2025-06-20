@@ -8,20 +8,21 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CommerceOrderEditDisplayContext commerceOrderEditDisplayContext = (CommerceOrderEditDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
-
-CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder();
+CommerceOrder commerceOrder = commerceOrderDisplayContext.getCommerceOrder();
 %>
 
-<portlet:actionURL name="/commerce_order/edit_commerce_order" var="editCommerceOrderPurchaseOrderNumberActionURL" />
+<portlet:actionURL name="/commerce_open_order/edit_commerce_order" var="editCommerceOrderPurchaseOrderNumberActionURL" />
 
-<aui:form action="<%= editCommerceOrderPurchaseOrderNumberActionURL %>" cssClass="container-fluid container-fluid-max-xl p-4" method="post" name="fm">
-	<aui:input name="<%= Constants.CMD %>" type="hidden" value="purchaseOrderNumber" />
-	<aui:input name="commerceOrderId" type="hidden" value="<%= commerceOrder.getCommerceOrderId() %>" />
+<commerce-ui:modal-content>
+	<aui:form action="<%= editCommerceOrderPurchaseOrderNumberActionURL %>" cssClass="container-fluid container-fluid-max-xl p-0" method="post" name="fm">
+		<aui:input name="<%= Constants.CMD %>" type="hidden" value="purchaseOrderNumber" />
+		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+		<aui:input name="commerceOrderId" type="hidden" value="<%= commerceOrder.getCommerceOrderId() %>" />
 
-	<liferay-ui:error exception="<%= CommerceOrderPurchaseOrderNumberException.class %>" message="please-enter-a-valid-purchase-order-number" />
+		<liferay-ui:error exception="<%= CommerceOrderPurchaseOrderNumberException.class %>" message="please-enter-a-valid-purchase-order-number" />
 
-	<aui:model-context bean="<%= commerceOrder %>" model="<%= CommerceOrder.class %>" />
+		<aui:model-context bean="<%= commerceOrder %>" model="<%= CommerceOrder.class %>" />
 
-	<aui:input name="purchaseOrderNumber" wrapperCssClass="form-group-item" />
-</aui:form>
+		<aui:input name="purchaseOrderNumber" wrapperCssClass="form-group-item" />
+	</aui:form>
+</commerce-ui:modal-content>

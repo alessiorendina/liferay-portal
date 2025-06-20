@@ -41,7 +41,7 @@ public class CommerceNotificationTemplateModelResourcePermissionWrapper
 			_portletResourcePermission,
 			(modelResourcePermission, consumer) -> consumer.accept(
 				new StagedModelPermissionLogic<>(
-					_stagingPermission, CPPortletKeys.COMMERCE_CHANNELS,
+					_stagingPermission, CPPortletKeys.COMMERCE_CHANNELS_ADMIN,
 					CommerceNotificationTemplate::
 						getCommerceNotificationTemplateId)));
 	}

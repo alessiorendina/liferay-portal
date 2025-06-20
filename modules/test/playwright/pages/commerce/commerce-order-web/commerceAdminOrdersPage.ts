@@ -41,11 +41,11 @@ export class CommerceAdminOrdersPage extends CommerceDNDTablePage {
 	constructor(page: Page) {
 		super(
 			page,
-			'#_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_fm .fds table'
+			'#_com_liferay_commerce_order_admin_web_internal_portlet_CommerceOrderAdminPortlet_fm .fds table'
 		);
 
 		this.editCommerceOrderTable = page.locator(
-			'#_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_editOrderContainer .fds table'
+			'#_com_liferay_commerce_order_admin_web_internal_portlet_CommerceOrderAdminPortlet_editOrderContainer .fds table'
 		);
 		this.editCommerceOrderTableRow = async (
 			colPosition: number,

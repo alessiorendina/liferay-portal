@@ -24,7 +24,7 @@ CommerceInventoryWarehouseItem commerceInventoryWarehouseItem = (CommerceInvento
 >
 	<c:if test="<%= commerceInventoryWarehouseItemsDisplayContext.hasManageCommerceInventoryWarehousePermission() %>">
 		<portlet:renderURL var="editURL">
-			<portlet:param name="mvcRenderCommandName" value="/cp_definitions/edit_commerce_inventory_warehouse_item" />
+			<portlet:param name="mvcRenderCommandName" value="/cp_definitions_admin/edit_commerce_inventory_warehouse_item" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceInventoryWarehouseItemId" value="<%= String.valueOf(commerceInventoryWarehouseItem.getCommerceInventoryWarehouseItemId()) %>" />
 		</portlet:renderURL>
@@ -34,7 +34,7 @@ CommerceInventoryWarehouseItem commerceInventoryWarehouseItem = (CommerceInvento
 			url="<%= editURL %>"
 		/>
 
-		<portlet:actionURL name="/cp_definitions/edit_commerce_inventory_warehouse_item" var="deleteURL">
+		<portlet:actionURL name="/cp_definitions_admin/edit_commerce_inventory_warehouse_item" var="deleteURL">
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="commerceInventoryWarehouseItemId" value="<%= String.valueOf(commerceInventoryWarehouseItem.getCommerceInventoryWarehouseItemId()) %>" />

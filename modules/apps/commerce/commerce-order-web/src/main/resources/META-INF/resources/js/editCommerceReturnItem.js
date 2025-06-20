@@ -14,6 +14,7 @@ export default function ({
 	autocompleteInitialLabel,
 	autocompleteInitialValue,
 	commerceReturnItemId,
+	dataSetId,
 	namespace,
 	readOnly,
 }) {
@@ -22,8 +23,8 @@ export default function ({
 		autoLoad: true,
 		initialLabel: autocompleteInitialLabel,
 		initialValue: autocompleteInitialValue,
-		inputId: `${namespace}returnResolutionMethod`,
-		inputName: `${namespace}returnResolutionMethod`,
+		inputId: `${namespace}returnReason`,
+		inputName: `${namespace}returnReason`,
 		itemsKey: 'key',
 		itemsLabel: 'name',
 		readOnly,
@@ -34,28 +35,15 @@ export default function ({
 	const form = document.getElementById(`${namespace}commerceReturnItemsFm`);
 
 	form.addEventListener('submit', () => {
-		const authorizeReturnWithoutReturningProducts = form.querySelector(
-			`#${namespace}authorizeReturnWithoutReturningProducts`
-		).checked;
-		const authorized = form.querySelector(`#${namespace}authorized`).value;
-		const received = form.querySelector(`#${namespace}received`).value;
-		const returnResolutionMethod = form.querySelector(
-			`#${namespace}returnResolutionMethod`
-		).value;
-		const commerceReturnStatus = form.querySelector(
-			`#${namespace}commerceReturnStatus`
+		const quantity = form.querySelector(`#${namespace}quantity`).value;
+		const returnReason = form.querySelector(
+			`#${namespace}returnReason`
 		).value;
 
 		const returnItemData = {
-			authorizeReturnWithoutReturningProducts,
-			authorized,
-			received,
-			returnResolutionMethod,
+			quantity,
+			returnReason,
 		};
-
-		const className = form.querySelector(`#${namespace}className`).value;
-		const classPK = form.querySelector(`#${namespace}classPK`).value;
-		const content = form.querySelector(`#${namespace}content`).value;
 
 		function updateReturnItem(response) {
 			if (!response) {
@@ -69,22 +57,6 @@ export default function ({
 				return;
 			}
 
-			if (
-				commerceReturnStatus === 'completed' ||
-				commerceReturnStatus === 'rejected'
-			) {
-				window.location.reload();
-
-				openToast({
-					message: Liferay.Language.get(
-						'your-request-completed-successfully'
-					),
-					type: 'success',
-				});
-
-				return;
-			}
-
 			return CommerceReturnItemResource.updateItemById(
 				commerceReturnItemId,
 				returnItemData
@@ -92,7 +64,7 @@ export default function ({
 				.then(() => {
 					window.location.reload();
 
-					window.top.Liferay.fire('return-item-updated');
+					Liferay.fire('fds-display-updated', {id: dataSetId});
 
 					openToast({
 						message: Liferay.Language.get(
@@ -122,7 +94,14 @@ export default function ({
 				});
 		}
 
+		const content = form.querySelector(`#${namespace}content`).value;
+
 		if (content) {
+			const className = form.querySelector(
+				`#${namespace}className`
+			).value;
+			const classPK = form.querySelector(`#${namespace}classPK`).value;
+
 			Liferay.Service(
 				'/comment.commentmanagerjsonws/add-comment',
 				{
@@ -134,16 +113,13 @@ export default function ({
 				updateReturnItem
 			);
 		}
-		else if (
-			commerceReturnStatus !== 'completed' &&
-			commerceReturnStatus !== 'rejected'
-		) {
-			CommerceReturnItemResource.updateItemById(
+		else {
+			return CommerceReturnItemResource.updateItemById(
 				commerceReturnItemId,
 				returnItemData
 			)
 				.then(() => {
-					window.top.Liferay.fire('return-item-updated');
+					Liferay.fire('fds-display-updated', {id: dataSetId});
 
 					openToast({
 						message: Liferay.Language.get(

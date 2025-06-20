@@ -43,7 +43,7 @@ export class CommerceAdminChannelsPage {
 			'Buyer Order Approval Workflow'
 		);
 		this.channelsTable = page.locator(
-			'#portlet_com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet .fds table'
+			'#portlet_com_liferay_commerce_channel_admin_web_internal_portlet_CommerceChannelsAdminPortlet .fds table'
 		);
 		this.channelsTableRow = async (
 			colPosition: number,

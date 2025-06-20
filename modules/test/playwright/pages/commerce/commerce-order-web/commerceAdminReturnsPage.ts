@@ -20,7 +20,7 @@ export class CommerceAdminReturnsPage extends CommerceDNDTablePage {
 	constructor(page: Page) {
 		super(
 			page,
-			'#_com_liferay_commerce_order_web_internal_portlet_CommerceReturnPortlet_fm .fds table'
+			'#_com_liferay_commerce_order_admin_web_internal_portlet_CommerceReturnAdminPortlet_fm .fds table'
 		);
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.editReturnItemFrame = page.frameLocator('iframe');

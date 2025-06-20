@@ -8,7 +8,6 @@ package com.liferay.commerce.order.web.internal.portlet;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.BasePortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
@@ -25,7 +24,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Marco Leo
+ * @author Alessio Antonio Rendina
  */
 @Component(
 	property = "model.class.name=com.liferay.commerce.model.CommerceOrder",
@@ -44,28 +43,15 @@ public class CommerceOrderPortletProvider extends BasePortletProvider {
 		throws PortalException {
 
 		if (group == null) {
-			return _portal.getControlPanelPortletURL(
-				httpServletRequest, group, getPortletName(), 0, 0,
-				PortletRequest.RENDER_PHASE);
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			group = themeDisplay.getScopeGroup();
 		}
 
 		long plid = _portal.getPlidFromPortletId(
 			group.getGroupId(), getPortletName());
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		long controlPanelPlid = _portal.getControlPanelPlid(
-			themeDisplay.getCompanyId());
-
-		if ((plid == controlPanelPlid) ||
-			(plid == LayoutConstants.DEFAULT_PLID)) {
-
-			return _portal.getControlPanelPortletURL(
-				httpServletRequest, group, getPortletName(), 0, 0,
-				PortletRequest.RENDER_PHASE);
-		}
 
 		return PortletURLFactoryUtil.create(
 			httpServletRequest, getPortletName(), plid,
@@ -80,6 +66,6 @@ public class CommerceOrderPortletProvider extends BasePortletProvider {
 	@Reference
 	private Portal _portal;
 
-	private final Action[] _supportedActions = {Action.MANAGE};
+	private final Action[] _supportedActions = {Action.VIEW};
 
 }

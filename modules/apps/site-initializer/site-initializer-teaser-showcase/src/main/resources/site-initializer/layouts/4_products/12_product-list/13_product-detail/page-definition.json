@@ -21,7 +21,7 @@
 							"widgetInstance": {
 								"widgetConfig": {
 								},
-								"widgetName": "com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet"
+								"widgetName": "com_liferay_commerce_product_web_internal_portlet_CPContentPortlet"
 							}
 						},
 						"type": "Widget"
@@ -31,7 +31,7 @@
 							"widgetInstance": {
 								"widgetConfig": {
 								},
-								"widgetName": "com_liferay_commerce_product_content_web_internal_portlet_CPPublisherPortlet"
+								"widgetName": "com_liferay_commerce_product_web_internal_portlet_CPPublisherPortlet"
 							}
 						},
 						"type": "Widget"

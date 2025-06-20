@@ -62,7 +62,7 @@ export class ProductDetailsPage {
 			.getByRole('button', {exact: true, name: 'Add to Cart'})
 			.first();
 		this.attachments = page.locator(
-			'#_com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet_navCPMedia'
+			'#_com_liferay_commerce_product_web_internal_portlet_CPContentPortlet_navCPMedia'
 		);
 		this.attachmentItem = async (title: string) => {
 			return page.getByText(title);

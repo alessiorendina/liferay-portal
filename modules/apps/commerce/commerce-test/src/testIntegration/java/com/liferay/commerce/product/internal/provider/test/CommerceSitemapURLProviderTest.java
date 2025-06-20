@@ -193,7 +193,7 @@ public class CommerceSitemapURLProviderTest {
 
 		long plid = _portal.getPlidFromPortletId(
 			layoutSet.getGroupId(), layoutSet.isPrivateLayout(),
-			CPPortletKeys.CP_CATEGORY_CONTENT_WEB);
+			CPPortletKeys.CP_CATEGORY);
 
 		Layout layout = _layoutLocalService.getLayout(plid);
 
@@ -259,7 +259,7 @@ public class CommerceSitemapURLProviderTest {
 
 		long plid = _portal.getPlidFromPortletId(
 			layoutSet.getGroupId(), layoutSet.isPrivateLayout(),
-			CPPortletKeys.CP_CONTENT_WEB);
+			CPPortletKeys.CP_CONTENT);
 
 		Layout layout = _layoutLocalService.getLayout(plid);
 

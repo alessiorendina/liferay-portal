@@ -323,7 +323,7 @@ public class CPDefinitionHelperImpl implements CPDefinitionHelper {
 
 		if (layout == null) {
 			long plid = _portal.getPlidFromPortletId(
-				groupId, CPPortletKeys.CP_CONTENT_WEB);
+				groupId, CPPortletKeys.CP_CONTENT);
 
 			if (plid > 0) {
 				layout = _layoutLocalService.getLayout(plid);

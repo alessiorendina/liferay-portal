@@ -429,7 +429,7 @@ definition {
 
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "ACCESS_IN_CONTROL_PANEL",
-				resourceName = "com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet",
+				resourceName = "com_liferay_commerce_catalog_admin_web_internal_portlet_CommerceCatalogsAdminPortlet",
 				roleTitle = "User");
 
 			Permissions.definePermissionViaJSONAPI(

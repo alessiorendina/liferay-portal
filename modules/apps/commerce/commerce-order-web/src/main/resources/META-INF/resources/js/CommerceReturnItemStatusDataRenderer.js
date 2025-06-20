@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export function CommerceReturnItemStatusDataRenderer(props) {
+export default function CommerceReturnItemStatusDataRenderer(props) {
 	const getLabelType = (label) => {
 		let labelType = 'label-secondary';
 

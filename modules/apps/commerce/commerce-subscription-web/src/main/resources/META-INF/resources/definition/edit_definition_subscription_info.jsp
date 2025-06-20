@@ -67,7 +67,7 @@ if (deliveryMaxSubscriptionCycles > 0) {
 	message="all-channels-associated-with-this-product-must-have-at-least-one-payment-method-active-that-supports-recurring-payments"
 />
 
-<portlet:actionURL name="/cp_definitions/edit_cp_definition" var="editProductDefinitionSubscriptionInfoActionURL" />
+<portlet:actionURL name="/cp_definitions_admin/edit_cp_definition" var="editProductDefinitionSubscriptionInfoActionURL" />
 
 <aui:form action="<%= editProductDefinitionSubscriptionInfoActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="updateSubscriptionInfo" />

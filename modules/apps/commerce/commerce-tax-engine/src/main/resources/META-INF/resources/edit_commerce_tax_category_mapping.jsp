@@ -13,7 +13,7 @@ CommerceTaxCategoryMappingsDisplayContext commerceTaxCategoryMappingsDisplayCont
 CommerceTaxCategoryMapping commerceTaxCategoryMapping = commerceTaxCategoryMappingsDisplayContext.getCommerceTaxCategoryMapping();
 %>
 
-<portlet:actionURL name="/commerce_tax_methods/edit_commerce_tax_category_mapping" var="editCommerceTaxCategoryMappingActionURL" />
+<portlet:actionURL name="/commerce_tax_method_admin/edit_commerce_tax_category_mapping" var="editCommerceTaxCategoryMappingActionURL" />
 
 <c:choose>
 	<c:when test="<%= commerceTaxCategoryMapping == null %>">

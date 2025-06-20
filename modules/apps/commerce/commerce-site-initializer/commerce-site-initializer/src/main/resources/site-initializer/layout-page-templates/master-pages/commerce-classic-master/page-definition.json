@@ -47,7 +47,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "com.liferay.commerce.currency.web.internal.fragment.renderer.CurrencySelectorFragmentRenderer"
+														"key": "com.liferay.commerce.currency.admin.web.internal.fragment.renderer.CurrencySelectorFragmentRenderer"
 													},
 													"fragmentConfig": {
 													},

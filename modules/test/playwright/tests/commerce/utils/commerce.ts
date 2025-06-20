@@ -6,8 +6,8 @@
 import {Page, expect} from '@playwright/test';
 
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
-import {CommerceAdminChannelDetailsPage} from '../../../pages/commerce/commerce-channel-web/commerceAdminChannelDetailsPage';
-import {CommerceAdminChannelsPage} from '../../../pages/commerce/commerce-channel-web/commerceAdminChannelsPage';
+import {CommerceAdminChannelDetailsPage} from '../../../pages/commerce/commerce-channel-admin-web/commerceAdminChannelDetailsPage';
+import {CommerceAdminChannelsPage} from '../../../pages/commerce/commerce-channel-admin-web/commerceAdminChannelsPage';
 import getRandomString from '../../../utils/getRandomString';
 import {performLogout} from '../../../utils/performLogin';
 import {openProductMenu} from '../../../utils/productMenu';

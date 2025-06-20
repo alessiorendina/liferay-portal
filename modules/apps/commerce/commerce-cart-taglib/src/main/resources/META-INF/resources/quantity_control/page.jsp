@@ -13,11 +13,11 @@ boolean showInputLabel = (boolean)request.getAttribute("liferay-commerce-cart:qu
 boolean updateOnChange = (boolean)request.getAttribute("liferay-commerce-cart:quantity-control:updateOnChange");
 boolean useSelect = (boolean)request.getAttribute("liferay-commerce-cart:quantity-control:useSelect");
 
-String portletNamespace = PortalUtil.getPortletNamespace(CommercePortletKeys.COMMERCE_CART_CONTENT);
+String portletNamespace = PortalUtil.getPortletNamespace(CommercePortletKeys.COMMERCE_CART);
 String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_commerce_cart_quantity_control_page") + StringPool.UNDERLINE;
 %>
 
-<liferay-portlet:actionURL name="/commerce_cart_content/edit_commerce_order_item" portletName="<%= CommercePortletKeys.COMMERCE_CART_CONTENT %>" var="editCommerceOrderItemURL" />
+<liferay-portlet:actionURL name="/commerce_cart/edit_commerce_order_item" portletName="<%= CommercePortletKeys.COMMERCE_CART %>" var="editCommerceOrderItemURL" />
 
 <%
 BigDecimal quantity = commerceOrderItem.getQuantity();

@@ -148,7 +148,7 @@ public class CommerceSubscriptionShipmentsFDSDataProvider
 				httpServletRequest, CommerceOrder.class.getName(),
 				PortletProvider.Action.MANAGE)
 		).setMVCRenderCommandName(
-			"/commerce_open_order_content/edit_commerce_order"
+			"/commerce_open_order/edit_commerce_order"
 		).setRedirect(
 			_portal.getCurrentURL(httpServletRequest)
 		).setParameter(
@@ -165,7 +165,7 @@ public class CommerceSubscriptionShipmentsFDSDataProvider
 				httpServletRequest, CommerceShipment.class.getName(),
 				PortletProvider.Action.MANAGE)
 		).setMVCRenderCommandName(
-			"/commerce_shipment/edit_commerce_shipment"
+			"/commerce_shipment_admin/edit_commerce_shipment"
 		).setRedirect(
 			_portal.getCurrentURL(httpServletRequest)
 		).setParameter(

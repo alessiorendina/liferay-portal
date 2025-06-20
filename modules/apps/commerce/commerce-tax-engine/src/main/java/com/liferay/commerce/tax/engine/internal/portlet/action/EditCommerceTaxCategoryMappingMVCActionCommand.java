@@ -32,8 +32,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_TAX_METHODS,
-		"mvc.command.name=/commerce_tax_methods/edit_commerce_tax_category_mapping"
+		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_TAX_METHOD_ADMIN,
+		"mvc.command.name=/commerce_tax_method_admin/edit_commerce_tax_category_mapping"
 	},
 	service = MVCActionCommand.class
 )

@@ -69,7 +69,7 @@ public class EditCommerceReturnItemCommentMVCRenderCommand
 			throw new PortletException(exception);
 		}
 
-		return "/commerce_return_item/edit_commerce_return_item_comment.jsp";
+		return "/returns/edit_commerce_return_item_comment.jsp";
 	}
 
 	private void _populatePortletDisplay(RenderRequest renderRequest) {

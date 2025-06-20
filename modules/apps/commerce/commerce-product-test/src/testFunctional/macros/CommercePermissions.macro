@@ -27,7 +27,7 @@ definition {
 
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "ACCESS_IN_CONTROL_PANEL",
-				resourceName = "com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet",
+				resourceName = "com_liferay_commerce_catalog_admin_web_internal_portlet_CommerceCatalogsAdminPortlet",
 				roleTitle = ${roleTitle});
 
 			Permissions.definePermissionViaJSONAPI(
@@ -73,7 +73,7 @@ definition {
 
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "ACCESS_IN_CONTROL_PANEL",
-				resourceName = "com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet",
+				resourceName = "com_liferay_commerce_channel_admin_web_internal_portlet_CommerceChannelsAdminPortlet",
 				roleTitle = ${roleTitle});
 
 			Permissions.definePermissionViaJSONAPI(
@@ -162,7 +162,7 @@ definition {
 
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "ACCESS_IN_CONTROL_PANEL",
-				resourceName = "com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet",
+				resourceName = "com_liferay_commerce_catalog_admin_web_internal_portlet_CommerceCatalogsAdminPortlet",
 				roleTitle = ${roleTitle});
 
 			Permissions.definePermissionViaJSONAPI(
@@ -177,12 +177,12 @@ definition {
 
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "ACCESS_IN_CONTROL_PANEL",
-				resourceName = "com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet",
+				resourceName = "com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet",
 				roleTitle = ${roleTitle});
 
 			Permissions.definePermissionViaJSONAPI(
 				resourceAction = "VIEW",
-				resourceName = "com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet",
+				resourceName = "com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet",
 				roleTitle = ${roleTitle});
 		}
 

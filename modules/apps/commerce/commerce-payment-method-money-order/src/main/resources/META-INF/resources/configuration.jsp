@@ -13,7 +13,7 @@ MoneyOrderGroupServiceConfiguration moneyOrderGroupServiceConfiguration = (Money
 String messageAsLocalizedXML = moneyOrderGroupServiceConfiguration.messageAsLocalizedXML();
 %>
 
-<portlet:actionURL name="/commerce_payment_methods/edit_money_order_commerce_payment_method_configuration" var="editCommercePaymentMethodActionURL" />
+<portlet:actionURL name="/commerce_payment_method_admin/edit_money_order_commerce_payment_method_configuration" var="editCommercePaymentMethodActionURL" />
 
 <aui:form action="<%= editCommercePaymentMethodActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />

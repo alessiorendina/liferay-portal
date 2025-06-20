@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CPPortletKeys.COMMERCE_PAYMENT_METHODS,
+		"javax.portlet.name=" + CPPortletKeys.COMMERCE_PAYMENT_METHOD_ADMIN,
 		"mvc.command.name=/commerce_payment_integrations/edit_paypal_commerce_payment_integration_configuration"
 	},
 	service = MVCActionCommand.class

@@ -8,81 +8,24 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CommerceOrderEditDisplayContext commerceOrderEditDisplayContext = (CommerceOrderEditDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
-
-CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder();
-
-List<CommerceTermEntry> paymentCommerceTermEntries = commerceOrderEditDisplayContext.getPaymentTermsEntries();
+CommerceOrder commerceOrder = commerceOrderDisplayContext.getCommerceOrder();
 
 long paymentCommerceTermEntryId = commerceOrder.getPaymentCommerceTermEntryId();
 %>
 
-<portlet:actionURL name="/commerce_order/edit_commerce_order" var="editCommerceOrderPaymentTermsActionURL" />
+<commerce-ui:modal-content
+	showSubmitButton="<%= false %>"
+	title='<%= LanguageUtil.get(request, "payment-terms") %>'
+>
+	<label class="control-label <%= (paymentCommerceTermEntryId == 0) ? " d-none" : "" %>" id="name-label"><liferay-ui:message key="name" /></label>
 
-<div class="container-fluid container-fluid-max-xl p-4">
-	<c:choose>
-		<c:when test="<%= paymentCommerceTermEntries.isEmpty() %>">
-			<clay:row>
-				<clay:col
-					size="12"
-				>
-					<clay:alert
-						message="there-are-no-available-payment-terms"
-					/>
-				</clay:col>
-			</clay:row>
+	<div>
+		<%= commerceOrder.getPaymentCommerceTermEntryName() %>
+	</div>
 
-			<aui:script use="aui-base">
-				var continueButton = A.one('#<portlet:namespace />continue');
+	<label class="control-label <%= (paymentCommerceTermEntryId == 0) ? " d-none" : "" %>" id="description-label"><liferay-ui:message key="description" /></label>
 
-				if (continueButton) {
-					Liferay.Util.toggleDisabled(continueButton, true);
-				}
-			</aui:script>
-		</c:when>
-		<c:otherwise>
-			<liferay-ui:error key="paymentTermsInvalid" message="please-select-payment-terms" />
-
-			<%
-			Map<Long, String> terms = new HashMap<Long, String>();
-			%>
-
-			<aui:form action="<%= editCommerceOrderPaymentTermsActionURL %>" method="post" name="fm">
-				<aui:input name="<%= Constants.CMD %>" type="hidden" value="updatePaymentTerms" />
-				<aui:input name="commerceOrderId" type="hidden" value="<%= commerceOrder.getCommerceOrderId() %>" />
-
-				<aui:select label='<%= LanguageUtil.get(request, "title") %>' name="commercePaymentTermId" showEmptyOption="<%= true %>">
-
-					<%
-					for (CommerceTermEntry commerceTermEntry : paymentCommerceTermEntries) {
-					%>
-
-						<aui:option label="<%= commerceTermEntry.getLabel(LanguageUtil.getLanguageId(locale)) %>" selected="<%= paymentCommerceTermEntryId == commerceTermEntry.getCommerceTermEntryId() %>" value="<%= commerceTermEntry.getCommerceTermEntryId() %>" />
-
-					<%
-						terms.put(commerceTermEntry.getCommerceTermEntryId(), commerceTermEntry.getDescription(LanguageUtil.getLanguageId(locale)));
-					}
-					%>
-
-				</aui:select>
-			</aui:form>
-
-			<label class="control-label <%= (paymentCommerceTermEntryId == 0) ? " d-none" : "" %>" id="description-label"><liferay-ui:message key="description" /></label>
-
-			<div id="description-container">
-				<%= commerceOrder.getPaymentCommerceTermEntryDescription() %>
-			</div>
-
-			<liferay-frontend:component
-				context='<%=
-					HashMapBuilder.<String, Object>put(
-						"selectId", liferayPortletResponse.getNamespace() + "commercePaymentTermId"
-					).put(
-						"terms", terms
-					).build()
-				%>'
-				module="{termsDescriptionHandler} from commerce-order-web"
-			/>
-		</c:otherwise>
-	</c:choose>
-</div>
+	<div id="description-container">
+		<%= commerceOrder.getPaymentCommerceTermEntryDescription() %>
+	</div>
+</commerce-ui:modal-content>

@@ -5,7 +5,7 @@
 
 package com.liferay.commerce.order.web.internal.frontend.data.set.view.table;
 
-import com.liferay.commerce.order.web.internal.constants.CommerceReturnFDSNames;
+import com.liferay.commerce.order.web.internal.constants.CommerceOrderFDSNames;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
@@ -18,10 +18,10 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Stefano Motta
+ * @author Gianmarco Brunialti Masera
  */
 @Component(
-	property = "frontend.data.set.name=" + CommerceReturnFDSNames.RETURNS,
+	property = "frontend.data.set.name=" + CommerceOrderFDSNames.RETURNS,
 	service = FDSView.class
 )
 public class CommerceReturnTableFDSView extends BaseTableFDSView {
@@ -38,10 +38,6 @@ public class CommerceReturnTableFDSView extends BaseTableFDSView {
 			).setSortable(
 				true
 			)
-		).add(
-			"r_accountToCommerceReturns_accountEntry.name", "account"
-		).add(
-			"channelName", "channel"
 		).add(
 			"totalAmount", "amount",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(

@@ -10,8 +10,8 @@ package com.liferay.commerce.currency.constants;
  */
 public class CommerceCurrencyPortletKeys {
 
-	public static final String COMMERCE_CURRENCY =
-		"com_liferay_commerce_currency_web_internal_portlet_" +
-			"CommerceCurrencyPortlet";
+	public static final String COMMERCE_CURRENCY_ADMIN =
+		"com_liferay_commerce_currency_admin_web_internal_portlet_" +
+			"CommerceCurrencyAdminPortlet";
 
 }

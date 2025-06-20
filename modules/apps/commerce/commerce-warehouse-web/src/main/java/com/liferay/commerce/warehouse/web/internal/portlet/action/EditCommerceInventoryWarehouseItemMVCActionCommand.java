@@ -33,8 +33,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS,
-		"mvc.command.name=/cp_definitions/edit_commerce_inventory_warehouse_item"
+		"javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS_ADMIN,
+		"mvc.command.name=/cp_definitions_admin/edit_commerce_inventory_warehouse_item"
 	},
 	service = MVCActionCommand.class
 )

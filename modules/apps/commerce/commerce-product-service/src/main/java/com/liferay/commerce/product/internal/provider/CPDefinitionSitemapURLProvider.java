@@ -71,7 +71,7 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 		}
 
 		if (SitemapURLProviderUtil.hasPortletId(
-				layout, CPPortletKeys.CP_CONTENT_WEB)) {
+				layout, CPPortletKeys.CP_CONTENT)) {
 
 			long groupId =
 				_commerceChannelLocalService.

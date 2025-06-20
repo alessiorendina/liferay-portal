@@ -24,7 +24,7 @@ public class CommerceCartMiniContentExportImportTest
 	@Override
 	public String getPortletId() throws Exception {
 		return PortletIdCodec.encode(
-			CommercePortletKeys.COMMERCE_CART_CONTENT_MINI,
+			CommercePortletKeys.COMMERCE_CART_MINI,
 			RandomTestUtil.randomString());
 	}
 

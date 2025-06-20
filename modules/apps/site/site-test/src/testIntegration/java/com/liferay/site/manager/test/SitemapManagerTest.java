@@ -945,8 +945,7 @@ public class SitemapManagerTest {
 	}
 
 	private void _setUpAssetCategoryDisplayPage() throws Exception {
-		LayoutTestUtil.addPortletToLayout(
-			_layout, CPPortletKeys.CP_CATEGORY_CONTENT_WEB);
+		LayoutTestUtil.addPortletToLayout(_layout, CPPortletKeys.CP_CATEGORY);
 
 		_addAssetCategoryAssetDisplayPageEntry();
 

@@ -494,11 +494,10 @@ public class AddToCartTag extends IncludeTag {
 
 		return PortletURLBuilder.create(
 			PortletURLFactoryUtil.create(
-				httpServletRequest,
-				CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT,
+				httpServletRequest, CommercePortletKeys.COMMERCE_OPEN_ORDER,
 				PortletRequest.RENDER_PHASE)
 		).setMVCRenderCommandName(
-			"/commerce_order_content/view_commerce_order_order_type_modal"
+			"/commerce_order/view_commerce_order_order_type_modal"
 		).setParameter(
 			"addToCart", Boolean.TRUE
 		).setWindowState(

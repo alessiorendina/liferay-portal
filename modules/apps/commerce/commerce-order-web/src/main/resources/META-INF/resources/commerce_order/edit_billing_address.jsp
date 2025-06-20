@@ -10,22 +10,23 @@
 <%
 String cmd = ParamUtil.getString(request, Constants.CMD);
 
-CommerceOrderEditDisplayContext commerceOrderEditDisplayContext = (CommerceOrderEditDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
-
 CommerceAddress billingAddress = null;
 
-CommerceOrder commerceOrder = commerceOrderEditDisplayContext.getCommerceOrder();
+CommerceOrder commerceOrder = commerceOrderDisplayContext.getCommerceOrder();
 
 if ((commerceOrder != null) && Validator.isNull(cmd)) {
 	billingAddress = commerceOrder.getBillingAddress();
 }
 %>
 
-<portlet:actionURL name="/commerce_order/edit_commerce_order" var="editCommerceOrderBillingAddressActionURL" />
+<portlet:actionURL name="/commerce_open_order/edit_commerce_order" var="editCommerceOrderBillingAddressActionURL" />
 
-<div class="container-fluid container-fluid-max-xl p-4">
+<commerce-ui:modal-content
+	title='<%= (billingAddress == null) ? LanguageUtil.get(request, "add-billing-address") : LanguageUtil.get(request, "edit-billing-address") %>'
+>
 	<aui:form action="<%= editCommerceOrderBillingAddressActionURL %>" method="post" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value='<%= (billingAddress == null) ? "addBillingAddress" : "updateBillingAddress" %>' />
+		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 		<aui:input name="commerceOrderId" type="hidden" value="<%= commerceOrder.getCommerceOrderId() %>" />
 
 		<aui:model-context bean="<%= billingAddress %>" model="<%= CommerceAddress.class %>" />
@@ -48,80 +49,80 @@ if ((commerceOrder != null) && Validator.isNull(cmd)) {
 
 		<aui:select label="region" name="regionId" wrapperCssClass="form-group-item" />
 	</aui:form>
+</commerce-ui:modal-content>
 
-	<aui:script>
-		new Liferay.DynamicSelect([
-			{
-				select: '<portlet:namespace />countryId',
-				selectData: function (callback) {
-					function injectCountryPlaceholder(list) {
-						var callbackList = [
-							{
-								countryId: '0',
-								nameCurrentValue:
-									'- <liferay-ui:message key="select-country" />',
-							},
-						];
-
-						list.forEach((listElement) => {
-							callbackList.push(listElement);
-						});
-
-						callback(callbackList);
-					}
-
-					Liferay.Service(
-						'/commerce.commercecountrymanagerimpl/get-billing-countries',
+<aui:script>
+	new Liferay.DynamicSelect([
+		{
+			select: '<portlet:namespace />countryId',
+			selectData: function (callback) {
+				function injectCountryPlaceholder(list) {
+					var callbackList = [
 						{
-							active: true,
-							billingAllowed: true,
-							companyId: '<%= company.getCompanyId() %>',
+							countryId: '0',
+							nameCurrentValue:
+								'- <liferay-ui:message key="select-country" />',
 						},
-						injectCountryPlaceholder
-					);
-				},
-				selectDesc: 'nameCurrentValue',
-				selectId: 'countryId',
-				selectNullable: <%= false %>,
-				selectSort: '<%= true %>',
-				selectVal:
-					'<%= BeanParamUtil.getLong(billingAddress, request, "countryId") %>',
+					];
+
+					list.forEach((listElement) => {
+						callbackList.push(listElement);
+					});
+
+					callback(callbackList);
+				}
+
+				Liferay.Service(
+					'/commerce.commercecountrymanagerimpl/get-billing-countries',
+					{
+						active: true,
+						billingAllowed: true,
+						companyId: '<%= company.getCompanyId() %>',
+					},
+					injectCountryPlaceholder
+				);
 			},
-			{
-				select: '<portlet:namespace />regionId',
-				selectData: function (callback, selectKey) {
-					function injectRegionPlaceholder(list) {
-						var callbackList = [
-							{
-								regionId: '0',
-								name: '- <liferay-ui:message key="select-region" />',
-								nameCurrentValue:
-									'- <liferay-ui:message key="select-region" />',
-							},
-						];
-
-						list.forEach((listElement) => {
-							callbackList.push(listElement);
-						});
-
-						callback(callbackList);
-					}
-
-					Liferay.Service(
-						'/region/get-regions',
+			selectDesc: 'nameCurrentValue',
+			selectId: 'countryId',
+			selectNullable: <%= false %>,
+			selectSort: '<%= true %>',
+			selectVal:
+				'<%= BeanParamUtil.getLong(billingAddress, request, "countryId") %>',
+		},
+		{
+			select: '<portlet:namespace />regionId',
+			selectData: function (callback, selectKey) {
+				function injectRegionPlaceholder(list) {
+					var callbackList = [
 						{
-							active: true,
-							countryId: Number(selectKey),
+							regionId: '0',
+							name: '- <liferay-ui:message key="select-region" />',
+							nameCurrentValue:
+								'- <liferay-ui:message key="select-region" />',
 						},
-						injectRegionPlaceholder
-					);
-				},
-				selectDesc: 'name',
-				selectId: 'regionId',
-				selectNullable: <%= false %>,
-				selectVal:
-					'<%= BeanParamUtil.getLong(billingAddress, request, "regionId") %>',
+					];
+
+					list.forEach((listElement) => {
+						callbackList.push(listElement);
+					});
+
+					callback(callbackList);
+				}
+
+				Liferay.Service(
+					'/region/get-regions',
+					{
+						active: true,
+						countryId: Number(selectKey),
+					},
+					injectRegionPlaceholder
+				);
 			},
-		]);
-	</aui:script>
-</div>
+			selectDesc: 'name',
+			selectId: 'regionId',
+			selectNullable: <%= false %>,
+			selectVal:
+				'<%= BeanParamUtil.getLong(billingAddress, request, "regionId") %>',
+		},
+	]);
+</aui:script>

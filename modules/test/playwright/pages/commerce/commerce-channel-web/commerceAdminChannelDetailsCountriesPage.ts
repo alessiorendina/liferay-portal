@@ -36,7 +36,7 @@ export class CommerceAdminChannelDetailsCountriesPage {
 		this.addCountryFrame = page.frameLocator('iframe[title="Add Country"]');
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.countriesTable = page.locator(
-			'#_com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet_editChannelContainer .fds table'
+			'#_com_liferay_commerce_channel_admin_web_internal_portlet_CommerceChannelsAdminPortlet_editChannelContainer .fds table'
 		);
 		this.countriesTableRow = async (
 			colPosition: number,

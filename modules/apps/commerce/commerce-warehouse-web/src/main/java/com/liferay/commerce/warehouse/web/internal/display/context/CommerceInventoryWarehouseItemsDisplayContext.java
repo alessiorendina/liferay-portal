@@ -68,9 +68,9 @@ public class CommerceInventoryWarehouseItemsDisplayContext {
 
 		return PortletURLBuilder.create(
 			_portal.getControlPanelPortletURL(
-				renderRequest, CPPortletKeys.CP_DEFINITIONS, lifecycle)
+				renderRequest, CPPortletKeys.CP_DEFINITIONS_ADMIN, lifecycle)
 		).setMVCRenderCommandName(
-			"/cp_definitions/edit_cp_definition"
+			"/cp_definitions_admin/edit_cp_definition"
 		).setParameter(
 			"cpDefinitionId",
 			() -> {

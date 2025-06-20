@@ -36,7 +36,7 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 	constructor(page: Page) {
 		super(
 			page,
-			'#_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fm .fds table'
+			'#_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet_fm .fds table'
 		);
 
 		this.page = page;
@@ -60,7 +60,7 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 			name: 'Price',
 		});
 		this.skusTable = page.locator(
-			'#_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fm .fds table'
+			'#_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet_fm .fds table'
 		);
 		this.skusTableRow = async (
 			colPosition: number,

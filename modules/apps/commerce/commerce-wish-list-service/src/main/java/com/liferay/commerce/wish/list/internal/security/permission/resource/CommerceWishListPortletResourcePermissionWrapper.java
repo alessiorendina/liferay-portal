@@ -32,7 +32,7 @@ public class CommerceWishListPortletResourcePermissionWrapper
 			CommerceWishListConstants.RESOURCE_NAME,
 			new StagedPortletPermissionLogic(
 				_stagingPermission,
-				CommerceWishListPortletKeys.COMMERCE_WISH_LIST_CONTENT));
+				CommerceWishListPortletKeys.COMMERCE_WISH_LIST));
 	}
 
 	@Reference

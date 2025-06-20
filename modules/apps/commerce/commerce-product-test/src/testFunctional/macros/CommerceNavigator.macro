@@ -39,7 +39,7 @@ definition {
 
 	@summary = "Default summary"
 	macro goToAvailabilityEstimatesAdmin() {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_availability_estimate_web_internal_portlet_CommerceAvailabilityEstimatePortlet");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_availability_estimate_admin_web_internal_portlet_CommerceAvailabilityEstimateAdminPortlet");
 	}
 
 	@summary = "Default summary"
@@ -52,12 +52,12 @@ definition {
 
 	@summary = "Default summary"
 	macro goToCurrenciesAdmin() {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_currency_web_internal_portlet_CommerceCurrencyPortlet");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_currency_admin_web_internal_portlet_CommerceCurrencyAdminPortlet");
 	}
 
 	@summary = "Default summary"
 	macro goToDiscountAdmin() {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_pricing_web_internal_portlet_CommerceDiscountPortlet");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_pricing_admin_web_internal_portlet_CommerceDiscountAdminPortlet");
 	}
 
 	@summary = "Default summary"
@@ -82,7 +82,7 @@ definition {
 
 	@summary = "Default summary"
 	macro goToHealthCheckAdmin() {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_health_status_web_internal_portlet_CommerceHealthCheckPortlet");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_health_status_admin_web_internal_portlet_CommerceHealthCheckAdminPortlet");
 	}
 
 	@summary = "Default summary"
@@ -167,7 +167,7 @@ definition {
 
 		var siteURL = "web/${site}/placed-orders";
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "${siteURL}?p_p_id=com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet&p_p_lifecycle=0&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet_itemsPerPage=10&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet_pageNumber=1&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet_tableName=com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet-placedOrders&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet_backURL=http%3A%2F%2Flocalhost%3A8080%2Fweb%2Fminium%2Fplaced-orders%3Fp_p_id%3Dcom_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet%26p_p_lifecycle%3D0%26_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet_itemsPerPage%3D10%26_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet_pageNumber%3D1%26_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet_tableName%3Dcom_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet-placedOrders&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet_mvcRenderCommandName=%2Fcommerce_order_content%2Fview_commerce_order_details&_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet_commerceOrderId=${orderId}");
+		Navigator.openWithAppendToBaseURL(urlAppend = "${siteURL}?p_p_id=com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet&p_p_lifecycle=0&_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_itemsPerPage=10&_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_pageNumber=1&_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_tableName=com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet-placedOrders&_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_backURL=http%3A%2F%2Flocalhost%3A8080%2Fweb%2Fminium%2Fplaced-orders%3Fp_p_id%3Dcom_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet%26p_p_lifecycle%3D0%26_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_itemsPerPage%3D10%26_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_pageNumber%3D1%26_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_tableName%3Dcom_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet-placedOrders&_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_mvcRenderCommandName=%2Fcommerce_order_content%2Fview_commerce_order_details&_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_commerceOrderId=${orderId}");
 
 		WaitForPageLoad();
 	}
@@ -184,7 +184,7 @@ definition {
 
 	@summary = "Default summary"
 	macro goToPriceListAdmin() {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_pricing_web_internal_portlet_CommercePriceListPortlet");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_pricing_admin_web_internal_portlet_CommercePriceListAdminPortlet");
 	}
 
 	@summary = "Default summary"
@@ -198,12 +198,12 @@ definition {
 
 	@summary = "Default summary"
 	macro goToProductOptionsAdminViaURL() {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_product_options_web_internal_portlet_CPOptionsPortlet");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_product_options_admin_web_internal_portlet_CPOptionsAdminPortlet");
 	}
 
 	@summary = "Default summary"
 	macro goToSpecificationsAdmin() {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_product_options_web_internal_portlet_CPSpecificationOptionsPortlet");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_product_options_admin_web_internal_portlet_CPSpecificationOptionsAdminPortlet");
 	}
 
 	@summary = "Default summary"
@@ -245,7 +245,7 @@ definition {
 
 	@summary = "Default summary"
 	macro goToTaxCategoriesAdmin() {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_product_tax_category_web_internal_portlet_CPTaxCategoryPortlet");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_product_tax_category_admin_web_internal_portlet_CPTaxCategoryAdminPortlet");
 	}
 
 	@summary = "Default summary"
@@ -260,7 +260,7 @@ definition {
 
 	@summary = "Default summary"
 	macro openCommerceCatalogueAdmin() {
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_commerce_catalog_admin_web_internal_portlet_CommerceCatalogsAdminPortlet");
 	}
 
 	@summary = "Default summary"

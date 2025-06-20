@@ -185,7 +185,7 @@
 																	"widgetInstance": {
 																		"widgetConfig": {
 																		},
-																		"widgetName": "com_liferay_commerce_wish_list_web_internal_portlet_CommerceWishListContentPortlet"
+																		"widgetName": "com_liferay_commerce_wish_list_web_internal_portlet_CommerceWishListPortlet"
 																	}
 																},
 																"type": "Widget"

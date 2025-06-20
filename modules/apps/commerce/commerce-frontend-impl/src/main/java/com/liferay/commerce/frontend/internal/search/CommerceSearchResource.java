@@ -288,11 +288,11 @@ public class CommerceSearchResource {
 		}
 
 		long plid = _portal.getPlidFromPortletId(
-			groupId, CommercePortletKeys.COMMERCE_CART_CONTENT);
+			groupId, CommercePortletKeys.COMMERCE_CART);
 
 		if (plid <= 0) {
 			plid = _portal.getPlidFromPortletId(
-				groupId, CommercePortletKeys.COMMERCE_ORDER_CONTENT);
+				groupId, CommercePortletKeys.COMMERCE_ORDER);
 		}
 
 		if (plid > 0) {

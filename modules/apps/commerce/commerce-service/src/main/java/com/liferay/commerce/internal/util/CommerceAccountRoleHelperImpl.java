@@ -506,8 +506,8 @@ public class CommerceAccountRoleHelperImpl
 	}
 
 	private static final String[] _RETURNS_MANAGER_CONTROL_PANEL_PORTLET_IDS = {
-		CommercePortletKeys.COMMERCE_PAYMENT,
-		CommercePortletKeys.COMMERCE_RETURN
+		CommercePortletKeys.COMMERCE_PAYMENT_ADMIN,
+		CommercePortletKeys.COMMERCE_RETURN_ADMIN
 	};
 
 	private static final String[]
@@ -521,11 +521,12 @@ public class CommerceAccountRoleHelperImpl
 	};
 
 	private static final String[] _SUPPLIER_CONTROL_PANEL_PORTLET_IDS = {
-		CommercePortletKeys.COMMERCE_ORDER,
-		CommercePricingPortletKeys.COMMERCE_PRICE_LIST,
-		CommercePricingPortletKeys.COMMERCE_PROMOTION,
-		CPPortletKeys.COMMERCE_CATALOGS, CPPortletKeys.COMMERCE_CHANNELS,
-		CPPortletKeys.CP_DEFINITIONS
+		CommercePortletKeys.COMMERCE_ORDER_ADMIN,
+		CommercePricingPortletKeys.COMMERCE_PRICE_LIST_ADMIN,
+		CommercePricingPortletKeys.COMMERCE_PROMOTION_ADMIN,
+		CPPortletKeys.COMMERCE_CATALOGS_ADMIN,
+		CPPortletKeys.COMMERCE_CHANNELS_ADMIN,
+		CPPortletKeys.CP_DEFINITIONS_ADMIN
 	};
 
 	@Reference

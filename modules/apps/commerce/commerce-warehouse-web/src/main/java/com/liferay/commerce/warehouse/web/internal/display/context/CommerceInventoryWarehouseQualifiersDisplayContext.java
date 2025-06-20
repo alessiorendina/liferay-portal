@@ -167,7 +167,7 @@ public class CommerceInventoryWarehouseQualifiersDisplayContext
 					httpServletRequest, CommerceChannel.class.getName(),
 					PortletProvider.Action.MANAGE)
 			).setMVCRenderCommandName(
-				"/commerce_channels/edit_commerce_channel"
+				"/commerce_channels_admin/edit_commerce_channel"
 			).setRedirect(
 				cpRequestHelper.getCurrentURL()
 			).setParameter(

@@ -493,7 +493,7 @@ test(
 				getWidgetDefinition({
 					id: getRandomString(),
 					widgetName:
-						'com_liferay_commerce_cart_content_web_internal_portlet_CommerceCartContentTotalPortlet',
+						'com_liferay_commerce_cart_web_internal_portlet_CommerceCartTotalPortlet',
 				}),
 				getWidgetDefinition({
 					id: getRandomString(),

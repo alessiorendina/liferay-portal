@@ -28,7 +28,7 @@ export class CommerceAdminProductDetailsMediaPage {
 	constructor(page: Page) {
 		this.addImageButton = page.getByLabel('Add Image');
 		this.mediaForm = page.locator(
-			'#_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fm'
+			'#_com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet_fm'
 		);
 		this.mediaAttachmentsTable = this.mediaForm
 			.locator('.fds table')

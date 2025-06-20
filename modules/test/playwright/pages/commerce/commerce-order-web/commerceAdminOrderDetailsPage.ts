@@ -52,7 +52,7 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 	constructor(page: Page) {
 		super(
 			page,
-			'#_com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet_editOrderContainer .fds table'
+			'#_com_liferay_commerce_order_admin_web_internal_portlet_CommerceOrderAdminPortlet_editOrderContainer .fds table'
 		);
 		this.checkoutButton = page.getByRole('button', {
 			exact: true,

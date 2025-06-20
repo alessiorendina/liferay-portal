@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Commerce Shipping Engine Fixed Admin Web
+Bundle-SymbolicName: com.liferay.commerce.shipping.engine.fixed.admin.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /commerce-shipping-engine-fixed-admin-web
+-dsannotations-options: inherit

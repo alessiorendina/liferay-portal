@@ -1,5 +1,5 @@
 {
-	"className": "com.liferay.commerce.product.content.search.web.internal.portlet.CPSearchResultsPortlet",
+	"className": "com.liferay.commerce.product.search.web.internal.portlet.CPSearchResultsPortlet",
 	"ddmTemplateKey": "SEARCH-RESULTS-CARDS",
 	"name": "Search Results Cards",
 	"resourceClassName": "com.liferay.portlet.display.template.PortletDisplayTemplate"

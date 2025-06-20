@@ -22,7 +22,7 @@ export function updateGallery(formFields, viewCPAttachmentURL) {
 	const formData = new FormData();
 
 	formData.append(
-		'_com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet_skuOptions',
+		'_com_liferay_commerce_product_web_internal_portlet_CPContentPortlet_skuOptions',
 		skuOptions
 	);
 	formData.append('groupId', themeDisplay.getScopeGroupId());

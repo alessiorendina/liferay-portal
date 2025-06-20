@@ -11,9 +11,9 @@ package com.liferay.commerce.wish.list.constants;
  */
 public class CommerceWishListPortletKeys {
 
-	public static final String COMMERCE_WISH_LIST_CONTENT =
+	public static final String COMMERCE_WISH_LIST =
 		"com_liferay_commerce_wish_list_web_internal_portlet_" +
-			"CommerceWishListContentPortlet";
+			"CommerceWishListPortlet";
 
 	public static final String MY_COMMERCE_WISH_LISTS =
 		"com_liferay_commerce_wish_list_web_internal_portlet_" +

@@ -11,7 +11,7 @@
 CommercePunchOutDisplayContext commercePunchOutDisplayContext = (CommercePunchOutDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 %>
 
-<portlet:actionURL name="/commerce_channels/edit_commerce_punch_out_configuration" var="editCommercePunchOutConfigurationActionURL" />
+<portlet:actionURL name="/commerce_channels_admin/edit_commerce_punch_out_configuration" var="editCommercePunchOutConfigurationActionURL" />
 
 <aui:form action="<%= editCommercePunchOutConfigurationActionURL %>" method="post" name="fm">
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />

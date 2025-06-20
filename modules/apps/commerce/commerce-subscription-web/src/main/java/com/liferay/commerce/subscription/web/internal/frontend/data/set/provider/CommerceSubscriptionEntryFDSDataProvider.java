@@ -168,7 +168,7 @@ public class CommerceSubscriptionEntryFDSDataProvider
 				httpServletRequest, themeDisplay.getScopeGroup(),
 				CommerceOrder.class.getName(), PortletProvider.Action.MANAGE)
 		).setMVCRenderCommandName(
-			"/commerce_open_order_content/edit_commerce_order"
+			"/commerce_open_order/edit_commerce_order"
 		).setRedirect(
 			ParamUtil.getString(
 				httpServletRequest, "currentUrl",

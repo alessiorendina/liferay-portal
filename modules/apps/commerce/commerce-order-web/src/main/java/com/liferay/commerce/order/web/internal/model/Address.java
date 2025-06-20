@@ -6,7 +6,7 @@
 package com.liferay.commerce.order.web.internal.model;
 
 /**
- * @author Alessio Antonio Rendina
+ * @author Luca Pellizzon
  */
 public class Address {
 

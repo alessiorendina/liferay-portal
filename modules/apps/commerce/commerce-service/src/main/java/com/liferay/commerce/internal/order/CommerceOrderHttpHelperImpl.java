@@ -183,20 +183,18 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 		throws PortalException {
 
 		if (hasCommerceOrderPortlet(
-				httpServletRequest,
-				CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT)) {
+				httpServletRequest, CommercePortletKeys.COMMERCE_OPEN_ORDER)) {
 
 			long plid = PortalUtil.getPlidFromPortletId(
 				PortalUtil.getScopeGroupId(httpServletRequest),
-				CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT);
+				CommercePortletKeys.COMMERCE_OPEN_ORDER);
 
 			return PortletURLBuilder.create(
 				_portletURLFactory.create(
-					httpServletRequest,
-					CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT, plid,
-					PortletRequest.RENDER_PHASE)
+					httpServletRequest, CommercePortletKeys.COMMERCE_OPEN_ORDER,
+					plid, PortletRequest.RENDER_PHASE)
 			).setMVCRenderCommandName(
-				"/commerce_open_order_content/edit_commerce_order"
+				"/commerce_open_order/edit_commerce_order"
 			).setBackURL(
 				ParamUtil.getString(httpServletRequest, "backURL")
 			).buildString();
@@ -259,17 +257,17 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 		}
 
 		long plid = _portal.getPlidFromPortletId(
-			groupId, CommercePortletKeys.COMMERCE_ORDER_CONTENT);
+			groupId, CommercePortletKeys.COMMERCE_ORDER);
 
 		if ((plid > 0) && (commerceOrder != null) && !commerceOrder.isOpen()) {
 			PortletURL portletURL = _getPortletURL(
 				groupId, httpServletRequest,
-				CommercePortletKeys.COMMERCE_ORDER_CONTENT);
+				CommercePortletKeys.COMMERCE_ORDER);
 
 			if (commerceOrder != null) {
 				portletURL.setParameter(
 					"mvcRenderCommandName",
-					"/commerce_order_content/view_commerce_order_details");
+					"/commerce_order/view_commerce_order_details");
 				portletURL.setParameter(
 					"backURL",
 					ParamUtil.getString(httpServletRequest, "backURL"));
@@ -285,17 +283,17 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 		}
 
 		plid = _portal.getPlidFromPortletId(
-			groupId, CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT);
+			groupId, CommercePortletKeys.COMMERCE_OPEN_ORDER);
 
 		if ((plid > 0) && (commerceOrder != null) && commerceOrder.isOpen()) {
 			PortletURL portletURL = _getPortletURL(
 				groupId, httpServletRequest,
-				CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT);
+				CommercePortletKeys.COMMERCE_OPEN_ORDER);
 
 			if (commerceOrder != null) {
 				portletURL.setParameter(
 					"mvcRenderCommandName",
-					"/commerce_open_order_content/edit_commerce_order");
+					"/commerce_open_order/edit_commerce_order");
 				portletURL.setParameter(
 					"backURL",
 					ParamUtil.getString(httpServletRequest, "backURL"));
@@ -308,13 +306,13 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 		}
 
 		plid = _portal.getPlidFromPortletId(
-			groupId, CommercePortletKeys.COMMERCE_CART_CONTENT);
+			groupId, CommercePortletKeys.COMMERCE_CART);
 
 		if (plid > 0) {
 			return PortletURLBuilder.create(
 				_getPortletURL(
 					groupId, httpServletRequest,
-					CommercePortletKeys.COMMERCE_CART_CONTENT)
+					CommercePortletKeys.COMMERCE_CART)
 			).setBackURL(
 				ParamUtil.getString(httpServletRequest, "backURL")
 			).buildString();
@@ -571,10 +569,9 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 			HttpServletRequest httpServletRequest, String portletKey)
 		throws PortalException {
 
-		if (portletKey.equals(CommercePortletKeys.COMMERCE_CART_CONTENT) ||
-			portletKey.equals(
-				CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT) ||
-			portletKey.equals(CommercePortletKeys.COMMERCE_ORDER_CONTENT)) {
+		if (portletKey.equals(CommercePortletKeys.COMMERCE_CART) ||
+			portletKey.equals(CommercePortletKeys.COMMERCE_OPEN_ORDER) ||
+			portletKey.equals(CommercePortletKeys.COMMERCE_ORDER)) {
 
 			long groupId = _portal.getScopeGroupId(httpServletRequest);
 

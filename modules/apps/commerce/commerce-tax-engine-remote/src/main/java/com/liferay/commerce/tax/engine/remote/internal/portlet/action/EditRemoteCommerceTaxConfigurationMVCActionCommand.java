@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_TAX_METHODS,
+		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_TAX_METHOD_ADMIN,
 		"mvc.command.name=editRemoteCommerceTaxConfiguration"
 	},
 	service = MVCActionCommand.class

@@ -32,7 +32,7 @@ public class CPPortletResourcePermissionWrapper
 		return PortletResourcePermissionFactory.create(
 			CPConstants.RESOURCE_NAME_PRODUCT,
 			new StagedPortletPermissionLogic(
-				_stagingPermission, CPPortletKeys.CP_DEFINITIONS));
+				_stagingPermission, CPPortletKeys.CP_DEFINITIONS_ADMIN));
 	}
 
 	@Reference

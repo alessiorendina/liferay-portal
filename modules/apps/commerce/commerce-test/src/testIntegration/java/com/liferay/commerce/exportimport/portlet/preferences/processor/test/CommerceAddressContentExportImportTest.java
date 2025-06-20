@@ -24,7 +24,7 @@ public class CommerceAddressContentExportImportTest
 	@Override
 	public String getPortletId() throws Exception {
 		return PortletIdCodec.encode(
-			CommercePortletKeys.COMMERCE_ADDRESS_CONTENT,
+			CommercePortletKeys.COMMERCE_ADDRESS,
 			RandomTestUtil.randomString());
 	}
 

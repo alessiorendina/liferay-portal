@@ -5,7 +5,7 @@
 
 package com.liferay.commerce.order.web.internal.frontend.data.set.view.table;
 
-import com.liferay.commerce.order.web.internal.constants.CommerceReturnFDSNames;
+import com.liferay.commerce.order.web.internal.constants.CommerceOrderFDSNames;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
@@ -18,10 +18,10 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Stefano Motta
+ * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "frontend.data.set.name=" + CommerceReturnFDSNames.RETURN_ITEMS,
+	property = "frontend.data.set.name=" + CommerceOrderFDSNames.RETURN_ITEMS,
 	service = FDSView.class
 )
 public class CommerceReturnItemTableFDSView extends BaseTableFDSView {
@@ -32,34 +32,23 @@ public class CommerceReturnItemTableFDSView extends BaseTableFDSView {
 			_fdsTableSchemaBuilderFactory.create();
 
 		return fdsTableSchemaBuilder.add(
-			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem.sku",
-			"sku",
+			"commerceOrderItemToCommerceReturnItems.sku", "sku",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"actionLink")
 		).add(
-			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem.name." +
-				"LANG",
-			"name"
+			"commerceOrderItemToCommerceReturnItems.name.LANG", "product-name"
 		).add(
-			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem." +
-				"unitOfMeasureKey",
-			"uom"
+			"commerceOrderItemToCommerceReturnItems.unitOfMeasureKey", "uom"
 		).add(
-			"quantity", "requested-quantity"
-		).add(
-			"returnReason", "return-reason",
+			"amount", "purchase-price",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"commerceReturnItemPicklistDataRenderer")
+				"commerceCurrencyDataRenderer")
 		).add(
-			"authorized", "authorized"
+			"quantity", "quantity"
 		).add(
-			"received", "received",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"commerceReturnItemReceivedDataRenderer")
+			"returnReason.name", "return-reason"
 		).add(
-			"returnResolutionMethod", "resolution",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"commerceReturnItemPicklistDataRenderer")
+			"received", "received-quantity"
 		).add(
 			"returnItemStatus", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(

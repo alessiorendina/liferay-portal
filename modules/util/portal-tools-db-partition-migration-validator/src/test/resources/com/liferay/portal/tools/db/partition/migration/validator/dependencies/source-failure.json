@@ -678,7 +678,7 @@
 				"minor": 0,
 				"qualifier": ""
 			},
-			"servletContextName": "com.liferay.commerce.product.content.web",
+			"servletContextName": "com.liferay.commerce.product.web",
 			"state": 0,
 			"verified": true
 		},

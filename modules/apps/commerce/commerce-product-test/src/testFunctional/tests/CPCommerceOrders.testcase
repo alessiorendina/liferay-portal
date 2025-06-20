@@ -2766,7 +2766,7 @@ definition {
 				userLastName = "userln",
 				userScreenName = "usersn");
 
-			for (var resourceLists : list "com.liferay.commerce.order:VIEW_COMMERCE_ORDERS,com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel:VIEW,com.liferay.commerce.model.CommerceOrder:VIEW,com.liferay.commerce.model.CommerceOrderType:VIEW,com.liferay.commerce.product.model.CommerceChannel:VIEW,com.liferay.commerce.notification.model.CommerceNotificationTemplate:VIEW,90:VIEW_CONTROL_PANEL,com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet:ACCESS_IN_CONTROL_PANEL,com_liferay_commerce_order_web_internal_portlet_CommerceOrderPortlet:VIEW,com.liferay.commerce.channel:VIEW_COMMERCE_CHANNELS") {
+			for (var resourceLists : list "com.liferay.commerce.order:VIEW_COMMERCE_ORDERS,com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel:VIEW,com.liferay.commerce.model.CommerceOrder:VIEW,com.liferay.commerce.model.CommerceOrderType:VIEW,com.liferay.commerce.product.model.CommerceChannel:VIEW,com.liferay.commerce.notification.model.CommerceNotificationTemplate:VIEW,90:VIEW_CONTROL_PANEL,com_liferay_commerce_order_admin_web_internal_portlet_CommerceOrderAdminPortlet:ACCESS_IN_CONTROL_PANEL,com_liferay_commerce_order_admin_web_internal_portlet_CommerceOrderAdminPortlet:VIEW,com.liferay.commerce.channel:VIEW_COMMERCE_CHANNELS") {
 				var resourceName = StringUtil.extractFirst(${resourceLists}, ":");
 				var resourceAction = StringUtil.extractLast(${resourceLists}, ":");
 

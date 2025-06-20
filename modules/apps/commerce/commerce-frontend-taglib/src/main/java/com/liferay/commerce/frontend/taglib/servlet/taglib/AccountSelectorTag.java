@@ -355,15 +355,14 @@ public class AccountSelectorTag extends IncludeTag {
 
 		long plid = PortalUtil.getPlidFromPortletId(
 			PortalUtil.getScopeGroupId(httpServletRequest),
-			CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT);
+			CommercePortletKeys.COMMERCE_OPEN_ORDER);
 
 		if ((plid > 0) || FeatureFlagManagerUtil.isEnabled("LPD-20379")) {
 			return PortletURLBuilder.create(
 				_getPortletURL(
-					httpServletRequest,
-					CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT)
+					httpServletRequest, CommercePortletKeys.COMMERCE_OPEN_ORDER)
 			).setActionName(
-				"/commerce_open_order_content/edit_commerce_order"
+				"/commerce_open_order/edit_commerce_order"
 			).setCMD(
 				"setCurrent"
 			).setParameter(
@@ -472,7 +471,7 @@ public class AccountSelectorTag extends IncludeTag {
 
 	private static final Snapshot<ModelResourcePermission<User>>
 		_userModelResourcePermissionSnapshot = new Snapshot<>(
-			ServletContextUtil.class,
+			AccountSelectorTag.class,
 			Snapshot.cast(ModelResourcePermission.class),
 			"(model.class.name=com.liferay.portal.kernel.model.User)");
 

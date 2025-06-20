@@ -7,7 +7,7 @@
 
 <%@ include file="/init.jsp" %>
 
-<portlet:actionURL name="/commerce_payment/edit_function_commerce_tax_method_configuration" var="editFunctionCommerceTaxMethodActionURL" />
+<portlet:actionURL name="/commerce_payment_admin/edit_function_commerce_tax_method_configuration" var="editFunctionCommerceTaxMethodActionURL" />
 
 <aui:form action="<%= editFunctionCommerceTaxMethodActionURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />

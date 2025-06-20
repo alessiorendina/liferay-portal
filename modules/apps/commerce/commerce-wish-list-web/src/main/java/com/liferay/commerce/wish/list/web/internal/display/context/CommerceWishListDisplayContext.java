@@ -395,7 +395,7 @@ public class CommerceWishListDisplayContext {
 	}
 
 	private boolean _isContentPortlet() {
-		return CommerceWishListPortletKeys.COMMERCE_WISH_LIST_CONTENT.equals(
+		return CommerceWishListPortletKeys.COMMERCE_WISH_LIST.equals(
 			_commerceWishListRequestHelper.getPortletId());
 	}
 

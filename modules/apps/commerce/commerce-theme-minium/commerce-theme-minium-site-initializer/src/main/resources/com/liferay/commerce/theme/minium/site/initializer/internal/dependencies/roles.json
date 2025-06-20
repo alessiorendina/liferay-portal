@@ -26,13 +26,13 @@
 				"actionIds": [
 					"ACCESS_IN_CONTROL_PANEL"
 				],
-				"resource": "com_liferay_commerce_catalog_web_internal_portlet_CommerceCatalogsPortlet"
+				"resource": "com_liferay_commerce_catalog_admin_web_internal_portlet_CommerceCatalogsAdminPortlet"
 			},
 			{
 				"actionIds": [
 					"ACCESS_IN_CONTROL_PANEL"
 				],
-				"resource": "com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet"
+				"resource": "com_liferay_commerce_product_definitions_admin_web_internal_portlet_CPDefinitionsAdminPortlet"
 			},
 			{
 				"actionIds": [
@@ -101,19 +101,19 @@
 					"PREFERENCES",
 					"VIEW"
 				],
-				"resource": "com_liferay_commerce_pricing_web_internal_portlet_CommerceDiscountPortlet"
+				"resource": "com_liferay_commerce_pricing_admin_web_internal_portlet_CommerceDiscountAdminPortlet"
 			},
 			{
 				"actionIds": [
 					"ACCESS_IN_CONTROL_PANEL"
 				],
-				"resource": "com_liferay_commerce_pricing_web_internal_portlet_CommercePriceListPortlet"
+				"resource": "com_liferay_commerce_pricing_admin_web_internal_portlet_CommercePriceListAdminPortlet"
 			},
 			{
 				"actionIds": [
 					"ACCESS_IN_CONTROL_PANEL"
 				],
-				"resource": "com_liferay_commerce_pricing_web_internal_portlet_CommercePromotionPortlet"
+				"resource": "com_liferay_commerce_pricing_admin_web_internal_portlet_CommercePromotionAdminPortlet"
 			},
 			{
 				"actionIds": [
@@ -175,7 +175,7 @@
 				"actionIds": [
 					"ACCESS_IN_CONTROL_PANEL"
 				],
-				"resource": "com_liferay_commerce_inventory_web_internal_portlet_CommerceInventoryPortlet"
+				"resource": "com_liferay_commerce_inventory_admin_web_internal_portlet_CommerceInventoryAdminPortlet"
 			},
 			{
 				"actionIds": [
@@ -187,7 +187,7 @@
 				"actionIds": [
 					"ACCESS_IN_CONTROL_PANEL"
 				],
-				"resource": "com_liferay_commerce_shipment_web_internal_portlet_CommerceShipmentPortlet"
+				"resource": "com_liferay_commerce_shipment_admin_web_internal_portlet_CommerceShipmentAdminPortlet"
 			},
 			{
 				"actionIds": [

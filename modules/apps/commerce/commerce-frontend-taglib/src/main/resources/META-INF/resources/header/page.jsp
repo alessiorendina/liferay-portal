@@ -132,7 +132,7 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 			<hr class="d-lg-none" />
 
 			<div class="align-items-center c-ml-auto d-flex justify-content-end">
-				<c:if test="<%= !CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT.equals(PortalUtil.getPortletId(request)) && Validator.isNotNull(reviewWorkflowTask) %>">
+				<c:if test="<%= !CommercePortletKeys.COMMERCE_OPEN_ORDER.equals(PortalUtil.getPortletId(request)) && Validator.isNotNull(reviewWorkflowTask) %>">
 
 					<%
 					boolean assignedToCurrentUser = false;

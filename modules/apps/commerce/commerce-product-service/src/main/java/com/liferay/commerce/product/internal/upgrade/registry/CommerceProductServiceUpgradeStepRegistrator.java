@@ -592,7 +592,7 @@ public class CommerceProductServiceUpgradeStepRegistrator
 
 				@Override
 				protected String[] getPortletIds() {
-					return new String[] {CPPortletKeys.CP_CATEGORY_CONTENT_WEB};
+					return new String[] {CPPortletKeys.CP_CATEGORY};
 				}
 
 				@Override
@@ -632,11 +632,10 @@ public class CommerceProductServiceUpgradeStepRegistrator
 				@Override
 				protected String[] getPortletIds() {
 					return new String[] {
-						CPPortletKeys.CP_COMPARE_CONTENT_MINI_WEB,
-						CPPortletKeys.CP_COMPARE_CONTENT_WEB,
-						CPPortletKeys.CP_CONTENT_WEB,
+						CPPortletKeys.CP_COMPARE_MINI, CPPortletKeys.CP_COMPARE,
+						CPPortletKeys.CP_CONTENT,
 						CPPortletKeys.CP_OPTION_FACETS + "_INSTANCE_%",
-						CPPortletKeys.CP_PUBLISHER_WEB + "_INSTANCE_%",
+						CPPortletKeys.CP_PUBLISHER + "_INSTANCE_%",
 						CPPortletKeys.CP_SEARCH_RESULTS + "_INSTANCE_%",
 						CPPortletKeys.CP_SPECIFICATION_OPTION_FACETS +
 							"_INSTANCE_%"

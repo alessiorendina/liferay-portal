@@ -24,7 +24,7 @@ public class CommerceVirtualOrderItemContentExportImportTest
 	@Override
 	public String getPortletId() throws Exception {
 		return PortletIdCodec.encode(
-			CommerceVirtualOrderPortletKeys.COMMERCE_VIRTUAL_ORDER_ITEM_CONTENT,
+			CommerceVirtualOrderPortletKeys.COMMERCE_VIRTUAL_ORDER_ITEM,
 			RandomTestUtil.randomString());
 	}
 
