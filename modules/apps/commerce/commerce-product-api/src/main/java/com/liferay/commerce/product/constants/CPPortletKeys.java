@@ -11,9 +11,9 @@ package com.liferay.commerce.product.constants;
  */
 public class CPPortletKeys {
 
-	public static final String COMMERCE_CATALOGS =
-		"com_liferay_commerce_catalog_web_internal_portlet_" +
-			"CommerceCatalogsPortlet";
+	public static final String COMMERCE_CATALOGS_ADMIN =
+		"com_liferay_commerce_catalog_admin_web_internal_portlet_" +
+			"CommerceCatalogsAdminPortlet";
 
 	public static final String COMMERCE_CHANNELS =
 		"com_liferay_commerce_channel_web_internal_portlet_" +

@@ -29,7 +29,7 @@ module.exports = {
 		'@liferay/commerce-address-web': [],
 		'@liferay/commerce-availability-estimate-web': [],
 		'@liferay/commerce-cart-content-web': [],
-		'@liferay/commerce-catalog-web': [],
+		'@liferay/commerce-catalog-admin-web': [],
 		'@liferay/commerce-channel-web': [],
 		'@liferay/commerce-checkout-web': [],
 		'@liferay/commerce-client-extension-web': [],

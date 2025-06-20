@@ -585,7 +585,7 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 		CommercePortletKeys.COMMERCE_ORDER,
 		CommercePricingPortletKeys.COMMERCE_PRICE_LIST,
 		CommercePricingPortletKeys.COMMERCE_PROMOTION,
-		CPPortletKeys.COMMERCE_CATALOGS, CPPortletKeys.COMMERCE_CHANNELS,
+		CPPortletKeys.COMMERCE_CATALOGS_ADMIN, CPPortletKeys.COMMERCE_CHANNELS,
 		CPPortletKeys.CP_DEFINITIONS
 	};
 
