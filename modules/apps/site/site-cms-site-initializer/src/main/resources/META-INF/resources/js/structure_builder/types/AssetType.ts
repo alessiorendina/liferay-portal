@@ -17,13 +17,14 @@ export interface IAssetFile {
 }
 
 export interface IAssetObjectEntry {
+    actions: any;
 	creator: any;
 	dateCreated: string;
 	dateModified: string;
 	externalReferenceCode: string;
 	file?: IAssetFile;
 	id: number;
-	keywords: any[];
+	keywords?: string[];
 	objectEntryFolderExternalReferenceCode: string;
 	objectEntryFolderId: number;
 	scopeId: number;
@@ -33,6 +34,8 @@ export interface IAssetObjectEntry {
 		label: string;
 		label_i18n: string;
 	};
+    taxonomyCategoryBriefs?: any[];
+    taxonomyCategoryIds?: number[];
 	systemProperties: IAssetVersion;
 	title: string;
 	title_i18n: any;
@@ -48,7 +51,7 @@ export interface ISearchAssetObjectEntry {
 	actions: any;
 	dateCreated: string;
 	dateModified: string;
-	embedded: Partial<IAssetObjectEntry>;
+	embedded: IAssetObjectEntry;
 	entryClassName: string;
 	score: number;
 }
