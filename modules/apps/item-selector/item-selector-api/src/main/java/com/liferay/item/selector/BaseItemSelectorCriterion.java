@@ -5,6 +5,11 @@
 
 package com.liferay.item.selector;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.List;
@@ -14,6 +19,15 @@ import java.util.List;
  */
 public abstract class BaseItemSelectorCriterion
 	implements ItemSelectorCriterion {
+
+	@Override
+	public boolean hasPermission(Group group, PermissionChecker permissionChecker)
+		throws PortalException {
+
+		return permissionChecker.isGroupAdmin(group.getGroupId()) ||
+		   GroupPermissionUtil.contains(
+			   permissionChecker, group, ActionKeys.VIEW);
+	}
 
 	@Override
 	public List<ItemSelectorReturnType> getDesiredItemSelectorReturnTypes() {
