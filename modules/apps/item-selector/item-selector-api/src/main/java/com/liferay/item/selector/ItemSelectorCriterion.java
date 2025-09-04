@@ -6,6 +6,9 @@
 package com.liferay.item.selector;
 
 import com.liferay.item.selector.constants.ItemSelectorCriterionConstants;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import java.util.List;
 
@@ -39,6 +42,9 @@ import java.util.List;
  * @author Iván Zaera
  */
 public interface ItemSelectorCriterion {
+
+	public default boolean hasPermission(Group group, PermissionChecker permissionChecker)
+		throws PortalException {return true;}
 
 	/**
 	 * Returns the desired return types that the caller expects and can handle,

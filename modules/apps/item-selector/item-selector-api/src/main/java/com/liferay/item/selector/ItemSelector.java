@@ -5,8 +5,12 @@
 
 package com.liferay.item.selector;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import jakarta.portlet.PortletURL;
@@ -25,6 +29,14 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface ItemSelector {
+
+	public default boolean hasPermission(
+			Group group, Map<String, String[]> parameters,
+			PermissionChecker permissionChecker)
+		throws PortalException {
+
+		return true;
+	}
 
 	/**
 	 * Returns the selected event name used to create the item selector URL.

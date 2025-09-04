@@ -20,10 +20,12 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -249,6 +251,24 @@ public class ItemSelectorImpl implements ItemSelector {
 		return getItemSelectorURL(
 			requestBackedPortletURLFactory, null, 0, itemSelectedEventName,
 			itemSelectorCriteria);
+	}
+
+	@Override
+	public boolean hasPermission(
+			Group group, Map<String, String[]> parameters,
+			PermissionChecker permissionChecker)
+		throws PortalException {
+
+		List<ItemSelectorCriterion> itemSelectorCriteria =
+			getItemSelectorCriteria(parameters);
+
+		for (ItemSelectorCriterion itemSelectorCriterion : itemSelectorCriteria) {
+			if (!itemSelectorCriterion.hasPermission(group, permissionChecker)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@Activate

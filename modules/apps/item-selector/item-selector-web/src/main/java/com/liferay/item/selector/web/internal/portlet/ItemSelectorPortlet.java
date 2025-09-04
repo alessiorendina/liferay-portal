@@ -74,14 +74,10 @@ public class ItemSelectorPortlet extends MVCPortlet {
 		localizedItemSelectorRendering.store(renderRequest);
 
 		try {
-			PermissionChecker permissionChecker =
-				themeDisplay.getPermissionChecker();
-
-			if (permissionChecker.isGroupAdmin(
-					themeDisplay.getScopeGroupId()) ||
-				GroupPermissionUtil.contains(
-					permissionChecker, themeDisplay.getScopeGroup(),
-					ActionKeys.VIEW)) {
+			if (_itemSelector.hasPermission(
+					themeDisplay.getScopeGroup(),
+					renderRequest.getParameterMap(),
+					themeDisplay.getPermissionChecker())) {
 
 				super.render(renderRequest, renderResponse);
 			}
