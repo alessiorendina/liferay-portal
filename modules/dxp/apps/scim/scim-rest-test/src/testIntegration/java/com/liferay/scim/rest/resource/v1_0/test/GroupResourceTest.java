@@ -30,10 +30,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.scim.rest.client.dto.v1_0.Group;
 import com.liferay.scim.rest.client.dto.v1_0.Meta;
 import com.liferay.scim.rest.client.dto.v1_0.MultiValuedAttribute;
@@ -225,13 +225,17 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 		_assertListResponse(
 			groupResource.getV2Groups(
 				5, null, 0,
-				"displayName eq \"" + group1.getDisplayName() + "\""),
-			1, 1, group1);
+				"displayName eq \"" + RandomTestUtil.randomString() + "\""),
+			0, 0);
+		_assertListResponse(
+			groupResource.getV2Groups(
+				5, null, 0, "displayName eq \"" + _PREFIX + "\""),
+			0, 0);
 		_assertListResponse(
 			groupResource.getV2Groups(
 				5, null, 0,
-				"displayName eq \"" + RandomTestUtil.randomString() + "\""),
-			0, 0);
+				"displayName eq \"" + group1.getDisplayName() + "\""),
+			1, 1, group1);
 
 		assertHttpResponseStatusCode(
 			400,
@@ -306,6 +310,7 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 					}
 				}
 			});
+
 		patchOp.setSchemas(
 			new String[] {"\"urn:ietf:params:scim:api:messages:2.0:PatchOp\""});
 
@@ -574,6 +579,15 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 	}
 
 	@Override
+	protected Group randomGroup() throws Exception {
+		Group group = super.randomGroup();
+
+		group.setDisplayName(_PREFIX + group.getDisplayName());
+
+		return group;
+	}
+
+	@Override
 	protected Group testDeleteV2Group_addGroup() throws Exception {
 		Group group = randomGroup();
 
@@ -754,6 +768,9 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 
 		return _getGroup(userGroupId);
 	}
+
+	private static final String _PREFIX = StringUtil.toLowerCase(
+		RandomTestUtil.randomString());
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

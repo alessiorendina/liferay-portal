@@ -30,6 +30,7 @@ export default function buildObjectDefinition({
 	name,
 	spaces,
 	status = 'draft',
+	workflows,
 }: {
 	children?: Structure['children'];
 	erc: Structure['erc'];
@@ -37,12 +38,15 @@ export default function buildObjectDefinition({
 	name: Structure['name'];
 	spaces: Structure['spaces'];
 	status?: Structure['status'];
+	workflows?: Structure['workflows'];
 }): ObjectDefinition {
 	const objectDefinition: ObjectDefinition = {
+		enableComments: true,
 		enableFriendlyURLCustomization: true,
 		enableIndexSearch: true,
 		enableLocalization: true,
 		enableObjectEntryDraft: true,
+		enableObjectEntryHistory: true,
 		enableObjectEntrySchedule: true,
 		enableObjectEntryVersioning: true,
 		externalReferenceCode: erc,
@@ -84,6 +88,11 @@ export default function buildObjectDefinition({
 		];
 	}
 
+	if (workflows && Object.keys(workflows).length) {
+		objectDefinition.workflowDefinitionLinks =
+			buildWorkflowDefinitionLinks(workflows);
+	}
+
 	return objectDefinition;
 }
 
@@ -122,6 +131,7 @@ function buildFields(fields: Field[]) {
 			localized: field.localized,
 			name: field.name,
 			required: field.required,
+			system: field.locked,
 		};
 
 		if (field.indexableConfig.indexed) {
@@ -184,4 +194,22 @@ function buildRelationships({
 	}
 
 	return relationships;
+}
+
+function buildWorkflowDefinitionLinks(workflows: Structure['workflows']) {
+	const definitionLinks: ObjectDefinition['workflowDefinitionLinks'] = [];
+
+	for (const [
+		groupExternalReferenceCode,
+		workflowDefinitionName,
+	] of Object.entries(workflows)) {
+		if (workflowDefinitionName) {
+			definitionLinks.push({
+				groupExternalReferenceCode,
+				workflowDefinitionName,
+			});
+		}
+	}
+
+	return definitionLinks;
 }

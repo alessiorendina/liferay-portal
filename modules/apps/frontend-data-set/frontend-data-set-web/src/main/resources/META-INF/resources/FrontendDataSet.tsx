@@ -5,6 +5,7 @@
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
+import {useControlledState} from '@clayui/shared';
 import {useIsMounted, useThunk} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
 import {openToast} from 'frontend-js-components-web';
@@ -32,10 +33,7 @@ import isFileDropEnabled from './utils/isFileDropEnabled';
 
 import './styles/main.scss';
 import DnDContext from './DnDContext';
-import FrontendDataSetContext, {
-	IDataSetData,
-	TRenderer,
-} from './FrontendDataSetContext';
+import FrontendDataSetContext from './FrontendDataSetContext';
 import useFDSDrop from './dnd/useFDSDrop';
 import useFileUploader from './dnd/useFileUploader';
 import EmptyState from './empty_state/EmptyState';
@@ -65,16 +63,23 @@ import {loadData} from './utils/loadData';
 // @ts-ignore
 
 import {logError} from './utils/logError';
+import {saveViewSettings} from './utils/saveViewSettings';
+import {writeStateInURL} from './utils/stateInURL';
 import {
-	ESelectionTrigger,
+	EStateInURLKeys,
+	EStateInURLSettings,
+	IDataSetData,
 	IField,
 	IFrontendDataSetProps,
 	IModalConfig,
 	IRequestOptions,
+	IStateInURL,
 	ISuccessNotification,
 	IView,
+	TRenderer,
 	TSort,
 } from './utils/types';
+import useStateInURL from './utils/useStateInURL';
 import ViewsContext from './views/ViewsContext';
 
 // @ts-ignore
@@ -117,28 +122,64 @@ const FrontendDataSetContent = ({
 	nestedItemsReferenceKey,
 	onActionDropdownItemClick,
 	onBulkActionItemClick,
-	onSelect,
 	onSelectedItemsChange,
 	overrideEmptyResultView,
 	pagination,
 	portletId,
-	selectedItems: initialSelectedItemsValues,
+	selectedItems: externalSelectedItems,
 	selectedItemsKey = 'id',
-	selectionType = 'multiple',
+	selectionType,
 	showBulkActionsManagementBar = true,
 	showBulkActionsManagementBarActions = true,
 	showManagementBar = true,
+	showNavBarWhenSelected = false,
 	showPagination = true,
 	showSearch = true,
 	showSelectAll = false,
 	sidePanelId,
 	sorts: sortsProp = [],
+	stateInURLSettings = EStateInURLSettings.OFF,
 	style = 'default',
 	uniformActionsDisplay,
 	views,
 }: IFrontendDataSetProps) => {
 	const fdsRef = useRef(null);
 	const dataSetWrapperRef: RefObject<HTMLDivElement> = useRef(null);
+
+	const [getDelta, setDelta] = useStateInURL({
+		id,
+		stateDispatcher: {
+			key: EStateInURLKeys.DELTA,
+			type: VIEWS_ACTION_TYPES.UPDATE_PAGINATION_DELTA,
+		},
+		stateInURLSettings,
+		stateInitializer: (delta: number) => {
+			if (isNaN(delta) || delta < 1) {
+				return undefined;
+			}
+
+			return delta;
+		},
+	});
+
+	const [getView, setView] = useStateInURL({
+		id,
+		stateDispatcher: {
+			key: EStateInURLKeys.VIEW_NAME,
+			type: VIEWS_ACTION_TYPES.UPDATE_ACTIVE_VIEW,
+		},
+		stateInURLSettings,
+		stateInitializer: (viewName: string) => {
+			const view = views.find(({name}) => name === viewName);
+
+			if (view) {
+				return viewName;
+			}
+
+			return undefined;
+		},
+	});
+
 	const [componentLoading, setComponentLoading] = useState(false);
 	const [creationMenu, setCreationMenu] = useState(initialCreationMenu);
 	const [dataLoading, setDataLoading] = useState(!!apiURL);
@@ -162,10 +203,25 @@ const FrontendDataSetContent = ({
 
 	const [allItemsSelectedActive, setAllItemsSelectedActive] = useState(false);
 
-	const [selectedItemsValue, setSelectedItemsValue] = useState(
-		initialSelectedItemsValues || []
+	const [selectedItems, setSelectedItems] = useControlledState({
+		defaultName: 'selectedItems',
+		defaultValue: externalSelectedItems ?? [],
+		handleName: 'onSelectedItemsChange',
+		name: 'selectedItems',
+		onChange: onSelectedItemsChange,
+		value: externalSelectedItems ?? undefined,
+	});
+
+	let selectedItemsValue = selectedItems.map((item) =>
+		getObjectValueFromPath({object: item, path: selectedItemsKey})
 	);
-	const [selectedItems, setSelectedItems] = useState<Array<any>>([]);
+
+	if (allItemsSelectedActive) {
+		selectedItemsValue = items.map((item) =>
+			getObjectValueFromPath({object: item, path: selectedItemsKey})
+		);
+	}
+
 	const [total, setTotal] = useState(0);
 
 	const {fileDropSettings} = useContext(DnDContext);
@@ -216,6 +272,16 @@ const FrontendDataSetContent = ({
 			}
 		}
 
+		const view = getView();
+
+		if (view) {
+			const activeView = views.find(({name}) => name === view);
+
+			if (activeView) {
+				initialActiveView = activeView;
+			}
+		}
+
 		const activeView = {
 			component: getViewComponent(initialActiveView),
 			...initialActiveView,
@@ -247,7 +313,23 @@ const FrontendDataSetContent = ({
 
 		const paginationDelta =
 			showPagination &&
-			(pagination?.initialDelta || DEFAULT_PAGINATION_DELTA);
+			(getDelta() ||
+				pagination?.initialDelta ||
+				DEFAULT_PAGINATION_DELTA);
+
+		// viewsDispatch is not available here, so we can't use state in url
+		// setters at this point. writeStateInURL low level utility does the job
+
+		writeStateInURL(
+			id,
+			{
+				...(paginationDelta && {
+					[EStateInURLKeys.DELTA]: paginationDelta,
+				}),
+				[EStateInURLKeys.VIEW_NAME]: activeView.name,
+			},
+			stateInURLSettings
+		);
 
 		return {
 			activeView,
@@ -274,6 +356,15 @@ const FrontendDataSetContent = ({
 	);
 
 	const {activeView, filters, paginationDelta, sorts} = viewsState;
+
+	const handleDeltaChange = useCallback(
+		(delta: number) => {
+			setPageNumber(1);
+
+			viewsDispatch(setDelta(delta));
+		},
+		[setDelta, setPageNumber, viewsDispatch]
+	);
 
 	const {
 		component: View,
@@ -515,60 +606,69 @@ const FrontendDataSetContent = ({
 	}, [itemsProp]);
 
 	function deselectItems(value: any) {
-		if (Array.isArray(value)) {
-			return setSelectedItemsValue(
-				selectedItemsValue.filter((item) => !value.includes(item))
-			);
-		}
+		const values = Array.isArray(value) ? value : [value];
 
-		setSelectedItemsValue(
-			selectedItemsValue.filter((item) => item !== value)
-		);
+		const newSelectedItems = selectedItems.filter((selectedItem) => {
+			const selectedItemValue = getObjectValueFromPath({
+				object: selectedItem,
+				path: selectedItemsKey,
+			});
+
+			return !values.includes(selectedItemValue);
+		});
+
+		setSelectedItems(newSelectedItems);
 	}
 
-	function selectItems({
-		trigger,
-		value,
-	}: {
-		trigger: ESelectionTrigger;
-		value: any;
-	}) {
-		if (selectionType === 'single') {
-			return setSelectedItemsValue(
-				Array.isArray(value) ? value : [value]
-			);
-		}
+	function selectItems(value: any, forceSingleSelection = false) {
+		const values = Array.isArray(value) ? value : [value];
 
-		if (trigger === ESelectionTrigger.CONTAINER) {
-			return setSelectedItemsValue((previousValues) => {
-				const newValue = Array.isArray(value) ? value : [value];
-
-				if (previousValues.length === 1) {
-					return selectedItemsValue.includes(newValue[0])
-						? []
-						: [value];
-				}
-
-				return newValue;
-			});
-		}
-
-		if (Array.isArray(value)) {
-			const newItems = value.filter(
-				(item) => !selectedItemsValue.includes(item)
+		if (forceSingleSelection) {
+			setSelectedItems(
+				selectedItemsValue.length === 1 &&
+					selectedItemsValue.includes(value)
+					? []
+					: [
+							items.find(
+								(item) =>
+									getObjectValueFromPath({
+										object: item,
+										path: selectedItemsKey,
+									}) === values[0]
+							),
+						]
 			);
 
-			return setSelectedItemsValue([...selectedItemsValue, ...newItems]);
+			return;
 		}
 
-		if (selectedItemsValue.includes(value)) {
-			setSelectedItemsValue(
-				selectedItemsValue.filter((item) => item !== value)
-			);
-		}
-		else {
-			setSelectedItemsValue([...selectedItemsValue, value]);
-		}
+		const nextSelectedValues =
+			selectionType === 'single' ? [] : [...selectedItemsValue];
+
+		values.forEach((val) => {
+			const index = nextSelectedValues.indexOf(val);
+
+			if (index > -1) {
+				nextSelectedValues.splice(index, 1);
+			}
+			else {
+				nextSelectedValues.push(val);
+			}
+		});
+
+		const nextSelectedItems = nextSelectedValues
+			.map((val) =>
+				[...selectedItems, ...items].find(
+					(item) =>
+						getObjectValueFromPath({
+							object: item,
+							path: selectedItemsKey,
+						}) === val
+				)
+			)
+			.filter(Boolean);
+
+		setSelectedItems(nextSelectedItems);
 	}
 
 	function highlightItems(value = []) {
@@ -595,6 +695,54 @@ const FrontendDataSetContent = ({
 		}
 	}, [dataSetWrapperRef]);
 
+	const handlePopState = useCallback(() => {
+		const stateUpdates: Array<{
+			type: keyof VIEWS_ACTION_TYPES;
+			value: IStateInURL[keyof IStateInURL];
+		}> = [];
+
+		const delta = getDelta();
+
+		if (delta && delta !== paginationDelta) {
+			setPageNumber(1);
+			stateUpdates.push({
+				type: VIEWS_ACTION_TYPES.UPDATE_PAGINATION_DELTA,
+				value: delta,
+			});
+		}
+
+		const view = getView();
+
+		if (view) {
+			saveViewSettings({
+				appURL,
+				id,
+				portletId,
+				settings: {name: view},
+			});
+
+			stateUpdates.push({
+				type: VIEWS_ACTION_TYPES.UPDATE_ACTIVE_VIEW,
+				value: view,
+			});
+		}
+
+		if (stateUpdates.length) {
+			viewsDispatch({
+				type: VIEWS_ACTION_TYPES.BATCH_UPDATE,
+				value: stateUpdates,
+			});
+		}
+	}, [
+		appURL,
+		getDelta,
+		getView,
+		id,
+		paginationDelta,
+		portletId,
+		viewsDispatch,
+	]);
+
 	const refreshData = useCallback(
 		(successNotification?: ISuccessNotification) => {
 			setDataLoading(true);
@@ -613,19 +761,15 @@ const FrontendDataSetContent = ({
 					if (isMounted()) {
 						updateDataSetItems(data);
 
-						const itemKeys = new Set(
-							data.items.map((item: any) =>
-								getObjectValueFromPath({
+						setSelectedItems(
+							data.items.filter((item: any) => {
+								const itemValue = getObjectValueFromPath({
 									object: item,
 									path: selectedItemsKey,
-								})
-							)
-						);
+								});
 
-						setSelectedItemsValue(
-							selectedItemsValue.filter((item) =>
-								itemKeys.has(item)
-							)
+								return selectedItemsValue.includes(itemValue);
+							})
 						);
 
 						setDataLoading(false);
@@ -641,42 +785,15 @@ const FrontendDataSetContent = ({
 					throw error;
 				});
 		},
-		[id, isMounted, requestData, selectedItemsKey, selectedItemsValue]
+		[
+			id,
+			isMounted,
+			requestData,
+			selectedItemsKey,
+			selectedItemsValue,
+			setSelectedItems,
+		]
 	);
-
-	useEffect(() => {
-		setSelectedItems((selectedItems: Array<any>) => {
-			const newSelectedItems: Array<any> = [];
-
-			selectedItemsValue.forEach((value) => {
-				let selectedItem = items.find(
-					(item) =>
-						getObjectValueFromPath({
-							object: item,
-							path: selectedItemsKey,
-						}) === value
-				);
-
-				if (!selectedItem) {
-					selectedItem = selectedItems.find(
-						(item) =>
-							getObjectValueFromPath({
-								object: item,
-								path: selectedItemsKey,
-							}) === value
-					);
-				}
-
-				if (selectedItem) {
-					newSelectedItems.push(selectedItem);
-				}
-			});
-
-			onSelectedItemsChange && onSelectedItemsChange(newSelectedItems);
-
-			return newSelectedItems;
-		});
-	}, [selectedItemsValue, items, onSelectedItemsChange, selectedItemsKey]);
 
 	useEffect(() => {
 		if (View || !contentRendererModuleURL) {
@@ -797,14 +914,25 @@ const FrontendDataSetContent = ({
 		Liferay.on(EVENTS.SIDE_PANEL_CLOSED, handleCloseSidePanel);
 		Liferay.on(EVENTS.UPDATE_DISPLAY, handleRefreshFromTheOutside);
 
+		const registerPopstateEvent =
+			stateInURLSettings === EStateInURLSettings.PUSH &&
+			(!Liferay.SPA || !Liferay.SPA.app);
+
+		if (registerPopstateEvent) {
+			window.addEventListener('popstate', handlePopState);
+		}
+
 		return () => {
 			Liferay.detach(EVENTS.SIDE_PANEL_CLOSED, handleCloseSidePanel);
 			Liferay.detach(
 				EVENTS.UPDATE_DISPLAY,
 				handleRefreshFromTheOutside as () => void
 			);
+			if (registerPopstateEvent) {
+				window.removeEventListener('popstate', handlePopState);
+			}
 		};
-	}, [id, refreshData]);
+	}, [handlePopState, id, refreshData, stateInURLSettings]);
 
 	const managementBar = showManagementBar ? (
 		<div className="management-bar-wrapper">
@@ -826,19 +954,17 @@ const FrontendDataSetContent = ({
 
 					setAllItemsSelectedActive(false);
 				}}
-				onSelectAll={(value: boolean) =>
-					setAllItemsSelectedActive(value)
-				}
-				selectItems={(items: Array<any>) =>
-					selectItems({
-						trigger: ESelectionTrigger.INPUT,
-						value: items,
-					})
-				}
+				onSelectAll={(value: boolean) => {
+					setAllItemsSelectedActive(value);
+				}}
+				selectItems={(items: Array<any>) => {
+					selectItems(items);
+				}}
 				selectedItems={selectedItems}
 				selectedItemsKey={selectedItemsKey}
 				selectedItemsValue={selectedItemsValue}
 				selectionType={selectionType}
+				showNavBarWhenSelected={showNavBarWhenSelected}
 				showSearch={showSearch}
 				showSelectAll={showSelectAll}
 				total={total}
@@ -866,45 +992,35 @@ const FrontendDataSetContent = ({
 						header={header}
 						items={items}
 						itemsActions={itemsActions}
-						onItemSelectionChange={({
-							item: selectedItem,
-							trigger,
-						}: {
-							item: any;
-							trigger: ESelectionTrigger;
-						}) => {
+						onItemSelectionChange={(
+							selectedItem: any,
+							forceSingleSelection: boolean
+						) => {
 							if (allItemsSelectedActive) {
-								setSelectedItemsValue(
-									items
-										.filter(
-											(item) =>
-												getObjectValueFromPath({
-													object: item,
-													path: selectedItemsKey,
-												}) !==
-												getObjectValueFromPath({
-													object: selectedItem,
-													path: selectedItemsKey,
-												})
-										)
-										.map((item) =>
+								setSelectedItems(
+									items.filter(
+										(item) =>
 											getObjectValueFromPath({
 												object: item,
 												path: selectedItemsKey,
+											}) !==
+											getObjectValueFromPath({
+												object: selectedItem,
+												path: selectedItemsKey,
 											})
-										)
+									)
 								);
 
 								setAllItemsSelectedActive(false);
 							}
 							else {
-								selectItems({
-									trigger,
-									value: getObjectValueFromPath({
+								selectItems(
+									getObjectValueFromPath({
 										object: selectedItem,
 										path: selectedItemsKey,
 									}),
-								});
+									forceSingleSelection
+								);
 							}
 						}}
 						style={style}
@@ -941,14 +1057,7 @@ const FrontendDataSetContent = ({
 						selectPerPageItems: Liferay.Language.get('x-items'),
 					}}
 					onActiveChange={setPageNumber}
-					onDeltaChange={(delta) => {
-						setPageNumber(1);
-
-						viewsDispatch({
-							type: VIEWS_ACTION_TYPES.UPDATE_PAGINATION_DELTA,
-							value: delta,
-						});
-					}}
+					onDeltaChange={handleDeltaChange}
 					totalItems={total}
 				/>
 			</div>
@@ -1199,9 +1308,7 @@ const FrontendDataSetContent = ({
 			});
 	}
 
-	const selectable = Boolean(
-		selectedItemsKey && (bulkActions?.length || selectionType === 'single')
-	);
+	const selectable = !!selectionType;
 
 	const {className} = useFDSDrop({
 		targetDropRef: dataSetWrapperRef,
@@ -1242,19 +1349,18 @@ const FrontendDataSetContent = ({
 				},
 				onItemsChange,
 				onSearch,
-				onSelect,
 				openModal,
 				openSidePanel,
 				portletId,
 				searchParam,
 				searching,
-				selectItems,
 				selectable,
 				selectedItems,
 				selectedItemsKey,
 				selectedItemsValue,
 				selectionType,
 				setSearching,
+				setView,
 				showBulkActionsManagementBar,
 				showBulkActionsManagementBarActions,
 				showInfoPanel: infoPanelComponent ? true : false,

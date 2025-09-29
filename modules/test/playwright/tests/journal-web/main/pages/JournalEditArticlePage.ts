@@ -392,19 +392,19 @@ export class JournalEditArticlePage {
 	async saveAsDraftWithPermissions(title: string) {
 		await this.fillTitle(title);
 
-		await this.page
-			.getByRole('button', {exact: true, name: 'Save as Draft'})
-			.click();
+		const draftButton = this.page
+			.getByLabel('Save as Draft With Permissions')
+			.getByRole('button', {name: 'Save as Draft'});
 
 		await expect(async () => {
-			const draftButton = await this.page
-				.getByLabel('Save as Draft With Permissions')
-				.getByRole('button', {name: 'Save as Draft'});
+			await this.page
+				.getByRole('button', {exact: true, name: 'Save as Draft'})
+				.click();
 
-			await draftButton.waitFor();
-
-			await draftButton.click();
+			await expect(draftButton).toBeVisible();
 		}).toPass();
+
+		await draftButton.click();
 
 		await expect(this.page.getByText('Version: 1.0 Draft')).toBeVisible();
 	}
@@ -466,7 +466,13 @@ export class JournalEditArticlePage {
 				: `Success:${title} will be published on`
 		);
 
-		const row = await this.page
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {name: 'list'}),
+			trigger: this.page.getByLabel('Select View, Currently Selected: '),
+		});
+
+		const row = this.page
 			.locator('.list-group-item')
 			.filter({hasText: title});
 
@@ -474,6 +480,32 @@ export class JournalEditArticlePage {
 			.locator('span.label')
 			.filter({hasText: workflow ? 'Pending' : 'Scheduled'})
 			.waitFor();
+	}
+
+	async selectFileFromDocumentsAndMedia(fileName: string) {
+		await this.page.getByLabel('File', {exact: true}).click();
+
+		const selectDocumentIframe = this.page.frameLocator(
+			'iframe[title="Select Document"]'
+		);
+
+		await selectDocumentIframe
+			.getByRole('link', {name: 'Sites and Libraries'})
+			.click();
+
+		await selectDocumentIframe
+			.getByRole('link', {name: 'Liferay DXP'})
+			.click();
+
+		await selectDocumentIframe
+			.getByRole('link', {name: 'Provided by Liferay'})
+			.click();
+
+		await expect(
+			selectDocumentIframe.getByLabel('Search for', {exact: true})
+		).toBeEnabled();
+
+		await selectDocumentIframe.getByText(fileName).dblclick();
 	}
 
 	async selectSpecificDisplayPage(displayPageName: string) {
@@ -534,7 +566,7 @@ export class JournalEditArticlePage {
 			.filter({hasText: title})
 			.waitFor();
 
-		const row = await this.page
+		const row = this.page
 			.locator('.list-group-item')
 			.filter({hasText: title});
 

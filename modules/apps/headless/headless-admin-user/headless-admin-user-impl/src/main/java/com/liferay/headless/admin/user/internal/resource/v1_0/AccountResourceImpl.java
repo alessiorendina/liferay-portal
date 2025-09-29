@@ -120,8 +120,11 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/account.properties",
-	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
-	service = AccountResource.class
+	property = {
+		"export.import.vulcan.batch.engine.task.item.delegate=true",
+		"nested.field.support=true"
+	},
+	scope = ServiceScope.PROTOTYPE, service = AccountResource.class
 )
 public class AccountResourceImpl
 	extends BaseAccountResourceImpl
@@ -319,9 +322,14 @@ public class AccountResourceImpl
 		return new ExportImportDescriptor() {
 
 			@Override
+			public String getItemClassName() {
+				return com.liferay.mail.kernel.model.Account.class.getName();
+			}
+
+			@Override
 			public List<String> getNestedFields() {
 				return List.of(
-					"accountGroupBriefs", "accountRoles", "keywords",
+					"accountGroupBriefs", "accountRoles", "creator", "keywords",
 					"logoBase64", "postalAddresses", "taxonomyCategoryBriefs");
 			}
 
@@ -709,7 +717,7 @@ public class AccountResourceImpl
 	}
 
 	private Long[] _getAssetCategoryIds(Account account) {
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 			return null;
 		}
 
@@ -786,7 +794,7 @@ public class AccountResourceImpl
 			Account account, long accountEntryId, long defaultBillingAddressId)
 		throws Exception {
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-47858") &&
+		if (FeatureFlagManagerUtil.isEnabled("LPD-35914") &&
 			Validator.isNotNull(
 				account.getDefaultBillingAddressExternalReferenceCode())) {
 
@@ -821,7 +829,7 @@ public class AccountResourceImpl
 			Account account, long accountEntryId, long defaultShippingAddressId)
 		throws Exception {
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-47858") &&
+		if (FeatureFlagManagerUtil.isEnabled("LPD-35914") &&
 			Validator.isNotNull(
 				account.getDefaultShippingAddressExternalReferenceCode())) {
 
@@ -1052,7 +1060,7 @@ public class AccountResourceImpl
 			organizationIds = transformToArray(
 				Arrays.asList(organizationExternalReferenceCodes),
 				externalReferenceCode -> {
-					if (FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+					if (FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 						com.liferay.portal.kernel.model.Organization
 							organization =
 								_organizationService.getOrAddEmptyOrganization(
@@ -1089,7 +1097,7 @@ public class AccountResourceImpl
 			Account account, long defaultParentAccountId)
 		throws Exception {
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-47858") &&
+		if (FeatureFlagManagerUtil.isEnabled("LPD-35914") &&
 			Validator.isNotNull(
 				account.getParentAccountExternalReferenceCode())) {
 
@@ -1339,7 +1347,7 @@ public class AccountResourceImpl
 			}
 		}
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 			return accountEntry;
 		}
 

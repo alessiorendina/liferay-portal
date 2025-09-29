@@ -27,8 +27,6 @@ import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.eclipse.equinox.http.servlet.internal.servlet.HttpServletRequestWrapperImpl;
-
 import org.osgi.service.http.context.ServletContextHelper;
 
 /**
@@ -64,7 +62,7 @@ public class ResourceServlet extends HttpServlet {
 			return;
 		}
 
-		String pathInfo = HttpServletRequestWrapperImpl.getDispatchPathInfo(
+		String pathInfo = LiferayHttpServletRequestWrapper.getDispatchPathInfo(
 			httpServletRequest);
 
 		if (pathInfo == null) {
@@ -156,7 +154,8 @@ public class ResourceServlet extends HttpServlet {
 
 		if ((lastModified != -1L) && (contentLength != -1)) {
 			etag = StringBundler.concat(
-				"W/\"", contentLength, "-", lastModified, "\"");
+				"W/\"", contentLength, StringPool.DASH, lastModified,
+				StringPool.QUOTE);
 		}
 
 		String ifNoneMatch = httpServletRequest.getHeader(_IF_NONE_MATCH);

@@ -1,3 +1,5 @@
+liferay-aws-backup-restore:
+    enabled: false
 liferay-default:
     configmap:
         data:

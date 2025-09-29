@@ -19,9 +19,11 @@ import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,6 +75,10 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		catch (ParseException parseException) {
 			return null;
 		}
+	}
+
+	public List<TestrayCaseResult> getFailedTestrayCaseResults() {
+		return getTestrayCaseResults(null, null, true);
 	}
 
 	public long getID() {
@@ -164,7 +170,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		sb.append("'");
 
 		try {
-			List<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
+			Set<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
 				"caseResults", TestrayCaseResult.FIELD_NAMES, sb.toString(),
 				null, 1, 1);
 
@@ -172,8 +178,10 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 				return null;
 			}
 
+			Iterator<JSONObject> iterator = entityJSONObjects.iterator();
+
 			return TestrayFactory.newJSONObjectTestrayCaseResult(
-				this, entityJSONObjects.get(0));
+				this, iterator.next());
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
@@ -181,13 +189,17 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 	}
 
 	public List<TestrayCaseResult> getTestrayCaseResults() {
-		return getTestrayCaseResults(null, null);
+		return getTestrayCaseResults(null, null, false);
 	}
 
 	public List<TestrayCaseResult> getTestrayCaseResults(
-		TestrayCaseType testrayCaseType, TestrayRun testrayRun) {
+		TestrayCaseType testrayCaseType, TestrayRun testrayRun,
+		boolean filterbyFailures) {
 
 		List<TestrayCaseResult> testrayCaseResults = new ArrayList<>();
+
+		String[] fieldNames = TestrayCaseResult.FIELD_NAMES;
+		int pageSize = 500;
 
 		StringBuilder sb = new StringBuilder();
 
@@ -201,10 +213,20 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		sb.append(getID());
 		sb.append("'");
 
+		if (filterbyFailures) {
+			fieldNames = TestrayCaseResult.TESTRAY_REPORT_FIELD_NAMES;
+			pageSize = 50;
+
+			sb.append(" ");
+			sb.append("and (dueStatus eq 'FAILED'");
+			sb.append(" ");
+			sb.append("or dueStatus eq 'UNTESTED')");
+		}
+
 		try {
-			List<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
-				true, "caseResults", TestrayCaseResult.FIELD_NAMES,
-				sb.toString(), null, 0, 1000);
+			Set<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
+				true, "caseResults", fieldNames, sb.toString(), null, 0,
+				pageSize);
 
 			for (JSONObject entityJSONObject : entityJSONObjects) {
 				TestrayCaseResult testrayCaseResult =
@@ -255,6 +277,18 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 
 	public TestrayRoutine getTestrayRoutine() {
 		return _testrayRoutine;
+	}
+
+	public synchronized TestrayRun getTestrayRun(String name) {
+		for (TestrayRun testrayRun : getTestrayRuns()) {
+			String testrayRunIDString = testrayRun.getRunIDString();
+
+			if (testrayRunIDString.equals(name)) {
+				return testrayRun;
+			}
+		}
+
+		return null;
 	}
 
 	public synchronized List<TestrayRun> getTestrayRuns() {
@@ -417,14 +451,16 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 			"id eq '", matcher.group("buildID"), "'");
 
 		try {
-			List<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
+			Set<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
 				"builds", FIELD_NAMES, filter, null, 1, 1);
 
 			if (entityJSONObjects.isEmpty()) {
 				throw new RuntimeException("Unable to find entity JSON object");
 			}
 
-			_jsonObject = entityJSONObjects.get(0);
+			Iterator<JSONObject> iterator = entityJSONObjects.iterator();
+
+			_jsonObject = iterator.next();
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
@@ -441,7 +477,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		sb.append("'");
 
 		try {
-			List<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
+			Set<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
 				"caseResults", TestrayCaseResult.FIELD_NAMES, sb.toString(),
 				null, maxCount, 0);
 

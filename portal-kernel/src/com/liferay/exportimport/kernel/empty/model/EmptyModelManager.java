@@ -7,6 +7,7 @@ package com.liferay.exportimport.kernel.empty.model;
 
 import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.portal.kernel.exception.PortalException;
 
 import java.util.function.BiFunction;
 
@@ -18,7 +19,7 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface EmptyModelManager {
 
-	public <T, E extends Exception> T getOrAddEmptyModel(
+	public <T, E extends PortalException> T getOrAddEmptyModel(
 			Class<T> clazz, long companyId,
 			UnsafeSupplier<T, E> emptyModelUnsafeSupplier,
 			String externalReferenceCode,
@@ -27,13 +28,23 @@ public interface EmptyModelManager {
 				getByExternalReferenceCodeUnsafeBiFunction)
 		throws E;
 
-	public <T, E extends Exception> T getOrAddEmptyModel(
+	public <T, E extends PortalException> T getOrAddEmptyModel(
 			Class<T> clazz, UnsafeSupplier<T, E> emptyModelUnsafeSupplier,
 			String externalReferenceCode,
 			BiFunction<String, Long, T> fetchByExternalReferenceCodeBiFunction,
 			UnsafeBiFunction<String, Long, T, E>
 				getByExternalReferenceCodeUnsafeBiFunction,
 			long groupId)
+		throws E;
+
+	public <T, E extends Exception> T getOrAddEmptyModel(
+			String className, Long companyId,
+			UnsafeSupplier<T, E> emptyModelUnsafeSupplier,
+			String externalReferenceCode,
+			BiFunction<String, Long, T> fetchByExternalReferenceCodeBiFunction,
+			UnsafeBiFunction<String, Long, T, E>
+				getByExternalReferenceCodeUnsafeBiFunction,
+			long groupId, String modelName)
 		throws E;
 
 	public boolean isEmptyModel();

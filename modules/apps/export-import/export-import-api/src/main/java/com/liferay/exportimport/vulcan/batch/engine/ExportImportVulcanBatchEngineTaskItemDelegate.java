@@ -22,6 +22,12 @@ public interface ExportImportVulcanBatchEngineTaskItemDelegate<T>
 
 	public interface ExportImportDescriptor {
 
+		public String getItemClassName();
+
+		public default String getItemModelName() {
+			return getItemClassName();
+		}
+
 		public default List<String> getNestedFields() {
 			return null;
 		}
@@ -38,7 +44,7 @@ public interface ExportImportVulcanBatchEngineTaskItemDelegate<T>
 
 	public enum Scope {
 
-		COMPANY, SITE
+		COMPANY, DEPOT, SITE
 
 	}
 

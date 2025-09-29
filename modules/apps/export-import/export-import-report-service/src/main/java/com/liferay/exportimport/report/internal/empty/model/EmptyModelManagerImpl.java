@@ -13,6 +13,7 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -31,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
 public class EmptyModelManagerImpl implements EmptyModelManager {
 
 	@Override
-	public <T, E extends Exception> T getOrAddEmptyModel(
+	public <T, E extends PortalException> T getOrAddEmptyModel(
 			Class<T> clazz, long companyId,
 			UnsafeSupplier<T, E> emptyModelUnsafeSupplier,
 			String externalReferenceCode,
@@ -62,8 +63,7 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 					GetterUtil.getLong(
 						ExportImportThreadLocal.
 							getExportImportConfigurationId()),
-					ExportImportReportEntryUtil.getModelName(clazz),
-					ExportImportReportEntryUtil.getOrigin(),
+					clazz.getName(), ExportImportReportEntryUtil.getOrigin(),
 					ObjectDefinitionConstants.SCOPE_COMPANY, null);
 
 			return emptyModelUnsafeSupplier.get();
@@ -71,13 +71,31 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 	}
 
 	@Override
-	public <T, E extends Exception> T getOrAddEmptyModel(
+	public <T, E extends PortalException> T getOrAddEmptyModel(
 			Class<T> clazz, UnsafeSupplier<T, E> emptyModelUnsafeSupplier,
 			String externalReferenceCode,
 			BiFunction<String, Long, T> fetchByExternalReferenceCodeBiFunction,
 			UnsafeBiFunction<String, Long, T, E>
 				getByExternalReferenceCodeUnsafeBiFunction,
 			long groupId)
+		throws E {
+
+		return getOrAddEmptyModel(
+			clazz.getName(), null, emptyModelUnsafeSupplier,
+			externalReferenceCode, fetchByExternalReferenceCodeBiFunction,
+			getByExternalReferenceCodeUnsafeBiFunction, groupId,
+			clazz.getName());
+	}
+
+	@Override
+	public <T, E extends Exception> T getOrAddEmptyModel(
+			String className, Long companyId,
+			UnsafeSupplier<T, E> emptyModelUnsafeSupplier,
+			String externalReferenceCode,
+			BiFunction<String, Long, T> fetchByExternalReferenceCodeBiFunction,
+			UnsafeBiFunction<String, Long, T, E>
+				getByExternalReferenceCodeUnsafeBiFunction,
+			long groupId, String modelName)
 		throws E {
 
 		if (!LazyReferencingThreadLocal.isEnabled()) {
@@ -94,18 +112,21 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 
 		Group group = _groupLocalService.fetchGroup(groupId);
 
+		if (group != null) {
+			companyId = group.getCompanyId();
+		}
+
 		try (SafeCloseable safeCloseable =
 				EmptyModelThreadLocal.setEmptyModelWithSafeCloseable(true)) {
 
 			_exportImportReportEntryLocalService.
 				addEmptyExportImportReportEntry(
-					groupId, group.getCompanyId(), externalReferenceCode,
-					_classNameLocalService.getClassNameId(clazz.getName()),
+					groupId, companyId, externalReferenceCode,
+					_classNameLocalService.getClassNameId(className),
 					GetterUtil.getLong(
 						ExportImportThreadLocal.
 							getExportImportConfigurationId()),
-					ExportImportReportEntryUtil.getModelName(clazz),
-					ExportImportReportEntryUtil.getOrigin(),
+					modelName, ExportImportReportEntryUtil.getOrigin(),
 					ExportImportReportEntryUtil.getScope(group),
 					ExportImportReportEntryUtil.getScopeKey(group));
 

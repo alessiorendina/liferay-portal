@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '8d79980a735c8659e0682e35da75ebfc98591ae7d6b5dd9864f78351a4ab296a',
+	hash: '9d2c77cfa4aba23b2a5c3e5a0cfcdf0dcb174f8a3edb02bf35df1554054f37f5',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -33,6 +33,7 @@ module.exports = {
 		'@liferay/commerce-channel-web': [],
 		'@liferay/commerce-checkout-web': [],
 		'@liferay/commerce-client-extension-web': [],
+		'@liferay/commerce-fragment-impl': [],
 		'@liferay/commerce-order-content-web': [],
 		'@liferay/commerce-order-rule-web': [],
 		'@liferay/commerce-order-web': [],
@@ -136,6 +137,7 @@ module.exports = {
 		],
 		'@liferay/frontend-js-importmaps-extender': [],
 		'@liferay/frontend-js-item-selector-sample-web': [],
+		'@liferay/frontend-js-item-selector-web': [],
 		'@liferay/frontend-js-react-web': [
 			'classnames',
 			'formik',
@@ -196,6 +198,7 @@ module.exports = {
 		'@liferay/portal-tools-rest-builder-test-client-js': [],
 		'@liferay/portal-workflow-instance-tracker-web': [],
 		'@liferay/portal-workflow-taglib': [],
+		'@liferay/product-analytics-web': [],
 		'@liferay/product-navigation-control-menu-theme-contributor': [],
 		'@liferay/product-navigation-product-menu-theme-contributor': [],
 		'@liferay/product-navigation-site-administration': [],
@@ -276,7 +279,6 @@ module.exports = {
 		'frontend-js-aui-web': [],
 		'frontend-js-clay-sample-web': [],
 		'frontend-js-components-web': [],
-		'frontend-js-item-selector-web': [],
 		'frontend-js-loader-modules-extender': [],
 		'frontend-js-lodash-web': [],
 		'frontend-js-recharts': ['recharts'],
@@ -445,6 +447,7 @@ module.exports = {
 			'EditorConfig',
 			'Essentials',
 			'Font',
+			'Fullscreen',
 			'GeneralHtmlSupport',
 			'Heading',
 			'HorizontalLine',
@@ -473,7 +476,6 @@ module.exports = {
 			'TableProperties',
 			'TableToolbar',
 			'Underline',
-			'icons',
 		],
 		'clipboard': ['*', 'default'],
 		'cropperjs': ['*', 'default'],

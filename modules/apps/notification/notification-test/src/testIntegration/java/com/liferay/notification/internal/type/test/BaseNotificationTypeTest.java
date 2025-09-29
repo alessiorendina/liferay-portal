@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
@@ -225,6 +226,12 @@ public class BaseNotificationTypeTest {
 
 		role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
+		resourcePermissionLocalService.addResourcePermission(
+			TestPropsValues.getCompanyId(), ListTypeDefinition.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), role.getRoleId(),
+			ActionKeys.VIEW);
+
 		user2 = userLocalService.addUser(
 			user1.getUserId(), user1.getCompanyId(), true, null, null, true,
 			null, RandomTestUtil.randomString() + "@liferay.com",
@@ -244,8 +251,8 @@ public class BaseNotificationTypeTest {
 	public void setUp() throws Exception {
 		childObjectDefinition =
 			objectDefinitionLocalService.addCustomObjectDefinition(
-				user1.getUserId(), 0, null, false, false, true, true, false,
-				false, false, false, null,
+				user1.getUserId(), 0, null, false, true, false, true, true,
+				false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -365,7 +372,8 @@ public class BaseNotificationTypeTest {
 							RandomTestUtil.randomString())
 					).name(
 						"textObjectField"
-					).build()));
+					).build()),
+				Collections.emptyList());
 
 		childObjectDefinition =
 			objectDefinitionLocalService.publishCustomObjectDefinition(
@@ -374,8 +382,8 @@ public class BaseNotificationTypeTest {
 
 		parentObjectDefinition =
 			objectDefinitionLocalService.addCustomObjectDefinition(
-				user1.getUserId(), 0, null, false, false, true, false, false,
-				false, false, false, null,
+				user1.getUserId(), 0, null, false, true, false, true, false,
+				false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				"ParentObjectDefinition", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -443,7 +451,8 @@ public class BaseNotificationTypeTest {
 						"textObjectField"
 					).objectFieldSettings(
 						Collections.emptyList()
-					).build()));
+					).build()),
+				Collections.emptyList());
 
 		parentObjectDefinition =
 			objectDefinitionLocalService.publishCustomObjectDefinition(
@@ -715,6 +724,11 @@ public class BaseNotificationTypeTest {
 	protected static ObjectDefinition parentObjectDefinition;
 
 	protected static LinkedHashMap<String, Object> parentObjectEntryValues;
+
+	@Inject
+	protected static ResourcePermissionLocalService
+		resourcePermissionLocalService;
+
 	protected static Role role;
 	protected static User user1;
 	protected static User user2;
@@ -743,9 +757,6 @@ public class BaseNotificationTypeTest {
 		filter = "object.entry.manager.storage.type=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT
 	)
 	protected ObjectEntryManager objectEntryManager;
-
-	@Inject
-	protected ResourcePermissionLocalService resourcePermissionLocalService;
 
 	private String _getListType(String type, User user) throws Exception {
 		Contact contact = user.fetchContact();

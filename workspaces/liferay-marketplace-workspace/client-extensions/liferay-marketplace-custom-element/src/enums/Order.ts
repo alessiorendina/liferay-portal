@@ -6,6 +6,7 @@
 export enum OrderCustomFields {
 	ANALYTICS_GROUP_ID = 'analytics-group-id',
 	CLOUD_PROVISIONING = 'cloud-provisioning',
+	KORONEIKI_PROJECT = 'koroneiki-project',
 	PROJECT_NAME = 'project-name',
 	TRIAL_END_DATE = 'trial-end-date',
 	TRIAL_ERROR = 'trial-error',
@@ -47,10 +48,11 @@ export enum OrderWorkflowStatusCode {
 }
 
 export enum PaymentStatus {
-	PAID = 0,
-	PENDING = 1,
-	PAYMENT_PENDING = 2,
+	CANCELED = 8,
 	FAILED = 4,
+	PAID = 0,
+	PAYMENT_PENDING = 2,
+	PENDING = 1,
 }
 
 export const orderTypeLabel = {

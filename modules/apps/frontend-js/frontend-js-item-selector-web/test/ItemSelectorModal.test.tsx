@@ -76,40 +76,37 @@ const ItemSelectorModalWrapper = ({
 			<button onClick={() => onOpenChange(true)}>open modal</button>
 
 			<ItemSelectorModal<TestItem>
-				{...{
-					fdsProps: {
-						apiURL: `${location.origin}/o/headless-delivery/v1.0/test-api-url`,
-						id: `itemSelectorModal-test-0001`,
-						pagination: {
-							deltas: [{label: 20}],
-							initialDelta: 20,
-						},
-						selectionType: 'single',
-						views: [
-							{
-								contentRenderer: 'cards',
-								label: 'Cards',
-								name: 'cards',
-								schema: {
-									description: 'description',
-									title: 'name',
-								},
-								thumbnail: 'cards2',
-							} as IView,
-						],
+				apiURL={`${location.origin}/o/headless-delivery/v1.0/test-api-url`}
+				fdsProps={{
+					id: `itemSelectorModal-test-0001`,
+					pagination: {
+						deltas: [{label: 20}],
+						initialDelta: 20,
 					},
-					items: selectedItems,
-					locator: {
-						id: 'itemId',
-						label: 'name',
-						value: 'itemId',
-					},
-					observer,
-					onItemsChange,
-					onOpenChange,
-					open,
-					type: 'Space',
+					views: [
+						{
+							contentRenderer: 'cards',
+							label: 'Cards',
+							name: 'cards',
+							schema: {
+								description: 'description',
+								title: 'name',
+							},
+							thumbnail: 'cards2',
+						} as IView,
+					],
 				}}
+				itemTypeLabel="Space"
+				items={selectedItems}
+				locator={{
+					id: 'itemId',
+					label: 'name',
+					value: 'itemId',
+				}}
+				observer={observer}
+				onItemsChange={onItemsChange}
+				onOpenChange={onOpenChange}
+				open={open}
 			/>
 		</>
 	);
@@ -213,9 +210,6 @@ describe('ItemSelectorModal component', () => {
 
 		const modal = await findByRole('dialog');
 
-		const firstItem =
-			await within(modal).findByLabelText(/first item name$/gi);
-
 		const [firstItemRadio, secondItemRadio] =
 			await within(modal).findAllByRole('radio');
 
@@ -229,7 +223,7 @@ describe('ItemSelectorModal component', () => {
 
 		expect(select).toBeDisabled();
 
-		await user.click(firstItem);
+		await user.click(firstItemRadio);
 
 		expect(firstItemRadio).toBeChecked();
 
@@ -251,13 +245,10 @@ describe('ItemSelectorModal component', () => {
 
 		const modal = await findByRole('dialog');
 
-		const firstItem =
-			await within(modal).findByLabelText(/first item name$/gi);
-
 		const [firstItemRadio, secondItemRadio] =
 			await within(modal).findAllByRole('radio');
 
-		await user.click(firstItem);
+		await user.click(firstItemRadio);
 
 		expect(firstItemRadio).toBeChecked();
 
@@ -267,15 +258,7 @@ describe('ItemSelectorModal component', () => {
 
 		expect(selectedMessage).toBeInTheDocument();
 
-		expect(sub).toHaveBeenLastCalledWith(
-			'x-selected',
-			expect.objectContaining({
-				props: {
-					children: mockFirstItem.name,
-				},
-				type: 'strong',
-			})
-		);
+		expect(sub).toHaveBeenLastCalledWith('x-selected', mockFirstItem.name);
 	});
 
 	it('shows selected items when they are provided', async () => {
@@ -300,15 +283,7 @@ describe('ItemSelectorModal component', () => {
 
 		expect(selectedMessage).toBeInTheDocument();
 
-		expect(sub).toHaveBeenLastCalledWith(
-			'x-selected',
-			expect.objectContaining({
-				props: {
-					children: mockSecondItem.name,
-				},
-				type: 'strong',
-			})
-		);
+		expect(sub).toHaveBeenLastCalledWith('x-selected', mockSecondItem.name);
 
 		const select = await within(modal).findByRole('button', {
 			name: 'select',
@@ -331,8 +306,7 @@ describe('ItemSelectorModal component', () => {
 
 		const modal = await findByRole('dialog');
 
-		const [firstItem] =
-			await within(modal).findAllByLabelText(/item name$/gi);
+		const [firstItemRadio] = await within(modal).findAllByRole('radio');
 
 		const footerActions = await within(modal).findByRole('group');
 
@@ -340,7 +314,7 @@ describe('ItemSelectorModal component', () => {
 
 		expect(select).toBeDisabled();
 
-		await user.click(firstItem);
+		await user.click(firstItemRadio);
 
 		await waitFor(() => {
 			expect(select).toBeEnabled();
@@ -371,8 +345,7 @@ describe('ItemSelectorModal component', () => {
 
 		const modal = await findByRole('dialog');
 
-		const [firstItem] =
-			await within(modal).findAllByLabelText(/item name$/gi);
+		const [firstItemRadio] = await within(modal).findAllByRole('radio');
 
 		const footerActions = await within(modal).findByRole('group');
 
@@ -381,7 +354,7 @@ describe('ItemSelectorModal component', () => {
 
 		expect(cancel).toBeEnabled();
 
-		await user.click(firstItem);
+		await user.click(firstItemRadio);
 
 		await waitFor(() => {
 			expect(select).toBeEnabled();
@@ -408,9 +381,6 @@ describe('ItemSelectorModal component', () => {
 
 		const modal = await findByRole('dialog');
 
-		const [, secondItem] =
-			await within(modal).findAllByLabelText(/item name$/gi);
-
 		const [firstItemRadio, secondItemRadio] =
 			await within(modal).findAllByRole('radio');
 
@@ -418,7 +388,7 @@ describe('ItemSelectorModal component', () => {
 			name: 'select',
 		});
 
-		await user.click(secondItem);
+		await user.click(secondItemRadio);
 
 		expect(firstItemRadio).not.toBeChecked();
 
@@ -447,9 +417,6 @@ describe('ItemSelectorModal component', () => {
 
 		const modal = await findByRole('dialog');
 
-		const [, secondItem] =
-			await within(modal).findAllByLabelText(/item name$/gi);
-
 		const [firstItemRadio, secondItemRadio] =
 			await within(modal).findAllByRole('radio');
 
@@ -457,7 +424,7 @@ describe('ItemSelectorModal component', () => {
 			name: 'cancel',
 		});
 
-		await user.click(secondItem);
+		await user.click(secondItemRadio);
 
 		expect(firstItemRadio).not.toBeChecked();
 
@@ -481,9 +448,6 @@ describe('ItemSelectorModal component', () => {
 
 		let modal = await findByRole('dialog');
 
-		const [, secondItem] =
-			await within(modal).findAllByLabelText(/item name$/gi);
-
 		let [firstItemRadio, secondItemRadio] =
 			await within(modal).findAllByRole('radio');
 
@@ -495,7 +459,7 @@ describe('ItemSelectorModal component', () => {
 			name: 'cancel',
 		});
 
-		await user.click(secondItem);
+		await user.click(secondItemRadio);
 
 		expect(firstItemRadio).not.toBeChecked();
 
@@ -524,14 +488,6 @@ describe('ItemSelectorModal component', () => {
 
 		expect(selectedMessage).toBeInTheDocument();
 
-		expect(sub).toHaveBeenLastCalledWith(
-			'x-selected',
-			expect.objectContaining({
-				props: {
-					children: mockFirstItem.name,
-				},
-				type: 'strong',
-			})
-		);
+		expect(sub).toHaveBeenLastCalledWith('x-selected', mockFirstItem.name);
 	});
 });

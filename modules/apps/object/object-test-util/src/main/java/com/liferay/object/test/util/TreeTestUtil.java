@@ -72,6 +72,45 @@ public class TreeTestUtil {
 			node -> _getExternalReferenceCode(node, objectEntryLocalService));
 	}
 
+	public static void assertRootObjectDefinitionIds(
+		Map<ObjectDefinition, ObjectDefinition[]> expectedMap) {
+
+		Map<Long, long[]> actualMap = new LinkedHashMap<>();
+
+		for (ObjectDefinition objectDefinition : expectedMap.keySet()) {
+			actualMap.put(
+				objectDefinition.getObjectDefinitionId(),
+				objectDefinition.getRootObjectDefinitionIds());
+		}
+
+		for (Map.Entry<ObjectDefinition, ObjectDefinition[]> entry :
+				expectedMap.entrySet()) {
+
+			ObjectDefinition objectDefinition = entry.getKey();
+
+			long[] actualRootObjectDefinitionIds = actualMap.get(
+				objectDefinition.getObjectDefinitionId());
+
+			long[] expectedRootObjectDefinitionIds =
+				TransformUtil.transformToLongArray(
+					entry.getValue(), ObjectDefinition::getObjectDefinitionId);
+
+			Assert.assertEquals(
+				Arrays.toString(actualRootObjectDefinitionIds),
+				expectedRootObjectDefinitionIds.length,
+				actualRootObjectDefinitionIds.length);
+
+			if (actualRootObjectDefinitionIds.length == 0) {
+				continue;
+			}
+
+			Assert.assertTrue(
+				ArrayUtil.containsAll(
+					actualRootObjectDefinitionIds,
+					expectedRootObjectDefinitionIds));
+		}
+	}
+
 	public static ObjectRelationship bind(
 			long objectDefinition1Id, long objectDefinition2Id,
 			ObjectRelationshipLocalService objectRelationshipLocalService)
@@ -267,7 +306,9 @@ public class TreeTestUtil {
 				objectEntryLocalService.deleteObjectEntry(objectEntry);
 			}
 
-			if (objectDefinition.getRootObjectDefinitionId() != 0) {
+			if (ArrayUtil.isNotEmpty(
+					objectDefinition.getRootObjectDefinitionIds())) {
+
 				unbind(
 					objectDefinition.getObjectDefinitionId(),
 					objectRelationshipLocalService);
@@ -331,13 +372,26 @@ public class TreeTestUtil {
 				objectDefinitionId, true);
 
 		for (ObjectRelationship objectRelationship : objectRelationships) {
+			unbind(objectRelationship, objectRelationshipLocalService);
+		}
+	}
+
+	public static ObjectRelationship unbind(
+			ObjectRelationship objectRelationship,
+			ObjectRelationshipLocalService objectRelationshipLocalService)
+		throws PortalException {
+
+		objectRelationship =
 			objectRelationshipLocalService.updateObjectRelationship(
 				objectRelationship.getExternalReferenceCode(),
 				objectRelationship.getObjectRelationshipId(),
 				objectRelationship.getParameterObjectFieldId(),
 				objectRelationship.getDeletionType(), false,
 				objectRelationship.getLabelMap(), null);
-		}
+
+		Assert.assertFalse(objectRelationship.isEdge());
+
+		return objectRelationship;
 	}
 
 	private static void _assertTree(

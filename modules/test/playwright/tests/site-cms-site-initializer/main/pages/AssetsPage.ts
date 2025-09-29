@@ -22,6 +22,13 @@ export class AssetsPage {
 		headRow: Locator;
 	};
 
+	readonly modalContainer: Locator;
+	readonly modal: {
+		body: Locator;
+		container: Locator;
+		title: Locator;
+	};
+
 	constructor(page: Page) {
 		this.page = page;
 
@@ -29,6 +36,14 @@ export class AssetsPage {
 		this.newButton = page.getByLabel('New');
 
 		this.table = this.dataSetFragmentPage.table;
+
+		const modalContainer = page.locator('.modal-dialog');
+
+		this.modal = {
+			body: modalContainer.locator('.modal-body'),
+			container: modalContainer,
+			title: modalContainer.locator('.modal-title'),
+		};
 	}
 
 	async gotoAll() {
@@ -65,7 +80,7 @@ export class AssetsPage {
 		action,
 		filter,
 	}: {
-		action: 'Download' | 'Share' | 'View';
+		action: 'Download' | 'Share' | 'Show Details' | 'View';
 		filter: string;
 	}) {
 		await this.dataSetFragmentPage.execItemAction({
@@ -78,5 +93,15 @@ export class AssetsPage {
 		...args: Parameters<DataSetPage['changeVisualizationMode']>
 	) {
 		await this.dataSetFragmentPage.changeVisualizationMode(...args);
+	}
+
+	async selectItems(titles: string[]) {
+		for (const title of titles) {
+			const card = this.page
+				.locator('tr', {hasText: title})
+				.or(this.page.locator('.card-row', {hasText: title}));
+
+			await card.getByRole('checkbox').check();
+		}
 	}
 }

@@ -16,8 +16,10 @@ ObjectDefinition objectDefinition = objectEntryDisplayContext.getObjectDefinitio
 ObjectEntry objectEntry = objectEntryDisplayContext.getObjectEntry();
 String portletNamespace = portletDisplay.getNamespace();
 
-portletDisplay.setShowBackIcon(true);
-portletDisplay.setURLBack(backURL);
+if (ParamUtil.getBoolean(request, "showHeader", true)) {
+	portletDisplay.setShowBackIcon(true);
+	portletDisplay.setURLBack(backURL);
+}
 %>
 
 <portlet:actionURL name="/object_entries/edit_object_entry" var="editObjectEntryURL" />
@@ -132,25 +134,6 @@ portletDisplay.setURLBack(backURL);
 		function <portlet:namespace />getInputValues(element, selector) {
 			return Array.from(element.querySelectorAll(selector)).map(
 				(item) => item.value
-			);
-		}
-
-		function <portlet:namespace />getPath(externalReferenceCode) {
-			const scope = '<%= objectDefinition.getScope() %>';
-			const contextPath = '/o<%= objectDefinition.getRESTContextPath() %>';
-			const pathScopedBySite = contextPath.concat(
-				`/scopes/\${themeDisplay.getSiteGroupId()}`
-			);
-
-			let path = scope === 'site' ? pathScopedBySite : contextPath;
-
-			if (!externalReferenceCode) {
-				return path;
-			}
-
-			return path.concat(
-				'/by-external-reference-code/',
-				`\${externalReferenceCode}`
 			);
 		}
 
@@ -288,9 +271,6 @@ portletDisplay.setURLBack(backURL);
 							);
 							const externalReferenceCode =
 								<portlet:namespace />getExternalReferenceCode();
-							const path = <portlet:namespace />getPath(
-								externalReferenceCode
-							);
 
 							if (categoriesContent) {
 								values = Object.assign(
@@ -316,7 +296,7 @@ portletDisplay.setURLBack(backURL);
 								['relationshipField']:
 									'<%= objectEntryDisplayContext.getObjectRelationshipERCObjectFieldName() %>',
 								['parentObjectEntryERC']:
-									'<%= objectEntryDisplayContext.getParentObjectEntryId() %>',
+									'<%= objectEntryDisplayContext.getParentObjectEntryERC() %>',
 							};
 
 							if (autoRelatedValue['relationshipField'] !== 'null') {
@@ -354,11 +334,8 @@ portletDisplay.setURLBack(backURL);
 								};
 							}
 
-							const method = !externalReferenceCode
-								? 'POST'
-								: hasObjectLayout
-									? 'PATCH'
-									: 'PUT';
+							const method =
+								'<%= objectEntryDisplayContext.getMethod() %>';
 
 							if (method === 'PATCH') {
 								values = Object.assign(values, {
@@ -368,16 +345,19 @@ portletDisplay.setURLBack(backURL);
 								});
 							}
 
-							Liferay.Util.fetch(path, {
-								body: JSON.stringify(values),
-								headers: new Headers({
-									'Accept': 'application/json',
-									'Accept-Language':
-										'<%= LanguageUtil.getBCP47LanguageId(request) %>',
-									'Content-Type': 'application/json',
-								}),
-								method: method,
-							})
+							Liferay.Util.fetch(
+								'<%= objectEntryDisplayContext.getAPIURL() %>',
+								{
+									body: JSON.stringify(values),
+									headers: new Headers({
+										'Accept': 'application/json',
+										'Accept-Language':
+											'<%= LanguageUtil.getBCP47LanguageId(request) %>',
+										'Content-Type': 'application/json',
+									}),
+									method: method,
+								}
+							)
 								.then((response) => {
 									Liferay.fire('submitButtonClicked');
 

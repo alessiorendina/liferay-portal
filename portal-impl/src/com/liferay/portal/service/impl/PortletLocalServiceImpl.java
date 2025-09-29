@@ -87,6 +87,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -104,7 +105,6 @@ import com.liferay.portal.model.impl.PortletURLListenerImpl;
 import com.liferay.portal.model.impl.PublicRenderParameterImpl;
 import com.liferay.portal.service.base.PortletLocalServiceBaseImpl;
 import com.liferay.portal.servlet.ComboServlet;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.WebAppPool;
 import com.liferay.portlet.PortletBagFactory;
 import com.liferay.portlet.PortletContextFactoryUtil;
@@ -509,6 +509,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		if (portlet != null) {
 			String finalPortletId = portletId;
 			boolean finalStatic = portlet.isStatic();
+			boolean finalStaticPortletStart = portlet.isStaticStart();
 
 			portlet = new PortletWrapper(portlet) {
 
@@ -533,11 +534,22 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 				}
 
 				@Override
+				public boolean isStaticStart() {
+					return _staticPortletStart;
+				}
+
+				@Override
 				public void setStatic(boolean staticPortlet) {
 					_staticPortlet = staticPortlet;
 				}
 
+				@Override
+				public void setStaticStart(boolean staticPortletStart) {
+					_staticPortletStart = staticPortletStart;
+				}
+
 				private boolean _staticPortlet = finalStatic;
+				private boolean _staticPortletStart = finalStaticPortletStart;
 
 			};
 		}

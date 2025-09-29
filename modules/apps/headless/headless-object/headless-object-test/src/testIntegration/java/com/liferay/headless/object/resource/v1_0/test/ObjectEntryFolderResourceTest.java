@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -114,6 +115,8 @@ public class ObjectEntryFolderResourceTest
 
 		_testDepotEntryGroup = _groupLocalService.getGroup(
 			_testDepotEntry.getGroupId());
+
+		_updateGroup(false);
 	}
 
 	@Override
@@ -194,7 +197,7 @@ public class ObjectEntryFolderResourceTest
 		_testPostScopeScopeKeyObjectEntryFolderWithNonexistentParentObjectEntryFolderByObjectEntryFolderId();
 	}
 
-	@FeatureFlag("LPD-53981")
+	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
 	public void testPostScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore()
@@ -202,6 +205,8 @@ public class ObjectEntryFolderResourceTest
 
 		super.
 			testPostScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore();
+
+		_updateGroup(true);
 
 		ObjectEntryFolder postObjectEntryFolder =
 			testPostScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore_addObjectEntryFolder(
@@ -252,13 +257,15 @@ public class ObjectEntryFolderResourceTest
 		super.
 			testPostScopeScopeKeyObjectEntryFolderByExternalReferenceCodeSubscribe();
 
-		PermissionChecker permissionChecker =
+		PermissionChecker originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
+		String originalName = PrincipalThreadLocal.getName();
 
 		User user = UserTestUtil.addUser();
 
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(user));
+		PrincipalThreadLocal.setName(user.getUserId());
 
 		_addResourcePermission(ActionKeys.VIEW, user.getUserId());
 
@@ -293,7 +300,8 @@ public class ObjectEntryFolderResourceTest
 				com.liferay.object.model.ObjectEntryFolder.class.getName(),
 				objectEntryFolder.getId()));
 
-		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		PermissionThreadLocal.setPermissionChecker(originalPermissionChecker);
+		PrincipalThreadLocal.setName(originalName);
 	}
 
 	@Override
@@ -304,13 +312,15 @@ public class ObjectEntryFolderResourceTest
 		super.
 			testPostScopeScopeKeyObjectEntryFolderByExternalReferenceCodeUnsubscribe();
 
-		PermissionChecker permissionChecker =
+		PermissionChecker originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
+		String originalName = PrincipalThreadLocal.getName();
 
 		User user = UserTestUtil.addUser();
 
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(user));
+		PrincipalThreadLocal.setName(user.getUserId());
 
 		_addResourcePermission(ActionKeys.VIEW, user.getUserId());
 
@@ -356,7 +366,8 @@ public class ObjectEntryFolderResourceTest
 				com.liferay.object.model.ObjectEntryFolder.class.getName(),
 				objectEntryFolder.getId()));
 
-		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		PermissionThreadLocal.setPermissionChecker(originalPermissionChecker);
+		PrincipalThreadLocal.setName(originalName);
 	}
 
 	@Override
@@ -477,6 +488,15 @@ public class ObjectEntryFolderResourceTest
 	@Override
 	protected String testGetScopeScopeKeyObjectEntryFoldersPage_getScopeKey() {
 		return String.valueOf(_testDepotEntry.getGroupId());
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
+				ObjectEntryFolder objectEntryFolder)
+		throws Exception {
+
+		return objectEntryFolder.getScopeKey();
 	}
 
 	@Override
@@ -1222,6 +1242,17 @@ public class ObjectEntryFolderResourceTest
 			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 			Assert.assertNull(problem.getTitle());
 		}
+	}
+
+	private void _updateGroup(boolean trashEnabled) throws Exception {
+		UnicodeProperties unicodeProperties =
+			_testDepotEntryGroup.getTypeSettingsProperties();
+
+		unicodeProperties.setProperty(
+			"trashEnabled", String.valueOf(trashEnabled));
+
+		_testDepotEntryGroup = _groupLocalService.updateGroup(
+			_testDepotEntryGroup.getGroupId(), unicodeProperties.toString());
 	}
 
 	@Inject

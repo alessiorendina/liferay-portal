@@ -7,6 +7,7 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.LayoutJavaScriptException;
 import com.liferay.portal.kernel.exception.LayoutNameException;
+import com.liferay.portal.kernel.exception.LayoutTypeException;
 import com.liferay.portal.kernel.exception.MasterLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -112,6 +114,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -122,7 +125,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 import com.liferay.portal.service.base.LayoutLocalServiceBaseImpl;
 import com.liferay.portal.util.LayoutTypeControllerTracker;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.ratings.kernel.service.RatingsStatsLocalService;
 import com.liferay.sites.kernel.util.Sites;
 
@@ -372,17 +374,17 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		layout.setPublishDate(serviceContext.getModifiedDate(date));
 
-		if (_workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
-				layout.getCompanyId(), layout.getGroupId(),
-				Layout.class.getName()) &&
-			(Objects.equals(type, LayoutConstants.TYPE_CONTENT) ||
-			 Objects.equals(type, LayoutConstants.TYPE_UTILITY)) &&
-			!system) {
+		if (EmptyModelManagerUtil.isEmptyModel()) {
+			layout.setStatus(WorkflowConstants.STATUS_EMPTY);
+		}
+		else if (_workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
+					layout.getCompanyId(), layout.getGroupId(),
+					Layout.class.getName()) &&
+				 (Objects.equals(type, LayoutConstants.TYPE_CONTENT) ||
+				  Objects.equals(type, LayoutConstants.TYPE_UTILITY)) &&
+				 !system) {
 
 			layout.setStatus(WorkflowConstants.STATUS_DRAFT);
-		}
-		else if (type.equals(LayoutConstants.TYPE_EMPTY)) {
-			layout.setStatus(WorkflowConstants.STATUS_EMPTY);
 		}
 		else {
 			layout.setStatus(WorkflowConstants.STATUS_APPROVED);
@@ -1107,6 +1109,40 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		}
 
 		return layouts.get(layouts.size() - 1);
+	}
+
+	@Override
+	public Map<Layout, Layout> fetchDraftLayouts(List<Layout> layouts) {
+		if (layouts.isEmpty()) {
+			return Collections.emptyMap();
+		}
+
+		Map<Layout, Layout> draftLayouts = new HashMap<>();
+
+		long[] plids = new long[layouts.size()];
+
+		Map<Long, Layout> layoutsMap = new HashMap<>();
+
+		for (int i = 0; i < layouts.size(); i++) {
+			Layout layout = layouts.get(i);
+
+			long plid = layout.getPlid();
+
+			plids[i] = plid;
+
+			layoutsMap.put(plid, layout);
+		}
+
+		for (Layout draftLayout :
+				layoutPersistence.findByC_C(
+					_classNameLocalService.getClassNameId(Layout.class),
+					plids)) {
+
+			draftLayouts.put(
+				layoutsMap.get(draftLayout.getClassPK()), draftLayout);
+		}
+
+		return draftLayouts;
 	}
 
 	@Override
@@ -2259,6 +2295,28 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		return nextLayoutId;
 	}
 
+	public Layout getOrAddEmptyLayout(
+			String externalReferenceCode, long userId, long groupId,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		return EmptyModelManagerUtil.getOrAddEmptyModel(
+			Layout.class,
+			() -> {
+				serviceContext.setAttribute(
+					"layout.instanceable.allowed", Boolean.TRUE);
+
+				return layoutLocalService.addLayout(
+					externalReferenceCode, userId, groupId, false,
+					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+					externalReferenceCode, StringPool.BLANK, null,
+					LayoutConstants.TYPE_EMPTY, true, false, null,
+					serviceContext);
+			},
+			externalReferenceCode, this::fetchLayoutByExternalReferenceCode,
+			this::getLayoutByExternalReferenceCode, groupId);
+	}
+
 	@Override
 	public Layout getParentLayout(Layout layout) throws PortalException {
 		Layout parentLayout = null;
@@ -2923,6 +2981,10 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		// Layout
 
+		if (Objects.equals(type, LayoutConstants.TYPE_EMPTY)) {
+			throw new LayoutTypeException(LayoutTypeException.EMPTY);
+		}
+
 		parentLayoutId = layoutLocalServiceHelper.getParentLayoutId(
 			groupId, privateLayout, parentLayoutId);
 
@@ -3031,6 +3093,13 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		}
 
 		layout.setExpandoBridgeAttributes(serviceContext);
+
+		if (layout.getStatus() == WorkflowConstants.STATUS_EMPTY) {
+			layout.setStatus(
+				Objects.equals(type, LayoutConstants.TYPE_CONTENT) ?
+					WorkflowConstants.STATUS_DRAFT :
+						WorkflowConstants.STATUS_APPROVED);
+		}
 
 		layout = layoutLocalService.updateLayout(layout);
 

@@ -19,6 +19,9 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface DataRemovalConfiguration {
 
+	@Meta.AD(deflt = "false", name = "fix-counter-values", required = false)
+	public boolean fixCounterValues();
+
 	@Meta.AD(
 		deflt = "false", name = "remove-analytics-message-data",
 		required = false
@@ -36,11 +39,8 @@ public interface DataRemovalConfiguration {
 	)
 	public boolean removeConfigurationOrphanData();
 
-	@Meta.AD(
-		deflt = "false", name = "remove-ddm-structure-orphan-data",
-		required = false
-	)
-	public boolean removeDDMStructureOrphanData();
+	@Meta.AD(deflt = "false", name = "remove-ddm-orphan-data", required = false)
+	public boolean removeDDMOrphanData();
 
 	@Meta.AD(
 		deflt = "false", name = "remove-dl-file-entry-orphan-data",
@@ -64,6 +64,11 @@ public interface DataRemovalConfiguration {
 		deflt = "false", name = "remove-group-orphan-data", required = false
 	)
 	public boolean removeGroupOrphanData();
+
+	@Meta.AD(
+		deflt = "false", name = "remove-journal-orphan-data", required = false
+	)
+	public boolean removeJournalOrphanData();
 
 	@Meta.AD(
 		deflt = "false", name = "remove-null-unicode-content-data",
@@ -99,5 +104,11 @@ public interface DataRemovalConfiguration {
 		required = false
 	)
 	public boolean removeWidgetLayoutTypeSettings();
+
+	@Meta.AD(
+		deflt = "false", name = "remove-layout-classed-model-usage-orphan-data",
+		required = false
+	)
+	public boolean removeLayoutClassedModelUsageOrphanData();
 
 }

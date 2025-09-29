@@ -13,8 +13,10 @@ import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.related.models.ObjectRelatedModelsProvider;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.util.List;
@@ -46,8 +48,8 @@ public class ObjectEntryMtoMObjectRelatedModelsProviderImpl
 		throws PortalException {
 
 		List<ObjectEntry> relatedModels = getRelatedModels(
-			groupId, objectRelationshipId, primaryKey, null, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS);
+			groupId, objectRelationshipId, null, false, primaryKey, null,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		if (relatedModels.isEmpty()) {
 			return;
@@ -108,8 +110,9 @@ public class ObjectEntryMtoMObjectRelatedModelsProviderImpl
 	}
 
 	public List<ObjectEntry> getRelatedModels(
-			long groupId, long objectRelationshipId, long primaryKey,
-			String search, int start, int end)
+			long groupId, long objectRelationshipId, Predicate predicate,
+			boolean preferApproved, long primaryKey, String search, int start,
+			int end, Sort[] sorts)
 		throws PortalException {
 
 		ObjectRelationship objectRelationship =
@@ -123,8 +126,8 @@ public class ObjectEntryMtoMObjectRelatedModelsProviderImpl
 
 	@Override
 	public int getRelatedModelsCount(
-			long groupId, long objectRelationshipId, long primaryKey,
-			String search)
+			long groupId, long objectRelationshipId, Predicate predicate,
+			long primaryKey, String search)
 		throws PortalException {
 
 		ObjectRelationship objectRelationship =
@@ -175,8 +178,8 @@ public class ObjectEntryMtoMObjectRelatedModelsProviderImpl
 		throws PortalException {
 
 		List<ObjectEntry> relatedModels = getRelatedModels(
-			groupId, objectRelationshipId, primaryKey, null, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS);
+			groupId, objectRelationshipId, null, false, primaryKey, null,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		if (relatedModels.isEmpty()) {
 			return;
@@ -201,7 +204,7 @@ public class ObjectEntryMtoMObjectRelatedModelsProviderImpl
 
 			for (ObjectEntry objectEntry : relatedModels) {
 				_objectEntryService.moveObjectEntryToTrash(
-					userId, objectEntry, new ServiceContext());
+					objectEntry, new ServiceContext());
 			}
 		}
 	}
@@ -226,15 +229,15 @@ public class ObjectEntryMtoMObjectRelatedModelsProviderImpl
 
 		for (ObjectEntry objectEntry :
 				getRelatedModels(
-					groupId, objectRelationshipId, primaryKey, null,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+					groupId, objectRelationshipId, null, false, primaryKey,
+					null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 
 			if (!objectEntry.isInTrash()) {
 				continue;
 			}
 
 			_objectEntryService.restoreObjectEntryFromTrash(
-				userId, objectEntry, new ServiceContext());
+				objectEntry, new ServiceContext());
 		}
 	}
 

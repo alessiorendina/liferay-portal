@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.URLCodec;
@@ -48,7 +49,6 @@ import com.liferay.portal.kernel.util.UnicodeFormatter;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.BrowserSnifferUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.ShutdownUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -405,7 +405,7 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 
 		for (FeatureFlag featureFlag :
 				_featureFlagManager.getFeatureFlags(
-					themeDisplay.getCompanyId(), featureFlag -> true)) {
+					themeDisplay.getCompanyId(), null)) {
 
 			sb.append(StringPool.APOSTROPHE);
 			sb.append(featureFlag.getKey());
@@ -528,6 +528,9 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			_renderMethod(
 				"getLayoutURL", sb, _portal.getLayoutURL(layout, themeDisplay));
 			_renderMethod("getParentLayoutId", sb, layout.getParentLayoutId());
+			_renderMethod(
+				"getPathFriendlyURLPublic", sb,
+				_portal.getPathFriendlyURLPublic());
 			_renderMethod("isControlPanel", sb, layout.isTypeControlPanel());
 			_renderMethod("isPrivateLayout", sb, layout.isPrivateLayout());
 			_renderMethod(

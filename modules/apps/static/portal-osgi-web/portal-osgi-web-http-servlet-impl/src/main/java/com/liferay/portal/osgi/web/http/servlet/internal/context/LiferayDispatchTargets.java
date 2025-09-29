@@ -13,6 +13,10 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.osgi.web.http.servlet.internal.registration.EndpointRegistration;
+import com.liferay.portal.osgi.web.http.servlet.internal.registration.FilterRegistration;
+import com.liferay.portal.osgi.web.http.servlet.internal.servlet.LiferayHttpServletRequestWrapper;
+import com.liferay.portal.osgi.web.http.servlet.internal.servlet.LiferayHttpServletResponseWrapper;
 import com.liferay.portal.osgi.web.http.servlet.internal.servlet.ResponseStateHandler;
 
 import jakarta.servlet.DispatcherType;
@@ -34,19 +38,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.eclipse.equinox.http.servlet.internal.context.DispatchTargets;
-import org.eclipse.equinox.http.servlet.internal.registration.EndpointRegistration;
-import org.eclipse.equinox.http.servlet.internal.registration.FilterRegistration;
-import org.eclipse.equinox.http.servlet.internal.servlet.HttpServletRequestWrapperImpl;
-import org.eclipse.equinox.http.servlet.internal.servlet.HttpServletResponseWrapperImpl;
-import org.eclipse.equinox.http.servlet.internal.util.Params;
 
 /**
  * @author Dante Wang
  */
-public class LiferayDispatchTargets extends DispatchTargets {
+public class LiferayDispatchTargets {
 
 	public LiferayDispatchTargets(
 		EndpointRegistration<?> endpointRegistration,
@@ -54,11 +52,6 @@ public class LiferayDispatchTargets extends DispatchTargets {
 		List<FilterRegistration> matchingFilterRegistrations, String pathInfo,
 		String queryString, String requestURI, String servletName,
 		String servletPath) {
-
-		super(
-			liferayContextController, endpointRegistration,
-			matchingFilterRegistrations, servletName, requestURI, servletPath,
-			pathInfo, queryString);
 
 		_endpointRegistration = endpointRegistration;
 		_liferayContextController = liferayContextController;
@@ -82,7 +75,6 @@ public class LiferayDispatchTargets extends DispatchTargets {
 			servletName, servletPath);
 	}
 
-	@Override
 	public void addRequestParameters(HttpServletRequest httpServletRequest) {
 		if (_queryString == null) {
 			_parameterMap = httpServletRequest.getParameterMap();
@@ -102,14 +94,13 @@ public class LiferayDispatchTargets extends DispatchTargets {
 
 			parsedParameterMap.put(
 				entry.getKey(),
-				Params.append(
+				_append(
 					parsedParameterMap.get(entry.getKey()), entry.getValue()));
 		}
 
 		_parameterMap = Collections.unmodifiableMap(parsedParameterMap);
 	}
 
-	@Override
 	public boolean doDispatch(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, String path,
@@ -163,22 +154,21 @@ public class LiferayDispatchTargets extends DispatchTargets {
 
 		HttpServletRequest newHttpServletRequest = httpServletRequest;
 
-		HttpServletRequestWrapperImpl httpServletRequestWrapperImpl =
-			HttpServletRequestWrapperImpl.findHttpRuntimeRequest(
-				httpServletRequest);
+		LiferayHttpServletRequestWrapper liferayHttpServletRequestWrapper =
+			LiferayHttpServletRequestWrapper.find(httpServletRequest);
 
-		if (httpServletRequestWrapperImpl == null) {
-			httpServletRequestWrapperImpl = new HttpServletRequestWrapperImpl(
-				httpServletRequest);
+		if (liferayHttpServletRequestWrapper == null) {
+			liferayHttpServletRequestWrapper =
+				new LiferayHttpServletRequestWrapper(httpServletRequest);
 
-			newHttpServletRequest = httpServletRequestWrapperImpl;
+			newHttpServletRequest = liferayHttpServletRequestWrapper;
 
-			httpServletResponse = new HttpServletResponseWrapperImpl(
+			httpServletResponse = new LiferayHttpServletResponseWrapper(
 				httpServletResponse);
 		}
 
 		try {
-			httpServletRequestWrapperImpl.push(this);
+			liferayHttpServletRequestWrapper.push(this);
 
 			ResponseStateHandler responseStateHandler =
 				new ResponseStateHandler(
@@ -217,7 +207,7 @@ public class LiferayDispatchTargets extends DispatchTargets {
 			}
 		}
 		finally {
-			httpServletRequestWrapperImpl.pop();
+			liferayHttpServletRequestWrapper.pop();
 
 			requestAttributeSetter.close();
 		}
@@ -225,37 +215,30 @@ public class LiferayDispatchTargets extends DispatchTargets {
 		return true;
 	}
 
-	@Override
 	public LiferayContextController getContextController() {
 		return _liferayContextController;
 	}
 
-	@Override
 	public DispatcherType getDispatcherType() {
 		return _dispatcherType;
 	}
 
-	@Override
 	public List<FilterRegistration> getMatchingFilterRegistrations() {
 		return _matchingFilterRegistrations;
 	}
 
-	@Override
 	public Map<String, String[]> getParameterMap() {
 		return _parameterMap;
 	}
 
-	@Override
 	public String getPathInfo() {
 		return _pathInfo;
 	}
 
-	@Override
 	public String getQueryString() {
 		return _queryString;
 	}
 
-	@Override
 	public String getRequestURI() {
 		if (_requestURI == null) {
 			return null;
@@ -264,27 +247,22 @@ public class LiferayDispatchTargets extends DispatchTargets {
 		return _liferayContextController.getFullContextPath() + _requestURI;
 	}
 
-	@Override
 	public String getServletName() {
 		return _servletName;
 	}
 
-	@Override
 	public String getServletPath() {
 		return _servletPath;
 	}
 
-	@Override
 	public EndpointRegistration<?> getServletRegistration() {
 		return _endpointRegistration;
 	}
 
-	@Override
 	public Map<String, Object> getSpecialOverides() {
 		return _specialOverrides;
 	}
 
-	@Override
 	public void setDispatcherType(DispatcherType dispatcherType) {
 		_dispatcherType = dispatcherType;
 	}
@@ -310,6 +288,46 @@ public class LiferayDispatchTargets extends DispatchTargets {
 		}
 
 		return value;
+	}
+
+	private String[] _append(String[] params, String value) {
+		if (params.length == 0) {
+			return new String[] {value};
+		}
+
+		String[] newParams = new String[params.length + 1];
+
+		System.arraycopy(params, 0, newParams, 0, params.length);
+
+		newParams[params.length] = Objects.requireNonNullElse(
+			value, StringPool.BLANK);
+
+		return newParams;
+	}
+
+	private String[] _append(String[] params, String... values) {
+		if (values == null) {
+			values = new String[1];
+		}
+
+		String[] newParams = values;
+
+		int length = 0;
+
+		if (params != null) {
+			length = params.length;
+
+			newParams = new String[params.length + values.length];
+
+			System.arraycopy(params, 0, newParams, 0, params.length);
+		}
+
+		for (int i = 0; i < values.length; ++i) {
+			newParams[length + i] = Objects.requireNonNullElse(
+				values[i], StringPool.BLANK);
+		}
+
+		return newParams;
 	}
 
 	private Map<String, String[]> _parseParameterMap(String queryString) {
@@ -346,7 +364,7 @@ public class LiferayDispatchTargets extends DispatchTargets {
 						parameter.substring(index + 1), StringPool.UTF8);
 				}
 
-				values = Params.append(values, value);
+				values = _append(values, value);
 
 				parameterMap.put(name, values);
 			}

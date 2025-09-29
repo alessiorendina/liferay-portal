@@ -5,13 +5,16 @@
 
 package com.liferay.headless.site.internal.resource.v1_0;
 
+import com.liferay.google.places.constants.GooglePlacesWebKeys;
 import com.liferay.headless.site.dto.v1_0.Site;
 import com.liferay.headless.site.resource.v1_0.SiteResource;
+import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -34,9 +37,14 @@ import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.util.comparator.GroupNameComparator;
@@ -45,6 +53,7 @@ import com.liferay.portal.security.permission.PermissionCacheUtil;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerFactory;
 import com.liferay.site.initializer.SiteInitializerRegistry;
@@ -55,7 +64,6 @@ import jakarta.ws.rs.core.Response;
 
 import java.io.File;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -94,6 +102,13 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		}
 
 		_groupService.deleteGroup(group.getGroupId());
+	}
+
+	@Override
+	public Site getSite(Long siteId) {
+		Group group = _groupLocalService.fetchGroup(siteId);
+
+		return _toSite(group);
 	}
 
 	@Override
@@ -137,12 +152,9 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 	}
 
 	@Override
-	public Page<Site> getSitesPage(String search, Pagination pagination)
+	public Page<Site> getSitesPage(
+			Boolean active, String search, Pagination pagination)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
 
 		long[] classNameIds = {
 			_portal.getClassNameId(Company.class.getName()),
@@ -150,42 +162,77 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		};
 		LinkedHashMap<String, Object> params =
 			LinkedHashMapBuilder.<String, Object>put(
-				"active", true
+				"active",
+				() -> {
+					if (active != null) {
+						return GetterUtil.getBoolean(active);
+					}
+
+					return null;
+				}
 			).put(
 				"site", true
 			).build();
 
 		return Page.of(
+			HashMapBuilder.put(
+				"create",
+				addAction(
+					ActionKeys.UPDATE, "postSite", Group.class.getName(), null)
+			).put(
+				"createBatch",
+				addAction(
+					ActionKeys.UPDATE, "postSiteBatch", Group.class.getName(),
+					null)
+			).put(
+				"deleteBatch",
+				addAction(
+					ActionKeys.DELETE, "deleteSiteBatch", Group.class.getName(),
+					null)
+			).build(),
 			transform(
 				_groupService.search(
 					contextCompany.getCompanyId(), classNameIds, search, null,
 					params, true, pagination.getStartPosition(),
 					pagination.getEndPosition(), new GroupNameComparator()),
-				group -> _toSite(group)),
+				this::_toSite),
 			pagination,
 			_groupService.searchCount(
 				contextCompany.getCompanyId(), classNameIds, search, params));
 	}
 
 	@Override
-	public Site postSite(MultipartBody multipartBody) throws Exception {
-		Site site = postSite(
-			multipartBody.getValueAsInstance("site", Site.class));
+	public Site postSite(Site site) throws Exception {
+		Group group = _addGroup(site.getExternalReferenceCode(), site);
+
+		return _toSite(group);
+	}
+
+	@Override
+	public Site postSiteSiteInitializer(MultipartBody multipartBody)
+		throws Exception {
+
+		Site site = multipartBody.getValueAsInstance("site", Site.class);
 
 		return putSiteByExternalReferenceCode(
 			site.getExternalReferenceCode(), multipartBody);
 	}
 
 	@Override
-	public Site postSite(Site site) throws Exception {
-		try {
-			Group group = _addGroup(site.getExternalReferenceCode(), site);
+	public Site putSite(Site site) throws Exception {
+		String externalReferenceCode = site.getExternalReferenceCode();
 
-			return _toSite(group);
+		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+			externalReferenceCode, contextCompany.getCompanyId());
+
+		if (group == null) {
+			group = _addGroup(externalReferenceCode, site);
 		}
-		catch (Throwable throwable) {
-			throw new Exception(throwable);
+		else {
+			group = _updateGroup(group, site);
 		}
+
+		return _toSite(group);
 	}
 
 	@Override
@@ -211,6 +258,11 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			GroupPermissionUtil.check(
 				PermissionThreadLocal.getPermissionChecker(), group,
 				ActionKeys.UPDATE);
+
+			group = _updateGroup(
+				group, multipartBody.getValueAsInstance("site", Site.class));
+
+			return _toSite(group);
 		}
 
 		PermissionChecker permissionChecker =
@@ -322,13 +374,11 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 
 		_initThemeDisplay();
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			contextHttpServletRequest);
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					contextCompany, contextUser)) {
 
-		ServiceContextThreadLocal.pushServiceContext(serviceContext);
-
-		try {
-			return _addGroup(externalReferenceCode, site, serviceContext);
+			return _addGroup(externalReferenceCode, site, _getServiceContext());
 		}
 		catch (Exception exception) {
 
@@ -348,39 +398,27 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		long parentGroupId = GroupConstants.DEFAULT_PARENT_GROUP_ID;
+		Group group = _groupService.addGroup(
+			_getParentGroupId(site.getParentSiteKey()),
+			GroupConstants.DEFAULT_LIVE_GROUP_ID, _getNameMap(site),
+			_getLocalizationMap(site.getDescription()),
+			_getType(site.getMembershipType()),
+			_isManualMembership(site.getManualMembership()),
+			_getMembershipRestriction(site.getMembershipRestriction()),
+			site.getFriendlyUrlPath(), true, false, _isActive(site.getActive()),
+			serviceContext);
 
-		if (Validator.isNotNull(site.getParentSiteKey())) {
-			Group parentGroup = _groupLocalService.getGroup(
-				contextCompany.getCompanyId(), site.getParentSiteKey());
+		if (Validator.isNotNull(externalReferenceCode)) {
+			group.setExternalReferenceCode(externalReferenceCode);
 
-			parentGroupId = parentGroup.getGroupId();
+			group = _groupLocalService.updateGroup(group);
 		}
 
-		Map<Locale, String> nameMap = new HashMap<>();
-
-		if (Validator.isNotNull(site.getName())) {
-			nameMap.put(LocaleUtil.getDefault(), site.getName());
+		if (Validator.isNotNull(site.getTypeSettings())) {
+			group = _groupService.updateGroup(
+				group.getGroupId(),
+				_getTypeSettings(site.getTypeSettings(), null));
 		}
-
-		int type = GroupConstants.TYPE_SITE_OPEN;
-
-		Site.MembershipType membershipType = site.getMembershipType();
-
-		if (membershipType != null) {
-			if (membershipType.equals(Site.MembershipType.PRIVATE)) {
-				type = GroupConstants.TYPE_SITE_PRIVATE;
-			}
-			else if (membershipType.equals(Site.MembershipType.RESTRICTED)) {
-				type = GroupConstants.TYPE_SITE_RESTRICTED;
-			}
-		}
-
-		Group group = _groupService.addOrUpdateGroup(
-			externalReferenceCode, parentGroupId,
-			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, null, type, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, false,
-			true, serviceContext);
 
 		LiveUsers.joinGroup(
 			contextCompany.getCompanyId(), group.getGroupId(),
@@ -409,6 +447,73 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		return group;
 	}
 
+	private Map<Locale, String> _getLocalizationMap(Map<String, String> map) {
+		if (map == null) {
+			return null;
+		}
+
+		return _localization.getLocalizationMap(
+			map.keySet(
+			).toArray(
+				new String[0]
+			),
+			map.values(
+			).toArray(
+				new String[0]
+			));
+	}
+
+	private int _getMembershipRestriction(Integer membershipRestriction) {
+		if (membershipRestriction == null) {
+			return GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION;
+		}
+
+		return membershipRestriction;
+	}
+
+	private Map<Locale, String> _getNameMap(Site site) {
+		if (Validator.isNotNull(site.getName_i18n())) {
+			return LocalizedMapUtil.getLocalizedMap(site.getName_i18n());
+		}
+
+		return HashMapBuilder.put(
+			LocaleUtil.getDefault(), site.getName()
+		).build();
+	}
+
+	private long _getParentGroupId(String parentSiteKey)
+		throws PortalException {
+
+		if (Validator.isNull(parentSiteKey)) {
+			return GroupConstants.DEFAULT_PARENT_GROUP_ID;
+		}
+
+		Group parentGroup = _groupLocalService.getGroup(
+			contextCompany.getCompanyId(), parentSiteKey);
+
+		return parentGroup.getGroupId();
+	}
+
+	private ServiceContext _getServiceContext() throws PortalException {
+		ServiceContext serviceContext = null;
+
+		if (contextHttpServletRequest != null) {
+			serviceContext = ServiceContextFactory.getInstance(
+				contextHttpServletRequest);
+		}
+		else {
+			serviceContext = new ServiceContext();
+
+			serviceContext.setCompanyId(contextCompany.getCompanyId());
+			serviceContext.setRequest(contextHttpServletRequest);
+			serviceContext.setUserId(contextUser.getUserId());
+		}
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		return serviceContext;
+	}
+
 	private ServiceContext _getServiceContext(Group group) throws Exception {
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -422,7 +527,52 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		return serviceContext;
 	}
 
+	private int _getType(Site.MembershipType membershipType) {
+		if ((membershipType == null) ||
+			membershipType.equals(Site.MembershipType.OPEN)) {
+
+			return GroupConstants.TYPE_SITE_OPEN;
+		}
+		else if (membershipType.equals(Site.MembershipType.PRIVATE)) {
+			return GroupConstants.TYPE_SITE_PRIVATE;
+		}
+
+		return GroupConstants.TYPE_SITE_RESTRICTED;
+	}
+
+	private String _getTypeSettings(
+			Map<String, String> typeSettings,
+			UnicodeProperties oldUnicodeProperties)
+		throws Exception {
+
+		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.putAll(
+			typeSettings
+		).build();
+
+		unicodeProperties.putIfAbsent(
+			GroupConstants.TYPE_SETTINGS_KEY_INHERIT_LOCALES,
+			String.valueOf(!unicodeProperties.containsKey(PropsKeys.LOCALES)));
+
+		if (oldUnicodeProperties == null) {
+			return unicodeProperties.toString();
+		}
+
+		for (String excludedTypeSetting : _EXCLUDED_TYPE_SETTINGS) {
+			if (oldUnicodeProperties.containsKey(excludedTypeSetting)) {
+				unicodeProperties.put(
+					excludedTypeSetting,
+					oldUnicodeProperties.get(excludedTypeSetting));
+			}
+		}
+
+		return unicodeProperties.toString();
+	}
+
 	private void _initThemeDisplay() throws Exception {
+		if (contextHttpServletRequest == null) {
+			return;
+		}
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)contextHttpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -448,17 +598,120 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		themeDisplay.setResponse(new DummyHttpServletResponse());
 	}
 
+	private boolean _isActive(Boolean active) {
+		if (active == null) {
+			return true;
+		}
+
+		return active;
+	}
+
+	private boolean _isManualMembership(Boolean manualMembership) {
+		if (manualMembership == null) {
+			return true;
+		}
+
+		return manualMembership;
+	}
+
 	private Site _toSite(Group group) {
+		String[] availableLanguageIds = group.getAvailableLanguageIds();
+
 		return new Site() {
 			{
+				setActive(group::getActive);
+				setDescription(
+					() -> {
+						Map<String, String> descriptionMap =
+							new LinkedHashMap<>();
+
+						for (String availableLanguageId :
+								availableLanguageIds) {
+
+							String description = group.getDescription(
+								availableLanguageId, false);
+
+							if (Validator.isNotNull(description)) {
+								descriptionMap.put(
+									availableLanguageId, description);
+							}
+						}
+
+						return descriptionMap;
+					});
 				setExternalReferenceCode(group::getExternalReferenceCode);
 				setFriendlyUrlPath(group::getFriendlyURL);
 				setId(group::getGroupId);
 				setKey(group::getGroupKey);
+				setManualMembership(group::getManualMembership);
+				setMembershipRestriction(group::getMembershipRestriction);
+				setMembershipType(
+					() -> MembershipType.create(
+						GroupConstants.getTypeLabel(group.getType())));
 				setName(() -> group.getName(LocaleUtil.getDefault()));
+				setName_i18n(
+					() -> LocalizedMapUtil.getI18nMap(group.getNameMap()));
+				setTypeSettings(
+					() -> {
+						UnicodeProperties unicodeProperties =
+							UnicodePropertiesBuilder.fastLoad(
+								group.getTypeSettings()
+							).build();
+
+						for (String excludedTypeSetting :
+								_EXCLUDED_TYPE_SETTINGS) {
+
+							unicodeProperties.remove(excludedTypeSetting);
+						}
+
+						return unicodeProperties;
+					});
 			}
 		};
 	}
+
+	private Group _updateGroup(Group group, Site site) throws Exception {
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					contextCompany, contextUser)) {
+
+			Group updatedGroup = _groupLocalService.updateGroup(
+				group.getGroupId(), _getParentGroupId(site.getParentSiteKey()),
+				_getNameMap(site), _getLocalizationMap(site.getDescription()),
+				_getType(site.getMembershipType()),
+				_isManualMembership(site.getManualMembership()),
+				_getMembershipRestriction(site.getMembershipRestriction()),
+				site.getFriendlyUrlPath(), false, _isActive(site.getActive()),
+				_getServiceContext());
+
+			if (Validator.isNotNull(site.getTypeSettings())) {
+				updatedGroup = _groupService.updateGroup(
+					updatedGroup.getGroupId(),
+					_getTypeSettings(
+						site.getTypeSettings(),
+						group.getTypeSettingsProperties()));
+			}
+
+			LiveUsers.joinGroup(
+				contextCompany.getCompanyId(), updatedGroup.getGroupId(),
+				contextUser.getUserId());
+
+			return updatedGroup;
+		}
+		catch (Exception exception) {
+			PermissionCacheUtil.clearCache(contextUser.getUserId());
+
+			throw exception;
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	private static final String[] _EXCLUDED_TYPE_SETTINGS = {
+		GooglePlacesWebKeys.GOOGLE_PLACES_API_KEY, "defaultSiteRoleIds",
+		"defaultTeamIds", "googleMapsAPIKey"
+	};
 
 	@Reference
 	private GroupLocalService _groupLocalService;
@@ -467,7 +720,13 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 	private GroupService _groupService;
 
 	@Reference
+	private LayoutServiceContextHelper _layoutServiceContextHelper;
+
+	@Reference
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
+
+	@Reference
+	private Localization _localization;
 
 	@Reference
 	private Portal _portal;

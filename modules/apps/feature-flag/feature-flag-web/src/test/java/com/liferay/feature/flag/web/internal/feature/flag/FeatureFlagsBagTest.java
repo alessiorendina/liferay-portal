@@ -14,14 +14,13 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
-import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,7 +45,7 @@ public class FeatureFlagsBagTest {
 			_releaseFeatureFlag
 		};
 
-		Map<String, FeatureFlag> featureFlagsMap = new HashMap<>();
+		Map<String, FeatureFlag> featureFlagsMap = new TreeMap<>();
 
 		for (FeatureFlag featureFlag : _expectedFeatureFlags) {
 			featureFlagsMap.put(featureFlag.getKey(), featureFlag);
@@ -92,7 +91,6 @@ public class FeatureFlagsBagTest {
 		}
 	}
 
-	@NewEnv(type = NewEnv.Type.JVM)
 	@Test
 	public void testIsEnabled() {
 		for (FeatureFlag expectedFeatureFlag : _expectedFeatureFlags) {

@@ -99,8 +99,8 @@ public class ObjectEntryVersionLocalServiceTest {
 	public static void setUpClass() throws Exception {
 		_objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, false, true, false,
-				true, false, false, true, null,
+				TestPropsValues.getUserId(), 0, null, false, true, false, true,
+				false, true, false, false, true, null,
 				RandomTestUtil.randomLocaleStringMap(),
 				"A" + StringUtil.randomString(), null, null,
 				RandomTestUtil.randomLocaleStringMap(), true,
@@ -113,7 +113,8 @@ public class ObjectEntryVersionLocalServiceTest {
 						RandomTestUtil.randomLocaleStringMap()
 					).name(
 						"textObjectFieldName"
-					).build()));
+					).build()),
+				Collections.emptyList());
 
 		_objectDefinition =
 			_objectDefinitionLocalService.publishCustomObjectDefinition(
@@ -163,6 +164,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue2"
 			).build(),
@@ -208,6 +210,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", RandomTestUtil.randomString()
 			).build(),
@@ -217,6 +220,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", RandomTestUtil.randomString()
 			).build(),
@@ -229,6 +233,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", RandomTestUtil.randomString()
 			).build(),
@@ -250,6 +255,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", RandomTestUtil.randomString()
 			).build(),
@@ -305,6 +311,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue2"
 			).build(),
@@ -329,6 +336,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue3"
 			).build(),
@@ -353,6 +361,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue4"
 			).build(),
@@ -435,6 +444,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue2"
 			).build(),
@@ -492,6 +502,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue3"
 			).build(),
@@ -527,6 +538,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue4"
 			).build(),
@@ -594,6 +606,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue2"
 			).build(),
@@ -645,6 +658,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", RandomTestUtil.randomString()
 			).build(),
@@ -654,6 +668,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", RandomTestUtil.randomString()
 			).build(),
@@ -698,6 +713,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", RandomTestUtil.randomString()
 			).build(),
@@ -741,6 +757,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", RandomTestUtil.randomString()
 			).build(),
@@ -769,6 +786,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue2"
 			).build(),
@@ -808,6 +826,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue2"
 			).build(),
@@ -976,6 +995,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"displayDate",
 				new Date(System.currentTimeMillis() + TimeUnit.DAY.toMillis(1))
@@ -1028,6 +1048,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"displayDate",
 				new Date(System.currentTimeMillis() - TimeUnit.DAY.toMillis(1))
@@ -1084,6 +1105,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "textObjectFieldValue4"
 			).build(),

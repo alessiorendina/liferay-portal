@@ -16,6 +16,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
+import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../../utils/fillAndClickOutside';
 import getRandomString from '../../../utils/getRandomString';
@@ -34,6 +35,7 @@ export const test = mergeTests(
 	journalPagesTest,
 	pagesAdminPagesTest,
 	pageEditorPagesTest,
+	workflowPagesTest,
 	featureFlagsTest({
 		'LPD-20131': {enabled: true},
 	})
@@ -52,6 +54,7 @@ test('LPD-61649 Assert structure content fields are shown in the data tab', asyn
 	const basicTextFieldName = 'Text1234';
 	const imageFieldName = 'Image345';
 	const nonLocalizableFieldName = 'TextNonLocalizable';
+	const selectFieldName = 'Select123';
 	const structureName = 'Structure 1';
 
 	const dataDefinition = getDataStructureDefinition({
@@ -64,6 +67,24 @@ test('LPD-61649 Assert structure content fields are shown in the data tab', asyn
 				required: true,
 			},
 			{fieldType: 'image', name: imageFieldName},
+			{
+				fieldType: 'select',
+				name: selectFieldName,
+				options: {
+					en_US: [
+						{
+							label: 'option1',
+							reference: 'option1',
+							value: 'option1',
+						},
+						{
+							label: 'option2',
+							reference: 'option2',
+							value: 'option2',
+						},
+					],
+				},
+			},
 		],
 		name: structureName,
 	});
@@ -120,6 +141,7 @@ test('LPD-61649 Assert structure content fields are shown in the data tab', asyn
 	await expect(
 		page.getByText(nonLocalizableFieldName, {exact: true})
 	).toBeVisible();
+	await expect(page.getByText(selectFieldName, {exact: true})).toBeVisible();
 	await expect(page.getByText(structureName, {exact: true})).toBeVisible();
 	await expect(page.getByText(content, {exact: true}).first()).toBeVisible();
 });
@@ -513,4 +535,60 @@ test('User time zone from theme display is applied to publication FDS', async ({
 
 		await accountSettingsPage.setTimeZone('UTC');
 	});
+});
+
+test('LPD-62112 Cannot Preview Pending Version of Page in a Publication', async ({
+	changeTrackingPage,
+	ctCollection,
+	page,
+	pageEditorPage,
+	workflowPage,
+}) => {
+
+	// Enable Single Approver workflow for Content Pages
+
+	await changeTrackingPage.workOnProduction();
+
+	await workflowPage.goto();
+
+	await workflowPage.changeWorkflow('Content Page', 'Single Approver');
+
+	await changeTrackingPage.workOnPublication(ctCollection);
+
+	await test.step('Go to home edit page', async () => {
+		await page.goto(`/web/guest/home?p_l_mode=edit`);
+	});
+
+	const headingId = await pageEditorPage.getFragmentId('Paragraph');
+
+	await pageEditorPage.editTextEditable(headingId, 'element-text', 'Edited');
+
+	await pageEditorPage.publishPage();
+
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
+
+	const filtersDropdown = page.locator('.filters-dropdown-button');
+
+	await filtersDropdown.waitFor();
+	await filtersDropdown.click();
+
+	await page.getByRole('menuitem', {name: 'Status'}).click();
+
+	const pendingCheckbox = page.getByLabel('Pending');
+
+	await pendingCheckbox.check();
+
+	await page.getByRole('button', {exact: true, name: 'Add Filter'}).click();
+
+	await changeTrackingPage.reviewChange('Home');
+
+	await page.locator('.btn-outline-secondary').click();
+
+	await page.getByRole('menuitem', {name: ctCollection.body.name}).click();
+
+	const publicationIFrame = page.frameLocator('iframe[src*="preview"]');
+
+	const newHeading = publicationIFrame.getByText('Edited');
+
+	await expect(newHeading).toBeVisible();
 });

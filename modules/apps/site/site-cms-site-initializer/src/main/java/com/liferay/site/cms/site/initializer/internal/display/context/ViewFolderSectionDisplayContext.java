@@ -18,7 +18,6 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -64,6 +63,16 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 			objectEntryFolderModelResourcePermission, portal);
 
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
+	}
+
+	@Override
+	public Map<String, Object> getAdditionalProps() {
+		return new HashMapBuilder<>().putAll(
+			super.getAdditionalProps()
+		).put(
+			"rootObjectEntryFolderExternalReferenceCode",
+			getRootObjectEntryFolderExternalReferenceCode()
+		).build();
 	}
 
 	public Map<String, Object> getBreadcrumbProps() {
@@ -137,8 +146,32 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 				null, "pencil", "edit-tags",
 				LanguageUtil.get(httpServletRequest, "edit-tags"), "post",
 				"edit-tags", null));
+		fdsBulkActionDropdownItems.add(
+			new FDSActionDropdownItem(
+				"#", "password-policies", "permissions",
+				LanguageUtil.get(httpServletRequest, "permissions"), null, null,
+				null));
+		fdsBulkActionDropdownItems.add(
+			new FDSActionDropdownItem(
+				"#", "password-policies", "default-permissions",
+				LanguageUtil.get(httpServletRequest, "default-permissions"),
+				null, null, null));
 
 		return fdsBulkActionDropdownItems;
+	}
+
+	@Override
+	public List<DropdownItem> getCreationMenuDropdownItems() {
+		if (Objects.equals(
+				getRootObjectEntryFolderExternalReferenceCode(),
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS)) {
+
+			return ActionUtil.getContentsSectionCreationMenuDropdownItems(
+				httpServletRequest, objectEntryFolder);
+		}
+
+		return ActionUtil.getFilesSectionCreationMenuDropdownItems(
+			httpServletRequest, objectEntryFolder);
 	}
 
 	@Override
@@ -146,7 +179,7 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 		String rootObjectEntryFolderExternalReferenceCode =
 			getRootObjectEntryFolderExternalReferenceCode();
 
-		String description = "click-new-to-create-your-first-asset";
+		String description = "click-new-or-drag-and-drop-your-files-here";
 		String image = "/states/cms_empty_state.svg";
 		String title = "no-assets-yet";
 
@@ -162,7 +195,7 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 					rootObjectEntryFolderExternalReferenceCode,
 					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES)) {
 
-			description = "click-new-to-create-your-first-file";
+			description = "click-new-or-drag-and-drop-your-files-here";
 			image = "/states/cms_empty_state_files.svg";
 			title = "no-files-yet";
 		}
@@ -278,38 +311,6 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 			rootObjectEntryFolder.getExternalReferenceCode();
 
 		return _rootObjectEntryFolderExternalReferenceCode;
-	}
-
-	@Override
-	public Map<String, Object> getToolbarProps() throws PortalException {
-		return HashMapBuilder.<String, Object>putAll(
-			super.getToolbarProps()
-		).put(
-			"title",
-			() -> {
-				if (objectEntryFolder == null) {
-					return null;
-				}
-
-				String[] parts = StringUtil.split(
-					objectEntryFolder.getTreePath(), CharPool.SLASH);
-
-				if (parts.length == 0) {
-					return null;
-				}
-
-				ObjectEntryFolder rootObjectEntryFolder =
-					_objectEntryFolderLocalService.fetchObjectEntryFolder(
-						GetterUtil.getLong(parts[1]));
-
-				if (rootObjectEntryFolder == null) {
-					return null;
-				}
-
-				return rootObjectEntryFolder.getLabel(
-					themeDisplay.getLocale(), true);
-			}
-		).build();
 	}
 
 	@Override

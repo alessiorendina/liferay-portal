@@ -12,14 +12,27 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -32,8 +45,10 @@ import jakarta.portlet.ActionRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Marco Leo
@@ -57,6 +72,11 @@ public class ViewAllSpacesDisplayContext {
 
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
+			"baseSpaceURL", ActionUtil.getBaseSpaceURL(_themeDisplay)
+		).put(
+			"defaultPermissionAdditionalProps",
+			_getDefaultPermissionAdditionalProps()
+		).put(
 			"pinnedAssetLibraryIds",
 			TransformUtil.transformToArray(
 				_depotEntryPinLocalService.getUserDepotEntryPins(
@@ -68,8 +88,20 @@ public class ViewAllSpacesDisplayContext {
 
 	public String getAPIURL() {
 		return "/o/headless-asset-library/v1.0/asset-libraries?filter=type " +
-			"eq 'Space'&nestedFields=numberOfSites,numberOfUserAccounts," +
-				"numberOfUserGroups";
+			"eq 'Space'&nestedFields=numberOfConnectedSites" +
+				",numberOfUserAccounts,numberOfUserGroups";
+	}
+
+	public Map<String, Object> getBreadcrumbProps() throws PortalException {
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		_addBreadcrumbItem(jsonArray, false, null, _getLayoutName());
+
+		return HashMapBuilder.<String, Object>put(
+			"breadcrumbItems", jsonArray
+		).put(
+			"hideSpace", true
+		).build();
 	}
 
 	public List<DropdownItem> getBulkActionDropdownItems() {
@@ -77,7 +109,11 @@ public class ViewAllSpacesDisplayContext {
 			new FDSActionDropdownItem(
 				"#", "document", "sampleBulkAction",
 				LanguageUtil.get(_httpServletRequest, "label"), null, null,
-				null));
+				null),
+			new FDSActionDropdownItem(
+				StringPool.BLANK, "password-policies", "default-permissions",
+				LanguageUtil.get(_httpServletRequest, "default-permissions"),
+				null, null, null));
 	}
 
 	public CreationMenu getCreationMenu() {
@@ -89,7 +125,7 @@ public class ViewAllSpacesDisplayContext {
 						GroupConstants.CMS_FRIENDLY_URL, "/new-space"));
 				dropdownItem.setIcon("forms");
 				dropdownItem.setLabel(
-					_language.get(_httpServletRequest, "space"));
+					_language.get(_httpServletRequest, "new"));
 			}
 		).build();
 	}
@@ -133,17 +169,13 @@ public class ViewAllSpacesDisplayContext {
 				LanguageUtil.get(_httpServletRequest, "view-members"), "get",
 				"view-members", null),
 			new FDSActionDropdownItem(
-				null, "globe", "view-sites",
-				LanguageUtil.format(
-					_httpServletRequest, "view-x",
-					LanguageUtil.get(_httpServletRequest, "sites")),
+				null, "globe", "view-connected-sites",
+				LanguageUtil.get(_httpServletRequest, "view-connected-sites"),
 				"get", "connect-sites", null),
 			new FDSActionDropdownItem(
-				null, "globe", "view-sites",
-				LanguageUtil.format(
-					_httpServletRequest, "view-x",
-					LanguageUtil.get(_httpServletRequest, "sites")),
-				"get", "view-sites", null),
+				null, "globe", "view-connected-sites",
+				LanguageUtil.get(_httpServletRequest, "view-connected-sites"),
+				"get", "view-connected-sites", null),
 			new FDSActionDropdownItem(
 				PortletURLBuilder.create(
 					PortalUtil.getControlPanelPortletURL(
@@ -160,6 +192,8 @@ public class ViewAllSpacesDisplayContext {
 				).setParameter(
 					"modelResourceDescription", "{name}"
 				).setParameter(
+					"resourceGroupId", "{siteId}"
+				).setParameter(
 					"resourcePrimKey", "{id}"
 				).setWindowState(
 					LiferayWindowState.POP_UP
@@ -168,12 +202,150 @@ public class ViewAllSpacesDisplayContext {
 				_language.get(_httpServletRequest, "permissions"), "get", null,
 				"modal-permissions"),
 			new FDSActionDropdownItem(
-				_language.get(
-					_httpServletRequest,
-					"are-you-sure-you-want-to-delete-this-entry"),
-				null, "trash", "delete",
+				StringPool.BLANK, "password-policies", "default-permissions",
+				LanguageUtil.get(_httpServletRequest, "default-permissions"),
+				null, null, null),
+			new FDSActionDropdownItem(
+				"{actions.delete.href}", "trash", "delete",
 				_language.get(_httpServletRequest, "delete"), "delete",
-				"delete", "headless"));
+				"delete", null));
+	}
+
+	private void _addBreadcrumbItem(
+		JSONArray jsonArray, boolean active, String friendlyURL, String label) {
+
+		jsonArray.put(
+			JSONUtil.put(
+				"active", active
+			).put(
+				"href", friendlyURL
+			).put(
+				"label", label
+			));
+	}
+
+	private Map<String, Object> _getDefaultPermissionAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"actions",
+			() -> HashMapBuilder.put(
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
+				() -> {
+					ObjectDefinition objectDefinition =
+						ObjectDefinitionLocalServiceUtil.
+							getObjectDefinitionByExternalReferenceCode(
+								"L_BASIC_WEB_CONTENT",
+								_themeDisplay.getCompanyId());
+
+					List<String> guestUnsupportedActions =
+						ResourceActionsUtil.getResourceGuestUnsupportedActions(
+							null, objectDefinition.getClassName());
+
+					return TransformUtil.transformToArray(
+						ResourceActionsUtil.getResourceActions(
+							objectDefinition.getClassName()),
+						resourceAction -> HashMapBuilder.<String, Object>put(
+							"guestUnsupported",
+							guestUnsupportedActions.contains(resourceAction)
+						).put(
+							"key", resourceAction
+						).put(
+							"label",
+							ResourceActionsUtil.getAction(
+								_httpServletRequest, resourceAction)
+						).build(),
+						Map.class);
+				}
+			).put(
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
+				() -> {
+					ObjectDefinition objectDefinition =
+						ObjectDefinitionLocalServiceUtil.
+							getObjectDefinitionByExternalReferenceCode(
+								"L_BASIC_DOCUMENT",
+								_themeDisplay.getCompanyId());
+
+					List<String> guestUnsupportedActions =
+						ResourceActionsUtil.getResourceGuestUnsupportedActions(
+							null, objectDefinition.getClassName());
+
+					return TransformUtil.transformToArray(
+						ResourceActionsUtil.getResourceActions(
+							objectDefinition.getClassName()),
+						resourceAction -> HashMapBuilder.<String, Object>put(
+							"guestUnsupported",
+							guestUnsupportedActions.contains(resourceAction)
+						).put(
+							"key", resourceAction
+						).put(
+							"label",
+							ResourceActionsUtil.getAction(
+								_httpServletRequest, resourceAction)
+						).build(),
+						Map.class);
+				}
+			).put(
+				"OBJECT_ENTRY_FOLDERS",
+				() -> {
+					List<String> guestUnsupportedActions =
+						ResourceActionsUtil.getResourceGuestUnsupportedActions(
+							null, ObjectEntryFolder.class.getName());
+
+					return TransformUtil.transformToArray(
+						ResourceActionsUtil.getResourceActions(
+							ObjectEntryFolder.class.getName()),
+						resourceAction -> HashMapBuilder.<String, Object>put(
+							"guestUnsupported",
+							guestUnsupportedActions.contains(resourceAction)
+						).put(
+							"key", resourceAction
+						).put(
+							"label",
+							ResourceActionsUtil.getAction(
+								_httpServletRequest, resourceAction)
+						).build(),
+						Map.class);
+				}
+			).build()
+		).put(
+			"roles",
+			() -> {
+				Set<String> excludedRoleNamesSet = new HashSet<String>() {
+					{
+						add(RoleConstants.ADMINISTRATOR);
+						add(RoleConstants.SITE_ADMINISTRATOR);
+						add(RoleConstants.SITE_OWNER);
+					}
+				};
+
+				return TransformUtil.transformToArray(
+					RoleLocalServiceUtil.getGroupRolesAndTeamRoles(
+						_themeDisplay.getCompanyId(), null,
+						ListUtil.fromCollection(excludedRoleNamesSet), null,
+						null,
+						new int[] {
+							RoleConstants.TYPE_REGULAR, RoleConstants.TYPE_SITE
+						},
+						0, 0, QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+					role -> HashMapBuilder.put(
+						"key", role.getName()
+					).put(
+						"name", role.getTitle(_themeDisplay.getLocale())
+					).put(
+						"type", String.valueOf(role.getType())
+					).build(),
+					Map.class);
+			}
+		).build();
+	}
+
+	private String _getLayoutName() {
+		Layout layout = _themeDisplay.getLayout();
+
+		if (layout == null) {
+			return null;
+		}
+
+		return layout.getName(_themeDisplay.getLocale(), true);
 	}
 
 	private final DepotEntryPinLocalService _depotEntryPinLocalService;

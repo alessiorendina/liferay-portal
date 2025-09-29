@@ -205,6 +205,71 @@ baseTest(
 );
 
 baseTest(
+	'Check that upload field is marked as translated',
+	{
+		tag: '@LPD-66008',
+	},
+
+	async ({apiHelpers, journalEditArticlePage, page, site}) => {
+		const structureName = 'Test Structure';
+
+		const dataDefinition = getDataStructureDefinition({
+			defaultLanguageId: 'en_US',
+			fields: [
+				{
+					fieldType: 'document_library',
+					name: 'Upload',
+				},
+			],
+			name: structureName,
+		});
+
+		await apiHelpers.dataEngine.createStructure(site.id, dataDefinition);
+
+		await journalEditArticlePage.goto({
+			siteUrl: site.friendlyUrlPath,
+			structureName,
+		});
+
+		const title = getRandomString();
+
+		await journalEditArticlePage.fillTitle(title);
+
+		await journalEditArticlePage.selectFileFromDocumentsAndMedia(
+			'astronaut.png'
+		);
+
+		const translationButton = page.getByLabel('Select a language, current');
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('option', {
+				name: 'Catalan Language: Not Translated',
+			}),
+			trigger: translationButton,
+		});
+
+		await journalEditArticlePage.selectFileFromDocumentsAndMedia(
+			'planet.png'
+		);
+
+		await translateNameAndMetadataFields(page, structureName);
+
+		await journalEditArticlePage.publishArticle();
+
+		await journalEditArticlePage.editArticle(title);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('option', {
+				name: 'Catalan Language: Translated',
+			}),
+			trigger: translationButton,
+		});
+	}
+);
+
+baseTest(
 	'Select web content display template with the Preview feature',
 	{
 		tag: '@LPD-31427',
@@ -1367,6 +1432,104 @@ baseTest(
 		await checkAccessibility({page, selectors: ['.ddm-label']});
 
 		await expect(textBox).toBeDisabled();
+	}
+);
+
+baseTest(
+	'A non-localizable field value is not deleted when switching and filtering from another translation',
+	{
+		tag: '@LPD-63134',
+	},
+	async ({apiHelpers, journalEditArticlePage, page, site}) => {
+		const localizableFieldName = 'LocalizedText';
+		const nonLocalizableFieldName = 'Text';
+		const structureName = 'Structure';
+
+		await baseTest.step(
+			'Create new structure with localizable and non-localizable fields',
+			async () => {
+				const dataDefinition = getDataStructureDefinition({
+					defaultLanguageId: 'en_US',
+					fields: [
+						{localizable: true, name: localizableFieldName},
+						{localizable: false, name: nonLocalizableFieldName},
+					],
+					name: structureName,
+				});
+
+				await apiHelpers.dataEngine.createStructure(
+					site.id,
+					dataDefinition
+				);
+			}
+		);
+
+		await baseTest.step(
+			'Open new structure and fill both fields',
+			async () => {
+				await journalEditArticlePage.goto({
+					siteUrl: site.friendlyUrlPath,
+					structureName,
+				});
+
+				await page.getByLabel(localizableFieldName).fill('en-us');
+
+				await page
+					.getByLabel(nonLocalizableFieldName, {exact: true})
+					.fill('test');
+			}
+		);
+
+		const translationButton = page.getByRole('combobox', {
+			name: 'Select a language',
+		});
+
+		await baseTest.step(
+			'Switch language, translate localizable field and filter fields by translated',
+			async () => {
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('option', {
+						name: 'Catalan Language: Not Translated',
+					}),
+					trigger: translationButton,
+				});
+
+				await openFieldset(page, 'Fields');
+
+				await page.getByLabel(localizableFieldName).fill('ca-es');
+
+				const translationFilterButton = page.getByRole('combobox', {
+					name: 'Select a Filter',
+				});
+
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('option', {
+						exact: true,
+						name: 'Translated',
+					}),
+					trigger: translationFilterButton,
+				});
+			}
+		);
+
+		await baseTest.step(
+			'Switch back to default language and assert that non localizable field value is still there',
+			async () => {
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('option', {
+						name: 'English Language: Default',
+					}),
+					trigger: translationButton,
+				});
+
+				await expect(
+					page.getByLabel(nonLocalizableFieldName, {exact: true})
+				).toHaveValue('test');
+			}
+		);
 	}
 );
 

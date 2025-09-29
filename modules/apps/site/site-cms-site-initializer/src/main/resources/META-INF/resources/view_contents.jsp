@@ -14,8 +14,8 @@ ViewContentsSectionDisplayContext viewContentsSectionDisplayContext = (ViewConte
 <div>
 	<div>
 		<react:component
-			module="{Toolbar} from site-cms-site-initializer"
-			props="<%= viewContentsSectionDisplayContext.getToolbarProps() %>"
+			module="{Breadcrumb} from site-cms-site-initializer"
+			props="<%= viewContentsSectionDisplayContext.getBreadcrumbProps() %>"
 		/>
 	</div>
 
@@ -30,7 +30,7 @@ ViewContentsSectionDisplayContext viewContentsSectionDisplayContext = (ViewConte
 			formName="fm"
 			id="<%= CMSSiteInitializerFDSNames.CONTENTS_SECTION %>"
 			itemsPerPage="<%= 20 %>"
-			propsTransformer="{ContentsFDSPropsTransformer} from site-cms-site-initializer"
+			propsTransformer="{AssetsFDSPropsTransformer} from site-cms-site-initializer"
 			selectedItemsKey="embedded.id"
 			selectionType="multiple"
 			showSelectAll="<%= true %>"

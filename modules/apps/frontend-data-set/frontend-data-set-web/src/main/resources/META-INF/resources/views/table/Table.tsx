@@ -22,7 +22,6 @@ import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 
 import FrontendDataSetContext, {
 	IFrontendDataSetContext,
-	TRenderer,
 } from '../../FrontendDataSetContext';
 import Actions from '../../actions/Actions';
 import {getInternalCellRenderer} from '../../cell_renderers/getInternalCellRenderer';
@@ -37,10 +36,10 @@ import {
 } from '../../utils/getLocalizedValue';
 import {getInputRendererById} from '../../utils/renderer';
 import {
-	ESelectionTrigger,
 	IItemsActions,
 	ITableSchema,
 	IView,
+	TRenderer,
 	TSort,
 } from '../../utils/types';
 import ViewsContext, {
@@ -103,7 +102,7 @@ const Head = ({
 }: {
 	fields: Array<Field>;
 	items: Array<any>;
-	selectionType?: string;
+	selectionType?: 'single' | 'multiple';
 }) => {
 	const {selectable} = useContext(FrontendDataSetContext);
 
@@ -169,7 +168,7 @@ const Row = ({
 	items: any[];
 	itemsActions: Array<IItemsActions>;
 	onItemSelectionChange: Function;
-	selectionType?: string;
+	selectionType?: 'single' | 'multiple';
 }) => {
 	const {itemsChanges, selectedItemsKey, updateItem} = useContext(
 		FrontendDataSetContext
@@ -233,11 +232,7 @@ const Row = ({
 									<SelectionComponent
 										checked={active}
 										onChange={() =>
-											onItemSelectionChange({
-												item,
-												trigger:
-													ESelectionTrigger.INPUT,
-											})
+											onItemSelectionChange(item)
 										}
 										title={Liferay.Language.get(
 											'select-item'
@@ -349,7 +344,7 @@ const Body = ({
 	items: Array<any>;
 	itemsActions: Array<IItemsActions>;
 	onItemSelectionChange: Function;
-	selectionType?: string;
+	selectionType?: 'single' | 'multiple';
 }) => {
 	const {
 		allItemsSelectedActive,
@@ -414,7 +409,7 @@ function ClayTableRowOptionalDropTarget({
 	onItemSelectionChange: Function;
 }) {
 	const [viewsContext] = useContext(ViewsContext);
-	const {onSelect, selectable} = useContext(FrontendDataSetContext);
+	const {selectable} = useContext(FrontendDataSetContext);
 
 	const {className: dropClassName, dropRef} = useFDSDrop({item});
 
@@ -426,12 +421,7 @@ function ClayTableRowOptionalDropTarget({
 		items,
 		onClick: selectable
 			? () => {
-					onItemSelectionChange({
-						item,
-						trigger: ESelectionTrigger.CONTAINER,
-					});
-
-					onSelect?.({selectedItems: [item]});
+					onItemSelectionChange(item, true);
 				}
 			: undefined,
 		ref: dropRef,
@@ -439,10 +429,8 @@ function ClayTableRowOptionalDropTarget({
 
 	return (
 		<ClayTableRow
-			{...{
-				...props,
-				...(activeView.setItemComponentProps?.({item, props}) ?? {}),
-			}}
+			{...props}
+			{...(activeView.setItemComponentProps?.({item, props}) ?? {})}
 		>
 			{children}
 		</ClayTableRow>

@@ -41,9 +41,12 @@ type Properties = {
 	articleGettingStartedWithLiferayEnterpriseSearchURL: string | null;
 	articleNotifiedWhenMyActivationKeyIsAboutToExpireURL: string | null;
 	articleWhatIsMyInstanceSizingValueURL: string | null;
+	createTicketURL: string | null;
 	featureFlags?: string[];
-	helpCenterURL: string | null;
 	importDate?: Date | null;
+	jiraFLSPortalURL: string | null;
+	jiraFLSProject: string | null;
+	jiraHCPortalURL: string | null;
 	submitSupportTicketURL: string | null;
 	theOverviewPageURL: string | null;
 };
@@ -120,13 +123,16 @@ class CustomerPortalWebComponent extends HTMLElement {
 			articleWhatIsMyInstanceSizingValueURL: super.getAttribute(
 				'article-what-is-my-instance-sizing-value-url'
 			),
+			createTicketURL: super.getAttribute('create-ticket-url'),
 			featureFlags: (super.getAttribute('feature-flags') ?? '')
 				.split(',')
 				.map((featureflag) => featureflag.trim()),
-			helpCenterURL: super.getAttribute('help-center-url'),
 			importDate: super.getAttribute('import-date')
 				? new Date(super.getAttribute('import-date') as string)
 				: undefined,
+			jiraFLSPortalURL: super.getAttribute('jira-fls-portal-url'),
+			jiraFLSProject: super.getAttribute('jira-fls-project'),
+			jiraHCPortalURL: super.getAttribute('jira-hc-portal-url'),
 			submitSupportTicketURL: super.getAttribute(
 				'submit-support-ticket-url'
 			),

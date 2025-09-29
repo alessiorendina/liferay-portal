@@ -6,22 +6,26 @@
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
 import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.UtilityPage;
 import com.liferay.headless.admin.site.dto.v1_0.UtilityPageSEOSettings;
 import com.liferay.headless.admin.site.dto.v1_0.UtilityPageSettings;
+import com.liferay.headless.admin.site.internal.odata.entity.v1_0.UtilityPageEntityModel;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.FileEntryUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.GroupUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.site.resource.v1_0.UtilityPageResource;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryService;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -31,13 +35,18 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+import com.liferay.portal.vulcan.util.SearchUtil;
+
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -52,10 +61,12 @@ import org.osgi.service.component.annotations.ServiceScope;
 	properties = "OSGI-INF/liferay/rest/v1_0/utility-page.properties",
 	scope = ServiceScope.PROTOTYPE, service = UtilityPageResource.class
 )
-public class UtilityPageResourceImpl extends BaseUtilityPageResourceImpl {
+public class UtilityPageResourceImpl
+	extends BaseUtilityPageResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<UtilityPage> {
 
 	@Override
-	public void deleteSiteSiteByExternalReferenceCodeUtilityPage(
+	public void deleteSiteUtilityPage(
 			String siteExternalReferenceCode,
 			String utilityPageExternalReferenceCode)
 		throws Exception {
@@ -72,72 +83,42 @@ public class UtilityPageResourceImpl extends BaseUtilityPageResourceImpl {
 	}
 
 	@Override
-	public UtilityPage getSiteSiteByExternalReferenceCodeUtilityPage(
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
+		return _entityModel;
+	}
+
+	@Override
+	public ExportImportDescriptor getExportImportDescriptor() {
+		return new ExportImportDescriptor() {
+
+			@Override
+			public String getItemClassName() {
+				return LayoutUtilityPageEntry.class.getName();
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of("friendlyUrlHistory", "pageSpecifications");
+			}
+
+			@Override
+			public String getPortletId() {
+				return LayoutAdminPortletKeys.GROUP_PAGES;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.SITE;
+			}
+
+		};
+	}
+
+	@Override
+	public ContentPageSpecification postSiteUtilityPagePageSpecification(
 			String siteExternalReferenceCode,
-			String utilityPageExternalReferenceCode)
-		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {
-			throw new UnsupportedOperationException();
-		}
-
-		return _utilityPageDTOConverter.toDTO(
-			_layoutUtilityPageEntryService.
-				getLayoutUtilityPageEntryByExternalReferenceCode(
-					utilityPageExternalReferenceCode,
-					GroupUtil.getGroupId(
-						true, contextCompany.getCompanyId(),
-						siteExternalReferenceCode)));
-	}
-
-	@Override
-	public Page<UtilityPage> getSiteSiteByExternalReferenceCodeUtilityPagesPage(
-			String siteExternalReferenceCode, String search,
-			Aggregation aggregation, Filter filter, Pagination pagination,
-			Sort[] sorts)
-		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {
-			throw new UnsupportedOperationException();
-		}
-
-		long groupId = GroupUtil.getGroupId(
-			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
-
-		return Page.of(
-			transform(
-				_layoutUtilityPageEntryService.getLayoutUtilityPageEntries(
-					groupId, pagination.getStartPosition(),
-					pagination.getEndPosition(), null),
-				layoutUtilityPageEntry -> _utilityPageDTOConverter.toDTO(
-					layoutUtilityPageEntry)),
-			pagination,
-			_layoutUtilityPageEntryService.getLayoutUtilityPageEntriesCount(
-				groupId));
-	}
-
-	@Override
-	public UtilityPage postSiteSiteByExternalReferenceCodeUtilityPage(
-			String siteExternalReferenceCode, UtilityPage utilityPage)
-		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {
-			throw new UnsupportedOperationException();
-		}
-
-		return _addLayoutUtilityPageEntry(
-			GroupUtil.getGroupId(
-				false, contextCompany.getCompanyId(),
-				siteExternalReferenceCode),
-			utilityPage);
-	}
-
-	@Override
-	public ContentPageSpecification
-			postSiteSiteByExternalReferenceCodeUtilityPagePageSpecification(
-				String siteExternalReferenceCode,
-				String utilityPageExternalReferenceCode,
-				ContentPageSpecification contentPageSpecification)
+			String utilityPageExternalReferenceCode,
+			ContentPageSpecification contentPageSpecification)
 		throws Exception {
 
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {
@@ -162,7 +143,73 @@ public class UtilityPageResourceImpl extends BaseUtilityPageResourceImpl {
 	}
 
 	@Override
-	public UtilityPage putSiteSiteByExternalReferenceCodeUtilityPage(
+	protected UtilityPage doGetSiteUtilityPage(
+			String siteExternalReferenceCode,
+			String utilityPageExternalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return _utilityPageDTOConverter.toDTO(
+			_layoutUtilityPageEntryService.
+				getLayoutUtilityPageEntryByExternalReferenceCode(
+					utilityPageExternalReferenceCode,
+					GroupUtil.getGroupId(
+						true, contextCompany.getCompanyId(),
+						siteExternalReferenceCode)));
+	}
+
+	@Override
+	protected Page<UtilityPage> doGetSiteUtilityPagesPage(
+			String siteExternalReferenceCode, String search,
+			Aggregation aggregation, Filter filter, Pagination pagination,
+			Sort[] sorts)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {
+			throw new UnsupportedOperationException();
+		}
+
+		long groupId = GroupUtil.getGroupId(
+			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+
+		return SearchUtil.search(
+			Collections.emptyMap(),
+			booleanQuery -> {
+			},
+			filter, LayoutUtilityPageEntry.class.getName(), search, pagination,
+			queryConfig -> queryConfig.setSelectedFieldNames(
+				Field.ENTRY_CLASS_PK),
+			searchContext -> {
+				searchContext.setCompanyId(contextCompany.getCompanyId());
+				searchContext.setGroupIds(new long[] {groupId});
+			},
+			sorts,
+			document -> _utilityPageDTOConverter.toDTO(
+				_layoutUtilityPageEntryService.fetchLayoutUtilityPageEntry(
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
+	}
+
+	@Override
+	protected UtilityPage doPostSiteUtilityPage(
+			String siteExternalReferenceCode, UtilityPage utilityPage)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {
+			throw new UnsupportedOperationException();
+		}
+
+		return _addLayoutUtilityPageEntry(
+			GroupUtil.getGroupId(
+				false, contextCompany.getCompanyId(),
+				siteExternalReferenceCode),
+			utilityPage);
+	}
+
+	@Override
+	protected UtilityPage doPutSiteUtilityPage(
 			String siteExternalReferenceCode,
 			String utilityPageExternalReferenceCode, UtilityPage utilityPage)
 		throws Exception {
@@ -250,6 +297,28 @@ public class UtilityPageResourceImpl extends BaseUtilityPageResourceImpl {
 	}
 
 	@Override
+	protected Long getPermissionCheckerResourceId(
+			String groupExternalReferenceCode, String externalReferenceCode)
+		throws Exception {
+
+		LayoutUtilityPageEntry layoutUtilityPageEntry =
+			_layoutUtilityPageEntryService.
+				getLayoutUtilityPageEntryByExternalReferenceCode(
+					externalReferenceCode,
+					getPermissionCheckerGroupId(groupExternalReferenceCode));
+
+		return layoutUtilityPageEntry.getPrimaryKey();
+	}
+
+	@Override
+	protected String getPermissionCheckerResourceName(
+			String groupExternalReferenceCode, String externalReferenceCode)
+		throws Exception {
+
+		return LayoutUtilityPageEntry.class.getName();
+	}
+
+	@Override
 	protected void preparePatch(
 		UtilityPage utilityPage, UtilityPage existingUtilityPage) {
 
@@ -318,9 +387,10 @@ public class UtilityPageResourceImpl extends BaseUtilityPageResourceImpl {
 			"layout.instanceable.allowed", Boolean.TRUE);
 
 		Layout layout = LayoutUtil.addContentLayout(
-			_cetManager, groupId, utilityPage.getPageSpecifications(), false,
-			nameMap, titleMap, descriptionMap, null,
-			LayoutConstants.TYPE_UTILITY, null, true, true,
+			_cetManager, groupId, utilityPage.getPageSpecifications(),
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false, nameMap, titleMap,
+			descriptionMap, null, LayoutConstants.TYPE_UTILITY, null, true,
+			true,
 			LocalizedMapUtil.getLocalizedMap(
 				utilityPage.getFriendlyUrlPath_i18n()),
 			WorkflowConstants.STATUS_DRAFT, serviceContext);
@@ -363,6 +433,8 @@ public class UtilityPageResourceImpl extends BaseUtilityPageResourceImpl {
 		}
 	}
 
+	private static final EntityModel _entityModel =
+		new UtilityPageEntityModel();
 	private static final Map<UtilityPage.Type, String>
 		_externalToInternalValuesMap = HashMapBuilder.put(
 			UtilityPage.Type.COOKIE_POLICY,

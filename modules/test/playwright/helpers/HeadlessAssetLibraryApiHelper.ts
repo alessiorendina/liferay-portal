@@ -14,7 +14,7 @@ export class HeadlessAssetLibraryApiHelper {
 		this.basePath = 'headless-asset-library/v1.0';
 	}
 
-	async createAssetLibrariesPage({
+	async createAssetLibrary({
 		description,
 		name,
 		settings = {},
@@ -47,15 +47,15 @@ export class HeadlessAssetLibraryApiHelper {
 		return assetLibrary;
 	}
 
-	async getAssetLibrariesPage() {
+	async getAssetLibrariesPage(filter?: string) {
 		const response = await this.apiHelpers.get(
-			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries`
+			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries${filter ? `?filter=${encodeURIComponent(filter)}` : ''}`
 		);
 
 		return response?.items;
 	}
 
-	async deleteAssetLibrariesPage(assetLibraryId: number) {
+	async deleteAssetLibrary(assetLibraryId: number) {
 		return this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries/${assetLibraryId}`
 		);

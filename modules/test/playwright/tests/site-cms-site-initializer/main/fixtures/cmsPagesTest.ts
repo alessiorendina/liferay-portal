@@ -7,8 +7,11 @@ import {test} from '@playwright/test';
 
 import {AssetsPage} from '../pages/AssetsPage';
 import {ContentsPage} from '../pages/ContentsPage';
+import {DefaultPermissionsPage} from '../pages/DefaultPermissionsPage';
 import {EditVocabularyPage} from '../pages/EditVocabularyPage';
 import {FolderPage} from '../pages/FolderPage';
+import {HomePage} from '../pages/HomePage';
+import {InfoPanelPage} from '../pages/InfoPanelPage';
 import {PicklistBuilderPage} from '../pages/PicklistBuilderPage';
 import {RecycleBinPage} from '../pages/RecycleBinPage';
 import {SpaceSummaryPage} from '../pages/SpaceSummaryPage';
@@ -19,8 +22,11 @@ import {VocabulariesPage} from '../pages/VocabulariesPage';
 const cmsPagesTest = test.extend<{
 	assetsPage: AssetsPage;
 	contentsPage: ContentsPage;
+	defaultPermissionsPage: DefaultPermissionsPage;
 	editVocabularyPage: EditVocabularyPage;
 	folderPage: FolderPage;
+	homePage: HomePage;
+	infoPanelPage: InfoPanelPage;
 	picklistBuilderPage: PicklistBuilderPage;
 	recycleBinPage: RecycleBinPage;
 	spaceSummaryPage: SpaceSummaryPage;
@@ -34,11 +40,20 @@ const cmsPagesTest = test.extend<{
 	contentsPage: async ({page}, use) => {
 		await use(new ContentsPage(page));
 	},
+	defaultPermissionsPage: async ({page}, use) => {
+		await use(new DefaultPermissionsPage(page));
+	},
 	editVocabularyPage: async ({page}, use) => {
 		await use(new EditVocabularyPage(page));
 	},
 	folderPage: async ({page}, use) => {
 		await use(new FolderPage(page));
+	},
+	homePage: async ({page}, use) => {
+		await use(new HomePage(page));
+	},
+	infoPanelPage: async ({page}, use) => {
+		await use(new InfoPanelPage(page));
 	},
 	picklistBuilderPage: async ({page}, use) => {
 		await use(new PicklistBuilderPage(page));

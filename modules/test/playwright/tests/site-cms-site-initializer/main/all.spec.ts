@@ -3,12 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Locator, Page, expect, mergeTests} from '@playwright/test';
+import {readFileSync} from 'fs';
+import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
 const test = mergeTests(
@@ -22,15 +26,215 @@ const test = mergeTests(
 );
 
 test(
+	'Can delete multiple contents across spaces with and without recycle bin enabled',
+	{tag: '@LPD-62787'},
+	async ({apiHelpers, assetsPage, page, recycleBinPage}) => {
+		const applicationName = 'cms/basic-web-contents';
+		const spaceNameWithRecycleBin = `Space ${getRandomString()}`;
+		const spaceNameWithoutRecycleBin = `Space ${getRandomString()}`;
+		const file1Title = `title ${getRandomString()}`;
+		const file2Title = `title ${getRandomString()}`;
+
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: spaceNameWithRecycleBin,
+			settings: {
+				logoColor: 'outline-3',
+				sharingEnabled: true,
+				trashEnabled: true,
+			},
+			type: 'Space',
+		});
+
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: spaceNameWithoutRecycleBin,
+			settings: {
+				logoColor: 'outline-3',
+				sharingEnabled: true,
+				trashEnabled: false,
+			},
+			type: 'Space',
+		});
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file1Title,
+			},
+			applicationName,
+			spaceNameWithRecycleBin
+		);
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file2Title,
+			},
+			applicationName,
+			spaceNameWithoutRecycleBin
+		);
+
+		await assetsPage.gotoAll();
+
+		await assetsPage.selectItems([file1Title, file2Title]);
+
+		await page
+			.getByTestId('visualization-mode-table')
+			.getByLabel('Actions')
+			.click();
+
+		await page.getByRole('menuitem', {name: 'Delete'}).click();
+
+		expect(page.getByText('Some of the selected files')).toBeVisible();
+
+		await page.getByRole('button', {name: 'Delete'}).click();
+
+		await page.reload();
+
+		await expect(
+			page.getByRole('cell', {name: file1Title})
+		).not.toBeVisible();
+		await expect(
+			page.getByRole('cell', {name: file2Title})
+		).not.toBeVisible();
+
+		await recycleBinPage.goto();
+
+		await expect(page.getByRole('cell', {name: file1Title})).toBeVisible();
+	}
+);
+
+test(
+	'Can delete multiple contents in a space with recycle bin disabled',
+	{tag: '@LPD-62787'},
+	async ({apiHelpers, assetsPage, page}) => {
+		const applicationName = 'cms/basic-web-contents';
+		const spaceName = `Space ${getRandomString()}`;
+		const file1Title = `title ${getRandomString()}`;
+		const file2Title = `title ${getRandomString()}`;
+
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: spaceName,
+			settings: {
+				logoColor: 'outline-3',
+				sharingEnabled: true,
+				trashEnabled: false,
+			},
+			type: 'Space',
+		});
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file1Title,
+			},
+			applicationName,
+			spaceName
+		);
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file2Title,
+			},
+			applicationName,
+			spaceName
+		);
+
+		await assetsPage.gotoAll();
+
+		await assetsPage.selectItems([file1Title, file2Title]);
+
+		await page
+			.getByTestId('visualization-mode-table')
+			.getByLabel('Actions')
+			.click();
+
+		await page.getByRole('menuitem', {name: 'Delete'}).click();
+
+		await expect(
+			page.getByText('You are about to permanently')
+		).toBeVisible();
+
+		await page.getByRole('button', {name: 'Delete'}).click();
+
+		await page.reload();
+
+		await expect(
+			page.getByRole('cell', {name: file1Title})
+		).not.toBeVisible();
+		await expect(
+			page.getByRole('cell', {name: file2Title})
+		).not.toBeVisible();
+	}
+);
+
+test(
+	'Can delete multiple contents in a space with recycle bin enabled',
+	{tag: '@LPD-62787'},
+	async ({apiHelpers, assetsPage, page, recycleBinPage}) => {
+		const applicationName = 'cms/basic-web-contents';
+		const spaceName = `Space ${getRandomString()}`;
+		const file1Title = `title ${getRandomString()}`;
+		const file2Title = `title ${getRandomString()}`;
+
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: spaceName,
+			settings: {
+				logoColor: 'outline-3',
+				sharingEnabled: true,
+				trashEnabled: true,
+			},
+			type: 'Space',
+		});
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file1Title,
+			},
+			applicationName,
+			spaceName
+		);
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: file2Title,
+			},
+			applicationName,
+			spaceName
+		);
+
+		await assetsPage.gotoAll();
+
+		await assetsPage.selectItems([file1Title, file2Title]);
+
+		await page
+			.getByTestId('visualization-mode-table')
+			.getByLabel('Actions')
+			.click();
+
+		await page.getByRole('menuitem', {name: 'Delete'}).click();
+
+		await page.reload();
+
+		await recycleBinPage.goto();
+
+		await expect(page.getByRole('cell', {name: file1Title})).toBeVisible();
+		await expect(page.getByRole('cell', {name: file2Title})).toBeVisible();
+	}
+);
+
+test(
 	'Can view Share modal for added content',
 	{tag: '@LPD-62554'},
-	async ({apiHelpers, assetsPage, page}) => {
+	async ({apiHelpers, assetsPage}) => {
 		const applicationName = 'cms/knowledge-bases';
 		const file1Title = `Title ${getRandomString()}`;
 		const spaceName = `Space ${getRandomString()}`;
 		let objectEntry1;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrariesPage({
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
 			name: spaceName,
 			settings: {
 				logoColor: 'outline-3',
@@ -56,9 +260,7 @@ test(
 				filter: file1Title,
 			});
 
-			await expect(page.locator('.modal-title')).toContainText(
-				file1Title
-			);
+			await expect(assetsPage.modal.title).toContainText(file1Title);
 		}
 		finally {
 			await apiHelpers.objectEntry.deleteObjectEntry(
@@ -70,14 +272,75 @@ test(
 );
 
 test(
-	'Can view Delete confirmation modal for added content',
+	'Info Panel Comments and view Delete confirmation modal for added content',
 	{tag: '@LPD-62554'},
-	async ({apiHelpers, assetsPage, page}) => {
-		const applicationName = 'cms/knowledge-bases';
-		const spaceName = 'Default';
+	async ({apiHelpers, assetsPage, infoPanelPage, page}) => {
+		const applicationName = 'cms/basic-web-contents';
+		const spaceName = `Space ${getRandomString()}`;
 		let objectEntry1;
 
 		const file1Title = `title ${getRandomString()}`;
+
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: spaceName,
+			settings: {
+				logoColor: 'outline-3',
+				sharingEnabled: true,
+				trashEnabled: false,
+			},
+			type: 'Space',
+		});
+
+		const addComment = async ({
+			content = 'New Comment',
+			page,
+			parentComment,
+		}: {
+			content?: string;
+			page: Page;
+			parentComment?: Locator;
+		}) => {
+			const rootComment = parentComment || page;
+
+			const editor = rootComment.getByLabel('Add Comment.');
+
+			await expect(editor).toBeVisible();
+
+			await editor.scrollIntoViewIfNeeded();
+
+			await editor.click();
+
+			await page.keyboard.type(content);
+
+			const saveButton = rootComment.getByRole('button', {name: 'Save'});
+
+			await expect(saveButton).toBeEnabled();
+
+			await saveButton.click();
+
+			await waitForAlert(page, 'Success:Your comment has been posted.', {
+				autoClose: true,
+			});
+
+			if (parentComment) {
+				await expect(saveButton).not.toBeAttached();
+				await expect(editor).not.toBeAttached();
+			}
+			else {
+				await expect(saveButton).toBeEnabled();
+				await expect(editor).not.toContainText(content);
+			}
+
+			const comment = rootComment.locator('article');
+
+			await expect(comment.filter({hasText: content})).toBeAttached();
+
+			if (parentComment) {
+				await expect(comment.getByText('Reply')).not.toBeAttached();
+			}
+
+			return {comment, editor};
+		};
 
 		try {
 			objectEntry1 = await apiHelpers.objectEntry.postObjectEntry(
@@ -89,18 +352,115 @@ test(
 				spaceName
 			);
 
-			await assetsPage.gotoAll();
+			await test.step('Go to All Assets and open the Info Panel Comments', async () => {
+				await assetsPage.gotoAll();
 
-			await assetsPage.table.bodyRows
-				.filter({hasText: file1Title})
-				.locator('input[title="Select Item"]')
-				.check();
+				await assetsPage.execItemAction({
+					action: 'Show Details',
+					filter: file1Title,
+				});
 
-			await assetsPage.execBulkItemAction('Delete');
+				await expect(
+					page.getByRole('heading', {name: file1Title})
+				).toBeVisible();
 
-			await expect(page.locator('.modal-title')).toContainText(
-				'Delete Entry'
-			);
+				await infoPanelPage.selectTab('More').click();
+				await infoPanelPage.dropdownTab('Comments').click();
+				await infoPanelPage.selectTab('More').click();
+			});
+
+			await test.step('Add, edit and delete comments in the info Panel Comments', async () => {
+				const parentCommentContent = 'New Comment';
+
+				const {comment, editor} = await addComment({
+					content: parentCommentContent,
+					page,
+				});
+
+				await editor.click({force: true});
+
+				await page.keyboard.type('New comment to cancel');
+
+				await page.getByRole('button', {name: 'Cancel'}).click();
+
+				await expect(editor).not.toContainText('New comment to cancel');
+
+				await comment.getByText('Reply').click();
+
+				const {comment: childComment} = await addComment({
+					content: 'New child comment',
+					page,
+					parentComment: comment,
+				});
+
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page
+						.getByRole('menuitem')
+						.filter({hasText: 'edit'}),
+					trigger: page.getByTitle('actions').first(),
+				});
+
+				await page.getByText(parentCommentContent).selectText();
+
+				await page.keyboard.type('Editing the comment');
+
+				await comment.getByRole('button', {name: 'Save'}).click();
+
+				await waitForAlert(
+					page,
+					'Success:Your comment has been edited.',
+					{
+						autoClose: true,
+					}
+				);
+
+				await expect(comment.first()).toContainText(
+					'Editing the comment'
+				);
+
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page
+						.getByRole('menuitem')
+						.filter({hasText: 'edit'}),
+					trigger: page.getByTitle('actions').nth(1),
+				});
+
+				await page.getByText('New child comment').selectText();
+
+				await page.keyboard.type('Editing the child comment');
+
+				await childComment.getByRole('button', {name: 'Save'}).click();
+
+				await expect(childComment).toContainText(
+					'Editing the child comment'
+				);
+
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page
+						.getByRole('menuitem')
+						.filter({hasText: 'delete'}),
+					trigger: page.getByTitle('actions').nth(1),
+				});
+
+				await waitForAlert(
+					page,
+					'Success:Your comment has been deleted.',
+					{
+						autoClose: true,
+					}
+				);
+			});
+
+			await test.step('view Delete confirmation modal', async () => {
+				await assetsPage.execBulkItemAction('Delete');
+
+				await expect(page.locator('.modal-title')).toContainText(
+					'Delete Entry'
+				);
+			});
 		}
 		finally {
 			await apiHelpers.objectEntry.deleteObjectEntry(
@@ -108,5 +468,50 @@ test(
 				String(objectEntry1.id)
 			);
 		}
+	}
+);
+
+test(
+	'Dragging and dropping files into the data set opens upload modal',
+	{tag: '@LPD-58618'},
+	async ({assetsPage, page}) => {
+		await assetsPage.gotoAll();
+
+		const dataSetWrapper = page.locator('div.data-set-wrapper').first();
+		const dataTransfer = await page.evaluateHandle(
+			(data) => {
+				const dt = new DataTransfer();
+
+				const file = new File(
+					[data.toString('hex')],
+					'file_upload_image_1.jpeg',
+					{
+						type: 'image/jpg',
+					}
+				);
+				dt.items.add(file);
+
+				return dt;
+			},
+			readFileSync(
+				path.join(__dirname, '/dependencies/file_upload_image_1.jpg')
+			)
+		);
+
+		await dataSetWrapper.dispatchEvent('dragstart', {dataTransfer});
+		await dataSetWrapper.dispatchEvent('dragenter', {dataTransfer});
+		await dataSetWrapper.dispatchEvent('dragover', {dataTransfer});
+
+		await dataSetWrapper.dispatchEvent('drop', {dataTransfer});
+		await dataSetWrapper.dispatchEvent('dragend', {dataTransfer});
+
+		await expect(assetsPage.modal.container).toBeVisible();
+
+		await expect(assetsPage.modal.title).toContainText(
+			'Upload Multiple Files'
+		);
+		await expect(assetsPage.modal.body).toContainText(
+			'file_upload_image_1.jpeg'
+		);
 	}
 );

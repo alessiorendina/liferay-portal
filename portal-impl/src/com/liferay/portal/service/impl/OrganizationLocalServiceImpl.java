@@ -80,6 +80,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -88,7 +89,6 @@ import com.liferay.portal.kernel.util.comparator.OrganizationNameComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.service.base.OrganizationLocalServiceBaseImpl;
 import com.liferay.portal.util.PortalInstances;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.usersadmin.search.OrganizationUsersSearcher;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.users.admin.kernel.file.uploads.UserFileUploadsSettings;
@@ -717,7 +717,7 @@ public class OrganizationLocalServiceImpl
 	public Organization getOrAddEmptyOrganization(
 			String externalReferenceCode, long companyId, long userId,
 			String name)
-		throws Exception {
+		throws PortalException {
 
 		return EmptyModelManagerUtil.getOrAddEmptyModel(
 			Organization.class, companyId, externalReferenceCode,
@@ -974,6 +974,10 @@ public class OrganizationLocalServiceImpl
 
 		return organizationFinder.countO_U_ByC_P(
 			companyId, parentOrganizationId, queryDefinition);
+	}
+
+	public List<Organization> getOrganizationsByLogoId(long logoId) {
+		return organizationPersistence.findByLogoId(logoId);
 	}
 
 	/**

@@ -552,7 +552,7 @@ public class OrganizationLocalServiceUtil {
 	public static Organization getOrAddEmptyOrganization(
 			String externalReferenceCode, long companyId, long userId,
 			String name)
-		throws Exception {
+		throws PortalException {
 
 		return getService().getOrAddEmptyOrganization(
 			externalReferenceCode, companyId, userId, name);
@@ -762,6 +762,10 @@ public class OrganizationLocalServiceUtil {
 
 		return getService().getOrganizationsAndUsersCount(
 			companyId, parentOrganizationId, status);
+	}
+
+	public static List<Organization> getOrganizationsByLogoId(long logoId) {
+		return getService().getOrganizationsByLogoId(logoId);
 	}
 
 	/**

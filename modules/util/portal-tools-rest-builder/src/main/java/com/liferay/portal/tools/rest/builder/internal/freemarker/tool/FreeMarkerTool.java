@@ -381,6 +381,24 @@ public class FreeMarkerTool {
 		return StringUtil.toUpperCase(fieldName);
 	}
 
+	public String getExternalReferenceCodeParameterName(
+		JavaMethodSignature javaMethodSignature, String schemaName) {
+
+		for (JavaMethodParameter javaMethodParameter :
+				javaMethodSignature.getJavaMethodParameters()) {
+
+			String parameterName = javaMethodParameter.getParameterName();
+
+			if (isExternalReferenceCodeParameterName(
+					parameterName, schemaName)) {
+
+				return parameterName;
+			}
+		}
+
+		return null;
+	}
+
 	public String getGraphQLArguments(
 		List<JavaMethodParameter> javaMethodParameters, String schemaVarName) {
 
@@ -1040,16 +1058,8 @@ public class FreeMarkerTool {
 	public boolean hasPathParameter(
 		JavaMethodSignature javaMethodSignature, String parameterName) {
 
-		List<JavaMethodParameter> javaMethodParameters =
-			javaMethodSignature.getPathJavaMethodParameters();
-
-		for (JavaMethodParameter javaMethodParameter : javaMethodParameters) {
-			if (parameterName.equals(javaMethodParameter.getParameterName())) {
-				return true;
-			}
-		}
-
-		return false;
+		return ResourceOpenAPIParser.hasPathParameter(
+			javaMethodSignature, parameterName);
 	}
 
 	public boolean hasPostSchemaJavaMethodSignature(
@@ -1140,6 +1150,13 @@ public class FreeMarkerTool {
 
 		return DTOOpenAPIParser.isSchemaProperty(
 			configYAML, propertyName, schema, schemas);
+	}
+
+	public boolean isExternalReferenceCodeMethod(
+		String httpMethod, JavaMethodSignature javaMethodSignature) {
+
+		return ResourceOpenAPIParser.isExternalReferenceCodeMethod(
+			httpMethod, javaMethodSignature);
 	}
 
 	public boolean isExternalReferenceCodeParameter(

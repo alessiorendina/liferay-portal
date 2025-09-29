@@ -193,6 +193,16 @@ public class DepotEntryLocalServiceImpl extends DepotEntryLocalServiceBaseImpl {
 		return depotEntryPersistence.fetchByGroupId(groupId);
 	}
 
+	@Override
+	public List<DepotEntry> getDepotEntries(long companyId, int type) {
+		return depotEntryPersistence.findByC_T(companyId, type);
+	}
+
+	@Override
+	public int getDepotEntriesCount(long companyId, int type) {
+		return depotEntryPersistence.countByC_T(companyId, type);
+	}
+
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x)
 	 */

@@ -11,6 +11,7 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.dto.v1_0.Settings;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
@@ -162,7 +163,8 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 		Page<AssetLibrary> assetLibrariesPage =
 			assetLibraryResource.getAssetLibrariesPage(
-				null, null, null, Pagination.of(1, 5), null);
+				null, null, assetLibraryResource.toFilter("type eq 'Space'"),
+				Pagination.of(1, 5), null);
 
 		return Page.of(
 			assetLibrariesPage.getActions(),
@@ -235,6 +237,13 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		Company company = themeDisplay.getCompany();
 
 		return cmsJSONObject.put(
+			"firstTimeAccess",
+			() -> {
+				ExpandoBridge bridge = company.getExpandoBridge();
+
+				return !bridge.hasAttribute("cmsFirstTimeAccess");
+			}
+		).put(
 			"logoURL",
 			StringBundler.concat(
 				themeDisplay.getPathImage(), "/company_logo?img_id=",
@@ -276,7 +285,9 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 					));
 			}
 		).put(
-			"url", GroupConstants.CMS_FRIENDLY_URL + "/home"
+			"url",
+			themeDisplay.getPathFriendlyURLPublic() +
+				GroupConstants.CMS_FRIENDLY_URL + "/home"
 		);
 	}
 

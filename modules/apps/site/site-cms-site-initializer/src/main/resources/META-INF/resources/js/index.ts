@@ -11,11 +11,10 @@ export {default as Toolbar} from './common/components/Toolbar';
 
 export {default as ContentEditorManagementBar} from './content_editor/components/ContentEditorManagementBar';
 export {default as ContentEditorSidePanel} from './content_editor/components/ContentEditorSidePanel';
-export {default as SpaceList} from './content_editor/components/SpaceList';
+export {default as Spaces} from './content_editor/components/Spaces';
 
 export {default as CategorizationToolbar} from './main_view/categorization/CategorizationToolbar';
 export {default as EditCategoryPage} from './main_view/categorization/categories/EditCategoryPage';
-export {default as CategorizationBreadcrumb} from './main_view/categorization/components/CategorizationBreadcrumb';
 export {default as ViewTags} from './main_view/categorization/tags/ViewTags';
 export {default as EditVocabulary} from './main_view/categorization/vocabularies/EditVocabulary';
 export {default as ViewDashboard} from './main_view/dashboard/ViewDashboard';
@@ -25,14 +24,13 @@ export {default as EditFolder} from './main_view/folders/EditFolder';
 
 export {default as QuickActions} from './main_view/home/QuickActions';
 export {default as SearchBar} from './main_view/home/SearchBar';
+export {default as ViewWorkflowTasks} from './main_view/home/ViewWorkflowTasks';
 export {default as AssetTypeInfoPanelContent} from './main_view/info_panel/AssetTypeInfoPanelContent';
-export {default as AllFDSPropsTransformer} from './main_view/props_transformer/AllFDSPropsTransformer';
 export {default as AllSpacesFDSPropsTransformer} from './main_view/props_transformer/AllSpacesFDSPropsTransformer';
+export {default as AssetsFDSPropsTransformer} from './main_view/props_transformer/AssetsFDSPropsTransformer';
+export {default as AssetsFilesDropFDSPropsTransformer} from './main_view/props_transformer/AssetsFilesDropFDSPropsTransformer';
 export {default as CategoryFDSPropsTransformer} from './main_view/props_transformer/CategoryFDSPropsTransformer';
 export {default as CategoryUsagesFDSPropsTransformer} from './main_view/props_transformer/CategoryUsagesFDSPropsTransformer';
-export {default as ContentsFDSPropsTransformer} from './main_view/props_transformer/ContentsFDSPropsTransformer';
-export {default as FilesFDSPropsTransformer} from './main_view/props_transformer/FilesFDSPropsTransformer';
-export {default as FolderFDSPropsTransformer} from './main_view/props_transformer/FolderFDSPropsTransformer';
 export {default as HomeRecentAssetsFDSPropsTransformer} from './main_view/props_transformer/HomeRecentAssetsFDSPropsTransformer';
 export {default as MembersFDSPropsTransformer} from './main_view/props_transformer/MembersFDSPropsTransformer';
 export {default as RecycleBinFDSPropsTransformer} from './main_view/props_transformer/RecycleBinFDSPropsTransformer';
@@ -43,6 +41,7 @@ export {default as StructuresFDSPropsTransformer} from './main_view/props_transf
 export {default as TagUsagesFDSPropsTransformer} from './main_view/props_transformer/TagUsagesFDSPropsTransformer';
 export {default as ViewVersionHistoryFDSPropsTransformer} from './main_view/props_transformer/ViewVersionHistoryFDSPropsTransformer';
 export {default as VocabularyFDSPropsTransformer} from './main_view/props_transformer/VocabularyFDSPropsTransformer';
+export {default as RecycleBinToolbar} from './main_view/recycle_bin/RecycleBinToolbar';
 export {default as AddSpaceMembers} from './main_view/spaces/AddSpaceMembers';
 export {default as NewSpace} from './main_view/spaces/NewSpace';
 export {default as SpaceSettings} from './main_view/spaces/SpaceSettings';
