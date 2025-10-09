@@ -5,6 +5,7 @@
 
 package com.liferay.exportimport.vulcan.batch.engine;
 
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
 
 import java.io.Serializable;
@@ -22,11 +23,23 @@ public interface ExportImportVulcanBatchEngineTaskItemDelegate<T>
 
 	public interface ExportImportDescriptor {
 
+		public String getItemClassName();
+
+		public default String getItemModelName() {
+			return getItemClassName();
+		}
+
+		public default String getLabel() {
+			return null;
+		}
+
 		public default List<String> getNestedFields() {
 			return null;
 		}
 
-		public default Map<String, Serializable> getParameters() {
+		public default Map<String, Serializable> getParameters(
+			PortletDataContext portletDataContext) {
+
 			return null;
 		}
 
@@ -34,11 +47,15 @@ public interface ExportImportVulcanBatchEngineTaskItemDelegate<T>
 
 		public Scope getScope();
 
+		public default boolean isActive(PortletDataContext portletDataContext) {
+			return true;
+		}
+
 	}
 
 	public enum Scope {
 
-		COMPANY, SITE
+		COMPANY, DEPOT, SITE
 
 	}
 

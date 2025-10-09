@@ -144,6 +144,7 @@ import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SubscriptionSender;
 import com.liferay.portal.kernel.util.Time;
@@ -153,7 +154,6 @@ import com.liferay.portal.kernel.view.count.ViewCountManager;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFileEntry;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFileVersion;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.RepositoryUtil;
 import com.liferay.portlet.documentlibrary.DLGroupServiceSettings;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
@@ -3776,6 +3776,18 @@ public class DLFileEntryLocalServiceImpl
 			if ((file != null) || (inputStream != null)) {
 				dlFileEntry = _checkOutDLFileEntryModel(
 					userId, fileEntryId, fileEntryTypeId, serviceContext);
+			}
+			else if (!CTCollectionThreadLocal.isProductionMode()) {
+				DLFileVersion oldDLFileVersion =
+					_dlFileVersionLocalService.getLatestFileVersion(
+						fileEntryId, false);
+
+				dlFileEntry = _checkOutDLFileEntryModel(
+					userId, fileEntryId, fileEntryTypeId, serviceContext);
+
+				_copyFileVersion(
+					dlFileEntry, oldDLFileVersion,
+					dlFileEntry.getLatestFileVersion(true));
 			}
 			else {
 				dlFileEntry = checkOutFileEntry(

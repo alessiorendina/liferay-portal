@@ -85,10 +85,34 @@ test(
 );
 
 test(
+	'Can add and delete a user group as a member of the space',
+	{tag: '@LPD-61617'},
+	async ({apiHelpers, page, spaceSummaryPage}) => {
+		const spaceName = 'Default';
+
+		await spaceSummaryPage.goto(spaceName);
+
+		const userGroup = await apiHelpers.headlessAdminUser.postUserGroup();
+
+		await spaceSummaryPage.addUserOrUserGroup(userGroup.name, 'groups');
+
+		await spaceSummaryPage.userGroupsTab.click();
+
+		await expect(page.getByText(userGroup.name)).toBeVisible();
+
+		await spaceSummaryPage.removeUserOrUserGroup(userGroup.name, 'groups');
+
+		await spaceSummaryPage.userGroupsTab.click();
+
+		await expect(page.getByText(userGroup.name)).not.toBeVisible();
+	}
+);
+
+test(
 	'Can view added content in the space summary page',
 	{tag: '@LPD-62706'},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
-		const applicationName = 'cms/knowledge-bases';
+		const applicationName = 'cms/basic-web-contents';
 		const spaceName = 'Default';
 
 		const file1Title = `title ${getRandomString()}`;
@@ -114,19 +138,6 @@ test(
 );
 
 test(
-	'Can see CMS site as connected for the Default space in space summary page',
-	{tag: '@LPD-39906'},
-	async ({page, spaceSummaryPage}) => {
-		const spaceName = 'Default';
-
-		await spaceSummaryPage.goto(spaceName);
-
-		expect(page.getByRole('heading', {name: 'Sites (1)'})).toBeVisible();
-		expect(page.getByText('CMS', {exact: true})).toBeVisible();
-	}
-);
-
-test(
 	'Can connect and disconnect a site for the Default space',
 	{tag: '@LPD-39906'},
 	async ({page, spaceSummaryPage}) => {
@@ -144,7 +155,7 @@ test(
 		await spaceSummaryPage.connectSite(siteName);
 
 		await expect(
-			page.getByRole('heading', {name: 'Sites (2)'})
+			page.getByRole('heading', {name: 'Sites (1)'})
 		).toBeVisible();
 		await expect(globalSiteLocator).toBeVisible();
 
@@ -162,12 +173,12 @@ test(
 	'Can view Share modal for added content',
 	{tag: '@LPD-62554'},
 	async ({apiHelpers, assetsPage, page, spaceSummaryPage}) => {
-		const applicationName = 'cms/knowledge-bases';
+		const applicationName = 'cms/basic-web-contents';
 		const file1Title = `Title ${getRandomString()}`;
 		const spaceName = `Space ${getRandomString()}`;
 		let objectEntry1;
 
-		await apiHelpers.headlessAssetLibrary.createAssetLibrariesPage({
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
 			name: spaceName,
 			settings: {
 				logoColor: 'outline-3',

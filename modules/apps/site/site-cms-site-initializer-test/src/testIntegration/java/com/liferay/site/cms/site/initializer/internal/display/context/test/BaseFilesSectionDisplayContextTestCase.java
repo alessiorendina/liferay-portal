@@ -5,13 +5,11 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context.test;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * @author Mikel Lorza
@@ -19,41 +17,17 @@ import org.junit.Test;
 public abstract class BaseFilesSectionDisplayContextTestCase
 	extends BaseSectionDisplayContextTestCase {
 
-	@Test
-	public void testGetAdditionalProps() throws Exception {
-		Map<String, Object> actualAdditionalProps = super.getAdditionalProps();
+	@Override
+	public HashMap<String, Object> getBaseAdditionalProps()
+		throws PortalException {
 
-		Map<String, Object> expectedAdditionalProps =
-			super.getBaseAdditionalProps();
-
-		for (Map.Entry<String, Object> entry :
-				expectedAdditionalProps.entrySet()) {
-
-			Assert.assertEquals(
-				expectedAdditionalProps.get(entry.getKey()),
-				actualAdditionalProps.get(entry.getKey()));
-		}
-
-		_assertEquals(
-			(Map<String, String>)actualAdditionalProps.get(
-				"fileMimeTypeCssClasses"),
-			_getFileMimeTypeCssClasses());
-
-		_assertEquals(
-			(Map<String, String>)actualAdditionalProps.get("fileMimeTypeIcons"),
-			_getFileMimeTypeIcons());
-	}
-
-	private void _assertEquals(
-		Map<String, String> actualMap, Map<String, String> expectedMap) {
-
-		Assert.assertEquals(
-			actualMap.toString(), expectedMap.size(), actualMap.size());
-
-		for (Map.Entry<String, String> entry : expectedMap.entrySet()) {
-			Assert.assertEquals(
-				expectedMap.get(entry.getKey()), actualMap.get(entry.getKey()));
-		}
+		return new HashMapBuilder<>().putAll(
+			super.getBaseAdditionalProps()
+		).put(
+			"fileMimeTypeCssClasses", _getFileMimeTypeCssClasses()
+		).put(
+			"fileMimeTypeIcons", _getFileMimeTypeIcons()
+		).build();
 	}
 
 	private Map<String, String> _getFileMimeTypeCssClasses() {

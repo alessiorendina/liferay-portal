@@ -69,6 +69,7 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/account-group.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = AccountGroupResource.class
 )
 public class AccountGroupResourceImpl
@@ -206,8 +207,13 @@ public class AccountGroupResourceImpl
 		return new ExportImportDescriptor() {
 
 			@Override
+			public String getItemClassName() {
+				return com.liferay.account.model.AccountGroup.class.getName();
+			}
+
+			@Override
 			public List<String> getNestedFields() {
-				return List.of("accountBriefs");
+				return List.of("accountBriefs", "creator");
 			}
 
 			@Override
@@ -487,7 +493,7 @@ public class AccountGroupResourceImpl
 			com.liferay.account.model.AccountGroup serviceBuilderAccountGroup)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 			return serviceBuilderAccountGroup;
 		}
 

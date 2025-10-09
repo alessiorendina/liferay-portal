@@ -866,7 +866,7 @@ test(
 
 		await documentLibraryPage.goToViewHistoryFileEntry(title);
 
-		await page.getByRole('link', {name: 'Back'}).click();
+		await page.locator('span[title="Back"]').click();
 
 		await expect(
 			page.getByRole('button', {name: 'Versions'})
@@ -985,7 +985,7 @@ test(
 
 		await page
 			.getByRole('dialog')
-			.getByRole('button', {name: 'close'})
+			.getByRole('button', {name: 'Close'})
 			.click();
 
 		await page.click('button[title="Options"]');

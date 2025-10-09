@@ -6,9 +6,9 @@
 import {ClayInput} from '@clayui/form';
 import React, {ComponentProps, useEffect, useState} from 'react';
 
-import {IAssetObjectEntry} from '../../../structure_builder/types/AssetType';
+import {IAssetObjectEntry} from '../../../common/types/AssetType';
 import ObjectEntryService, {
-	Categorization,
+	EntryCategorizationDTO,
 } from '../services/ObjectEntryService';
 import AssetCategories from './AssetCategories';
 import AssetTags from './AssetTags';
@@ -21,11 +21,13 @@ export default function AssetCategorization({
 	cmsGroupId,
 	getObjectEntryURL,
 	inputSize,
+	onUpdateCategorization,
 	updateObjectEntryURL,
 }: {
-	cmsGroupId: string;
+	cmsGroupId: number | string;
 	getObjectEntryURL: string;
 	inputSize?: CategorizationInputSize;
+	onUpdateCategorization?: (data: IAssetObjectEntry) => void;
 	updateObjectEntryURL: string;
 }) {
 	const [objectEntry, setObjectEntry] = useState<IAssetObjectEntry | null>(
@@ -35,7 +37,7 @@ export default function AssetCategorization({
 	const updateObjectEntry = async ({
 		keywords,
 		taxonomyCategoryIds,
-	}: Categorization): Promise<void> => {
+	}: EntryCategorizationDTO): Promise<void> => {
 		const {data, error} = await ObjectEntryService.patchObjectEntry(
 			{
 				keywords: keywords || objectEntry?.keywords!,
@@ -46,6 +48,8 @@ export default function AssetCategorization({
 
 		if (data) {
 			setObjectEntry(data);
+
+			onUpdateCategorization?.(data);
 		}
 		else if (error) {
 			if (keywords?.length) {
@@ -64,12 +68,14 @@ export default function AssetCategorization({
 
 			if (data) {
 				setObjectEntry(data);
+
+				onUpdateCategorization?.(data);
 			}
 			else if (error) {
 				console.error(error);
 			}
 		})();
-	}, [getObjectEntryURL]);
+	}, [getObjectEntryURL, onUpdateCategorization]);
 
 	if (!objectEntry) {
 		return null;

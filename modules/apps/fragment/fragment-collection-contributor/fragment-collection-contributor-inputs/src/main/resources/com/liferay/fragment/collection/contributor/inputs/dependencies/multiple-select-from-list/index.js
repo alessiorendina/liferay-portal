@@ -31,7 +31,8 @@ if (input.attributes?.readOnly) {
 		input.addEventListener('click', preventClick);
 	});
 }
-else if (layoutMode === 'edit') {
+
+if (layoutMode === 'edit') {
 	allInputs.forEach((input) => {
 		input.setAttribute('disabled', true);
 	});
@@ -62,7 +63,7 @@ else {
 								languageId,
 								localizationInputsContainer:
 									inputElement.parentNode,
-								namespace: fragmentNamespace,
+								namespace: fragmentElementId,
 							});
 
 							input.value = value.includes(inputElement.value)
@@ -78,7 +79,7 @@ else {
 					defaultLanguageId,
 					inputName: input.name,
 					localizationInputsContainer: fieldSet,
-					namespace: fragmentNamespace,
+					namespace: fragmentElementId,
 					onLocaleChange: ({languageId}) => {
 						currentLanguageId = languageId;
 
@@ -88,7 +89,7 @@ else {
 								inputName: input.name,
 								languageId,
 								localizationInputsContainer: input.parentNode,
-								namespace: fragmentNamespace,
+								namespace: fragmentElementId,
 							});
 
 							if (translationInput) {
@@ -109,7 +110,7 @@ else {
 										languageId: defaultLanguageId,
 										localizationInputsContainer:
 											input.parentNode,
-										namespace: fragmentNamespace,
+										namespace: fragmentElementId,
 									});
 
 								if (defaultLanguageInput) {
@@ -127,7 +128,7 @@ else {
 								inputName: input.name,
 								languageId: defaultLanguageId,
 								localizationInputsContainer: input.parentNode,
-								namespace: fragmentNamespace,
+								namespace: fragmentElementId,
 							});
 
 							const translationInput = getTranslationInput({
@@ -135,7 +136,7 @@ else {
 								inputName: input.name,
 								languageId: currentLanguageId,
 								localizationInputsContainer: input.parentNode,
-								namespace: fragmentNamespace,
+								namespace: fragmentElementId,
 							});
 
 							input.checked = Boolean(defaultLanguageInput.value);
@@ -150,7 +151,7 @@ else {
 								inputName: input.name,
 								languageId: defaultLanguageId,
 								localizationInputsContainer: input.parentNode,
-								namespace: fragmentNamespace,
+								namespace: fragmentElementId,
 							});
 
 							const translationInput = getTranslationInput({
@@ -158,7 +159,7 @@ else {
 								inputName: input.name,
 								languageId: currentLanguageId,
 								localizationInputsContainer: input.parentNode,
-								namespace: fragmentNamespace,
+								namespace: fragmentElementId,
 							});
 
 							input.checked = Boolean(defaultLanguageInput.value);
@@ -175,7 +176,7 @@ else {
 							inputName: input.name,
 							languageId: currentLanguageId,
 							localizationInputsContainer: input.parentNode,
-							namespace: fragmentNamespace,
+							namespace: fragmentElementId,
 						});
 
 						translationInput.value = input.checked
@@ -228,11 +229,11 @@ else {
 						});
 					},
 					readOnlyInputLabel: document.getElementById(
-						`${fragmentNamespace}-multiselect-list-read-only`
+						`${fragmentElementId}-multiselect-list-read-only`
 					),
 					unlocalizedFieldsState,
 					unlocalizedMessageContainer: document.getElementById(
-						`${fragmentNamespace}-unlocalized-info`
+						`${fragmentElementId}-unlocalized-info`
 					),
 				});
 			}
@@ -257,7 +258,7 @@ if (numberOfOptions < options.length) {
 			input.value = option.value;
 
 			// eslint-disable-next-line no-undef
-			input.id = `${fragmentEntryLinkNamespace}-checkbox-${option.value}`;
+			input.id = `${fragmentElementId}-checkbox-${option.value}`;
 
 			if (values.includes(option.value)) {
 				input.checked = true;
@@ -273,7 +274,7 @@ if (numberOfOptions < options.length) {
 				'for',
 
 				// eslint-disable-next-line no-undef
-				`${fragmentEntryLinkNamespace}-checkbox-${option.value}`
+				`${fragmentElementId}-checkbox-${option.value}`
 			);
 
 			const text = node.querySelector('.custom-control-label-text');

@@ -15,10 +15,10 @@ import com.liferay.headless.admin.site.client.custom.field.CustomField;
 import com.liferay.headless.admin.site.client.custom.field.CustomValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.GeneralConfig;
-import com.liferay.headless.admin.site.client.dto.v1_0.PageElement;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.Settings;
+import com.liferay.headless.admin.site.client.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetLookAndFeelConfig;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSection;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSpecification;
@@ -52,14 +52,12 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.site.navigation.constants.SiteNavigationMenuPortletKeys;
 
 import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -216,6 +214,13 @@ public class PageSpecificationsTestUtil {
 			expectedDraftContentPageSpecification.getPageExperiences(),
 			draftLayout, draftContentPageSpecification.getPageExperiences());
 
+		SettingsTestUtil.assertSettings(
+			expectedDraftContentPageSpecification.getSettings(),
+			draftContentPageSpecification.getSettings());
+		SettingsTestUtil.assertSettings(
+			expectedPublishedContentPageSpecification.getSettings(),
+			publishedContentPageSpecification.getSettings());
+
 		Assert.assertEquals(
 			expectedDraftContentPageSpecification.
 				getSiteTemplatePageSpecificationExternalReferenceCode(),
@@ -322,6 +327,18 @@ public class PageSpecificationsTestUtil {
 			(WidgetPageSpecification)actualPageSpecifications[0]);
 	}
 
+	public static void assertWidgetPageSpecifications(
+		PageSpecification[] pageSpecifications,
+		WidgetPageSpecification widgetPageSpecification) {
+
+		Assert.assertEquals(
+			Arrays.toString(pageSpecifications), 1, pageSpecifications.length);
+
+		assertWidgetPageSpecification(
+			widgetPageSpecification,
+			(WidgetPageSpecification)pageSpecifications[0]);
+	}
+
 	public static ContentPageSpecification getContentPageSpecification(
 		String contentPageSpecificationExternalReferenceCode,
 		CustomField[] customFields,
@@ -343,21 +360,11 @@ public class PageSpecificationsTestUtil {
 			contentPageSpecificationExternalReferenceCode);
 
 		if (pageExperiences == null) {
-			pageExperiences = new PageExperience[] {
-				new PageExperience() {
-					{
-						setExternalReferenceCode(RandomTestUtil::randomString);
-						setKey(SegmentsExperienceConstants.KEY_DEFAULT);
-						setName_i18n(
-							Collections.singletonMap(
-								"en-US", RandomTestUtil.randomString()));
-						setPageElements(new PageElement[0]);
-						setPageSpecificationExternalReferenceCode(
-							contentPageSpecification.
-								getExternalReferenceCode());
-					}
-				}
-			};
+			pageExperiences = PageExperiencesTestUtil.getPageExperiences(
+				contentPageSpecificationExternalReferenceCode);
+		}
+		else {
+			PageExperiencesTestUtil.modifyPageExperiences(pageExperiences);
 		}
 
 		contentPageSpecification.setPageExperiences(pageExperiences);
@@ -396,6 +403,44 @@ public class PageSpecificationsTestUtil {
 		throws Exception {
 
 		return new ExpandoTableAutocloseable();
+	}
+
+	public static PageSpecification[] getPageSpecifications(
+		String externalReferenceCode, SitePage.Type type) {
+
+		if (type == SitePage.Type.CONTENT_PAGE) {
+			ContentPageSpecification draftContentPageSpecification =
+				getContentPageSpecification(
+					null, PageSpecification.Status.DRAFT);
+
+			ContentPageSpecification publishedContentPageSpecification =
+				getContentPageSpecification(
+					draftContentPageSpecification.getExternalReferenceCode(),
+					PageSpecification.Status.APPROVED);
+
+			publishedContentPageSpecification.setExternalReferenceCode(
+				externalReferenceCode);
+
+			return new PageSpecification[] {
+				publishedContentPageSpecification, draftContentPageSpecification
+			};
+		}
+
+		return new PageSpecification[] {
+			getWidgetPageSpecification(
+				null, externalReferenceCode, null,
+				PageSpecification.Status.APPROVED,
+				new WidgetPageSection[] {
+					new WidgetPageSection() {
+						{
+							setCustomizable(() -> Boolean.FALSE);
+							setId(() -> "column-1");
+							setWidgetPageWidgetInstances(
+								() -> new WidgetPageWidgetInstance[0]);
+						}
+					}
+				})
+		};
 	}
 
 	public static PageSpecification[] getPatchPageSpecifications(
@@ -502,7 +547,7 @@ public class PageSpecificationsTestUtil {
 		};
 	}
 
-	public static void testPostSiteSiteByExternalReferenceCodePageSpecification(
+	public static void testPostSitePageSpecification(
 			Layout layout, PageSpecification[] pageSpecifications,
 			ServiceContext serviceContext,
 			UnsafeFunction

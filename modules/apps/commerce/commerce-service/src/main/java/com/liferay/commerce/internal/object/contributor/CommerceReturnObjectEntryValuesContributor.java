@@ -134,8 +134,8 @@ public class CommerceReturnObjectEntryValuesContributor
 					originalObjectEntry.getObjectDefinitionId(),
 					"commerceReturnToCommerceReturnItems"
 				).getObjectRelationshipId(),
-				originalObjectEntry.getObjectEntryId(), true, null,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				null, false, originalObjectEntry.getObjectEntryId(), true, null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		Map<String, List<ObjectEntry>> returnItemStatusObjectEntriesMap =
 			_toReturnItemStatusObjectEntriesMap(objectEntries);
@@ -159,7 +159,8 @@ public class CommerceReturnObjectEntryValuesContributor
 
 				_objectEntryLocalService.updateObjectEntry(
 					objectEntry.getUserId(), objectEntry.getObjectEntryId(),
-					objectEntryValues, new ServiceContext());
+					objectEntry.getObjectEntryFolderId(), objectEntryValues,
+					new ServiceContext());
 			}
 
 			values.put(
@@ -188,7 +189,8 @@ public class CommerceReturnObjectEntryValuesContributor
 
 				_objectEntryLocalService.updateObjectEntry(
 					objectEntry.getUserId(), objectEntry.getObjectEntryId(),
-					objectEntryValues, new ServiceContext());
+					objectEntry.getObjectEntryFolderId(), objectEntryValues,
+					new ServiceContext());
 			}
 
 			return;
@@ -223,7 +225,8 @@ public class CommerceReturnObjectEntryValuesContributor
 
 				_objectEntryLocalService.updateObjectEntry(
 					objectEntry.getUserId(), objectEntry.getObjectEntryId(),
-					objectEntryValues, new ServiceContext());
+					objectEntry.getObjectEntryFolderId(), objectEntryValues,
+					new ServiceContext());
 			}
 		}
 

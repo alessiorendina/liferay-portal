@@ -49,7 +49,6 @@
 					"label": {
 						"en_US": "File"
 					},
-					"localized": false,
 					"name": "file",
 					"objectFieldSettings": [
 						{
@@ -73,7 +72,7 @@
 					"readOnlyConditionExpression": "",
 					"required": true,
 					"state": false,
-					"system": false,
+					"system": true,
 					"type": "Long",
 					"unique": false
 				},
@@ -96,7 +95,7 @@
 					"readOnlyConditionExpression": "",
 					"required": false,
 					"state": false,
-					"system": false,
+					"system": true,
 					"type": "String",
 					"unique": false
 				}
@@ -177,7 +176,7 @@
 					"readOnlyConditionExpression": "",
 					"required": false,
 					"state": false,
-					"system": false,
+					"system": true,
 					"type": "String",
 					"unique": false
 				}
@@ -252,7 +251,6 @@
 					"label": {
 						"en_US": "Cover Image"
 					},
-					"localized": false,
 					"name": "coverImage",
 					"objectFieldSettings": [
 						{
@@ -274,7 +272,6 @@
 					],
 					"readOnly": "false",
 					"readOnlyConditionExpression": "",
-					"required": true,
 					"state": false,
 					"system": false,
 					"type": "Long",
@@ -318,7 +315,7 @@
 					"readOnlyConditionExpression": "",
 					"required": false,
 					"state": false,
-					"system": false,
+					"system": true,
 					"type": "String",
 					"unique": false
 				}
@@ -338,6 +335,7 @@
 			"titleObjectFieldName": "title"
 		},
 		{
+			"className": "com.liferay.object.model.ObjectDefinition#P4T1",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_BULK_ACTION_TASK",
 			"label": {
@@ -370,7 +368,6 @@
 					"label": {
 						"en_US": "Completion Date"
 					},
-					"localized": false,
 					"name": "completionDate",
 					"objectFieldSettings": [
 						{
@@ -385,7 +382,8 @@
 				},
 				{
 					"DBType": "String",
-					"businessType": "Text",
+					"businessType": "Picklist",
+					"defaultValue": "initial",
 					"externalReferenceCode": "EXECUTION_STATUS",
 					"indexed": true,
 					"indexedAsKeyword": false,
@@ -393,10 +391,10 @@
 					"label": {
 						"en_US": "Execution Status"
 					},
-					"localized": false,
+					"listTypeDefinitionExternalReferenceCode": "L_BULK_ACTION_EXECUTION_STATUSES",
 					"name": "executionStatus",
-					"required": false,
-					"state": false,
+					"required": true,
+					"state": true,
 					"system": true,
 					"type": "String"
 				},
@@ -409,7 +407,6 @@
 					"label": {
 						"en_US": "Number of Items"
 					},
-					"localized": false,
 					"name": "numberOfItems",
 					"objectFieldSettings": [
 						{
@@ -428,6 +425,38 @@
 					"type": "String"
 				},
 				{
+					"DBType": "Integer",
+					"businessType": "Integer",
+					"externalReferenceCode": "NUMBER_OF_FAILED_ITEMS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Number of Failed Items"
+					},
+					"name": "numberOfFailedItems",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Integer"
+				},
+				{
+					"DBType": "Integer",
+					"businessType": "Integer",
+					"externalReferenceCode": "NUMBER_OF_SUCCESSFUL_ITEMS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Number of Successful Items"
+					},
+					"name": "numberOfSuccessfulItems",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Integer"
+				},
+				{
 					"DBType": "String",
 					"businessType": "Text",
 					"externalReferenceCode": "TYPE",
@@ -437,7 +466,6 @@
 					"label": {
 						"en_US": "Type"
 					},
-					"localized": false,
 					"name": "type",
 					"required": false,
 					"state": false,
@@ -469,7 +497,6 @@
 						"label": {
 							"en_US": "Bulk Action Task to Bulk Action Task Items"
 						},
-						"localized": false,
 						"name": "r_bulkActionTaskToBulkActionTaskItems_c_bulkActionTaskId",
 						"objectFieldSettings": [
 							{
@@ -508,6 +535,7 @@
 			"titleObjectFieldName": "id"
 		},
 		{
+			"className": "com.liferay.object.model.ObjectDefinition#S8R3",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_BULK_ACTION_TASK_ITEM",
 			"label": {
@@ -526,7 +554,6 @@
 					"label": {
 						"en_US": "Class External Reference Code"
 					},
-					"localized": false,
 					"name": "classExternalReferenceCode",
 					"required": false,
 					"state": false,
@@ -542,7 +569,6 @@
 					"label": {
 						"en_US": "Class PK"
 					},
-					"localized": false,
 					"name": "classPK",
 					"required": false,
 					"state": false,
@@ -550,8 +576,8 @@
 					"type": "Long"
 				},
 				{
-					"DBType": "String",
-					"businessType": "Text",
+					"DBType": "Clob",
+					"businessType": "LongText",
 					"externalReferenceCode": "DESCRIPTION",
 					"indexed": true,
 					"indexedAsKeyword": false,
@@ -559,16 +585,16 @@
 					"label": {
 						"en_US": "Description"
 					},
-					"localized": false,
 					"name": "description",
 					"required": false,
 					"state": false,
 					"system": true,
-					"type": "String"
+					"type": "Clob"
 				},
 				{
 					"DBType": "String",
-					"businessType": "Text",
+					"businessType": "Picklist",
+					"defaultValue": "initial",
 					"externalReferenceCode": "EXECUTION_STATUS",
 					"indexed": true,
 					"indexedAsKeyword": false,
@@ -576,10 +602,10 @@
 					"label": {
 						"en_US": "Execution Status"
 					},
-					"localized": false,
+					"listTypeDefinitionExternalReferenceCode": "L_BULK_ACTION_EXECUTION_STATUSES",
 					"name": "executionStatus",
-					"required": false,
-					"state": false,
+					"required": true,
+					"state": true,
 					"system": true,
 					"type": "String"
 				},
@@ -592,8 +618,7 @@
 					"label": {
 						"en_US": "Import Task ID"
 					},
-					"localized": false,
-					"name": "importTaskID",
+					"name": "importTaskId",
 					"required": false,
 					"state": false,
 					"system": true,
@@ -609,7 +634,6 @@
 					"label": {
 						"en_US": "Name"
 					},
-					"localized": false,
 					"name": "name",
 					"required": false,
 					"state": false,
@@ -626,7 +650,6 @@
 					"label": {
 						"en_US": "Type"
 					},
-					"localized": false,
 					"name": "type",
 					"required": false,
 					"state": false,
@@ -653,7 +676,7 @@
 			"enableComments": false,
 			"enableFriendlyURLCustomization": false,
 			"enableIndexSearch": false,
-			"enableLocalization": false,
+			"enableLocalization": true,
 			"enableObjectEntryDraft": false,
 			"enableObjectEntryHistory": false,
 			"enableObjectEntryVersioning": false,
@@ -661,15 +684,9 @@
 			"label": {
 				"en_US": "CMS Default Permission"
 			},
-			"modifiable": false,
+			"modifiable": true,
 			"name": "CMSDefaultPermission",
 			"objectActions": [
-			],
-			"objectDefinitionSettings": [
-				{
-					"name": "acceptAllGroups",
-					"value": "true"
-				}
 			],
 			"objectFields": [
 				{
@@ -683,7 +700,6 @@
 					"label": {
 						"en_US": "Class External Reference Code"
 					},
-					"localized": false,
 					"name": "classExternalReferenceCode",
 					"readOnly": "false",
 					"readOnlyConditionExpression": "",
@@ -704,7 +720,6 @@
 					"label": {
 						"en_US": "Class Name"
 					},
-					"localized": false,
 					"name": "className",
 					"readOnly": "false",
 					"readOnlyConditionExpression": "",
@@ -718,21 +733,61 @@
 					"DBType": "Clob",
 					"businessType": "LongText",
 					"defaultValue": "null",
-					"externalReferenceCode": "PERMISSIONS",
+					"externalReferenceCode": "DEFAULT_PERMISSIONS",
 					"indexed": false,
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
 					"label": {
-						"en_US": "Permissions"
+						"en_US": "Default Permissions"
 					},
-					"localized": false,
-					"name": "permissions",
+					"name": "defaultPermissions",
 					"readOnly": "false",
 					"readOnlyConditionExpression": "",
 					"required": true,
 					"state": false,
 					"system": true,
 					"type": "Clob",
+					"unique": false
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"defaultValue": "null",
+					"externalReferenceCode": "DEPOT_GROUP_ID",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Depot Group ID"
+					},
+					"localized": false,
+					"name": "depotGroupId",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Long",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"defaultValue": "null",
+					"externalReferenceCode": "TREE_PATH",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Tree Path"
+					},
+					"localized": false,
+					"name": "treePath",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String",
 					"unique": false
 				}
 			],
@@ -743,7 +798,7 @@
 				"en_US": "CMS Default Permissions"
 			},
 			"portlet": false,
-			"scope": "depot",
+			"scope": "company",
 			"status": {
 				"code": 0
 			},
@@ -790,7 +845,7 @@
 					"readOnlyConditionExpression": "",
 					"required": false,
 					"state": false,
-					"system": false,
+					"system": true,
 					"type": "String",
 					"unique": false
 				},
@@ -821,87 +876,6 @@
 			"parameterRequired": false,
 			"pluralLabel": {
 				"en_US": "External Videos"
-			},
-			"portlet": false,
-			"scope": "depot",
-			"status": {
-				"code": 0
-			},
-			"system": true,
-			"titleObjectFieldName": "title"
-		},
-		{
-			"className": "com.liferay.object.model.ObjectDefinition#H6H2",
-			"enableCategorization": true,
-			"enableComments": true,
-			"enableFriendlyURLCustomization": true,
-			"enableIndexSearch": true,
-			"enableLocalization": true,
-			"enableObjectEntryDraft": true,
-			"enableObjectEntryHistory": true,
-			"enableObjectEntrySchedule": true,
-			"enableObjectEntryVersioning": true,
-			"externalReferenceCode": "L_KNOWLEDGE_BASE",
-			"label": {
-				"en_US": "Knowledge Base"
-			},
-			"modifiable": true,
-			"name": "KnowledgeBase",
-			"objectDefinitionSettings": [
-				{
-					"name": "acceptAllGroups",
-					"value": "true"
-				}
-			],
-			"objectFields": [
-				{
-					"DBType": "Clob",
-					"businessType": "RichText",
-					"defaultValue": "null",
-					"externalReferenceCode": "Content",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Content"
-					},
-					"localized": true,
-					"name": "content",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "Clob",
-					"unique": false
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"defaultValue": "null",
-					"externalReferenceCode": "TITLE",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Title"
-					},
-					"localized": true,
-					"name": "title",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String",
-					"unique": false
-				}
-			],
-			"objectFolderExternalReferenceCode": "L_CMS_CONTENT_STRUCTURES",
-			"panelCategoryKey": "",
-			"parameterRequired": false,
-			"pluralLabel": {
-				"en_US": "Knowledge Bases"
 			},
 			"portlet": false,
 			"scope": "depot",

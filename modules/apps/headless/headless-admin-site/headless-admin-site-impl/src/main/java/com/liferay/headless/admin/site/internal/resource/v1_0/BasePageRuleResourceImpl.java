@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.filter.ExpressionConvert;
@@ -42,6 +43,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
@@ -106,7 +108,7 @@ public abstract class BasePageRuleResourceImpl
 	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public void deleteSiteSiteByExternalReferenceCodePageRule(
+	public void deleteSitePageRule(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
@@ -163,18 +165,17 @@ public abstract class BasePageRuleResourceImpl
 	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Page<PageRule>
-			getSiteSiteByExternalReferenceCodePageExperiencePageRulesPage(
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@jakarta.validation.constraints.NotNull
-				@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
-				String siteExternalReferenceCode,
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@jakarta.ws.rs.PathParam("pageExperienceExternalReferenceCode")
-				String pageExperienceExternalReferenceCode,
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@jakarta.ws.rs.QueryParam("flatten")
-				Boolean flatten)
+	public Page<PageRule> getSitePageExperiencePageRulesPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
+			String siteExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.PathParam("pageExperienceExternalReferenceCode")
+			String pageExperienceExternalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("flatten")
+			Boolean flatten)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -221,7 +222,7 @@ public abstract class BasePageRuleResourceImpl
 	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public PageRule getSiteSiteByExternalReferenceCodePageRule(
+	public PageRule getSitePageRule(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
@@ -277,7 +278,7 @@ public abstract class BasePageRuleResourceImpl
 	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public PageRule patchSiteSiteByExternalReferenceCodePageRule(
+	public PageRule patchSitePageRule(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
@@ -289,7 +290,7 @@ public abstract class BasePageRuleResourceImpl
 			PageRule pageRule)
 		throws Exception {
 
-		PageRule existingPageRule = getSiteSiteByExternalReferenceCodePageRule(
+		PageRule existingPageRule = getSitePageRule(
 			siteExternalReferenceCode, pageRuleExternalReferenceCode);
 
 		if (pageRule.getConditionType() != null) {
@@ -307,7 +308,7 @@ public abstract class BasePageRuleResourceImpl
 
 		preparePatch(pageRule, existingPageRule);
 
-		return putSiteSiteByExternalReferenceCodePageRule(
+		return putSitePageRule(
 			siteExternalReferenceCode, pageRuleExternalReferenceCode,
 			existingPageRule);
 	}
@@ -354,7 +355,7 @@ public abstract class BasePageRuleResourceImpl
 	@jakarta.ws.rs.POST
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public PageRule postSiteSiteByExternalReferenceCodePageExperiencePageRule(
+	public PageRule postSitePageExperiencePageRule(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
@@ -410,7 +411,7 @@ public abstract class BasePageRuleResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override
-	public PageRule putSiteSiteByExternalReferenceCodePageRule(
+	public PageRule putSitePageRule(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("siteExternalReferenceCode")
@@ -432,8 +433,54 @@ public abstract class BasePageRuleResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		UnsafeFunction<PageRule, PageRule, Exception> pageRuleUnsafeFunction =
+			null;
+
+		String createStrategy = (String)parameters.getOrDefault(
+			"createStrategy", "INSERT");
+
+		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+			String updateStrategy = (String)parameters.getOrDefault(
+				"updateStrategy", "UPDATE");
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				pageRuleUnsafeFunction = pageRule -> {
+					PageRule persistedPageRule = null;
+
+					if (parameters.containsKey("siteExternalReferenceCode")) {
+						persistedPageRule = putSitePageRule(
+							(String)parameters.get("siteExternalReferenceCode"),
+							pageRule.getExternalReferenceCode(), pageRule);
+					}
+					else {
+						throw new NotSupportedException(
+							"One of the following parameters must be specified: [siteExternalReferenceCode]");
+					}
+
+					return persistedPageRule;
+				};
+			}
+		}
+
+		if (pageRuleUnsafeFunction == null) {
+			throw new NotSupportedException(
+				"Create strategy \"" + createStrategy +
+					"\" is not supported for PageRule");
+		}
+
+		if (contextBatchUnsafeBiConsumer != null) {
+			contextBatchUnsafeBiConsumer.accept(
+				pageRules, pageRuleUnsafeFunction);
+		}
+		else if (contextBatchUnsafeConsumer != null) {
+			contextBatchUnsafeConsumer.accept(
+				pageRules, pageRuleUnsafeFunction::apply);
+		}
+		else {
+			for (PageRule pageRule : pageRules) {
+				pageRuleUnsafeFunction.apply(pageRule);
+			}
+		}
 	}
 
 	@Override
@@ -442,12 +489,37 @@ public abstract class BasePageRuleResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		UnsafeFunction<PageRule, PageRule, Exception> pageRuleUnsafeFunction =
+			pageRule -> {
+				if (parameters.containsKey("siteExternalReferenceCode")) {
+					deleteSitePageRule(
+						(String)parameters.get("siteExternalReferenceCode"),
+						pageRule.getExternalReferenceCode());
+
+					return pageRule;
+				}
+
+				throw new UnsupportedOperationException(
+					"Unable to delete by external reference code or ID");
+			};
+
+		if (contextBatchUnsafeBiConsumer != null) {
+			contextBatchUnsafeBiConsumer.accept(
+				pageRules, pageRuleUnsafeFunction);
+		}
+		else if (contextBatchUnsafeConsumer != null) {
+			contextBatchUnsafeConsumer.accept(
+				pageRules, pageRuleUnsafeFunction::apply);
+		}
+		else {
+			for (PageRule pageRule : pageRules) {
+				pageRuleUnsafeFunction.apply(pageRule);
+			}
+		}
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray();
+		return SetUtil.fromArray("UPSERT");
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {

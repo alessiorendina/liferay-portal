@@ -205,6 +205,71 @@ baseTest(
 );
 
 baseTest(
+	'Check that upload field is marked as translated',
+	{
+		tag: '@LPD-66008',
+	},
+
+	async ({apiHelpers, journalEditArticlePage, page, site}) => {
+		const structureName = 'Test Structure';
+
+		const dataDefinition = getDataStructureDefinition({
+			defaultLanguageId: 'en_US',
+			fields: [
+				{
+					fieldType: 'document_library',
+					name: 'Upload',
+				},
+			],
+			name: structureName,
+		});
+
+		await apiHelpers.dataEngine.createStructure(site.id, dataDefinition);
+
+		await journalEditArticlePage.goto({
+			siteUrl: site.friendlyUrlPath,
+			structureName,
+		});
+
+		const title = getRandomString();
+
+		await journalEditArticlePage.fillTitle(title);
+
+		await journalEditArticlePage.selectFileFromDocumentsAndMedia(
+			'astronaut.png'
+		);
+
+		const translationButton = page.getByLabel('Select a language, current');
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('option', {
+				name: 'Catalan Language: Not Translated',
+			}),
+			trigger: translationButton,
+		});
+
+		await journalEditArticlePage.selectFileFromDocumentsAndMedia(
+			'planet.png'
+		);
+
+		await translateNameAndMetadataFields(page, structureName);
+
+		await journalEditArticlePage.publishArticle();
+
+		await journalEditArticlePage.editArticle(title);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('option', {
+				name: 'Catalan Language: Translated',
+			}),
+			trigger: translationButton,
+		});
+	}
+);
+
+baseTest(
 	'Select web content display template with the Preview feature',
 	{
 		tag: '@LPD-31427',
@@ -1371,6 +1436,104 @@ baseTest(
 );
 
 baseTest(
+	'A non-localizable field value is not deleted when switching and filtering from another translation',
+	{
+		tag: '@LPD-63134',
+	},
+	async ({apiHelpers, journalEditArticlePage, page, site}) => {
+		const localizableFieldName = 'LocalizedText';
+		const nonLocalizableFieldName = 'Text';
+		const structureName = 'Structure';
+
+		await baseTest.step(
+			'Create new structure with localizable and non-localizable fields',
+			async () => {
+				const dataDefinition = getDataStructureDefinition({
+					defaultLanguageId: 'en_US',
+					fields: [
+						{localizable: true, name: localizableFieldName},
+						{localizable: false, name: nonLocalizableFieldName},
+					],
+					name: structureName,
+				});
+
+				await apiHelpers.dataEngine.createStructure(
+					site.id,
+					dataDefinition
+				);
+			}
+		);
+
+		await baseTest.step(
+			'Open new structure and fill both fields',
+			async () => {
+				await journalEditArticlePage.goto({
+					siteUrl: site.friendlyUrlPath,
+					structureName,
+				});
+
+				await page.getByLabel(localizableFieldName).fill('en-us');
+
+				await page
+					.getByLabel(nonLocalizableFieldName, {exact: true})
+					.fill('test');
+			}
+		);
+
+		const translationButton = page.getByRole('combobox', {
+			name: 'Select a language',
+		});
+
+		await baseTest.step(
+			'Switch language, translate localizable field and filter fields by translated',
+			async () => {
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('option', {
+						name: 'Catalan Language: Not Translated',
+					}),
+					trigger: translationButton,
+				});
+
+				await openFieldset(page, 'Fields');
+
+				await page.getByLabel(localizableFieldName).fill('ca-es');
+
+				const translationFilterButton = page.getByRole('combobox', {
+					name: 'Select a Filter',
+				});
+
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('option', {
+						exact: true,
+						name: 'Translated',
+					}),
+					trigger: translationFilterButton,
+				});
+			}
+		);
+
+		await baseTest.step(
+			'Switch back to default language and assert that non localizable field value is still there',
+			async () => {
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('option', {
+						name: 'English Language: Default',
+					}),
+					trigger: translationButton,
+				});
+
+				await expect(
+					page.getByLabel(nonLocalizableFieldName, {exact: true})
+				).toHaveValue('test');
+			}
+		);
+	}
+);
+
+baseTest(
 	'LPD-29527 - Can delete translation of a web content created from a structure with at least one required and non-localizable field',
 	async ({apiHelpers, journalEditArticlePage, journalPage, page, site}) => {
 		const basicTextFieldName = 'Text1234';
@@ -1684,7 +1847,10 @@ assetPublisherDeprecationTest(
 			.getByRole('option', {name: 'Full Content'})
 			.click();
 		await configurationFrame.getByRole('button', {name: 'Save'}).click();
-		await page.getByLabel('close', {exact: true}).click();
+		await page
+			.locator('.modal-header')
+			.getByLabel('Close', {exact: true})
+			.click();
 
 		await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath);
 
@@ -1702,17 +1868,24 @@ ckeditor4Test(
 			await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
 		});
 
-		await ckeditor4Page.insertHTML(
-			'<img src="/documents/d/guest/moon-png" />'
-		);
+		await ckeditor4Page.page.getByLabel('Image', {exact: true}).click();
+
+		await ckeditor4Page.selectImageWithItemSelector({
+			cardTitle: 'moon.png',
+		});
 
 		const editableFrame = journalEditArticlePage.page
 			.locator('.edit-article-panel')
 			.frameLocator('iframe[title="editor"]');
 
-		await editableFrame
-			.locator('img[src="/documents/d/guest/moon-png"]')
-			.dblclick();
+		const moonImage = editableFrame.locator(
+			'img[src="/documents/d/guest/moon-png"]'
+		);
+
+		await expect(moonImage).toBeVisible();
+		await expect(moonImage).toHaveAttribute('data-fileentryid');
+
+		await moonImage.dblclick();
 
 		await ckeditor4Page.contextMenu.getByText('Browse Server').click();
 
@@ -1726,9 +1899,12 @@ ckeditor4Test(
 
 		await ckeditor4Page.contextMenu.getByText('OK').click();
 
-		await expect(
-			editableFrame.locator('img[src="/documents/d/guest/satellite-png"]')
-		).toBeVisible();
+		const satelliteImage = editableFrame.locator(
+			'img[src="/documents/d/guest/satellite-png"]'
+		);
+
+		await expect(satelliteImage).toBeVisible();
+		await expect(satelliteImage).toHaveAttribute('data-fileentryid');
 	}
 );
 

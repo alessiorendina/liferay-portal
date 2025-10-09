@@ -8,13 +8,21 @@ package com.liferay.portal.osgi.web.http.servlet.internal.context.osgi.util.trac
 import com.liferay.osgi.util.StringPlus;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
+import com.liferay.portal.osgi.web.http.servlet.internal.HttpServletEndpointController;
 import com.liferay.portal.osgi.web.http.servlet.internal.context.LiferayContextController;
+import com.liferay.portal.osgi.web.http.servlet.internal.context.ServletContextHelperDataContext;
+import com.liferay.portal.osgi.web.http.servlet.internal.registration.EndpointRegistration;
+import com.liferay.portal.osgi.web.http.servlet.internal.registration.ServiceHolder;
+import com.liferay.portal.osgi.web.http.servlet.internal.registration.ServletRegistration;
 import com.liferay.portal.osgi.web.http.servlet.internal.servlet.ServletConfigImpl;
 import com.liferay.portal.osgi.web.http.servlet.internal.servlet.ServletContextWrapper;
+import com.liferay.portal.osgi.web.http.servlet.internal.util.ServicePropertiesUtil;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
@@ -25,13 +33,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.eclipse.equinox.http.servlet.internal.HttpServletEndpointController;
-import org.eclipse.equinox.http.servlet.internal.context.ContextController;
-import org.eclipse.equinox.http.servlet.internal.context.ServletContextHelperDataContext;
-import org.eclipse.equinox.http.servlet.internal.registration.EndpointRegistration;
-import org.eclipse.equinox.http.servlet.internal.registration.ServletRegistration;
-import org.eclipse.equinox.http.servlet.internal.util.ServiceProperties;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -105,9 +106,8 @@ public class ServletServiceTrackerCustomizer
 
 		liferayContextController.checkShutdown();
 
-		ContextController.ServiceHolder<Servlet> serviceHolder =
-			new ContextController.ServiceHolder<>(
-				bundleContext.getServiceObjects(serviceReference));
+		ServiceHolder<Servlet> serviceHolder = new ServiceHolder<>(
+			bundleContext.getServiceObjects(serviceReference));
 
 		Servlet servlet = serviceHolder.get();
 
@@ -136,8 +136,8 @@ public class ServletServiceTrackerCustomizer
 						serviceHolder.getBundle());
 
 				servletRegistration = new ServletRegistration(
-					serviceHolder, servletDTO, objectValuePair.getValue(),
-					servletContextHelper, liferayContextController, null);
+					objectValuePair.getValue(), liferayContextController,
+					serviceHolder, servletContextHelper, servletDTO);
 
 				servletRegistration.init(
 					new ServletConfigImpl(
@@ -189,25 +189,27 @@ public class ServletServiceTrackerCustomizer
 				StringBundler.concat(
 					"One of the service properties ",
 					HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_ERROR_PAGE,
-					", ", HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME,
+					StringPool.COMMA_AND_SPACE,
+					HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_NAME,
 					", and ",
 					HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_PATTERN,
 					" must contain a value"));
 		}
 
 		for (String servletPattern : servletPatterns) {
-			ContextController.checkPattern(servletPattern);
+			checkPattern(servletPattern);
 		}
 
 		ServletDTO servletDTO = new ServletDTO();
 
-		servletDTO.asyncSupported = ServiceProperties.parseBoolean(
-			serviceReference,
-			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_ASYNC_SUPPORTED);
-		servletDTO.initParams = ServiceProperties.parseInitParams(
+		servletDTO.asyncSupported = GetterUtil.getBoolean(
+			serviceReference.getProperty(
+				HttpWhiteboardConstants.
+					HTTP_WHITEBOARD_SERVLET_ASYNC_SUPPORTED));
+		servletDTO.initParams = ServicePropertiesUtil.parseInitParams(
 			serviceReference,
 			HttpWhiteboardConstants.HTTP_WHITEBOARD_SERVLET_INIT_PARAM_PREFIX);
-		servletDTO.name = ServiceProperties.parseName(servletName, servlet);
+		servletDTO.name = ServicePropertiesUtil.parseName(servletName, servlet);
 		servletDTO.patterns = sort(servletPatterns);
 		servletDTO.serviceId = (long)serviceReference.getProperty(
 			Constants.SERVICE_ID);

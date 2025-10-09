@@ -29,12 +29,21 @@
 </#if>
 
 <#function getValue contentString end start>
+	<#assign startIndex = contentString?index_of(start) />
+
+	<#if startIndex == -1>
+		<#return "" />
+	</#if>
+
 	<#assign
-		startIndex = contentString?index_of(start)
 		substring = contentString?substring(startIndex + start?length)
 
 		endIndex = substring?index_of(end)
 	/>
+
+	<#if endIndex == -1>
+		<#return substring?trim />
+	</#if>
 
 	<#return substring?substring(0, endIndex)?trim />
 </#function>
@@ -45,7 +54,7 @@
 	<#assign
 		contentString = search.objectEntryContent?string
 
-		announcementImageTypeId = getValue(contentString, ", title:", "r_p2S3AnnouncementImageType_c_p2s3AnnouncementImageTypeId:"?trim)
+		announcementImageTypeId = getValue(contentString, ", title:", "r_p2S3AnnouncementImageType_c_p2s3AnnouncementImageTypeId:")
 	/>
 
 	<div class="announcement-main-container">
@@ -60,7 +69,9 @@
 				</div>
 
 				<div class="announcement-title">
-					<span>${search.objectEntryTitle!""}</span>
+					<span>
+						${(search.objectEntryTitle!"")?replace("null", "")}
+					</span>
 				</div>
 
 				<div class="announcement-date-created">
@@ -73,7 +84,11 @@
 			</div>
 
 			<div class="announcement-description">
-				<span>${getValue(contentString, ", image:" , "description:"?trim)}</span>
+				<#assign description = getValue(contentString, ", image:", "description:") />
+
+				<#if description?has_content>
+					<span>${description}</span>
+				</#if>
 			</div>
 
 			<div class="announcement-button">
@@ -84,7 +99,7 @@
 		</div>
 
 		<div class="announcement-image-container">
-			<#if announcementImageTypeId?has_content && announcementImageTypesMap[announcementImageTypeId]?has_content>
+			<#if announcementImageTypeId?has_content && announcementImageTypesMap[announcementImageTypeId]??>
 				<img alt="Announcement Image" src="${announcementImageTypesMap[announcementImageTypeId]}" />
 			</#if>
 		</div>

@@ -10,6 +10,7 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.object.client.dto.v1_0.ObjectEntryFolder;
+import com.liferay.headless.object.client.dto.v1_0.Status;
 import com.liferay.headless.object.client.pagination.Page;
 import com.liferay.headless.object.client.pagination.Pagination;
 import com.liferay.headless.object.client.problem.Problem;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -114,6 +116,8 @@ public class ObjectEntryFolderResourceTest
 
 		_testDepotEntryGroup = _groupLocalService.getGroup(
 			_testDepotEntry.getGroupId());
+
+		_updateGroup(false);
 	}
 
 	@Override
@@ -186,6 +190,7 @@ public class ObjectEntryFolderResourceTest
 	public void testPostScopeScopeKeyObjectEntryFolder() throws Exception {
 		super.testPostScopeScopeKeyObjectEntryFolder();
 
+		_testPostScopeScopeKeyObjectEntryFolderStatus();
 		_testPostScopeScopeKeyObjectEntryFolderWithExistingParentObjectEntryFolderByExternalReferenceCode();
 		_testPostScopeScopeKeyObjectEntryFolderWithExistingParentObjectEntryFolderByObjectEntryFolderId();
 		_testPostScopeScopeKeyObjectEntryFolderWithExistingParentObjectEntryFolderDataMismatch();
@@ -194,7 +199,7 @@ public class ObjectEntryFolderResourceTest
 		_testPostScopeScopeKeyObjectEntryFolderWithNonexistentParentObjectEntryFolderByObjectEntryFolderId();
 	}
 
-	@FeatureFlag("LPD-53981")
+	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
 	public void testPostScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore()
@@ -202,6 +207,8 @@ public class ObjectEntryFolderResourceTest
 
 		super.
 			testPostScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore();
+
+		_updateGroup(true);
 
 		ObjectEntryFolder postObjectEntryFolder =
 			testPostScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore_addObjectEntryFolder(
@@ -227,6 +234,12 @@ public class ObjectEntryFolderResourceTest
 		Assert.assertNotNull(getObjectEntryFolder.getRemovedBy());
 		Assert.assertNotNull(getObjectEntryFolder.getRemovedDate());
 
+		Status status = getObjectEntryFolder.getStatus();
+
+		Assert.assertEquals(
+			Integer.valueOf(WorkflowConstants.STATUS_IN_TRASH),
+			status.getCode());
+
 		postObjectEntryFolder =
 			objectEntryFolderResource.
 				postScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore(
@@ -242,6 +255,12 @@ public class ObjectEntryFolderResourceTest
 
 		Assert.assertNull(postObjectEntryFolder.getRemovedBy());
 		Assert.assertNull(postObjectEntryFolder.getRemovedDate());
+
+		status = postObjectEntryFolder.getStatus();
+
+		Assert.assertEquals(
+			Integer.valueOf(WorkflowConstants.STATUS_APPROVED),
+			status.getCode());
 	}
 
 	@Override
@@ -252,13 +271,15 @@ public class ObjectEntryFolderResourceTest
 		super.
 			testPostScopeScopeKeyObjectEntryFolderByExternalReferenceCodeSubscribe();
 
-		PermissionChecker permissionChecker =
+		PermissionChecker originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
+		String originalName = PrincipalThreadLocal.getName();
 
 		User user = UserTestUtil.addUser();
 
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(user));
+		PrincipalThreadLocal.setName(user.getUserId());
 
 		_addResourcePermission(ActionKeys.VIEW, user.getUserId());
 
@@ -293,7 +314,8 @@ public class ObjectEntryFolderResourceTest
 				com.liferay.object.model.ObjectEntryFolder.class.getName(),
 				objectEntryFolder.getId()));
 
-		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		PermissionThreadLocal.setPermissionChecker(originalPermissionChecker);
+		PrincipalThreadLocal.setName(originalName);
 	}
 
 	@Override
@@ -304,13 +326,15 @@ public class ObjectEntryFolderResourceTest
 		super.
 			testPostScopeScopeKeyObjectEntryFolderByExternalReferenceCodeUnsubscribe();
 
-		PermissionChecker permissionChecker =
+		PermissionChecker originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
+		String originalName = PrincipalThreadLocal.getName();
 
 		User user = UserTestUtil.addUser();
 
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(user));
+		PrincipalThreadLocal.setName(user.getUserId());
 
 		_addResourcePermission(ActionKeys.VIEW, user.getUserId());
 
@@ -356,7 +380,8 @@ public class ObjectEntryFolderResourceTest
 				com.liferay.object.model.ObjectEntryFolder.class.getName(),
 				objectEntryFolder.getId()));
 
-		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		PermissionThreadLocal.setPermissionChecker(originalPermissionChecker);
+		PrincipalThreadLocal.setName(originalName);
 	}
 
 	@Override
@@ -477,6 +502,15 @@ public class ObjectEntryFolderResourceTest
 	@Override
 	protected String testGetScopeScopeKeyObjectEntryFoldersPage_getScopeKey() {
 		return String.valueOf(_testDepotEntry.getGroupId());
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCode_getScopeKey(
+				ObjectEntryFolder objectEntryFolder)
+		throws Exception {
+
+		return objectEntryFolder.getScopeKey();
 	}
 
 	@Override
@@ -662,6 +696,8 @@ public class ObjectEntryFolderResourceTest
 		).put(
 			"get", _getActionValue(href, "GET")
 		).put(
+			"permissions", _getActionValue(href + "/permissions", "GET")
+		).put(
 			"share",
 			() -> {
 				if (sharingEnabled) {
@@ -786,6 +822,24 @@ public class ObjectEntryFolderResourceTest
 
 		assertEquals(expectedPatchObjectEntryFolder, getObjectEntryFolder);
 		assertValid(getObjectEntryFolder);
+	}
+
+	private void _testPostScopeScopeKeyObjectEntryFolderStatus()
+		throws Exception {
+
+		ObjectEntryFolder randomObjectEntryFolder = randomObjectEntryFolder();
+
+		ObjectEntryFolder postObjectEntryFolder =
+			testPostScopeScopeKeyObjectEntryFolder_addObjectEntryFolder(
+				randomObjectEntryFolder);
+
+		assertValid(postObjectEntryFolder);
+
+		Status status = postObjectEntryFolder.getStatus();
+
+		Assert.assertEquals(
+			Integer.valueOf(WorkflowConstants.STATUS_APPROVED),
+			status.getCode());
 	}
 
 	private void _testPostScopeScopeKeyObjectEntryFolderWithExistingParentObjectEntryFolderByExternalReferenceCode()
@@ -1222,6 +1276,17 @@ public class ObjectEntryFolderResourceTest
 			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 			Assert.assertNull(problem.getTitle());
 		}
+	}
+
+	private void _updateGroup(boolean trashEnabled) throws Exception {
+		UnicodeProperties unicodeProperties =
+			_testDepotEntryGroup.getTypeSettingsProperties();
+
+		unicodeProperties.setProperty(
+			"trashEnabled", String.valueOf(trashEnabled));
+
+		_testDepotEntryGroup = _groupLocalService.updateGroup(
+			_testDepotEntryGroup.getGroupId(), unicodeProperties.toString());
 	}
 
 	@Inject

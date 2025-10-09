@@ -14,8 +14,8 @@ ViewFilesSectionDisplayContext viewFilesSectionDisplayContext = (ViewFilesSectio
 <div class="cms-section custom-empty-state">
 	<div>
 		<react:component
-			module="{Toolbar} from site-cms-site-initializer"
-			props="<%= viewFilesSectionDisplayContext.getToolbarProps() %>"
+			module="{Breadcrumb} from site-cms-site-initializer"
+			props="<%= viewFilesSectionDisplayContext.getBreadcrumbProps() %>"
 		/>
 	</div>
 
@@ -30,7 +30,7 @@ ViewFilesSectionDisplayContext viewFilesSectionDisplayContext = (ViewFilesSectio
 			formName="fm"
 			id="<%= CMSSiteInitializerFDSNames.FILES_SECTION %>"
 			itemsPerPage="<%= 20 %>"
-			propsTransformer="{FilesFDSPropsTransformer} from site-cms-site-initializer"
+			propsTransformer="{AssetsFilesDropFDSPropsTransformer} from site-cms-site-initializer"
 			selectedItemsKey="embedded.id"
 			selectionType="multiple"
 			showSelectAll="<%= true %>"

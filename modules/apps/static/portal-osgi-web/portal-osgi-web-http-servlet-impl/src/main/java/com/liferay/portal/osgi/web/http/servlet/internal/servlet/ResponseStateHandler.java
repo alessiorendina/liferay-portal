@@ -6,8 +6,12 @@
 package com.liferay.portal.osgi.web.http.servlet.internal.servlet;
 
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.portal.osgi.web.http.servlet.internal.Match;
 import com.liferay.portal.osgi.web.http.servlet.internal.context.LiferayContextController;
 import com.liferay.portal.osgi.web.http.servlet.internal.context.LiferayDispatchTargets;
+import com.liferay.portal.osgi.web.http.servlet.internal.registration.EndpointRegistration;
+import com.liferay.portal.osgi.web.http.servlet.internal.registration.EventListeners;
+import com.liferay.portal.osgi.web.http.servlet.internal.registration.FilterRegistration;
 
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.FilterChain;
@@ -24,14 +28,6 @@ import java.io.IOException;
 
 import java.util.Collections;
 import java.util.List;
-
-import org.eclipse.equinox.http.servlet.internal.registration.EndpointRegistration;
-import org.eclipse.equinox.http.servlet.internal.registration.FilterRegistration;
-import org.eclipse.equinox.http.servlet.internal.servlet.FilterChainImpl;
-import org.eclipse.equinox.http.servlet.internal.servlet.HttpServletRequestWrapperImpl;
-import org.eclipse.equinox.http.servlet.internal.servlet.HttpServletResponseWrapperImpl;
-import org.eclipse.equinox.http.servlet.internal.servlet.Match;
-import org.eclipse.equinox.http.servlet.internal.util.EventListeners;
 
 import org.osgi.service.http.context.ServletContextHelper;
 
@@ -107,8 +103,8 @@ public class ResponseStateHandler {
 					Collections.sort(matchingFilterRegistrations);
 
 					FilterChain filterChain = new FilterChainImpl(
-						matchingFilterRegistrations, endpointRegistration,
-						_liferayDispatchTargets.getDispatcherType());
+						_liferayDispatchTargets.getDispatcherType(),
+						endpointRegistration, matchingFilterRegistrations);
 
 					filterChain.doFilter(
 						_httpServletRequest, _httpServletResponse);
@@ -167,35 +163,17 @@ public class ResponseStateHandler {
 				"Response is not an instance of HttpServletResponseWrapper");
 		}
 
-		HttpServletResponseWrapperImpl httpServletResponseWrapperImpl = null;
+		LiferayHttpServletResponseWrapper liferayHttpServletResponseWrapper =
+			LiferayHttpServletResponseWrapper.find(_httpServletResponse);
 
-		HttpServletResponse curHttpServletResponse = _httpServletResponse;
-
-		while (curHttpServletResponse instanceof
-					HttpServletResponseWrapper curHttpServletResponseWrapper) {
-
-			if (curHttpServletResponseWrapper instanceof
-					HttpServletResponseWrapperImpl
-						curHttpServletResponseWrapperImpl) {
-
-				httpServletResponseWrapperImpl =
-					curHttpServletResponseWrapperImpl;
-
-				break;
-			}
-
-			curHttpServletResponse =
-				(HttpServletResponse)
-					curHttpServletResponseWrapper.getResponse();
-		}
-
-		if (httpServletResponseWrapperImpl == null) {
+		if (liferayHttpServletResponseWrapper == null) {
 			throw new IllegalStateException(
-				"Unable to get HttpServletResponseWrapperImpl");
+				"Unable to get LiferayHttpServletResponseWrapper");
 		}
 
 		HttpServletResponse wrappedHttpServletResponse =
-			(HttpServletResponse)httpServletResponseWrapperImpl.getResponse();
+			(HttpServletResponse)
+				liferayHttpServletResponseWrapper.getResponse();
 
 		if (wrappedHttpServletResponse.isCommitted()) {
 			ReflectionUtil.throwException(_exception);
@@ -216,14 +194,13 @@ public class ResponseStateHandler {
 			ReflectionUtil.throwException(_exception);
 		}
 
-		HttpServletRequestWrapperImpl httpServletRequestWrapperImpl =
-			HttpServletRequestWrapperImpl.findHttpRuntimeRequest(
-				_httpServletRequest);
+		LiferayHttpServletRequestWrapper liferayHttpServletRequestWrapper =
+			LiferayHttpServletRequestWrapper.find(_httpServletRequest);
 
 		try {
 			errorLiferayDispatchTargets.setDispatcherType(DispatcherType.ERROR);
 
-			httpServletRequestWrapperImpl.push(errorLiferayDispatchTargets);
+			liferayHttpServletRequestWrapper.push(errorLiferayDispatchTargets);
 
 			HttpServletRequest httpServletRequest =
 				new HttpServletRequestWrapper(_httpServletRequest) {
@@ -283,7 +260,8 @@ public class ResponseStateHandler {
 				};
 
 			HttpServletResponse httpServletResponse =
-				new HttpServletResponseWrapperImpl(wrappedHttpServletResponse);
+				new LiferayHttpServletResponseWrapper(
+					wrappedHttpServletResponse);
 
 			ResponseStateHandler responseStateHandler =
 				new ResponseStateHandler(
@@ -295,7 +273,7 @@ public class ResponseStateHandler {
 			wrappedHttpServletResponse.setStatus(500);
 		}
 		finally {
-			httpServletRequestWrapperImpl.pop();
+			liferayHttpServletRequestWrapper.pop();
 		}
 	}
 
@@ -305,23 +283,23 @@ public class ResponseStateHandler {
 				"Response is not an instance of HttpServletResponseWrapper");
 		}
 
-		HttpServletResponseWrapperImpl httpServletResponseWrapperImpl =
-			HttpServletResponseWrapperImpl.findHttpRuntimeResponse(
-				_httpServletResponse);
+		LiferayHttpServletResponseWrapper liferayHttpServletResponseWrapper =
+			LiferayHttpServletResponseWrapper.find(_httpServletResponse);
 
-		if (httpServletResponseWrapperImpl == null) {
+		if (liferayHttpServletResponseWrapper == null) {
 			throw new IllegalStateException(
-				"Unable to get HttpServletResponseWrapperImpl");
+				"Unable to get LiferayHttpServletResponseWrapper");
 		}
 
-		int status = httpServletResponseWrapperImpl.getInternalStatus();
+		int status = liferayHttpServletResponseWrapper.getInternalStatus();
 
 		if (status < 400) {
 			return;
 		}
 
 		HttpServletResponse wrappedHttpServletResponse =
-			(HttpServletResponse)httpServletResponseWrapperImpl.getResponse();
+			(HttpServletResponse)
+				liferayHttpServletResponseWrapper.getResponse();
 
 		if (wrappedHttpServletResponse.isCommitted()) {
 			return;
@@ -337,19 +315,18 @@ public class ResponseStateHandler {
 
 		if (errorLiferayDispatchTargets == null) {
 			wrappedHttpServletResponse.sendError(
-				status, httpServletResponseWrapperImpl.getMessage());
+				status, liferayHttpServletResponseWrapper.getMessage());
 
 			return;
 		}
 
-		HttpServletRequestWrapperImpl httpServletRequestWrapperImpl =
-			HttpServletRequestWrapperImpl.findHttpRuntimeRequest(
-				_httpServletRequest);
+		LiferayHttpServletRequestWrapper liferayHttpServletRequestWrapper =
+			LiferayHttpServletRequestWrapper.find(_httpServletRequest);
 
 		try {
 			errorLiferayDispatchTargets.setDispatcherType(DispatcherType.ERROR);
 
-			httpServletRequestWrapperImpl.push(errorLiferayDispatchTargets);
+			liferayHttpServletRequestWrapper.push(errorLiferayDispatchTargets);
 
 			HttpServletRequest httpServletRequest =
 				new HttpServletRequestWrapper(_httpServletRequest) {
@@ -362,7 +339,8 @@ public class ResponseStateHandler {
 						if (attributeName.equals(
 								RequestDispatcher.ERROR_MESSAGE)) {
 
-							return httpServletResponseWrapperImpl.getMessage();
+							return liferayHttpServletResponseWrapper.
+								getMessage();
 						}
 
 						if (attributeName.equals(
@@ -397,7 +375,8 @@ public class ResponseStateHandler {
 				};
 
 			HttpServletResponse httpServletResponse =
-				new HttpServletResponseWrapperImpl(wrappedHttpServletResponse);
+				new LiferayHttpServletResponseWrapper(
+					wrappedHttpServletResponse);
 
 			ResponseStateHandler responseStateHandler =
 				new ResponseStateHandler(
@@ -409,7 +388,7 @@ public class ResponseStateHandler {
 			responseStateHandler.processRequest();
 		}
 		finally {
-			httpServletRequestWrapperImpl.pop();
+			liferayHttpServletRequestWrapper.pop();
 		}
 	}
 

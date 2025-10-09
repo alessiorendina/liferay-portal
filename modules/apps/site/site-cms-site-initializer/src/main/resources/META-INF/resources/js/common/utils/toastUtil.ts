@@ -6,9 +6,36 @@
 import {openToast} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 
+import {getFormattedLabel} from './getFormattedText';
+
 const displayCreateSuccessToast = (name: string) => {
 	openToast({
 		message: sub(Liferay.Language.get('x-was-created-successfully'), name),
+		type: 'success',
+	});
+};
+
+const displayCreateTaskErrorToast = (message: string | null) => {
+	openToast({
+		message:
+			message || Liferay.Language.get('an-unexpected-error-occurred'),
+		type: 'danger',
+	});
+};
+
+const displayCreateTaskSuccessToast = (message: string) => {
+	openToast({
+		message,
+		type: 'info',
+	});
+};
+
+const displayDeleteSuccessToast = (name: string) => {
+	openToast({
+		message: sub(
+			Liferay.Language.get('x-has-been-permanently-deleted'),
+			getFormattedLabel(name)
+		),
 		type: 'success',
 	});
 };
@@ -57,6 +84,9 @@ const displayNameInUseErrorToast = () => {
 
 export {
 	displayCreateSuccessToast,
+	displayCreateTaskErrorToast,
+	displayCreateTaskSuccessToast,
+	displayDeleteSuccessToast,
 	displayEditSuccessToast,
 	displayErrorToast,
 	displayRequestSuccessToast,

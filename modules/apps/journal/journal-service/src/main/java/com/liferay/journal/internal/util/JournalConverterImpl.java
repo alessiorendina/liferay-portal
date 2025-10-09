@@ -458,7 +458,9 @@ public class JournalConverterImpl implements JournalConverter {
 
 		String type = ddmField.getType();
 
-		if (!StringUtil.equals(type, DDMFormFieldTypeConstants.RICH_TEXT) &&
+		if (!StringUtil.equals(
+				type, DDMFormFieldTypeConstants.DOCUMENT_LIBRARY) &&
+			!StringUtil.equals(type, DDMFormFieldTypeConstants.RICH_TEXT) &&
 			!StringUtil.equals(type, DDMFormFieldTypeConstants.TEXT)) {
 
 			_addMissingFieldValues(
@@ -655,6 +657,16 @@ public class JournalConverterImpl implements JournalConverter {
 						"option");
 
 					optionElement.addCDATA(jsonArray.getString(i));
+
+					Element optionReferenceElement =
+						dynamicContentElement.addElement("option-reference");
+
+					DDMFormFieldOptions ddmFormFieldOptions =
+						ddmFormField.getDDMFormFieldOptions();
+
+					optionReferenceElement.addCDATA(
+						ddmFormFieldOptions.getOptionReference(
+							jsonArray.getString(i)));
 				}
 			}
 			else {

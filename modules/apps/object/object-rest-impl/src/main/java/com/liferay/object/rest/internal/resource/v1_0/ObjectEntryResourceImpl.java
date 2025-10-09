@@ -123,7 +123,7 @@ public class ObjectEntryResourceImpl
 			if (objectEntryUnsafeFunction == null) {
 				throw new NotSupportedException(
 					"Create strategy \"" + createStrategy +
-						"\" is not supported for object entry");
+						"\" is not supported");
 			}
 
 			contextBatchUnsafeBiConsumer.accept(
@@ -235,7 +235,7 @@ public class ObjectEntryResourceImpl
 					_objectDefinition.getStorageType()));
 
 		defaultObjectEntryManager.deleteObjectEntry(
-			_getDTOConverterContext(null), _objectDefinition, objectEntryId);
+			_objectDefinition, objectEntryId);
 	}
 
 	@Override
@@ -291,6 +291,38 @@ public class ObjectEntryResourceImpl
 
 		defaultObjectEntryManager.deleteObjectEntryByVersion(
 			externalReferenceCode, _objectDefinition, scopeKey, version);
+	}
+
+	@Override
+	public ObjectEntry getApprovedByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		DefaultObjectEntryManager defaultObjectEntryManager =
+			DefaultObjectEntryManagerProvider.provide(
+				_objectEntryManagerRegistry.getObjectEntryManager(
+					_objectDefinition.getStorageType()));
+
+		return defaultObjectEntryManager.getApprovedObjectEntry(
+			contextCompany.getCompanyId(), _getDTOConverterContext(null),
+			externalReferenceCode, _objectDefinition, null);
+	}
+
+	@Override
+	public Page<ObjectEntry> getApprovedPage(
+			String search, Aggregation aggregation, Filter filter,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		DefaultObjectEntryManager defaultObjectEntryManager =
+			DefaultObjectEntryManagerProvider.provide(
+				_objectEntryManagerRegistry.getObjectEntryManager(
+					_objectDefinition.getStorageType()));
+
+		return defaultObjectEntryManager.getApprovedObjectEntries(
+			contextCompany.getCompanyId(), _objectDefinition, null, aggregation,
+			_getDTOConverterContext(null), _getFilterString(), pagination,
+			search, sorts);
 	}
 
 	@Override
@@ -361,6 +393,16 @@ public class ObjectEntryResourceImpl
 		return new ExportImportDescriptor() {
 
 			@Override
+			public String getItemClassName() {
+				return _objectDefinition.getClassName();
+			}
+
+			@Override
+			public String getItemModelName() {
+				return _objectDefinition.getShortName();
+			}
+
+			@Override
 			public List<String> getNestedFields() {
 				return transform(
 					_objectRelationshipLocalService.
@@ -380,6 +422,12 @@ public class ObjectEntryResourceImpl
 						_objectDefinition.getScope(), "company")) {
 
 					return Scope.COMPANY;
+				}
+
+				if (StringUtil.equalsIgnoreCase(
+						_objectDefinition.getScope(), "depot")) {
+
+					return Scope.DEPOT;
 				}
 
 				return Scope.SITE;
@@ -456,6 +504,38 @@ public class ObjectEntryResourceImpl
 	@Override
 	public String getResourceName() {
 		return _objectDefinition.getShortName();
+	}
+
+	@Override
+	public ObjectEntry getScopeScopeKeyApprovedByExternalReferenceCode(
+			String scopeKey, String externalReferenceCode)
+		throws Exception {
+
+		DefaultObjectEntryManager defaultObjectEntryManager =
+			DefaultObjectEntryManagerProvider.provide(
+				_objectEntryManagerRegistry.getObjectEntryManager(
+					_objectDefinition.getStorageType()));
+
+		return defaultObjectEntryManager.getApprovedObjectEntry(
+			contextCompany.getCompanyId(), _getDTOConverterContext(null),
+			externalReferenceCode, _objectDefinition, scopeKey);
+	}
+
+	@Override
+	public Page<ObjectEntry> getScopeScopeKeyApprovedPage(
+			String scopeKey, String search, Aggregation aggregation,
+			Filter filter, Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		DefaultObjectEntryManager defaultObjectEntryManager =
+			DefaultObjectEntryManagerProvider.provide(
+				_objectEntryManagerRegistry.getObjectEntryManager(
+					_objectDefinition.getStorageType()));
+
+		return defaultObjectEntryManager.getApprovedObjectEntries(
+			contextCompany.getCompanyId(), _objectDefinition, scopeKey,
+			aggregation, _getDTOConverterContext(null), _getFilterString(),
+			pagination, search, sorts);
 	}
 
 	@Override
@@ -621,8 +701,7 @@ public class ObjectEntryResourceImpl
 					_objectDefinition.getStorageType()));
 
 		defaultObjectEntryManager.subscribeObjectEntry(
-			externalReferenceCode, _objectDefinition, null,
-			contextUser.getUserId());
+			externalReferenceCode, _objectDefinition, null);
 	}
 
 	@Override
@@ -640,8 +719,7 @@ public class ObjectEntryResourceImpl
 					_objectDefinition.getStorageType()));
 
 		defaultObjectEntryManager.unsubscribeObjectEntry(
-			externalReferenceCode, _objectDefinition, null,
-			contextUser.getUserId());
+			externalReferenceCode, _objectDefinition, null);
 	}
 
 	@Override
@@ -809,8 +887,7 @@ public class ObjectEntryResourceImpl
 					_objectDefinition.getStorageType()));
 
 		defaultObjectEntryManager.subscribeObjectEntry(
-			externalReferenceCode, _objectDefinition, scopeKey,
-			contextUser.getUserId());
+			externalReferenceCode, _objectDefinition, scopeKey);
 	}
 
 	@Override
@@ -828,8 +905,7 @@ public class ObjectEntryResourceImpl
 					_objectDefinition.getStorageType()));
 
 		defaultObjectEntryManager.unsubscribeObjectEntry(
-			externalReferenceCode, _objectDefinition, scopeKey,
-			contextUser.getUserId());
+			externalReferenceCode, _objectDefinition, scopeKey);
 	}
 
 	@Override
@@ -900,7 +976,7 @@ public class ObjectEntryResourceImpl
 			String externalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-53981")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -1030,7 +1106,7 @@ public class ObjectEntryResourceImpl
 			String scopeKey, String externalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-53981")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
 			throw new UnsupportedOperationException();
 		}
 

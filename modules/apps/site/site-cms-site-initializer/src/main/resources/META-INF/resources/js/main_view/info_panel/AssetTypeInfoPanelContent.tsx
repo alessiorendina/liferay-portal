@@ -8,7 +8,7 @@ import React from 'react';
 import {
 	ISearchAssetObjectEntry,
 	ISearchAssetTypeInformation,
-} from '../../structure_builder/types/AssetType';
+} from '../../common/types/AssetType';
 import AssetTypeInfoPanelBody from './AssetTypeInfoPanelBody';
 import AssetTypeInfoPanelHeader from './AssetTypeInfoPanelHeader';
 import {AssetTypeInfoPanelContext, IAssetTypeInfoPanelContext} from './context';
@@ -17,7 +17,7 @@ import '../../../css/components/AssetTypeInfoPanel.scss';
 import {getBaseAssetInformation} from './util';
 
 const AssetTypeInfoPanelContent = ({
-	additionalProps: {cmsGroupId},
+	additionalProps: {assetLibraries, cmsGroupId, commentsProps},
 	items: objectEntries,
 }: {
 	additionalProps: any;
@@ -28,12 +28,19 @@ const AssetTypeInfoPanelContent = ({
 			? getBaseAssetInformation(objectEntries[0])
 			: {};
 
+	const assetLibrary = assetLibraries.find(
+		({groupId}: {groupId: number}) =>
+			Number(groupId) === Number(objectEntries?.[0]?.embedded?.scopeId)
+	);
+
 	return (
 		<>
 			<AssetTypeInfoPanelContext.Provider
 				value={
 					{
+						assetLibrary,
 						cmsGroupId,
+						commentsProps,
 						objectEntries,
 						...assetInfo,
 					} as IAssetTypeInfoPanelContext

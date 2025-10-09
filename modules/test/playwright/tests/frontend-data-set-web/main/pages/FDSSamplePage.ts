@@ -45,6 +45,9 @@ export class FDSSamplePage {
 		searchInput: Locator;
 	};
 	readonly page: Page;
+	readonly paginator: {
+		itemsPerPageSelector: Locator;
+	};
 	readonly showViewOptionsButton: Locator;
 	readonly sidePanel: Locator;
 	readonly sidePanelFrame: FrameLocator;
@@ -134,6 +137,13 @@ export class FDSSamplePage {
 		};
 
 		this.page = page;
+
+		this.paginator = {
+			itemsPerPageSelector: page.getByLabel('Items Per Page', {
+				exact: true,
+			}),
+		};
+
 		this.selectAllCheckbox = page.getByText('Select All');
 
 		const selectionToolbarContainer = page.getByTestId('selectionToolbar');
@@ -175,6 +185,16 @@ export class FDSSamplePage {
 		this.visualizationModeSelector = page.getByLabel('Show View Options');
 	}
 
+	async changeItemsPerPage({delta}: {delta: string}) {
+		await this.paginator.itemsPerPageSelector.click();
+
+		const dropdownItem = this.page.getByRole('option', {name: delta});
+
+		await dropdownItem.waitFor({state: 'visible'});
+
+		await dropdownItem.click();
+	}
+
 	async changeVisualizationMode({
 		page,
 		visualizationMode,
@@ -194,6 +214,18 @@ export class FDSSamplePage {
 			.click();
 
 		await waitForFDS({page, visualizationMode});
+	}
+
+	async checkDropdownMenuIconsAreVisible(itemActionButton: Locator) {
+		const dropdownMenu = await this.getDropdownId(itemActionButton);
+
+		const menuItems = dropdownMenu.getByRole('menuitem');
+
+		for (const menuItem of await menuItems.all()) {
+			await expect.soft(menuItem.locator('.lexicon-icon')).toBeVisible();
+		}
+
+		await this.page.keyboard.press('Escape');
 	}
 
 	async clickItemAction(action: string, item: number = 0) {
@@ -217,7 +249,7 @@ export class FDSSamplePage {
 			.click();
 	}
 
-	async checkDropdownMenuIconsAreVisible(itemActionButton: Locator) {
+	async getDropdownId(itemActionButton: Locator) {
 		await itemActionButton.click();
 
 		const dropdownId = await itemActionButton.getAttribute('aria-controls');
@@ -226,13 +258,7 @@ export class FDSSamplePage {
 
 		await dropdownMenu.filter({has: this.page.getByRole('menu')}).waitFor();
 
-		const menuItems = dropdownMenu.getByRole('menuitem');
-
-		for (const menuItem of await menuItems.all()) {
-			await expect.soft(menuItem.locator('.lexicon-icon')).toBeVisible();
-		}
-
-		await this.page.keyboard.press('Escape');
+		return dropdownMenu;
 	}
 
 	selectItemActionsByRow(text: string) {

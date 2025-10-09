@@ -13,6 +13,7 @@ export class RecycleBinPage {
 	readonly dataSetFragmentPage: DataSetPage;
 	readonly deleteButton: Locator;
 	readonly deleteItemConfirmationText: Locator;
+	readonly emptyRecycleBinButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -21,6 +22,9 @@ export class RecycleBinPage {
 		this.deleteItemConfirmationText = page.getByText(
 			'You are about to permanently'
 		);
+		this.emptyRecycleBinButton = page.getByRole('menuitem', {
+			name: 'Empty Recycle Bin',
+		});
 	}
 
 	async execItemAction({action, filter}: {action: string; filter: string}) {
@@ -47,5 +51,17 @@ export class RecycleBinPage {
 			.getByRole('row', {name: folderName})
 			.getByRole('link')
 			.click();
+
+		await this.page.getByPlaceholder('Search').waitFor({state: 'visible'});
+	}
+
+	async selectItems(titles: string[]) {
+		for (const title of titles) {
+			const card = this.page
+				.locator('tr', {hasText: title})
+				.or(this.page.locator('.card-row', {hasText: title}));
+
+			await card.getByRole('checkbox').check();
+		}
 	}
 }

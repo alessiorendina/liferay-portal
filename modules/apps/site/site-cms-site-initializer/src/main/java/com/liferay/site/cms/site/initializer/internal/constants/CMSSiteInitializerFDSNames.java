@@ -16,6 +16,19 @@ public class CMSSiteInitializerFDSNames {
 	public static final String ALL_SPACES_SECTION =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-allSpacesSection";
 
+	public static final String BULK_ACTION_TASK_REPORT_ERROR_ITEMS_SECTION =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-bulkActionTaskReportErrorItemsSection";
+
+	public static final String BULK_ACTION_TASK_REPORT_SECTION =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-bulkActionTaskReportSection";
+
+	public static final String
+		BULK_ACTION_TASK_REPORT_SUCCESSFUL_ITEMS_SECTION =
+			CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+				"-bulkActionTaskReportSuccessfulItemsSection";
+
 	public static final String CATEGORIES =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-categories";
 
@@ -35,6 +48,10 @@ public class CMSSiteInitializerFDSNames {
 
 	public static final String FILES_SECTION =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-filesSection";
+
+	public static final String HOME_MY_WORKFLOW_TASKS_SECTION =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-homeMyWorkflowTasksSection";
 
 	public static final String HOME_RECENT_ASSETS_SECTION =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +

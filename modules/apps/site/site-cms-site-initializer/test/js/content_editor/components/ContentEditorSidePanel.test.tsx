@@ -32,7 +32,9 @@ const renderComponent = ({isSubscribed = false} = {}) => {
 			deleteCommentURL="deleteCommentURL"
 			editCommentURL="editCommentURL"
 			editorConfig={{}}
+			entryClassName=""
 			expirationDate={EXPIRATION_DATE}
+			getCommentsURL="getCommentsURL"
 			groupId="21000"
 			id="contentId"
 			isSubscribed={isSubscribed}
@@ -49,14 +51,16 @@ describe('ContentEditorSidePanel', () => {
 		renderComponent();
 
 		['general', 'comments', 'schedule', 'categorization'].forEach((name) =>
-			expect(screen.getByLabelText(name)).toBeInTheDocument()
+			expect(screen.getByTitle(name)).toBeInTheDocument()
 		);
 	});
 
 	it('closes the panel pressing the Close button', async () => {
 		renderComponent();
 
-		await userEvent.click(screen.getByLabelText('general'));
+		const panelButton = screen.getByLabelText('general');
+
+		await userEvent.click(panelButton);
 
 		await waitFor(() => {
 			expect(screen.getByText('general')).toBeInTheDocument();
@@ -66,6 +70,7 @@ describe('ContentEditorSidePanel', () => {
 
 		await waitFor(() => {
 			expect(screen.queryByText('general')).not.toBeInTheDocument();
+			expect(panelButton).toHaveFocus();
 		});
 	});
 

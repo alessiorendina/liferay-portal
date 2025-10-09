@@ -50,6 +50,7 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.sharing.configuration.SharingConfiguration;
 import com.liferay.sharing.configuration.SharingConfigurationFactory;
+import com.liferay.trash.TrashHelper;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
@@ -232,7 +233,7 @@ public class ObjectEntryFolderResourceImpl
 				String scopeKey, String externalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-53981")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -245,7 +246,7 @@ public class ObjectEntryFolderResourceImpl
 
 		return _toObjectEntryFolder(
 			_objectEntryFolderService.restoreObjectEntryFolderFromTrash(
-				contextUser.getUserId(), serviceBuilderObjectEntryFolder,
+				serviceBuilderObjectEntryFolder,
 				ServiceContextBuilder.create(
 					serviceBuilderObjectEntryFolder.getGroupId(),
 					contextHttpServletRequest, null
@@ -272,8 +273,7 @@ public class ObjectEntryFolderResourceImpl
 						contextUser.getCompanyId());
 
 		_objectEntryFolderService.subscribeObjectEntryFolder(
-			contextUser.getUserId(), groupId,
-			serviceBuilderObjectEntryFolder.getObjectEntryFolderId());
+			groupId, serviceBuilderObjectEntryFolder.getObjectEntryFolderId());
 	}
 
 	@Override
@@ -296,8 +296,7 @@ public class ObjectEntryFolderResourceImpl
 						contextUser.getCompanyId());
 
 		_objectEntryFolderService.unsubscribeObjectEntryFolder(
-			contextUser.getUserId(), groupId,
-			serviceBuilderObjectEntryFolder.getObjectEntryFolderId());
+			groupId, serviceBuilderObjectEntryFolder.getObjectEntryFolderId());
 	}
 
 	@Override
@@ -434,20 +433,26 @@ public class ObjectEntryFolderResourceImpl
 				serviceBuilderObjectEntryFolder)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-53981") ||
-			(serviceBuilderObjectEntryFolder.getStatus() ==
-				WorkflowConstants.STATUS_IN_TRASH)) {
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			serviceBuilderObjectEntryFolder.getGroupId());
 
-			_objectEntryFolderService.deleteObjectEntryFolder(
-				serviceBuilderObjectEntryFolder.getObjectEntryFolderId());
-		}
-		else {
+		if ((depotEntry != null) &&
+			_trashHelper.isTrashEnabled(
+				serviceBuilderObjectEntryFolder.getGroupId()) &&
+			(serviceBuilderObjectEntryFolder.getStatus() !=
+				WorkflowConstants.STATUS_IN_TRASH) &&
+			FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+
 			_objectEntryFolderService.moveObjectEntryFolderToTrash(
-				contextUser.getUserId(), serviceBuilderObjectEntryFolder,
+				serviceBuilderObjectEntryFolder,
 				ServiceContextBuilder.create(
 					serviceBuilderObjectEntryFolder.getGroupId(),
 					contextHttpServletRequest, null
 				).build());
+		}
+		else {
+			_objectEntryFolderService.deleteObjectEntryFolder(
+				serviceBuilderObjectEntryFolder.getObjectEntryFolderId());
 		}
 	}
 
@@ -556,9 +561,14 @@ public class ObjectEntryFolderResourceImpl
 						ActionKeys.VIEW, serviceBuilderObjectEntryFolder,
 						"getObjectEntryFolder")
 				).put(
+					"permissions",
+					addAction(
+						ActionKeys.PERMISSIONS, serviceBuilderObjectEntryFolder,
+						"getObjectEntryFolderPermissionsPage")
+				).put(
 					"restore",
 					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled("LPD-53981") ||
+						if (!FeatureFlagManagerUtil.isEnabled("LPD-17564") ||
 							(serviceBuilderObjectEntryFolder.getStatus() !=
 								WorkflowConstants.STATUS_IN_TRASH)) {
 
@@ -708,5 +718,8 @@ public class ObjectEntryFolderResourceImpl
 
 	@Reference
 	private SharingConfigurationFactory _sharingConfigurationFactory;
+
+	@Reference
+	private TrashHelper _trashHelper;
 
 }

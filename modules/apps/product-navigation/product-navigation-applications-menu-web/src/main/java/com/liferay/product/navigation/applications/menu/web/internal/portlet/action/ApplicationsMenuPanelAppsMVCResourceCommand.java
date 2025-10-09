@@ -11,6 +11,7 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.dto.v1_0.Settings;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
@@ -153,6 +154,10 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 	private Page<AssetLibrary> _getAssetLibrariesPage(ThemeDisplay themeDisplay)
 		throws Exception {
 
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			return null;
+		}
+
 		AssetLibraryResource.Builder builder =
 			_assetLibraryResourceFactory.create();
 
@@ -162,7 +167,8 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 		Page<AssetLibrary> assetLibrariesPage =
 			assetLibraryResource.getAssetLibrariesPage(
-				null, null, null, Pagination.of(1, 5), null);
+				null, null, assetLibraryResource.toFilter("type eq 'Space'"),
+				Pagination.of(1, 5), null);
 
 		return Page.of(
 			assetLibrariesPage.getActions(),
@@ -230,11 +236,32 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)
 		throws Exception {
 
-		JSONObject cmsJSONObject = _jsonFactory.createJSONObject();
-
+		Page<AssetLibrary> assetLibraryPage = _getAssetLibrariesPage(
+			themeDisplay);
 		Company company = themeDisplay.getCompany();
 
-		return cmsJSONObject.put(
+		return JSONUtil.put(
+			"allSpacesCount",
+			() -> {
+				if (assetLibraryPage == null) {
+					return null;
+				}
+
+				return assetLibraryPage.getTotalCount();
+			}
+		).put(
+			"allSpacesURL",
+			StringBundler.concat(
+				themeDisplay.getPathFriendlyURLPublic(),
+				GroupConstants.CMS_FRIENDLY_URL, "/all-spaces")
+		).put(
+			"firstTimeAccess",
+			() -> {
+				ExpandoBridge bridge = company.getExpandoBridge();
+
+				return !bridge.hasAttribute("cmsFirstTimeAccess");
+			}
+		).put(
 			"logoURL",
 			StringBundler.concat(
 				themeDisplay.getPathImage(), "/company_logo?img_id=",
@@ -243,14 +270,12 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		).put(
 			"spaces",
 			() -> {
-				if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+				if (assetLibraryPage == null) {
 					return null;
 				}
 
-				Page<AssetLibrary> page = _getAssetLibrariesPage(themeDisplay);
-
 				return JSONUtil.toJSONArray(
-					page.getItems(),
+					assetLibraryPage.getItems(),
 					assetLibrary -> JSONUtil.put(
 						"active",
 						_isCMSSpaceAssetLibraryActive(
@@ -276,7 +301,9 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 					));
 			}
 		).put(
-			"url", GroupConstants.CMS_FRIENDLY_URL + "/home"
+			"url",
+			themeDisplay.getPathFriendlyURLPublic() +
+				GroupConstants.CMS_FRIENDLY_URL + "/home"
 		);
 	}
 

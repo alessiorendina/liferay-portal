@@ -11,10 +11,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -36,11 +35,11 @@ public class FeatureFlagsBag {
 	}
 
 	public List<FeatureFlag> getFeatureFlags(Predicate<FeatureFlag> predicate) {
-		List<FeatureFlag> featureFlags = new ArrayList<>();
-
 		if (predicate == null) {
-			predicate = featureFlag -> true;
+			return new ArrayList<>(_featureFlagsMap.values());
 		}
+
+		List<FeatureFlag> featureFlags = new ArrayList<>();
 
 		for (FeatureFlag featureFlag : _featureFlagsMap.values()) {
 			if (predicate.test(featureFlag)) {
@@ -48,14 +47,12 @@ public class FeatureFlagsBag {
 			}
 		}
 
-		featureFlags.sort(Comparator.comparing(FeatureFlag::getKey));
-
 		return featureFlags;
 	}
 
 	public String getJSON() {
 		if (_featureFlagsMap.isEmpty()) {
-			return PropsValues.FEATURE_FLAGS_JSON;
+			return _FEATURE_FLAGS_JSON;
 		}
 
 		String json = _json;
@@ -113,6 +110,10 @@ public class FeatureFlagsBag {
 			featureFlag = featureFlagWrapper.getFeatureFlag();
 		}
 	}
+
+	private static final String _FEATURE_FLAGS_JSON = String.valueOf(
+		JSONFactoryUtil.createJSONObject(
+			PropsUtil.getProperties("feature.flag.", true)));
 
 	private final long _companyId;
 	private final Map<String, FeatureFlag> _featureFlagsMap;

@@ -40,28 +40,6 @@ type ContactSales = {
 	name: string;
 };
 
-type DefaultProperties = {
-	accountExternalReferenceCode: string;
-	accountId: string;
-	analyticsCloudURL: string;
-	cloudConsoleURL: string;
-	contactSupportURL: string;
-	eulaBaseURL: string;
-	featureFlags: string[];
-	kpi: {
-		kpiConnectorQuartelyRelease: string;
-		kpiLowCodePublishedApps: string;
-		kpiPartnershipIntegration: string;
-		kpiProjectUsingMarketplaceApps: string;
-		kpiQuartelyReleaseApps: string;
-	};
-	marketoFormId: string;
-	productId: string;
-	trialAccountCheck: 'false' | 'true';
-	trialEulaURL: string;
-	useSiteTaxonomyVocabularyQuery: boolean;
-};
-
 type ListTypeDefinition = {
 	externalReferenceCode: string;
 	id: number;
@@ -95,6 +73,28 @@ type PublisherRequestInfo = {
 		key: string;
 		name: string;
 	};
+};
+
+type PublisherSalesSummaryEntry = {
+	dateCreated: string;
+	dateModified: string;
+	externalReferenceCode: string;
+	id: number;
+	objectEntryFolderExternalReferenceCode: string;
+	objectEntryFolderId: number;
+	paidBy: string;
+	paidDate: string;
+	paymentStatus: {
+		key: string;
+		name: string;
+	};
+	publisherName: string;
+	publisherToAccountERC: string;
+	publisherToCommerceOrder: Order[];
+	quarter: string;
+	r_accountToPublisher_accountEntryERC: string;
+	r_accountToPublisher_accountEntryId: number;
+	scopeId: number;
 };
 
 type RadioOption<T> = {

@@ -548,6 +548,15 @@ test('LPD-45897 Can delete an inactive account', async ({
 	await expect(accountsPage.accountsTable.cell(account.name)).toHaveCount(1);
 
 	await (await accountsPage.accountsTable.rowActions(account.name)).click();
+
+	await expect(async () => {
+		await (
+			await accountsPage.accountsTable.rowActions(account.name)
+		).click();
+
+		await expect(accountsPage.deleteButton).toBeVisible({timeout: 500});
+	}).toPass();
+
 	await accountsPage.deleteButton.click();
 
 	await waitForAlert(page);
@@ -1669,6 +1678,31 @@ test(
 		).toBeVisible();
 		await expect(
 			editAccountContactInformationPage.phoneNumberHeader
+		).toBeVisible();
+	}
+);
+
+test(
+	'Escape account name to avoid XSS injections',
+	{tag: '@LPD-65007'},
+	async ({accountsPage, apiHelpers, page}) => {
+		const name = '<img src=x onerror=alert(origin)>';
+
+		await apiHelpers.headlessAdminUser.postAccount({
+			name,
+			type: 'business',
+		});
+
+		page.on('dialog', async (dialog) => {
+			if (dialog.type() === 'alert') {
+				throw new Error('XSS detected');
+			}
+		});
+
+		await accountsPage.goto();
+
+		await expect(
+			await accountsPage.accountsTable.cellLink(name)
 		).toBeVisible();
 	}
 );

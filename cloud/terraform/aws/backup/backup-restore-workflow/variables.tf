@@ -11,7 +11,7 @@ variable "kubernetes_namespace" {
 	default="liferay-system"
 }
 variable "kubernetes_service_account_name" {
-	default="liferay-backup-restore"
+	default="liferay-aws-backup-restore"
 }
 variable "region" {
 	type=string
@@ -21,8 +21,5 @@ variable "tags" {
 	type=map(string)
 }
 variable "terraform_state_bucket_arn" {
-	type=string
-}
-variable "terraform_state_dynamodb_table_arn" {
 	type=string
 }

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -68,16 +69,22 @@ public class ViewAllSectionDisplayContext extends BaseSectionDisplayContext {
 
 		fdsBulkActionDropdownItems.add(
 			new FDSActionDropdownItem(
-				null, "pencil", "edit-categories",
-				LanguageUtil.get(httpServletRequest, "edit-categories"), "post",
-				"edit-categories", null));
+				StringPool.BLANK, "download", "download",
+				LanguageUtil.get(_httpServletRequest, "download"), null, null,
+				null));
 		fdsBulkActionDropdownItems.add(
 			new FDSActionDropdownItem(
-				null, "pencil", "edit-tags",
-				LanguageUtil.get(httpServletRequest, "edit-tags"), "post",
-				"edit-tags", null));
+				StringPool.BLANK, "password-policies", "permissions",
+				LanguageUtil.get(_httpServletRequest, "permissions"), null,
+				null, null));
 
 		return fdsBulkActionDropdownItems;
+	}
+
+	@Override
+	public List<DropdownItem> getCreationMenuDropdownItems() {
+		return ActionUtil.getAllSectionCreationMenuDropdownItems(
+			httpServletRequest);
 	}
 
 	@Override
@@ -85,7 +92,8 @@ public class ViewAllSectionDisplayContext extends BaseSectionDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"description",
 			LanguageUtil.get(
-				httpServletRequest, "click-new-to-create-your-first-asset")
+				httpServletRequest,
+				"click-new-or-drag-and-drop-your-files-here")
 		).put(
 			"image", "/states/cms_empty_state.svg"
 		).put(

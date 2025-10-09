@@ -105,7 +105,7 @@ export class ViewObjectEntriesPage {
 		this.schedulePublicationButton = page
 			.getByLabel('Schedule Publication')
 			.getByRole('button', {name: 'Schedule'});
-		this.schedulePublicationCloseButton = page.getByLabel('close');
+		this.schedulePublicationCloseButton = page.getByLabel('Close');
 		this.schedulePublicationOption = page.getByRole('menuitem', {
 			name: 'Schedule Publication',
 		});
@@ -154,7 +154,10 @@ export class ViewObjectEntriesPage {
 
 	async clickAddObjectEntry(objectName?: string) {
 		objectName
-			? await this.page.getByLabel('Add ' + objectName).click()
+			? await this.page
+					.getByLabel('Add ' + objectName)
+					.first()
+					.click()
 			: await this.addObjectEntryButton.click();
 
 		await this.editObjectEntryForm.waitFor({state: 'visible'});
@@ -313,7 +316,11 @@ export class ViewObjectEntriesPage {
 		);
 	}
 
-	async fillObjectFields({attachmentFileName, objectEntry, objectFields}) {
+	async fillObjectFields({
+		attachmentFileName = '',
+		objectEntry,
+		objectFields,
+	}) {
 		const objectEntries: {
 			businessType: SupportedBusinessType;
 			entry: string;
@@ -322,6 +329,20 @@ export class ViewObjectEntriesPage {
 
 		for (const objectField of objectFields) {
 			switch (objectField.businessType) {
+				case 'Assignee': {
+					await this.selectDropdownItem(
+						objectField.label['en_US'],
+						objectEntry[objectField.name]
+					);
+
+					objectEntries.push({
+						businessType: objectField.businessType,
+						entry: objectEntry[objectField.name],
+						name: objectField.name,
+					});
+
+					break;
+				}
 				case 'Attachment': {
 					await this.selectFileButton.click();
 

@@ -31,7 +31,11 @@ import zodSchema, {z} from '../../../schema/zod';
 import trialOAuth2 from '../../../services/oauth/Trial';
 import ProductPurchaseSSATrial from '../../ProductPurchase/services/ProductPurchaseSSATrial';
 import {useSSADashboardOutlet} from '../SSADashboardOutlet';
-import {siteInitializers, trialObjectives} from '../constants';
+import {
+	defaultSiteInitializer,
+	siteInitializers,
+	trialObjectives,
+} from '../constants';
 
 const SectionTitle = ({title}: {title: string}) => (
 	<>
@@ -86,7 +90,7 @@ const CreateTrialModalForm: React.FC<CreateTrialModalFormProps> = ({
 			emailAddress: [],
 			objective: '',
 			projectId: '',
-			siteInitializerKey: siteInitializers[0].key,
+			siteInitializerKey: defaultSiteInitializer,
 		},
 		resolver: zodResolver(zodSchema.ssaTrialForm),
 	});
@@ -105,8 +109,10 @@ const CreateTrialModalForm: React.FC<CreateTrialModalFormProps> = ({
 
 	const onSubmit = useCallback(
 		async (data: FormFields) => {
+			const projectId = data.projectId.toLowerCase();
+
 			try {
-				await trialOAuth2.checkDomainAvailability(data.projectId);
+				await trialOAuth2.checkDomainAvailability(projectId);
 			}
 			catch (error: any) {
 				console.error(error.message);
@@ -138,7 +144,7 @@ const CreateTrialModalForm: React.FC<CreateTrialModalFormProps> = ({
 						[OrderCustomFields.TRIAL_SETTINGS]: JSON.stringify({
 							consoleInviteEmailAddresses,
 							duration: data.duration,
-							projectId: data.projectId,
+							projectId,
 							siteInitializerKey: data.siteInitializerKey,
 						}),
 					},

@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {DEFAULT_FETCH_HEADERS} from '@liferay/frontend-data-set-web';
+import {
+	DEFAULT_FETCH_HEADERS,
+	EConfigInURLBehavior,
+} from '@liferay/frontend-data-set-web';
 import classNames from 'classnames';
 import {openModal} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
@@ -16,11 +19,13 @@ import type {
 	ICardSchema,
 	IFileDropSettings,
 	IInternalRenderer,
+	IItemsActions,
 	IView,
 } from '@liferay/frontend-data-set-web';
 
 export default function propsTransformer({
-	additionalProps: {greeting},
+	additionalProps: {enableItemsActionsGroups, greeting},
+	itemsActions,
 	selectedItemsKey,
 	...otherProps
 }: any) {
@@ -105,13 +110,74 @@ export default function propsTransformer({
 		return props;
 	};
 
+	const itemActionsWithStyling = itemsActions.map((action: IItemsActions) => {
+		const key = action?.data?.id as string;
+
+		if (!key || key !== 'sampleDeleteMessage') {
+			return action;
+		}
+
+		return {
+			...action,
+			className: 'text-danger',
+		};
+	});
+
 	return {
 		...otherProps,
+		configInURLSettings: EConfigInURLBehavior.PUSH,
 		customRenderers: {
 			tableCell: [customAuthorTableCellRenderer],
 		},
 		fileDropSettings,
 		infoPanelComponent: SampleInfoPanel,
+		itemsActions: enableItemsActionsGroups
+			? [
+					{
+						items: itemActionsWithStyling,
+						separator: true,
+						type: 'group',
+					},
+					{
+						items: [
+							{
+								data: {
+									id: 'emptyGroupTest',
+									permissionKey: 'nonexistentPermissionKey',
+								},
+								icon: 'hidden',
+								label: 'Empty Group Test',
+							},
+						],
+						separator: true,
+						type: 'group',
+					},
+					{
+						items: [
+							{
+								data: {
+									id: 'groupItem',
+								},
+								icon: 'separator',
+								label: 'Group Item',
+								onClick: () => {
+									alert('You clicked on an item in a group');
+								},
+							},
+							{
+								data: {
+									id: 'groupPermissionTest',
+									permissionKey: 'nonexistentPermissionKey',
+								},
+								icon: 'hidden',
+								label: 'Group Permission Test',
+							},
+						],
+						separator: true,
+						type: 'group',
+					},
+				]
+			: itemActionsWithStyling,
 		onActionDropdownItemClick({
 			action,
 			itemData,

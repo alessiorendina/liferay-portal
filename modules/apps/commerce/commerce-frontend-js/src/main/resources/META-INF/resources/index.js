@@ -11,7 +11,9 @@ export * as MiniCartUtils from './components/mini_cart/util';
 export {default as PriceRenderer} from './components/data_renderers/PriceRenderer';
 export {default as ProductOptionsDataRenderer} from './components/data_renderers/ProductOptionsDataRenderer';
 export {
+	AccountCreationModal,
 	accountSelector,
+	AccountSelectionModal,
 	AddToCart,
 	AddToCartButtonComponent,
 	AddToCartComponent,
@@ -82,7 +84,9 @@ export {
 } from './utilities/index';
 export {default as CommerceFrontendUtils} from './utilities/interface/index';
 export * as CommerceConstants from './utilities/constants';
+export * as AccountUtils from './components/account_selector/util';
 export * as CurrencyUtils from './components/currency_selector/util';
+export * as CommerceNotificationUtils from './utilities/notifications';
 export * as modalUtils from './utilities/modals/index';
 
 export {

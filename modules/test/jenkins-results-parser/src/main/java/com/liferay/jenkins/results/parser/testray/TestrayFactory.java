@@ -294,6 +294,12 @@ public class TestrayFactory {
 		return new TestrayRun(testrayBuild, batchName, propertiesFiles);
 	}
 
+	public static TestrayRunComparison newTestrayRunComparison(
+		TestrayRun testrayRunA, TestrayRun testrayRunB) {
+
+		return new TestrayRunComparison(testrayRunA, testrayRunB);
+	}
+
 	public static TestrayServer newTestrayServer(String testrayServerURL) {
 		TestrayServer testrayServer = _testrayServers.get(testrayServerURL);
 
@@ -322,8 +328,8 @@ public class TestrayFactory {
 		return new TestrayTeam(testrayProject, jsonObject);
 	}
 
-	public static TopLevelBuildTestrayCaseResult
-		newTopLevelBuildTestrayCaseResult(
+	public static TopLevelStandaloneBuildTestrayCaseResult
+		newTopLevelStandaloneBuildTestrayCaseResult(
 			TestrayBuild testrayBuild,
 			TopLevelBuildReport topLevelBuildReport) {
 
@@ -343,7 +349,7 @@ public class TestrayFactory {
 
 		_topLevelBuildTestrayCaseResults.put(
 			testrayBuildID,
-			new TopLevelBuildTestrayCaseResult(
+			new TopLevelStandaloneBuildTestrayCaseResult(
 				testrayBuild, topLevelBuildReport));
 
 		return _topLevelBuildTestrayCaseResults.get(testrayBuildID);
@@ -360,7 +366,7 @@ public class TestrayFactory {
 	private static final Pattern _testrayURLPattern = Pattern.compile(
 		"https://(testray\\.liferay\\.com|webserver-testray2" +
 			"(-prd\\d*|-uat\\d*)?.lfr.cloud)");
-	private static final Map<Long, TopLevelBuildTestrayCaseResult>
+	private static final Map<Long, TopLevelStandaloneBuildTestrayCaseResult>
 		_topLevelBuildTestrayCaseResults = new HashMap<>();
 
 }
