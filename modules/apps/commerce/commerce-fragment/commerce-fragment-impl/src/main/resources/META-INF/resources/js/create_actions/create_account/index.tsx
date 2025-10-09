@@ -6,39 +6,37 @@
 import ClayButton from '@clayui/button';
 import {useModal} from '@clayui/modal';
 
+import {
+	AccountUtils,
+	AccountCreationModal,
+	CommerceNotificationUtils,
+	commerceEvents,
+
 // @ts-ignore
 
-import {AccountUtils, CommerceNotificationUtils, commerceEvents} from 'commerce-frontend-js';
+} from 'commerce-frontend-js';
 import React from 'react';
 
-import AccountCreationModal from './modal/AccountCreationModal';
-
 interface CreateAccountProps {
-	accountEntryAllowedTypes: string[];
-	commerceChannelId: number;
+	checkoutURL: string | '';
 	setCurrentAccountURL: string;
 	hasAddAccountsPermission: boolean;
 	label: string;
 }
 
-export interface OnAccountChangeParams {
-	account: any;
-	doCheckout: boolean;
-}
-
 const CreateAccountAction = ({
-	accountEntryAllowedTypes,
-	commerceChannelId,
+	checkoutURL,
 	setCurrentAccountURL,
 	hasAddAccountsPermission,
 	label,
 }: CreateAccountProps) => {
 	const {observer, onOpenChange, open} = useModal();
 
-	const onAccountChange = ({account}: OnAccountChangeParams) => {
+	const onAccountChange = ({account, doCheckout}: OnAccountChangeParams) => {
 		AccountUtils.selectAccount(account.id, setCurrentAccountURL)
 			.then(() => {
 				Liferay.fire(commerceEvents.CURRENT_ACCOUNT_UPDATED, {
+					...(doCheckout ? {checkoutURL} : {}),
 					id: account.id,
 				});
 			})
@@ -57,9 +55,7 @@ const CreateAccountAction = ({
 
 			{open && (
 				<AccountCreationModal
-					accountTypes={accountEntryAllowedTypes}
 					closeModal={() => onOpenChange(false)}
-					commerceChannelId={commerceChannelId}
 					observer={observer}
 					onAccountChange={onAccountChange}
 				/>

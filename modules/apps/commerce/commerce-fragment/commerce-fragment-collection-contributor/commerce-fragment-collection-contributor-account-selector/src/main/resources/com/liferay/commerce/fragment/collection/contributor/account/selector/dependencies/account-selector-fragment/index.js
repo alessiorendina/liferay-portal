@@ -87,12 +87,22 @@ function handleTitleChange(panel) {
 	}
 }
 
+function onAccountChange({checkoutURL}) {
+	if (checkoutURL) {
+		window.location.href = checkoutURL;
+	}
+
+	window.location.reload();
+}
+
 function main() {
 	if (layoutMode === 'edit') {
+		Liferay.detach('current-account-updated', onAccountChange);
+
 		handleEditNav(0);
 	}
 	else {
-		Liferay.on('current-account-updated', () => window.location.reload());
+		Liferay.on('current-account-updated', onAccountChange);
 
 		const activePanel = panels.find(
 			(panel) =>

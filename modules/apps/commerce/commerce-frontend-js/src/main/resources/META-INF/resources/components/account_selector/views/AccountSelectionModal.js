@@ -8,7 +8,7 @@ import ClayForm, {ClayRadio, ClayRadioGroup, ClaySelect} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayModal, {useModal} from '@clayui/modal';
 import PropTypes from 'prop-types';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import ServiceProvider from '../../../ServiceProvider/index';
 import {showErrorNotification} from '../../../utilities/notifications';
@@ -17,14 +17,15 @@ import AccountCreationModalBody from './AccountCreationModalBody';
 const DeliveryCatalogResource = ServiceProvider.DeliveryCatalogAPI('v1');
 
 function AccountSelectionModal({
-	accountEntryAllowedTypes,
 	availableAccounts,
 	changeAccount,
 	checkoutURL,
-	commerceChannelId,
 	hasCreatePermission,
 	hasManagePermission = true,
 }) {
+	const accountTypes = useMemo(() => Liferay.CommerceContext?.accountEntryAllowedTypes, []);
+	const commerceChannelId = useMemo(() => Liferay.CommerceContext?.commerceChannelId, []);
+
 	const {observer, onOpenChange, open} = useModal({defaultOpen: true});
 	const [accountFields, setAccountFields] = useState({
 		description: '',
@@ -32,11 +33,13 @@ function AccountSelectionModal({
 		name: '',
 		organizations: [],
 		taxId: '',
-		type: accountEntryAllowedTypes[0],
+		type: accountTypes[0],
 	});
 	const [canContinue, setCanContinue] = useState(false);
 	const [isCreate, setIsCreate] = useState(false);
 	const [selectedAccountId, setSelectedAccountId] = useState(null);
+
+
 
 	const createAccount = useCallback(() => {
 		const {organizations, ...accountJSON} = accountFields;
@@ -74,7 +77,7 @@ function AccountSelectionModal({
 					id="account-selection-modal"
 					observer={observer}
 				>
-					<ClayForm onSubmit={changeAccount}>
+					<ClayForm>
 						<ClayModal.Header>
 							{Liferay.Language.get('sign-in-to-checkout')}
 						</ClayModal.Header>
@@ -111,7 +114,7 @@ function AccountSelectionModal({
 								{isCreate ? (
 									<AccountCreationModalBody
 										accountData={accountFields}
-										accountTypes={accountEntryAllowedTypes}
+										accountTypes={accountTypes}
 										quickCreate={true}
 										setAccountData={setAccountFields}
 									/>
@@ -176,7 +179,7 @@ function AccountSelectionModal({
 												? createAccount()
 												: changeAccount(
 														{id: selectedAccountId},
-														true
+														!!checkoutURL
 													)
 										}
 										type="button"

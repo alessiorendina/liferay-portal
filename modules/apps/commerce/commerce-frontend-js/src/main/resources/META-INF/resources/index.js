@@ -11,6 +11,7 @@ export * as MiniCartUtils from './components/mini_cart/util';
 export {default as PriceRenderer} from './components/data_renderers/PriceRenderer';
 export {default as ProductOptionsDataRenderer} from './components/data_renderers/ProductOptionsDataRenderer';
 export {
+	AccountCreationModal,
 	accountSelector,
 	AccountSelectionModal,
 	AddToCart,
@@ -21,8 +22,6 @@ export {
 	AutocompleteComponent,
 	CurrencySelector,
 	compareCheckbox,
-	CreateAccount,
-	CreateOrder,
 	DropdownMenu,
 	DropdownMenuComponent,
 	Gallery,

@@ -16,12 +16,13 @@ const DeliveryCatalogAPIServiceProvider =
 	ServiceProvider.DeliveryCatalogAPI('v1');
 
 export default function AccountCreationModal({
-	accountTypes,
 	closeModal,
-	commerceChannelId,
 	handleAccountChange,
 	observer,
 }) {
+	const accountTypes = useMemo(() => Liferay.CommerceContext?.accountEntryAllowedTypes, []);
+	const commerceChannelId = useMemo(() => Liferay.CommerceContext?.commerceChannelId, []);
+
 	const [accountData, setAccountData] = useState({
 		description: '',
 		externalReferenceCode: '',

@@ -24,7 +24,6 @@ const ACCOUNT_ENTRY_ID_DEFAULT = 0;
 
 function AccountSelectorButton({
 	account,
-	accountEntryAllowedTypes,
 	checkoutURL,
 	label,
 	order,
@@ -35,6 +34,11 @@ function AccountSelectorButton({
 	showOrderInfo,
 	...props
 }) {
+	const accountEntryAllowedTypes = useMemo(() =>
+		Liferay.CommerceContext?.accountEntryAllowedTypes || [], []);
+	const commerceChannelId = useMemo(() =>
+		Liferay?.CommerceContext?.commerceChannelId || 0, []);
+
 	const [availableAccounts, setAvailableAccounts] = useState([]);
 	const [currentOrder, setCurrentOrder] = useState({
 		...order,
@@ -47,21 +51,14 @@ function AccountSelectorButton({
 		id: account?.id ?? ACCOUNT_ENTRY_ID_DEFAULT,
 	}), [account]);
 
-	const commerceChannelId = useMemo(() =>
-		Liferay?.CommerceContext?.commerceChannelId || 0, []);
-
-	const changeAccount = useCallback(async (account, doCheckout) => {
+	const changeAccount = useCallback(async ({id}, doCheckout) => {
 		try {
-			await AccountUtils.selectAccount(account.id, setCurrentAccountURL);
+			await AccountUtils.selectAccount(id, setCurrentAccountURL);
 
-			if (doCheckout) {
-				window.location.href = checkoutURL;
-			}
-			else {
-				Liferay.fire(commerceEvents.CURRENT_ACCOUNT_UPDATED, {
-					id: account.id,
-				});
-			}
+			Liferay.fire(commerceEvents.CURRENT_ACCOUNT_UPDATED, {
+				...(doCheckout ? {checkoutURL} : {}),
+				id,
+			});
 		} catch(error) {
 			CommerceNotificationUtils.showErrorNotification(error);
 		}

@@ -66,20 +66,10 @@ public class CreateAccountButtonFragmentRenderer
 	@Override
 	protected Map<String, Object> getProps(
 			FragmentRendererContext fragmentRendererContext,
-			HttpServletRequest httpServletRequest)
-		throws Exception {
-
-		CommerceContext commerceContext =
-			(CommerceContext)httpServletRequest.getAttribute(
-				CommerceWebKeys.COMMERCE_CONTEXT);
+			HttpServletRequest httpServletRequest) {
 
 		return HashMapBuilder.<String, Object>putAll(
 			getConfigurationValuesMap(fragmentRendererContext)
-		).put(
-			"accountEntryAllowedTypes",
-			commerceContext.getAccountEntryAllowedTypes()
-		).put(
-			"commerceChannelId", commerceContext.getCommerceChannelId()
 		).put(
 			"setCurrentAccountURL",
 			PortalUtil.getPortalURL(httpServletRequest) +
