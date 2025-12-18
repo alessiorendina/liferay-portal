@@ -7,15 +7,19 @@ package com.liferay.commerce.internal.search.spi.model.permission;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommerceAccountActionKeys;
+import com.liferay.commerce.constants.CommerceOrderActionKeys;
+import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.internal.util.AccountEntryUtil;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
 import com.liferay.commerce.util.CommerceContextThreadLocal;
 import com.liferay.commerce.util.CommerceGroupThreadLocal;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
@@ -23,6 +27,8 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.spi.model.permission.contributor.SearchPermissionFilterContributor;
 
@@ -115,7 +121,17 @@ public class AccountEntrySearchPermissionFilterContributor
 					commerceChannelId, null,
 					CommerceChannelAccountEntryRelConstants.TYPE_ELIGIBILITY);
 
-		if ((commerceChannelId > 0) && (count > 0)) {
+		User user = _userLocalService.getUser(userId);
+
+		if ((commerceChannelId > 0) && (count > 0) &&
+			!_resourcePermissionLocalService.hasResourcePermission(
+				user.getCompanyId(), CommerceOrderConstants.RESOURCE_NAME,
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(user.getCompanyId()),
+				TransformUtil.transformToLongArray(
+					user.getAllRoles(), role -> role.getRoleId()),
+				CommerceOrderActionKeys.VIEW_ORGANIZATION_COMMERCE_ORDERS)) {
+
 			TermsFilter accountUserIdsTermsFilter = new TermsFilter(
 				"accountUserIds");
 
@@ -147,5 +163,11 @@ public class AccountEntrySearchPermissionFilterContributor
 	@Reference
 	private CommerceChannelAccountEntryRelService
 		_commerceChannelAccountEntryRelService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
