@@ -40,14 +40,14 @@ export type TActivityLog = Record<string, IUserLogsEntry[]>;
 
 export interface IRawDataEntry {
 	createDate: number;
-	description: string;
-	label: string;
+	description?: string;
+	label?: string;
 	title: string;
 	type: string;
 	userName: string;
 }
 
-const formatData = (data: any) => {
+const formatData = (data: IRawDataEntry[]) => {
 	return data.reduce((activityLog: TActivityLog, item: IRawDataEntry) => {
 		const date = new Date(item.createDate);
 		const dateKey = date.toISOString().split('T')[0];
@@ -69,7 +69,7 @@ const formatData = (data: any) => {
 			label: type
 				? sub(
 						Liferay.Language.get(type.label),
-						Liferay.Language.get(item.label)
+						Liferay.Language.get(item.label || '')
 					)
 				: '',
 			time: timeString,
@@ -93,7 +93,7 @@ const formatData = (data: any) => {
 };
 
 function ActivityLog() {
-	const [activityLogs, setActivityLogs] = useState([]);
+	const [activityLogs, setActivityLogs] = useState<TActivityLog>({});
 
 	useEffect(() => {
 		const data = [
@@ -158,7 +158,7 @@ function ActivityLog() {
 		const formattedData = formatData(data);
 
 		setActivityLogs(formattedData);
-	}, [setActivityLogs]);
+	}, []);
 
 	function getUserInitials(name: string | undefined): string {
 		if (name) {
