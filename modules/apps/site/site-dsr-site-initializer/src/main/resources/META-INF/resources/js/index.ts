@@ -8,3 +8,4 @@ import '../css/main.scss';
 export {default as RoomComments} from './components/RoomComments';
 export {default as RoomsFDSPropsTransformer} from './components/props_transformer/RoomsFDSPropsTransformer';
 export {default as CMSFileSelectorEventHandler} from './document_library/CMSFileSelectorEventHandler';
+export {default as DSRAnalyticsNavigation} from './main_view/analytics/components/AnalyticsNavigation';
