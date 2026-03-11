@@ -33,7 +33,16 @@ page import="com.liferay.portal.kernel.util.WebKeys" %><%@
 page import="com.liferay.portal.security.auth.ScreenNameValidatorFactory" %><%@
 page import="com.liferay.site.dsr.site.initializer.internal.constants.DSRSiteInitializerFDSNames" %><%@
 page import="com.liferay.site.dsr.site.initializer.internal.display.context.InviteMemberDisplayContext" %><%@
-page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewRoomsSectionDisplayContext" %>
+page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewRoomsSectionDisplayContext" %><%@
+page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsNavigationSectionDisplayContext" %><%@
+page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsRoomTrendSectionDisplayContext" %><%@
+page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsRoomStatisticsSectionDisplayContext" %><%@
+page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsRoomGeneralSectionDisplayContext" %><%@
+page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsMostActiveVisitorsSectionDisplayContext" %><%@
+page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsLatestActivitySectionDisplayContext" %><%@
+page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsEngagementChartSectionDisplayContext" %><%@
+page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsDocumentsStatisticsSectionDisplayContext" %><%@
+page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsActivityLogDisplayContext" %>
 
 <liferay-theme:defineObjects />
 
