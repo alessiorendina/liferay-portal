@@ -8,8 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-ViewAnalyticsMostActiveVisitorsSectionDisplayContext
-	viewAnalyticsMostActiveVisitorsSectionDisplayContext = (ViewAnalyticsMostActiveVisitorsSectionDisplayContext)request.getAttribute(ViewAnalyticsMostActiveVisitorsSectionDisplayContext.class.getName());
+ViewAnalyticsMostActiveVisitorsSectionDisplayContext viewAnalyticsMostActiveVisitorsSectionDisplayContext = (ViewAnalyticsMostActiveVisitorsSectionDisplayContext)request.getAttribute(ViewAnalyticsMostActiveVisitorsSectionDisplayContext.class.getName());
 %>
 
 <div>

@@ -5,7 +5,7 @@
 				{
 					"defaultValue": false,
 					"label": "filters-are-disabled",
-					"name": "disable-filters",
+					"name": "disableFilters",
 					"type": "checkbox",
 					"typeOptions": {
 						"displayType": "toggle"
@@ -14,7 +14,7 @@
 				{
 					"defaultValue": false,
 					"label": "users-can-control-the-filters",
-					"name": "user-controlled-filters",
+					"name": "userControlledFilters",
 					"type": "checkbox",
 					"typeOptions": {
 						"displayType": "toggle"
@@ -23,7 +23,7 @@
 				{
 					"defaultValue": false,
 					"label": "filters-are-session-persisted",
-					"name": "persist-filters",
+					"name": "persistFilters",
 					"type": "checkbox",
 					"typeOptions": {
 						"displayType": "toggle"

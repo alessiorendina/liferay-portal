@@ -8,8 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-ViewAnalyticsLatestActivitySectionDisplayContext
-	viewAnalyticsLatestActivitySectionDisplayContext = (ViewAnalyticsLatestActivitySectionDisplayContext)request.getAttribute(ViewAnalyticsLatestActivitySectionDisplayContext.class.getName());
+ViewAnalyticsLatestActivitySectionDisplayContext viewAnalyticsLatestActivitySectionDisplayContext = (ViewAnalyticsLatestActivitySectionDisplayContext)request.getAttribute(ViewAnalyticsLatestActivitySectionDisplayContext.class.getName());
 %>
 
 <div>

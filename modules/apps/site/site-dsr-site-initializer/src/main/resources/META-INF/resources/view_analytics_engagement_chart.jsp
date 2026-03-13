@@ -8,8 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-ViewAnalyticsEngagementChartSectionDisplayContext
-	viewAnalyticsEngagementChartSectionDisplayContext = (ViewAnalyticsEngagementChartSectionDisplayContext)request.getAttribute(ViewAnalyticsEngagementChartSectionDisplayContext.class.getName());
+ViewAnalyticsEngagementChartSectionDisplayContext viewAnalyticsEngagementChartSectionDisplayContext = (ViewAnalyticsEngagementChartSectionDisplayContext)request.getAttribute(ViewAnalyticsEngagementChartSectionDisplayContext.class.getName());
 %>
 
 <div>

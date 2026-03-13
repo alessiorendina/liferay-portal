@@ -6,6 +6,7 @@
 package com.liferay.site.dsr.site.initializer.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -29,7 +30,7 @@ public class ViewAnalyticsRoomGeneralJSPSectionFragmentRenderer
 
 	@Override
 	protected ViewAnalyticsRoomGeneralSectionDisplayContext getDisplayContext(
-		HttpServletRequest httpServletRequest) {
+		FragmentRendererContext fragmentRendererContext, HttpServletRequest httpServletRequest) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(

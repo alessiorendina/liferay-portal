@@ -15,7 +15,7 @@
 			{
 				"definition": {
 					"fragment": {
-						"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.ViewAnalyticsAllVisitorsJSPSectionFragmentRenderer"
+						"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.ViewAnalyticsActivityLogJSPSectionFragmentRenderer"
 					},
 					"fragmentConfig": {},
 					"fragmentFields": [],

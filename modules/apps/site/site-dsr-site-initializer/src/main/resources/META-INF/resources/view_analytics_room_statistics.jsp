@@ -8,8 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-ViewAnalyticsRoomStatisticsSectionDisplayContext
-	viewAnalyticsRoomStatisticsSectionDisplayContext = (ViewAnalyticsRoomStatisticsSectionDisplayContext)request.getAttribute(ViewAnalyticsRoomStatisticsSectionDisplayContext.class.getName());
+ViewAnalyticsRoomStatisticsSectionDisplayContext viewAnalyticsRoomStatisticsSectionDisplayContext = (ViewAnalyticsRoomStatisticsSectionDisplayContext)request.getAttribute(ViewAnalyticsRoomStatisticsSectionDisplayContext.class.getName());
 %>
 
 <div>

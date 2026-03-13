@@ -8,8 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-	ViewAnalyticsActivityLogDisplayContext
-		viewAnalyticsActivityLogDisplayContext = (ViewAnalyticsActivityLogDisplayContext)request.getAttribute(ViewAnalyticsActivityLogDisplayContext.class.getName());
+ViewAnalyticsActivityLogDisplayContext viewAnalyticsActivityLogDisplayContext = (ViewAnalyticsActivityLogDisplayContext)request.getAttribute(ViewAnalyticsActivityLogDisplayContext.class.getName());
 %>
 
 <div>

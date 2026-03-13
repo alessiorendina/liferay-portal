@@ -14,12 +14,10 @@ export default function AnalyticsToolbar({
     activeTab = 'overview',
     overviewURL,
     timelineURL,
-    visitsURL,
 }: {
     activeTab?: string;
     overviewURL: string;
     timelineURL: string;
-    visitsURL: string;
 }) {
     return (
         <div>
@@ -57,15 +55,6 @@ export default function AnalyticsToolbar({
                 >
                     <ClayButton onClick={() => navigate(timelineURL)}>
                         {Liferay.Language.get('timeline')}
-                    </ClayButton>
-                </ClayNavigationBar.Item>
-
-                <ClayNavigationBar.Item
-                    active={activeTab.includes('visits')}
-                    key={Liferay.Language.get('visits')}
-                >
-                    <ClayButton onClick={() => navigate(visitsURL)}>
-                        {Liferay.Language.get('visits')}
                     </ClayButton>
                 </ClayNavigationBar.Item>
             </ClayNavigationBar>

@@ -28,13 +28,14 @@ export default function AnalyticsNavigation({
     filterSettings,
 }: IProps) {
 
+    console.log(activeTab, filtersJSONString, filterSettings);
+
     return (
         <>
             <AnalyticsToolbar
                 activeTab={activeTab}
-                overviewURL={`${BASE_URL}/overview`}
-                timelineURL={`${BASE_URL}/timeline`}
-                visitsURL={`${BASE_URL}/visits`}
+                overviewURL={`${BASE_URL}/view-overview`}
+                timelineURL={`${BASE_URL}/view-timeline`}
             />
 
             {filterSettings.disabled

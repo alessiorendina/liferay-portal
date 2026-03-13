@@ -61,6 +61,7 @@ public class ViewAnalyticsNavigationJSPSectionFragmentRenderer
 
 	@Override
 	protected ViewAnalyticsNavigationSectionDisplayContext getDisplayContext(
+		FragmentRendererContext fragmentRendererContext,
 		HttpServletRequest httpServletRequest) {
 
 		ThemeDisplay themeDisplay =
@@ -68,7 +69,9 @@ public class ViewAnalyticsNavigationJSPSectionFragmentRenderer
 				WebKeys.THEME_DISPLAY);
 
 		return new ViewAnalyticsNavigationSectionDisplayContext(
-			httpServletRequest,
+			getConfigurationJSONObject(fragmentRendererContext),
+			_fragmentEntryConfigurationParser,
+			fragmentRendererContext.getFragmentEntryLink(), httpServletRequest,
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DSR_ROOM", themeDisplay.getCompanyId()),

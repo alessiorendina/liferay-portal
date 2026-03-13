@@ -1,4 +1,3 @@
-<%@ taglib prefix="react" uri="http://liferay.com/tld/react" %>
 <%--
 /**
  * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
@@ -14,6 +13,19 @@ ViewAnalyticsNavigationSectionDisplayContext viewAnalyticsNavigationSectionDispl
 
 <div>
 	<div class="dsr-section custom-empty-state">
-		<react:component module="{DSRAnalyticsNavigation} from site-dsr-site-initializer" />
+		<react:component
+			module="{DSRAnalyticsNavigation} from site-dsr-site-initializer"
+			props='<%=
+				HashMapBuilder.<String, Object>put(
+					"activeTab", viewAnalyticsNavigationSectionDisplayContext.getActiveTab()
+				).put(
+					"filtersJSONString", viewAnalyticsNavigationSectionDisplayContext.getAnalyticsStoreFilters()
+				).put(
+					"filterSettings", viewAnalyticsNavigationSectionDisplayContext.getFilterSettingsJSONObject()
+				).put(
+					"room", ""
+				).build()
+			%>'
+		/>
 	</div>
 </div>
