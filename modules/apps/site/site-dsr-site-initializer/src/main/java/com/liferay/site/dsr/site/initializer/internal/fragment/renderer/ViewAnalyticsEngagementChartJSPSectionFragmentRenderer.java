@@ -11,8 +11,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
-
-import com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsEngagementChartSectionDisplayContext;
+import com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsEngagementChartAnalyticsSectionDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 
