@@ -17,4 +17,5 @@ export {default as DocumentsStatistics} from './main_view/analytics/components/D
 export {default as EngagementChart} from './main_view/analytics/components/EngagementChart';
 export {default as FrequencyChart} from './main_view/analytics/components/FrequencyChart';
 export {default as Navigation} from './main_view/analytics/components/Navigation';
+export {default as RoomStatistics} from './main_view/analytics/components/RoomStatistics';
 export {default as RoomTrend} from './main_view/analytics/components/RoomTrend';
