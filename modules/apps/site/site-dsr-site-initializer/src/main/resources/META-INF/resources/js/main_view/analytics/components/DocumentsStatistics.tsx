@@ -12,19 +12,42 @@ import React from 'react';
 
 import '../../../../css/components/DocumentsStatistics.scss';
 
-const AverageTimeDataRender = ({itemData = []}: any) => {
-	const {totalTimeViewingAsset = 0, totalViews = 0} = itemData;
-
-	const secondsAverageTime = Math.round(totalTimeViewingAsset / totalViews);
-
-	const hour = Math.floor(secondsAverageTime / 3600);
-	const minutes = Math.floor((secondsAverageTime % 3600) / 60);
-
-	return sub(`${Liferay.Language.get('x-h-x-min')}`, hour, minutes);
+type TDocumentsStatisticsData = {
+	download: number;
+	lastViewed: string;
+	title: string;
+	totalTimeViewingAsset: number;
+	totalViews: number;
+	type: string;
+	userInvolved: string[];
 };
 
-const DocumentTitleDataRender = ({itemData = []}: any) => {
-	const {title = '', type = ''} = itemData;
+type TDocumentsStatisticsProps = {
+	items: TDocumentsStatisticsData[];
+	namespace: string;
+};
+
+const AverageTimeDataRenderer = ({
+	itemData,
+}: {
+	itemData: TDocumentsStatisticsData;
+}) => {
+	const {totalTimeViewingAsset, totalViews} = itemData || {};
+
+	const averageTimeSeconds = Math.round(totalTimeViewingAsset / totalViews);
+
+	const hours = Math.floor(averageTimeSeconds / 3600);
+	const minutes = Math.floor((averageTimeSeconds % 3600) / 60);
+
+	return sub(`${Liferay.Language.get('x-h-x-min')}`, hours, minutes);
+};
+
+const DocumentTitleDataRenderer = ({
+	itemData,
+}: {
+	itemData: TDocumentsStatisticsData;
+}) => {
+	const {title, type} = itemData;
 
 	return (
 		<div>
@@ -55,15 +78,23 @@ const DocumentTitleDataRender = ({itemData = []}: any) => {
 	);
 };
 
-const LastViewedDataRender = ({itemData = []}: any) => {
-	const {lastViewed = ''} = itemData;
+const LastViewedDataRenderer = ({
+	itemData,
+}: {
+	itemData: TDocumentsStatisticsData;
+}) => {
+	const {lastViewed} = itemData;
 
 	return new Intl.DateTimeFormat(Liferay.ThemeDisplay.getBCP47LanguageId(), {
 		dateStyle: 'medium',
 	}).format(new Date(lastViewed));
 };
 
-const UserInvolvedDataRender = ({itemData = []}: any) => {
+const UserInvolvedDataRenderer = ({
+	itemData,
+}: {
+	itemData: TDocumentsStatisticsData;
+}) => {
 	const {userInvolved = []} = itemData;
 
 	if (!userInvolved.length) {
@@ -73,62 +104,69 @@ const UserInvolvedDataRender = ({itemData = []}: any) => {
 	return sub(Liferay.Language.get('x-users'), [new Set(userInvolved).size]);
 };
 
-const DocumentsStatistics = ({items = []}: any) => {
+const DocumentsStatistics = ({
+	items = [],
+	namespace,
+}: TDocumentsStatisticsProps) => {
 	return (
-		<FrontendDataSet
-			customDataRenderers={{
-				averageTimeDataRender: AverageTimeDataRender,
-				documentNameDataRender: DocumentTitleDataRender,
-				lastViewedDataRender: LastViewedDataRender,
-				userInvolvedDataRender: UserInvolvedDataRender,
-			}}
-			id="EngagedDocumentsDataSet"
-			items={items}
-			showManagementBar={false}
-			showPagination={false}
-			showSearch={false}
-			showSelectAll={false}
-			views={[
-				{
-					contentRenderer: 'table',
-					label: Liferay.Language.get('table'),
-					name: 'table',
-					schema: {
-						fields: [
-							{
-								contentRenderer: 'documentNameDataRender',
-								fieldName: 'title',
-								label: Liferay.Language.get('title'),
-							},
-							{
-								fieldName: 'totalViews',
-								label: Liferay.Language.get('total-views'),
-							},
-							{
-								contentRenderer: 'lastViewedDataRender',
-								fieldName: 'lastViewed',
-								label: Liferay.Language.get('last-viewed'),
-							},
-							{
-								fieldName: 'download',
-								label: Liferay.Language.get('download'),
-							},
-							{
-								contentRenderer: 'averageTimeDataRender',
-								fieldName: 'averageTime',
-								label: Liferay.Language.get('average-time'),
-							},
-							{
-								contentRenderer: 'userInvolvedDataRender',
-								fieldName: 'userInvolved',
-								label: Liferay.Language.get('user-involved'),
-							},
-						],
+		<div className="document-statistics-fds">
+			<FrontendDataSet
+				customDataRenderers={{
+					averageTimeDataRenderer: AverageTimeDataRenderer,
+					documentNameDataRenderer: DocumentTitleDataRenderer,
+					lastViewedDataRenderer: LastViewedDataRenderer,
+					userInvolvedDataRenderer: UserInvolvedDataRenderer,
+				}}
+				id={namespace}
+				items={items}
+				showManagementBar={false}
+				showPagination={false}
+				showSearch={false}
+				showSelectAll={false}
+				views={[
+					{
+						contentRenderer: 'table',
+						label: Liferay.Language.get('table'),
+						name: 'table',
+						schema: {
+							fields: [
+								{
+									contentRenderer: 'documentNameDataRenderer',
+									fieldName: 'title',
+									label: Liferay.Language.get('title'),
+								},
+								{
+									fieldName: 'totalViews',
+									label: Liferay.Language.get('total-views'),
+								},
+								{
+									contentRenderer: 'lastViewedDataRenderer',
+									fieldName: 'lastViewed',
+									label: Liferay.Language.get('last-viewed'),
+								},
+								{
+									fieldName: 'download',
+									label: Liferay.Language.get('download'),
+								},
+								{
+									contentRenderer: 'averageTimeDataRenderer',
+									fieldName: 'averageTime',
+									label: Liferay.Language.get('average-time'),
+								},
+								{
+									contentRenderer: 'userInvolvedDataRenderer',
+									fieldName: 'userInvolved',
+									label: Liferay.Language.get(
+										'user-involved'
+									),
+								},
+							],
+						},
+						thumbnail: 'table',
 					},
-					thumbnail: 'table',
-				},
-			]}
-		/>
+				]}
+			/>
+		</div>
 	);
 };
 
