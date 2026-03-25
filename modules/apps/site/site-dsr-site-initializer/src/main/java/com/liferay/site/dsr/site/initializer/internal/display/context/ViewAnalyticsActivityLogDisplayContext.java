@@ -10,6 +10,8 @@ import com.liferay.object.service.ObjectEntryService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Map;
+
 /**
  * @author Gianmarco Brunialti Masera
  */
@@ -22,6 +24,15 @@ public class ViewAnalyticsActivityLogDisplayContext
 		ObjectEntryService objectEntryService) {
 
 		super(httpServletRequest, objectDefinition, objectEntryService);
+	}
+
+	@Override
+	public Map<String, Object> getProps() {
+		return HashMapBuilder.<String, Object>putAll(
+			super.getProps()
+		).put(
+			"namespace", DSRSiteInitializerFDSNames.LATEST_ACTIVITY
+		).build();
 	}
 
 }
