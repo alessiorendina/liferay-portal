@@ -7,6 +7,7 @@ import ClayIcon from '@clayui/icon';
 import ClaySticker from '@clayui/sticker';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
+import AccountSticker from "../../../common/components/AccountSticker";
 
 export const TYPES = [
 	{
@@ -248,16 +249,13 @@ function ActivityLog() {
 
 						{userLogs.map((userLogsEntry: IUserLogsEntry) => (
 							<>
-								<div className="pl-3">
-									<ClaySticker
+								<div className="inline-item d-flex pl-3">
+									<AccountSticker
 										className="sticker-user-icon"
+										name={userLogsEntry.userName}
 										shape="circle"
 										size="lg"
-									>
-										{getUserInitials(
-											userLogsEntry.userName
-										)}
-									</ClaySticker>
+									/>
 
 									<span className="fw-600 ml-2">
 										{userLogsEntry.userName}
