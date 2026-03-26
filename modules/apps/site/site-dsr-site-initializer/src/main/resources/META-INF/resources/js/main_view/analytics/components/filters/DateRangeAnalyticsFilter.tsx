@@ -40,6 +40,7 @@ export default function DateRangeAnalyticsFilter({
     );
 
     const changeDateRange = useCallback((value: string) => {
+        console.log(value);
         const [from, to] = value.split(' - ');
 
         setDateRange({

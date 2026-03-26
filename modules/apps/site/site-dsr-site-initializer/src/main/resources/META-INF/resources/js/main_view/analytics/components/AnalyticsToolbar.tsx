@@ -4,6 +4,7 @@
  */
 
 import ClayButton from '@clayui/button';
+import {ClaySelect} from '@clayui/form';
 import ClayNavigationBar from '@clayui/navigation-bar';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
@@ -19,6 +20,21 @@ export default function AnalyticsToolbar({
     overviewURL: string;
     timelineURL: string;
 }) {
+    const rooms = [
+        {
+            id: 12345, name: "test1"
+        },
+        {
+            id: 67890, name: "test2"
+        }
+    ];
+
+    function handleSelectChange(event: any) {
+        const value = Number(event.currentTarget.value);
+
+        window.location.reload();
+    }
+
     return (
         <div>
             <div className="d-flex">
@@ -32,7 +48,24 @@ export default function AnalyticsToolbar({
                     hideSpace
                 />
 
-                {/* TODO Add room selector */}
+                <ClaySelect
+                    name="roomSelect"
+                    onChange={handleSelectChange}
+                >
+                    <ClaySelect.Option
+                        aria-label={Liferay.Language.get('all-rooms')}
+                        label={Liferay.Language.get('all-rooms')}
+                        value=""
+                    />
+
+                    {rooms.map((room: any) => (
+                        <ClaySelect.Option
+                            key={room.id}
+                            label={`${room.name}`}
+                            value={room.id}
+                        />
+                    ))}
+                </ClaySelect>
             </div>
 
             <ClayNavigationBar

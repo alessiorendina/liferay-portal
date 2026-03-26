@@ -17,10 +17,9 @@ interface IProps {
     persisted: boolean;
 }
 
-
 export default function AnalyticsFiltersToolbar(props: IProps) {
     const [filters, setFilters] = useAnalyticsFilters(
-        props.filtersJSONString);
+        props.filtersJSONString, props.persisted);
 
     const setValue = useCallback((filter: TAnalyticsFilter) => {
         // @ts-ignore
@@ -31,12 +30,12 @@ export default function AnalyticsFiltersToolbar(props: IProps) {
     }, [setFilters]);
 
     useEffect(() => {
+        console.log(filters);
         Liferay.fire('dsr-filters-updated', { filters });
     }, [filters]);
 
     return props.interactable
-        ? null
-        : (
+        ? (
             <div className="d-flex">
                 {Object.values(filters).map((filter, index) => (
                     filter.active
@@ -50,5 +49,5 @@ export default function AnalyticsFiltersToolbar(props: IProps) {
                         ) : null
                 ))}
             </div>
-        );
+        ) : null;
 }

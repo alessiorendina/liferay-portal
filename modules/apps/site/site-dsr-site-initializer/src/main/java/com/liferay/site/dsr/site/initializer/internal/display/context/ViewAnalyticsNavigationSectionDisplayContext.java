@@ -59,9 +59,9 @@ public class ViewAnalyticsNavigationSectionDisplayContext extends BaseAnalyticsS
 		return JSONUtil.put(
 			"disabled", _getConfigurationValue("disableFilters")
 		).put(
-			"interactable", _getConfigurationValue("userControlledFilters")
+			"interactable", /*_getConfigurationValue("userControlledFilters")*/ true
 		).put(
-			"persisted", _getConfigurationValue("persistFilters")
+			"persisted", /*_getConfigurationValue("persistFilters")*/ true
 		);
 	}
 

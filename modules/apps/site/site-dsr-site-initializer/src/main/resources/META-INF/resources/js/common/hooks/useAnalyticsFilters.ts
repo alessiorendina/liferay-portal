@@ -22,7 +22,7 @@ export default function useAnalyticsFilters(filtersJSONString: string | null, pe
         if (persisted) {
             storeFilters();
         }
-    }, [storeFilters]);
+    }, [persisted, storeFilters]);
 
     return [filters, setFilters];
 }

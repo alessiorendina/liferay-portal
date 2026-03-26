@@ -47,7 +47,7 @@ public abstract class BaseAnalyticsSectionDisplayContext {
 		HttpSession httpSession = httpServletRequest.getSession();
 
 		String filters =
-			(String) httpSession.getAttribute(DSRWebKeys.DSR_ANALYTICS_STORE_FILTERS);
+			(String)httpSession.getAttribute(DSRWebKeys.DSR_ANALYTICS_STORE_FILTERS);
 
 		if (Validator.isNotNull(filters)) {
 			return filters;

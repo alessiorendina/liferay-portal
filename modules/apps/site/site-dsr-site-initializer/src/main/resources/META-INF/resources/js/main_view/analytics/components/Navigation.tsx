@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import AnalyticsToolbar from "./AnalyticsToolbar";
 import AnalyticsFiltersToolbar from "./AnalyticsFiltersToolbar";
 
@@ -27,7 +27,6 @@ export default function Navigation({
     filtersJSONString,
     filterSettings,
 }: IProps) {
-
     console.log(activeTab, filtersJSONString, filterSettings);
 
     return (
