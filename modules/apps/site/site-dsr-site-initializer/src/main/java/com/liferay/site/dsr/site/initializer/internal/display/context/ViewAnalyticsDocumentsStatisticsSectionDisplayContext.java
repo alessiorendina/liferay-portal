@@ -5,24 +5,16 @@
 
 package com.liferay.site.dsr.site.initializer.internal.display.context;
 
-import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
-import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
-import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.site.dsr.site.initializer.internal.constants.DSRConstants;
-import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Gianmarco Brunialti Masera
  */
-public class ViewAnalyticsDocumentsStatisticsSectionDisplayContext extends BaseAnalyticsSectionDisplayContext {
+public class ViewAnalyticsDocumentsStatisticsSectionDisplayContext
+	extends BaseAnalyticsSectionDisplayContext {
 
 	public ViewAnalyticsDocumentsStatisticsSectionDisplayContext(
 		HttpServletRequest httpServletRequest,

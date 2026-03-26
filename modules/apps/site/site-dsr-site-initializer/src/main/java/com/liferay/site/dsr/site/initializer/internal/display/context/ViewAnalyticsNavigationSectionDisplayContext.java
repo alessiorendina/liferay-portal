@@ -5,19 +5,17 @@
 
 package com.liferay.site.dsr.site.initializer.internal.display.context;
 
-
 import com.liferay.fragment.model.FragmentEntryLink;
-import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectEntryService;
-
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
@@ -25,7 +23,8 @@ import java.util.Map;
 /**
  * @author Gianmarco Brunialti Masera
  */
-public class ViewAnalyticsNavigationSectionDisplayContext extends BaseAnalyticsSectionDisplayContext {
+public class ViewAnalyticsNavigationSectionDisplayContext
+	extends BaseAnalyticsSectionDisplayContext {
 
 	public ViewAnalyticsNavigationSectionDisplayContext(
 		JSONObject configurationJSONObject,
@@ -67,14 +66,14 @@ public class ViewAnalyticsNavigationSectionDisplayContext extends BaseAnalyticsS
 
 	@Override
 	public Map<String, Object> getProps() {
-		return 	HashMapBuilder.<String, Object>putAll(
+		return HashMapBuilder.<String, Object>putAll(
 			super.getProps()
 		).put(
 			"activeTab", getActiveTab()
 		).put(
-			"filtersJSONString", getAnalyticsStoreFilters()
-		).put(
 			"filterSettings", getFilterSettingsJSONObject()
+		).put(
+			"filtersJSONString", getAnalyticsStoreFilters()
 		).put(
 			"room", ""
 		).build();
@@ -88,7 +87,9 @@ public class ViewAnalyticsNavigationSectionDisplayContext extends BaseAnalyticsS
 				PortalUtil.getLocale(httpServletRequest), name));
 	}
 
-	private JSONObject _configurationJSONObject;
-	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
-	private FragmentEntryLink _fragmentEntryLink;
+	private final JSONObject _configurationJSONObject;
+	private final FragmentEntryConfigurationParser
+		_fragmentEntryConfigurationParser;
+	private final FragmentEntryLink _fragmentEntryLink;
+
 }

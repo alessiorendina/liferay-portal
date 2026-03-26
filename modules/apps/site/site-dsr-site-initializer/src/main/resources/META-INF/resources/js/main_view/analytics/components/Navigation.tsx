@@ -4,48 +4,44 @@
  */
 
 import React, {useState} from 'react';
-import AnalyticsToolbar from "./AnalyticsToolbar";
-import AnalyticsFiltersToolbar from "./AnalyticsFiltersToolbar";
+
+import AnalyticsFiltersToolbar from './AnalyticsFiltersToolbar';
+import AnalyticsToolbar from './AnalyticsToolbar';
 
 interface IProps {
-    activeTab: string;
-    filtersJSONString: string;
-    filterSettings: {
-        disabled: boolean;
-        interactable: boolean;
-        persisted: boolean;
-    },
-    room: any;
+	activeTab: string;
+	filtersJSONString: string;
+	filterSettings: {
+		disabled: boolean;
+		interactable: boolean;
+		persisted: boolean;
+	};
+	room: any;
 }
 
-const BASE_URL = `${
-    Liferay.ThemeDisplay.getPortalURL()
-}/web/dsr/analytics`;
+const BASE_URL = `${Liferay.ThemeDisplay.getPortalURL()}/web/dsr/analytics`;
 
 export default function Navigation({
-    activeTab,
-    filtersJSONString,
-    filterSettings,
+	activeTab,
+	filterSettings,
+	filtersJSONString,
 }: IProps) {
-    console.log(activeTab, filtersJSONString, filterSettings);
+	console.log(activeTab, filtersJSONString, filterSettings);
 
-    return (
-        <>
-            <AnalyticsToolbar
-                activeTab={activeTab}
-                overviewURL={`${BASE_URL}/view-overview`}
-                timelineURL={`${BASE_URL}/view-timeline`}
-            />
+	return (
+		<>
+			<AnalyticsToolbar
+				activeTab={activeTab}
+				overviewURL={`${BASE_URL}/view-overview`}
+				timelineURL={`${BASE_URL}/view-timeline`}
+			/>
 
-            {filterSettings.disabled
-                ? null
-                : (
-                    <AnalyticsFiltersToolbar
-                        {...filterSettings}
-                        filtersJSONString={filtersJSONString}
-                    />
-                )
-            }
-        </>
-    );
+			{filterSettings.disabled ? null : (
+				<AnalyticsFiltersToolbar
+					{...filterSettings}
+					filtersJSONString={filtersJSONString}
+				/>
+			)}
+		</>
+	);
 }

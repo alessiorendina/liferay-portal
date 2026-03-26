@@ -13,7 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * @author Gianmarco Brunialti Masera
  */
-public class ViewAnalyticsFrequencyChartSectionDisplayContext extends BaseAnalyticsSectionDisplayContext {
+public class ViewAnalyticsFrequencyChartSectionDisplayContext
+	extends BaseAnalyticsSectionDisplayContext {
 
 	public ViewAnalyticsFrequencyChartSectionDisplayContext(
 		HttpServletRequest httpServletRequest,

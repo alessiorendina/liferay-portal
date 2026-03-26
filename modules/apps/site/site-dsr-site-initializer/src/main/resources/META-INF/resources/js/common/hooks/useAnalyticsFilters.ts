@@ -5,24 +5,28 @@
 
 import React, {useCallback, useEffect, useState} from 'react';
 
-import {toFilters, toStoredFilters} from "../../main_view/analytics/utils";
-import AnalyticsService from "../services/AnalyticsService";
-import {TAnalyticsFilter} from "../../main_view/analytics/types";
+import {TAnalyticsFilter} from '../../main_view/analytics/types';
+import {toFilters, toStoredFilters} from '../../main_view/analytics/utils';
+import AnalyticsService from '../services/AnalyticsService';
 
-export default function useAnalyticsFilters(filtersJSONString: string | null, persisted: boolean = false) {
-    const [filters, setFilters] = useState<TAnalyticsFilter>(
-        toFilters(filtersJSONString));
+export default function useAnalyticsFilters(
+	filtersJSONString: string | null,
+	persisted: boolean = false
+) {
+	const [filters, setFilters] = useState<TAnalyticsFilter>(
+		toFilters(filtersJSONString)
+	);
 
-    const storeFilters = useCallback(
-        async () => AnalyticsService.storeFilters(toStoredFilters(filters)),
-        [filters]
-    );
+	const storeFilters = useCallback(
+		async () => AnalyticsService.storeFilters(toStoredFilters(filters)),
+		[filters]
+	);
 
-    useEffect(() => {
-        if (persisted) {
-            storeFilters();
-        }
-    }, [persisted, storeFilters]);
+	useEffect(() => {
+		if (persisted) {
+			storeFilters();
+		}
+	}, [persisted, storeFilters]);
 
-    return [filters, setFilters];
+	return [filters, setFilters];
 }

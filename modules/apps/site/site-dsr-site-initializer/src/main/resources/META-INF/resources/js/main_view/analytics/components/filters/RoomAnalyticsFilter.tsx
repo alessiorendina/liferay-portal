@@ -4,12 +4,13 @@
  */
 
 import React from 'react';
-import {IAnalyticsFilterProps} from "../../types";
+
+import {IAnalyticsFilterProps} from '../../types';
 
 export default function RoomAnalyticsFilter({
-    setValue,
-    value,
-    ...otherProps
+	setValue,
+	value,
+	...otherProps
 }: IAnalyticsFilterProps) {
-    return (<></>);
+	return <></>;
 }

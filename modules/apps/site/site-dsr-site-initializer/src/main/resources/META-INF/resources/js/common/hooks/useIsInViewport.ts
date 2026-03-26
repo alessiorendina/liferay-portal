@@ -4,20 +4,21 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import isInViewport from "../utils/isInViewport";
+
+import isInViewport from '../utils/isInViewport';
 
 export default function useIsInViewport(element: HTMLElement) {
-    const [visible, setVisible] = useState(false);
+	const [visible, setVisible] = useState(false);
 
-    useEffect(() => {
-        const onScroll = () => setVisible(isInViewport(element))
+	useEffect(() => {
+		const onScroll = () => setVisible(isInViewport(element));
 
-        window.addEventListener('scroll', onScroll);
+		window.addEventListener('scroll', onScroll);
 
-        return () => {
-            window.removeEventListener('scroll', onScroll);
-        }
-    }, [element, setVisible]);
+		return () => {
+			window.removeEventListener('scroll', onScroll);
+		};
+	}, [element, setVisible]);
 
-    return visible;
+	return visible;
 }

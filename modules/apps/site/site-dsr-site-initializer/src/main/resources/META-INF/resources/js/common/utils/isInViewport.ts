@@ -4,21 +4,19 @@
  */
 
 export default function isInViewport(
-    element: HTMLElement,
-    {
-        bottomThreshold = 0,
-        topThreshold = 0,
-    } = {}) {
-    if (!element) {
-        return false;
-    }
+	element: HTMLElement,
+	{bottomThreshold = 0, topThreshold = 0} = {}
+) {
+	if (!element) {
+		return false;
+	}
 
-    const rect = element.getBoundingClientRect();
-    const viewportHeight = window.innerHeight ||
-                           window.document.documentElement.clientHeight;
+	const rect = element.getBoundingClientRect();
+	const viewportHeight =
+		window.innerHeight || window.document.documentElement.clientHeight;
 
-    const isAboveBottom = rect.top < (viewportHeight - bottomThreshold);
-    const isBelowTop = rect.bottom > topThreshold;
+	const isAboveBottom = rect.top < viewportHeight - bottomThreshold;
+	const isBelowTop = rect.bottom > topThreshold;
 
-    return isBelowTop && isAboveBottom;
+	return isBelowTop && isAboveBottom;
 }

@@ -12,10 +12,10 @@ ViewAnalyticsNavigationSectionDisplayContext viewAnalyticsNavigationSectionDispl
 %>
 
 <div>
-	<div class="dsr-section custom-empty-state">
+	<div class="custom-empty-state dsr-section">
 		<react:component
 			module="{Navigation} from site-dsr-site-initializer"
-			props='<%= viewAnalyticsNavigationSectionDisplayContext.getProps() %>'
+			props="<%= viewAnalyticsNavigationSectionDisplayContext.getProps() %>"
 		/>
 	</div>
 </div>

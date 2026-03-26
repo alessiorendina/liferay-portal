@@ -7,12 +7,10 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-ViewAnalyticsActivityLogDisplayContext viewAnalyticsActivityLogDisplayContext = (ViewAnalyticsActivityLogDisplayContext)request.getAttribute(ViewAnalyticsActivityLogDisplayContext.class.getName());
-%>
-
 <div>
-	<div class="dsr-section custom-empty-state">
-		<react:component module="{ActivityLog} from site-dsr-site-initializer" />
+	<div class="custom-empty-state dsr-section">
+		<react:component
+			module="{ActivityLog} from site-dsr-site-initializer"
+		/>
 	</div>
 </div>

@@ -37,7 +37,8 @@ public class ViewRoomsJSPSectionFragmentRenderer
 
 	@Override
 	protected ViewRoomsSectionDisplayContext getDisplayContext(
-		FragmentRendererContext fragmentRendererContext, HttpServletRequest httpServletRequest) {
+		FragmentRendererContext fragmentRendererContext,
+		HttpServletRequest httpServletRequest) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(

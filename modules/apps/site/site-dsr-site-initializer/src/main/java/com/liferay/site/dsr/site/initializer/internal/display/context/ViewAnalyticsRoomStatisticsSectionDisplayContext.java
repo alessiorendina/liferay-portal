@@ -10,12 +10,11 @@ import com.liferay.object.service.ObjectEntryService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.List;
-
 /**
  * @author Gianmarco Brunialti Masera
  */
-public class ViewAnalyticsRoomStatisticsSectionDisplayContext extends BaseAnalyticsSectionDisplayContext {
+public class ViewAnalyticsRoomStatisticsSectionDisplayContext
+	extends BaseAnalyticsSectionDisplayContext {
 
 	public ViewAnalyticsRoomStatisticsSectionDisplayContext(
 		HttpServletRequest httpServletRequest,

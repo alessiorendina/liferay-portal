@@ -8,6 +8,6 @@
 <%@ include file="/init.jsp" %>
 
 <div>
-	<div class="dsr-section custom-empty-state">
+	<div class="custom-empty-state dsr-section">
 	</div>
 </div>

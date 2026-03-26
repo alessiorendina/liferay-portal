@@ -12,10 +12,10 @@ ViewAnalyticsDocumentsStatisticsSectionDisplayContext viewAnalyticsDocumentsStat
 %>
 
 <div>
-	<div class="dsr-section custom-empty-state">
+	<div class="custom-empty-state dsr-section">
 		<react:component
-			props="<%= viewAnalyticsDocumentsStatisticsSectionDisplayContext.getProps() %>"
 			module="{DocumentsStatistics} from site-dsr-site-initializer"
+			props="<%= viewAnalyticsDocumentsStatisticsSectionDisplayContext.getProps() %>"
 		/>
 	</div>
 </div>

@@ -11,10 +11,10 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
-
 import com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsDocumentsStatisticsSectionDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -23,7 +23,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = FragmentRenderer.class)
 public class ViewAnalyticsDocumentsStatisticsJSPSectionFragmentRenderer
-	extends BaseJSPSectionFragmentRenderer<ViewAnalyticsDocumentsStatisticsSectionDisplayContext> {
+	extends BaseJSPSectionFragmentRenderer
+		<ViewAnalyticsDocumentsStatisticsSectionDisplayContext> {
 
 	@Override
 	public String getLabelKey() {
@@ -31,8 +32,10 @@ public class ViewAnalyticsDocumentsStatisticsJSPSectionFragmentRenderer
 	}
 
 	@Override
-	protected ViewAnalyticsDocumentsStatisticsSectionDisplayContext getDisplayContext(
-		FragmentRendererContext fragmentRendererContext, HttpServletRequest httpServletRequest) {
+	protected ViewAnalyticsDocumentsStatisticsSectionDisplayContext
+		getDisplayContext(
+			FragmentRendererContext fragmentRendererContext,
+			HttpServletRequest httpServletRequest) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -50,7 +53,6 @@ public class ViewAnalyticsDocumentsStatisticsJSPSectionFragmentRenderer
 	protected String getJSPPath() {
 		return "/view_analytics_documents_statistics.jsp";
 	}
-
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

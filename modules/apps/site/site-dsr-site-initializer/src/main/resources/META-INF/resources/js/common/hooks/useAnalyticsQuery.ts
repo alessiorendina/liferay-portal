@@ -3,44 +3,50 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {useIsMounted} from '@liferay/frontend-js-react-web';
 import {fetch} from 'frontend-js-web';
 import React, {useCallback, useEffect, useState} from 'react';
-import useIsInViewport from "./useIsInViewport";
-import AnalyticsService from "../services/AnalyticsService";
-import {useIsMounted} from "@liferay/frontend-js-react-web";
-import {TAnalyticsFilter} from "../../main_view/analytics/types";
+
+import {TAnalyticsFilter} from '../../main_view/analytics/types';
+import AnalyticsService from '../services/AnalyticsService';
+import useIsInViewport from './useIsInViewport';
 
 export default function useAnalyticsQuery(
-    element: HTMLElement,
-    query: string,
-    settings: any = {checkViewportVisibility: true},
+	element: HTMLElement,
+	query: string,
+	settings: any = {checkViewportVisibility: true}
 ) {
-    const isMounted = useIsMounted();
-    const isVisible= useIsInViewport(element);
+	const isMounted = useIsMounted();
+	const isVisible = useIsInViewport(element);
 
-    const [filters, setFilters] = useState<string>('');
-    const [response, setResponse] = useState(null);
+	const [filters, setFilters] = useState<string>('');
+	const [response, setResponse] = useState(null);
 
-    const sendRequest = useCallback(async (filters: TAnalyticsFilter) => {
-        if (settings.checkViewportVisibility && isVisible) {
-            // TODO Apollo useQuery
-            const response = await AnalyticsService.get(query, filters);
+	const sendRequest = useCallback(
+		async (filters: TAnalyticsFilter) => {
+			if (settings.checkViewportVisibility && isVisible) {
 
-            setResponse(response as any);
-        }
-    }, [filters, setResponse,  settings, isVisible]);
+				// TODO Apollo useQuery
 
-    useEffect(() => {
-        if (isMounted()) {
-            Liferay.on('dsr-filters-updated', sendRequest)
-        }
+				const response = await AnalyticsService.get(query, filters);
 
-        return () => {
-            if (isMounted()) {
-                Liferay.detach('dsr-filters-updated', sendRequest);
-            }
-        }
-    }, [sendRequest]);
+				setResponse(response as any);
+			}
+		},
+		[filters, setResponse, settings, isVisible]
+	);
 
-    return {response, sendRequest};
+	useEffect(() => {
+		if (isMounted()) {
+			Liferay.on('dsr-filters-updated', sendRequest);
+		}
+
+		return () => {
+			if (isMounted()) {
+				Liferay.detach('dsr-filters-updated', sendRequest);
+			}
+		};
+	}, [sendRequest]);
+
+	return {response, sendRequest};
 }

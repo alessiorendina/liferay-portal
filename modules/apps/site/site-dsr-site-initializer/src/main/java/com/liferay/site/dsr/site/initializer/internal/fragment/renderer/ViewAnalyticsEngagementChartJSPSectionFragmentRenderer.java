@@ -11,17 +11,11 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
-<<<<<<< HEAD
-import com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsEngagementChartAnalyticsSectionDisplayContext;
-
-import jakarta.servlet.http.HttpServletRequest;
-
-=======
 
 import com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsEngagementChartSectionDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
->>>>>>> c31113c3480c0 (micheluzzo tutto tuo)
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 

@@ -63,9 +63,7 @@ describe('FDSMostEngagedDocuments', () => {
 	});
 
 	it('renders the component with provided data', () => {
-		const {baseElement} = render(
-			<DocumentsStatistics items={mockData} />
-		);
+		const {baseElement} = render(<DocumentsStatistics items={mockData} />);
 
 		expect(baseElement).toMatchSnapshot();
 

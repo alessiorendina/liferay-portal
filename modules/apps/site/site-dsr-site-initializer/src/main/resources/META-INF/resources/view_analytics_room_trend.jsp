@@ -12,7 +12,7 @@ ViewAnalyticsRoomTrendAnalyticsSectionDisplayContext viewAnalyticsRoomTrendAnaly
 %>
 
 <div>
-	<div class="dsr-section custom-empty-state">
+	<div class="custom-empty-state dsr-section">
 		<react:component
 			module="{RoomTrend} from site-dsr-site-initializer"
 			props="<%= viewAnalyticsRoomTrendAnalyticsSectionDisplayContext.getProps() %>"

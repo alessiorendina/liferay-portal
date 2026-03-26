@@ -20,7 +20,9 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsNavigationSectionDisplayContext;
+
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -29,7 +31,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = FragmentRenderer.class)
 public class ViewAnalyticsNavigationJSPSectionFragmentRenderer
-	extends BaseJSPSectionFragmentRenderer<ViewAnalyticsNavigationSectionDisplayContext> {
+	extends BaseJSPSectionFragmentRenderer
+		<ViewAnalyticsNavigationSectionDisplayContext> {
 
 	@Override
 	public JSONObject getConfigurationJSONObject(

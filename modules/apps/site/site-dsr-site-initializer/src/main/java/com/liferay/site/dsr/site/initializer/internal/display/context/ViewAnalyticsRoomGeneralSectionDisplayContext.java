@@ -5,18 +5,16 @@
 
 package com.liferay.site.dsr.site.initializer.internal.display.context;
 
-
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectEntryService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.List;
-
 /**
  * @author Gianmarco Brunialti Masera
  */
-public class ViewAnalyticsRoomGeneralSectionDisplayContext extends BaseAnalyticsSectionDisplayContext {
+public class ViewAnalyticsRoomGeneralSectionDisplayContext
+	extends BaseAnalyticsSectionDisplayContext {
 
 	public ViewAnalyticsRoomGeneralSectionDisplayContext(
 		HttpServletRequest httpServletRequest,

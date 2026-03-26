@@ -5,25 +5,26 @@
 
 package com.liferay.site.dsr.site.initializer.internal.struts;
 
-
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.site.dsr.site.initializer.internal.constants.DSRWebKeys;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
-import java.util.Objects;
 
 /**
  * @author Gianmarco Brunialti Masera
  */
-@Component(property = "path=/dsr/analytics/store_filters", service = StrutsAction.class)
+@Component(
+	property = "path=/dsr/analytics/store_filters", service = StrutsAction.class
+)
 public class StoreAnalyticsFiltersStrutsAction implements StrutsAction {
 
 	@Override
@@ -36,7 +37,8 @@ public class StoreAnalyticsFiltersStrutsAction implements StrutsAction {
 
 		HttpSession httpSession = httpServletRequest.getSession();
 
-		httpSession.setAttribute(DSRWebKeys.DSR_ANALYTICS_STORE_FILTERS, filters);
+		httpSession.setAttribute(
+			DSRWebKeys.DSR_ANALYTICS_STORE_FILTERS, filters);
 
 		return null;
 	}
