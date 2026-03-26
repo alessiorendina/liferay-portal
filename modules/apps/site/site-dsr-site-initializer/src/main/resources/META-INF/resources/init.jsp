@@ -51,6 +51,8 @@ page import="com.liferay.site.dsr.site.initializer.internal.display.context.View
 <%@ page
 	import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsFrequencyChartAnalyticsSectionDisplayContext" %>
 <%@ page import="com.liferay.portal.kernel.util.HashMapBuilder" %>
+<%@page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsLatestActivitySectionDisplayContext" %>
+<%@ page import="com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsMostActiveVisitorsSectionDisplayContext" %>
 
 <liferay-theme:defineObjects />
 

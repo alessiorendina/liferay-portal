@@ -16,6 +16,8 @@ export {default as ActivityLog} from './main_view/analytics/components/ActivityL
 export {default as DocumentsStatistics} from './main_view/analytics/components/DocumentsStatistics';
 export {default as EngagementChart} from './main_view/analytics/components/EngagementChart';
 export {default as FrequencyChart} from './main_view/analytics/components/FrequencyChart';
+export {default as LatestActivity} from './main_view/analytics/components/LatestActivity';
+export {default as MostActiveVisitors} from './main_view/analytics/components/MostActiveVisitors';
 export {default as Navigation} from './main_view/analytics/components/Navigation';
 export {default as RoomStatistics} from './main_view/analytics/components/RoomStatistics';
 export {default as RoomTrend} from './main_view/analytics/components/RoomTrend';
