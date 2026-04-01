@@ -10,27 +10,62 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {TAnalyticsFilter} from '../../main_view/analytics/types';
 import AnalyticsService from '../services/AnalyticsService';
 import useIsInViewport from './useIsInViewport';
+import useAnalyticsFilters from "./useAnalyticsFilters";
+import {toFilters} from "../../main_view/analytics/utils";
+
+const formatQuery = (data: any) => {
+	let { query, variables } = data;
+
+	const keys = Object.keys(variables).sort((a, b) => b.length - a.length);
+
+	keys.forEach((key) => {
+		const value = variables[key];
+
+		const regex = new RegExp(`\\$${key}\\b`, 'g');
+
+		const formattedValue = value === null ? 'null' : JSON.stringify(value);
+
+		query = query.replace(regex, formattedValue);
+	});
+
+	query = query.replace(/\$\w+:\s*[\w!]+,?/g, '');
+
+	query = query.replace(/\w+:\s*\$\w+,?/g, '');
+
+	query = query
+		.replace(/,\s*\)/g, ')')
+		.replace(/\(\s*,/g, '(')
+		.replace(/\(\s*\)/g, '')
+		.replace(/,\s*,/g, ',');
+
+	return query.trim();
+
+	return query;
+};
 
 export default function useAnalyticsQuery(
 	element: HTMLElement,
-	query: string,
+	query: any,
 	settings: any = {checkViewportVisibility: true}
 ) {
 	const isMounted = useIsMounted();
 	const isVisible = useIsInViewport(element);
 
-	const [filters, setFilters] = useState<string>('');
+	const [filters, setFilters] = useAnalyticsFilters('');
 	const [response, setResponse] = useState(null);
 
 	const sendRequest = useCallback(
 		async (filters: TAnalyticsFilter) => {
+			console.log("sendRequest");
+			console.log(settings.checkViewportVisibility, isVisible);
 			if (settings.checkViewportVisibility && isVisible) {
+				const formattedQuery = formatQuery(query);
 
-				// TODO Apollo useQuery
-
-				const response = await AnalyticsService.get(query, filters);
+				const response = await AnalyticsService.get(formattedQuery, filters);
 
 				setResponse(response as any);
+
+				console.log(response);
 			}
 		},
 		[filters, setResponse, settings, isVisible]

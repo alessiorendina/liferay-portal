@@ -15,6 +15,8 @@ export default function useIsInViewport(element: HTMLElement) {
 
 		window.addEventListener('scroll', onScroll);
 
+		onScroll();
+
 		return () => {
 			window.removeEventListener('scroll', onScroll);
 		};

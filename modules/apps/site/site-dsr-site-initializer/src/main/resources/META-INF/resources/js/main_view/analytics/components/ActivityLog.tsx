@@ -4,10 +4,11 @@
  */
 
 import ClayIcon from '@clayui/icon';
-import ClaySticker from '@clayui/sticker';
 import {sub} from 'frontend-js-web';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import AccountSticker from "../../../common/components/AccountSticker";
+import useAnalyticsQuery from "../../../common/hooks/useAnalyticsQuery";
+import './../../../../css/components/ActivityLog.scss';
 
 export const TYPES = [
 	{
@@ -96,6 +97,53 @@ const formatData = (data: IRawDataEntry[]) => {
 function ActivityLog() {
 	const [activityLogs, setActivityLogs] = useState<TActivityLog>({});
 
+	const activityLogRef = useRef<HTMLDivElement>(null);
+
+	const graphqlQuery = {
+		query: `
+			query UserSession($channelId: String!, $entityId: String, $entityType: EntityType!, $keywords: String, $page: Int!, $rangeEnd: String, $rangeKey: Int, $rangeStart: String, $size: Int!) {
+			  eventsByUserSessions(
+				channelId: $channelId
+				entityId: $entityId
+				entityType: $entityType
+				keywords: $keywords
+				page: $page
+				rangeEnd: $rangeEnd
+				rangeKey: $rangeKey
+				rangeStart: $rangeStart
+				size: $size
+			  ) {
+				userSessions {
+				  ... on UserSession {
+					events {
+					  createDate
+					  emailAddressHashed
+					  name
+					  __typename
+					}
+					__typename
+				  }
+				  __typename
+				}
+				totalEvents
+				__typename
+			  }
+			}
+		  `,
+		variables: {
+			rangeEnd: null,
+			rangeKey: 7,
+			rangeStart: null,
+			channelId: "808122315193619922",
+			entityType: "INDIVIDUAL",
+			keywords: "",
+			page: 1,
+			size: 20
+		}
+	};
+
+	//useAnalyticsQuery(activityLogRef.current!, graphqlQuery);
+
 	useEffect(() => {
 		const data = [
 			{
@@ -174,72 +222,7 @@ function ActivityLog() {
 	}
 
 	return (
-		<>
-			<style
-				dangerouslySetInnerHTML={{
-					__html: `
-			li.timeline-item::before {
-				background-color: #E7E7ED;
-				bottom: -20px;
-			}
-			li.timeline-item:first-of-type::before {
-				top: 34px;
-			}
-			li.timeline-item:last-of-type::before {
-				content: none;
-			}
-			.activity-logs-date {
-				background-color: #F7F8F9;
-				border: 1px solid #CDCED9;
-			}
-			.fw-600 {
-				font-weight: 600;
-			}
-			.log-description {
-				border-left: 3px solid #DFB3FF;
-				font-size: 12px;
-				font-style: italic;
-			}
-			.log-time {
-				font-size: 10px;
-			}
-			.log-title {
-				font-size: 12px;
-			}
-			.timeline .panel-body > div {
-				line-height: 21px;
-			}
-			.timeline .sticker {
-				top: 12px;
-				transform: translateX(-50%);
-			}
-			.timeline-increment {
-            	height: 32px;
-            	line-height: 0;
-            	width: 32px;
-			}
-            .timeline-increment-comment {
-            	background-color: #F2E5FF;
-            }
-            .timeline-increment-icon-comment {
-            	color: #AA33FF;
-            }
-            .timeline-increment-upload {
-            	background-color: #F1FCE9;
-            }
-            .timeline-increment-icon-upload {
-            	color: #458613;
-            }
-            .timeline-increment-view {
-            	background-color: #E5F6FF;
-            }
-            .timeline-increment-icon-view {
-            	color: #0077B3;
-            }
-         `,
-				}}
-			/>
-
+		<div ref={activityLogRef}>
 			{Object.entries(activityLogs).map(
 				([date, userLogs]: [string, IUserLogsEntry[]]) => (
 					<>
@@ -316,7 +299,7 @@ function ActivityLog() {
 					</>
 				)
 			)}
-		</>
+		</div>
 	);
 }
 

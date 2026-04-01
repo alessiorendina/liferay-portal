@@ -10,14 +10,30 @@ import {
 	TAnalyticsFilterValue,
 } from '../../main_view/analytics/types';
 
-const QUERY_ANALYTICS_URL = '';
+const API_URL = 'https://osbasahbackend-ac-stg.lfr.st/api/1.0/graphql';
 const STORE_ANALYTICS_FILTERS_URL = '/dsr/analytics/store_filters';
 
-function get(query: string, filters: TAnalyticsFilter) {
+async function get(query: string, filters: TAnalyticsFilter) {
 	console.log('fetch');
 
 	// TODO implement fetch for GQL endpoint
 
+	const response = await fetch(API_URL, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			'OSB-Asah-Project-ID': 'stg97e94fed78774ba48d0e916f822773d4',
+			'OSB-Asah-Data-Source-ID': '808122314969199499',
+			'OSB-Asah-Faro-Backend-Security-Signature': 'd65dc054-949c-426a-adb6-205599202390'
+		},
+		body: JSON.stringify(query),
+	});
+
+	if (!response.ok) {
+		throw new Error(`Errore API: ${response.status} ${response.statusText}`);
+	}
+
+	return response;
 }
 
 const AJAX = {
