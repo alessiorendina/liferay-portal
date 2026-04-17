@@ -522,8 +522,20 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		DateConfig expirationDateConfig = DateConfig.toExpirationDateConfig(
 			product.getExpirationDate(), serviceContext.getTimeZone());
 
-		ProductShippingConfiguration productShippingConfiguration =
-			_getProductShippingConfiguration(product);
+		ProductConfiguration productConfiguration =
+			product.getProductConfiguration();
+
+		ProductShippingConfiguration productShippingConfiguration;
+
+		if (productConfiguration != null) {
+			productShippingConfiguration = _getProductShippingConfiguration(
+				productConfiguration);
+		}
+		else {
+			productShippingConfiguration = _getProductShippingConfiguration(
+				product);
+		}
+
 		ProductSubscriptionConfiguration productSubscriptionConfiguration =
 			product.getSubscriptionConfiguration();
 
@@ -605,8 +617,15 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			}
 		}
 
-		ProductTaxConfiguration productTaxConfiguration =
-			_getProductTaxConfiguration(product);
+		ProductTaxConfiguration productTaxConfiguration;
+
+		if (productConfiguration != null) {
+			productTaxConfiguration = _getProductTaxConfiguration(
+				productConfiguration);
+		}
+		else {
+			productTaxConfiguration = _getProductTaxConfiguration(product);
+		}
 
 		CPDefinition cpDefinition =
 			_cpDefinitionService.
