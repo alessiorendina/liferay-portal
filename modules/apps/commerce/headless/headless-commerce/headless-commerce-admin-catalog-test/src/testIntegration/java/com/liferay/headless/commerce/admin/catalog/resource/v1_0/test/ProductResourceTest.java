@@ -13,6 +13,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
+import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPOptionCategory;
@@ -380,6 +381,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductWithProductAccountGroupExternalReferenceCode();
 		_testPostProductWithProductChannelExternalReferenceCode();
 		_testPostProductWithWorkflowSingleApprover();
+		_testPostProductWithProductConfigurationShippingAndTax();
 	}
 
 	@Override
@@ -1089,6 +1091,92 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(
 			_commerceChannel.getExternalReferenceCode(),
 			productChannel.getExternalReferenceCode());
+	}
+
+	private void _testPostProductWithProductConfigurationShippingAndTax()
+		throws Exception {
+
+		double expectedDepth = RandomTestUtil.nextDouble();
+		double expectedHeight = RandomTestUtil.nextDouble();
+		double expectedShippingExtraPrice = RandomTestUtil.nextDouble();
+		double expectedWeight = RandomTestUtil.nextDouble();
+		double expectedWidth = RandomTestUtil.nextDouble();
+
+		Product postProduct = productResource.postProduct(
+			new Product() {
+				{
+					active = true;
+					catalogId = _commerceCatalog.getCommerceCatalogId();
+					externalReferenceCode = StringUtil.toLowerCase(
+						RandomTestUtil.randomString());
+					name = LanguageUtils.getLanguageIdMap(
+						RandomTestUtil.randomLocaleStringMap());
+					productConfiguration = new ProductConfiguration() {
+						{
+							productShippingConfiguration =
+								new ProductShippingConfiguration() {
+									{
+										depth = BigDecimal.valueOf(
+											expectedDepth);
+										freeShipping = true;
+										height = BigDecimal.valueOf(
+											expectedHeight);
+										shippable = true;
+										shippingExtraPrice = BigDecimal.valueOf(
+											expectedShippingExtraPrice);
+										shippingSeparately = false;
+										weight = BigDecimal.valueOf(
+											expectedWeight);
+										width = BigDecimal.valueOf(
+											expectedWidth);
+									}
+								};
+							productTaxConfiguration =
+								new ProductTaxConfiguration() {
+									{
+										taxable = false;
+									}
+								};
+						}
+					};
+					productType = SimpleCPTypeConstants.NAME;
+				}
+			});
+
+		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
+			postProduct.getId());
+
+		Assert.assertEquals(expectedDepth, cpDefinition.getDepth(), 0.001);
+		Assert.assertTrue(cpDefinition.isFreeShipping());
+		Assert.assertEquals(expectedHeight, cpDefinition.getHeight(), 0.001);
+		Assert.assertTrue(cpDefinition.isShippable());
+		Assert.assertEquals(
+			expectedShippingExtraPrice, cpDefinition.getShippingExtraPrice(),
+			0.001);
+		Assert.assertFalse(cpDefinition.isShipSeparately());
+		Assert.assertEquals(expectedWeight, cpDefinition.getWeight(), 0.001);
+		Assert.assertEquals(expectedWidth, cpDefinition.getWidth(), 0.001);
+		Assert.assertTrue(cpDefinition.isTaxExempt());
+
+		CPConfigurationEntry masterCPConfigurationEntry =
+			cpDefinition.fetchMasterCPConfigurationEntry();
+
+		Assert.assertNotNull(masterCPConfigurationEntry);
+		Assert.assertEquals(
+			expectedDepth, masterCPConfigurationEntry.getDepth(), 0.001);
+		Assert.assertTrue(masterCPConfigurationEntry.isFreeShipping());
+		Assert.assertEquals(
+			expectedHeight, masterCPConfigurationEntry.getHeight(), 0.001);
+		Assert.assertTrue(masterCPConfigurationEntry.isShippable());
+		Assert.assertEquals(
+			expectedShippingExtraPrice,
+			masterCPConfigurationEntry.getShippingExtraPrice(), 0.001);
+		Assert.assertFalse(masterCPConfigurationEntry.isShipSeparately());
+		Assert.assertEquals(
+			expectedWeight, masterCPConfigurationEntry.getWeight(), 0.001);
+		Assert.assertEquals(
+			expectedWidth, masterCPConfigurationEntry.getWidth(), 0.001);
+		Assert.assertTrue(masterCPConfigurationEntry.isTaxExempt());
 	}
 
 	private void _testPostProductWithWorkflowSingleApprover() throws Exception {
