@@ -7,6 +7,7 @@ package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.type.grouped.model.CPDefinitionGroupedEntry;
 import com.liferay.commerce.product.type.grouped.service.CPDefinitionGroupedEntryService;
@@ -14,6 +15,8 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.GroupedProduct;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.GroupedProductResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.change.tracking.CTAware;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -156,14 +159,28 @@ public class GroupedProductResourceImpl extends BaseGroupedProductResourceImpl {
 
 		CPDefinition entryCPDefinition = null;
 
+		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
+			contextUser);
+
 		if (Validator.isNotNull(
 				groupedProduct.getEntryProductExternalReferenceCode())) {
 
-			entryCPDefinition =
-				_cpDefinitionService.
-					fetchCPDefinitionByCProductExternalReferenceCode(
+			if (LazyReferencingThreadLocal.isEnabled()) {
+				entryCPDefinition =
+					_cpDefinitionLocalService.getOrAddEmptyCPDefinition(
 						groupedProduct.getEntryProductExternalReferenceCode(),
-						contextCompany.getCompanyId(), false);
+						groupedProduct.getEntryProductType(),
+						contextCompany.getCompanyId(), contextUser.getUserId(),
+						serviceContext.getScopeGroupId());
+			}
+			else {
+				entryCPDefinition =
+					_cpDefinitionService.
+						fetchCPDefinitionByCProductExternalReferenceCode(
+							groupedProduct.
+								getEntryProductExternalReferenceCode(),
+							contextCompany.getCompanyId(), false);
+			}
 		}
 
 		if (entryCPDefinition == null) {
@@ -182,7 +199,7 @@ public class GroupedProductResourceImpl extends BaseGroupedProductResourceImpl {
 			cpDefinition.getCPDefinitionId(), entryCPDefinition.getCProductId(),
 			GetterUtil.getDouble(groupedProduct.getPriority()),
 			GetterUtil.getInteger(groupedProduct.getQuantity()),
-			_serviceContextHelper.getServiceContext(contextUser));
+			serviceContext);
 	}
 
 	private Page<GroupedProduct> _getGroupedProductsPage(
@@ -214,6 +231,9 @@ public class GroupedProductResourceImpl extends BaseGroupedProductResourceImpl {
 
 	@Reference
 	private CPDefinitionGroupedEntryService _cpDefinitionGroupedEntryService;
+
+	@Reference
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;

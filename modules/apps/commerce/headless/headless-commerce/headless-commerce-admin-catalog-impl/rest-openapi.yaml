@@ -1081,6 +1081,11 @@ components:
                         hu_HU: Product Name HU
                     readOnly: true
                     type: object
+                entryProductType:
+                    description:
+                        Product type of the child product; exported so an empty child stub can be materialized with the correct immutable type when the child is imported before its own definition.
+                    example: simple
+                    type: string
                 id:
                     description:
                         Primary key of the bundle membership entry; read-only.
