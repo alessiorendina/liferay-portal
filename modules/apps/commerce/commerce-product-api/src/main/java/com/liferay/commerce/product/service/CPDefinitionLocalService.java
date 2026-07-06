@@ -505,6 +505,12 @@ public interface CPDefinitionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public String getLayoutUuid(long groupId, long cpDefinitionId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinition getOrAddEmptyCPDefinition(
+			String externalReferenceCode, String productTypeName,
+			long companyId, long userId, long groupId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -698,4 +704,4 @@ public interface CPDefinitionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-284095455
+// LIFERAY-SERVICE-BUILDER-HASH:718906395
