@@ -201,6 +201,52 @@ public class GroupedProduct implements Serializable {
 	@JsonIgnore
 	private Supplier<Map<String, String>> _entryProductNameSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Product type of the child product; exported so an empty child stub can be materialized with the correct immutable type when the child is imported before its own definition.",
+		example = "simple"
+	)
+	public String getEntryProductType() {
+		if (_entryProductTypeSupplier != null) {
+			entryProductType = _entryProductTypeSupplier.get();
+
+			_entryProductTypeSupplier = null;
+		}
+
+		return entryProductType;
+	}
+
+	public void setEntryProductType(String entryProductType) {
+		this.entryProductType = entryProductType;
+
+		_entryProductTypeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setEntryProductType(
+		UnsafeSupplier<String, Exception> entryProductTypeUnsafeSupplier) {
+
+		_entryProductTypeSupplier = () -> {
+			try {
+				return entryProductTypeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Product type of the child product; exported so an empty child stub can be materialized with the correct immutable type when the child is imported before its own definition."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String entryProductType;
+
+	@JsonIgnore
+	private Supplier<String> _entryProductTypeSupplier;
+
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Primary key of the bundle membership entry; read-only.",
@@ -552,6 +598,22 @@ public class GroupedProduct implements Serializable {
 			sb.append(_toJSON(entryProductName));
 		}
 
+		String entryProductType = getEntryProductType();
+
+		if (entryProductType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"entryProductType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(entryProductType));
+
+			sb.append("\"");
+		}
+
 		Long id = getId();
 
 		if (id != null) {
@@ -729,4 +791,4 @@ public class GroupedProduct implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:974508565
+// LIFERAY-REST-BUILDER-HASH:857398661

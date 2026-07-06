@@ -249,7 +249,7 @@ public abstract class BaseGroupedProductResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/grouped-products/{groupedProductId}' -d $'{"entryProductExternalReferenceCode": ___, "entryProductId": ___, "priority": ___, "quantity": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/grouped-products/{groupedProductId}' -d $'{"entryProductExternalReferenceCode": ___, "entryProductId": ___, "entryProductType": ___, "priority": ___, "quantity": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partially updates priority and quantity of the grouped product entry identified by groupedProductId. Calls CPDefinitionGroupedEntryService.getCPDefinitionGroupedEntry + updateCPDefinitionGroupedEntry. Validation -- NoSuchCPDefinitionGroupedEntryException -> 404 when id not found. Side effects -- None (updates priority and quantity)."
@@ -287,7 +287,7 @@ public abstract class BaseGroupedProductResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/grouped-products' -d $'{"entryProductExternalReferenceCode": ___, "entryProductId": ___, "priority": ___, "quantity": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/grouped-products' -d $'{"entryProductExternalReferenceCode": ___, "entryProductId": ___, "entryProductType": ___, "priority": ___, "quantity": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Adds a grouped product entry to the parent product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPDefinitionGroupedEntryService.addCPDefinitionGroupedEntry. Validation -- NoSuchCPDefinitionException -> 404 when either the parent product ERC or the entry product is missing. Side effects -- Links the entry product to the parent grouped product."
@@ -327,7 +327,7 @@ public abstract class BaseGroupedProductResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/grouped-products' -d $'{"entryProductExternalReferenceCode": ___, "entryProductId": ___, "priority": ___, "quantity": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/grouped-products' -d $'{"entryProductExternalReferenceCode": ___, "entryProductId": ___, "entryProductType": ___, "priority": ___, "quantity": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Adds a grouped product entry to the parent product identified by product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + CPDefinitionGroupedEntryService.addCPDefinitionGroupedEntry. Validation -- NoSuchCPDefinitionException -> 404 when parent product id or entry product is missing. Side effects -- Links the entry product to the parent grouped product."
@@ -1151,4 +1151,4 @@ public abstract class BaseGroupedProductResourceImpl
 		LogFactoryUtil.getLog(BaseGroupedProductResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-652356094
+// LIFERAY-REST-BUILDER-HASH:-1677626308
