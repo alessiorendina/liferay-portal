@@ -98,6 +98,56 @@ public class SkuOption implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _keySupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the product option (ProductOption) this selection answers; the portable, environment-independent reference resolved on import.",
+		example = "exampleERC"
+	)
+	public String getOptionExternalReferenceCode() {
+		if (_optionExternalReferenceCodeSupplier != null) {
+			optionExternalReferenceCode =
+				_optionExternalReferenceCodeSupplier.get();
+
+			_optionExternalReferenceCodeSupplier = null;
+		}
+
+		return optionExternalReferenceCode;
+	}
+
+	public void setOptionExternalReferenceCode(
+		String optionExternalReferenceCode) {
+
+		this.optionExternalReferenceCode = optionExternalReferenceCode;
+
+		_optionExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setOptionExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			optionExternalReferenceCodeUnsafeSupplier) {
+
+		_optionExternalReferenceCodeSupplier = () -> {
+			try {
+				return optionExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "External reference code of the product option (ProductOption) this selection answers; the portable, environment-independent reference resolved on import."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String optionExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _optionExternalReferenceCodeSupplier;
+
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Internal numeric identifier of the product option this selection answers.",
@@ -144,6 +194,57 @@ public class SkuOption implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Long> _optionIdSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the chosen product option value (ProductOptionValue) within the option referenced by `optionExternalReferenceCode`; the portable reference resolved on import.",
+		example = "exampleERC"
+	)
+	public String getOptionValueExternalReferenceCode() {
+		if (_optionValueExternalReferenceCodeSupplier != null) {
+			optionValueExternalReferenceCode =
+				_optionValueExternalReferenceCodeSupplier.get();
+
+			_optionValueExternalReferenceCodeSupplier = null;
+		}
+
+		return optionValueExternalReferenceCode;
+	}
+
+	public void setOptionValueExternalReferenceCode(
+		String optionValueExternalReferenceCode) {
+
+		this.optionValueExternalReferenceCode =
+			optionValueExternalReferenceCode;
+
+		_optionValueExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setOptionValueExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			optionValueExternalReferenceCodeUnsafeSupplier) {
+
+		_optionValueExternalReferenceCodeSupplier = () -> {
+			try {
+				return optionValueExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "External reference code of the chosen product option value (ProductOptionValue) within the option referenced by `optionExternalReferenceCode`; the portable reference resolved on import."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String optionValueExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _optionValueExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
@@ -281,6 +382,22 @@ public class SkuOption implements Serializable {
 			sb.append("\"");
 		}
 
+		String optionExternalReferenceCode = getOptionExternalReferenceCode();
+
+		if (optionExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"optionExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(optionExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		Long optionId = getOptionId();
 
 		if (optionId != null) {
@@ -291,6 +408,23 @@ public class SkuOption implements Serializable {
 			sb.append("\"optionId\": ");
 
 			sb.append(optionId);
+		}
+
+		String optionValueExternalReferenceCode =
+			getOptionValueExternalReferenceCode();
+
+		if (optionValueExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"optionValueExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(optionValueExternalReferenceCode));
+
+			sb.append("\"");
 		}
 
 		Long optionValueId = getOptionValueId();
@@ -422,4 +556,4 @@ public class SkuOption implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-469492223
+// LIFERAY-REST-BUILDER-HASH:-1699690869

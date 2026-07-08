@@ -2932,6 +2932,22 @@ public class Mutation {
 	}
 
 	@GraphQLField(
+		description = "Removes the product option relation identified by external reference code from its product. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRelByExternalReferenceCode + deleteCPDefinitionOptionRel. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when external reference code not found. Side effects -- Cascades deletion of associated CPDefinitionOptionValueRel rows."
+	)
+	public Response deleteProductOptionByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productOptionResource ->
+				productOptionResource.
+					deleteProductOptionByExternalReferenceCode(
+						externalReferenceCode));
+	}
+
+	@GraphQLField(
 		description = "Partially updates the product option relation identified by id, including any nested product option values. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRel + updateCPDefinitionOptionRel + nested addOrUpdateCPDefinitionOptionValueRel. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when id not found. Side effects -- Reindexes the parent product; cascades into nested product option values."
 	)
 	public Response patchProductOption(
@@ -2944,6 +2960,22 @@ public class Mutation {
 			this::_populateResourceContext,
 			productOptionResource -> productOptionResource.patchProductOption(
 				id, productOption));
+	}
+
+	@GraphQLField(
+		description = "Partially updates the product option relation identified by external reference code, including any nested product option values. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRelByExternalReferenceCode + updateCPDefinitionOptionRel + nested addOrUpdateCPDefinitionOptionValueRel. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when external reference code not found. Side effects -- Reindexes the parent product; cascades into nested product option values."
+	)
+	public Response patchProductOptionByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("productOption") ProductOption productOption)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productOptionResource ->
+				productOptionResource.patchProductOptionByExternalReferenceCode(
+					externalReferenceCode, productOption));
 	}
 
 	@GraphQLField(
@@ -3020,6 +3052,24 @@ public class Mutation {
 	}
 
 	@GraphQLField(
+		description = "Removes the product option value relation identified by external reference code. Calls CPDefinitionOptionValueRelService.deleteCPDefinitionOptionValueRel. Validation -- Service-level NoSuchCPDefinitionOptionValueRelException -> 404. Side effects -- Cascades through CPInstance option value listeners; reindexes affected SKUs."
+	)
+	public boolean deleteProductOptionValueByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_productOptionValueResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productOptionValueResource ->
+				productOptionValueResource.
+					deleteProductOptionValueByExternalReferenceCode(
+						externalReferenceCode));
+
+		return true;
+	}
+
+	@GraphQLField(
 		description = "Partially updates the product option value relation identified by id. Calls CPDefinitionOptionValueRelService.getCPDefinitionOptionValueRel + updateCPDefinitionOptionValueRel. Validation -- NoSuchCPDefinitionOptionValueRelException -> 404 when id not found. Side effects -- May link the value to a specific CPInstance (SKU); reindexes affected SKUs."
 	)
 	public ProductOptionValue patchProductOptionValue(
@@ -3034,6 +3084,44 @@ public class Mutation {
 			productOptionValueResource ->
 				productOptionValueResource.patchProductOptionValue(
 					id, productOptionValue));
+	}
+
+	@GraphQLField(
+		description = "Partially updates the product option value relation identified by external reference code. Calls CPDefinitionOptionValueRelService.getCPDefinitionOptionValueRelByExternalReferenceCode + updateCPDefinitionOptionValueRel. Validation -- NoSuchCPDefinitionOptionValueRelException -> 404 when external reference code not found. Side effects -- May link the value to a specific CPInstance (SKU); reindexes affected SKUs."
+	)
+	public ProductOptionValue patchProductOptionValueByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("productOptionValue") ProductOptionValue
+				productOptionValue)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productOptionValueResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productOptionValueResource ->
+				productOptionValueResource.
+					patchProductOptionValueByExternalReferenceCode(
+						externalReferenceCode, productOptionValue));
+	}
+
+	@GraphQLField(
+		description = "Creates or updates a product option value relation under the product option identified by id. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRel + ProductOptionValueUtil.addOrUpdateCPDefinitionOptionValueRel. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when parent option relation id not found. Side effects -- May link the value to a specific CPInstance (SKU); reindexes affected SKUs."
+	)
+	public ProductOptionValue
+			createProductOptionByExternalReferenceCodeProductOptionValue(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("productOptionValue") ProductOptionValue
+					productOptionValue)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productOptionValueResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productOptionValueResource ->
+				productOptionValueResource.
+					postProductOptionByExternalReferenceCodeProductOptionValue(
+						externalReferenceCode, productOptionValue));
 	}
 
 	@GraphQLField(
@@ -4829,4 +4917,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:253130593
+// LIFERAY-REST-BUILDER-HASH:2094175521

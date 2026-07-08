@@ -1091,10 +1091,20 @@ public class ServletDataImpl implements ServletData {
 							ProductOptionResourceImpl.class,
 							"deleteProductOptionBatch"));
 					put(
+						"mutation#deleteProductOptionByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ProductOptionResourceImpl.class,
+							"deleteProductOptionByExternalReferenceCode"));
+					put(
 						"mutation#patchProductOption",
 						new ObjectValuePair<>(
 							ProductOptionResourceImpl.class,
 							"patchProductOption"));
+					put(
+						"mutation#patchProductOptionByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ProductOptionResourceImpl.class,
+							"patchProductOptionByExternalReferenceCode"));
 					put(
 						"mutation#createProductByExternalReferenceCodeProductOptionsPage",
 						new ObjectValuePair<>(
@@ -1116,10 +1126,25 @@ public class ServletDataImpl implements ServletData {
 							ProductOptionValueResourceImpl.class,
 							"deleteProductOptionValueBatch"));
 					put(
+						"mutation#deleteProductOptionValueByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ProductOptionValueResourceImpl.class,
+							"deleteProductOptionValueByExternalReferenceCode"));
+					put(
 						"mutation#patchProductOptionValue",
 						new ObjectValuePair<>(
 							ProductOptionValueResourceImpl.class,
 							"patchProductOptionValue"));
+					put(
+						"mutation#patchProductOptionValueByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ProductOptionValueResourceImpl.class,
+							"patchProductOptionValueByExternalReferenceCode"));
+					put(
+						"mutation#createProductOptionByExternalReferenceCodeProductOptionValue",
+						new ObjectValuePair<>(
+							ProductOptionValueResourceImpl.class,
+							"postProductOptionByExternalReferenceCodeProductOptionValue"));
 					put(
 						"mutation#createProductOptionIdProductOptionValue",
 						new ObjectValuePair<>(
@@ -1744,6 +1769,16 @@ public class ServletDataImpl implements ServletData {
 							ProductOptionResourceImpl.class,
 							"getProductOption"));
 					put(
+						"query#productOptionByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ProductOptionResourceImpl.class,
+							"getProductOptionByExternalReferenceCode"));
+					put(
+						"query#productOptionByExternalReferenceCodeProductOptionValues",
+						new ObjectValuePair<>(
+							ProductOptionValueResourceImpl.class,
+							"getProductOptionByExternalReferenceCodeProductOptionValuesPage"));
+					put(
 						"query#productOptionIdProductOptionValues",
 						new ObjectValuePair<>(
 							ProductOptionValueResourceImpl.class,
@@ -1753,6 +1788,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ProductOptionValueResourceImpl.class,
 							"getProductOptionValue"));
+					put(
+						"query#productOptionValueByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ProductOptionValueResourceImpl.class,
+							"getProductOptionValueByExternalReferenceCode"));
 					put(
 						"query#productByExternalReferenceCodeShippingConfiguration",
 						new ObjectValuePair<>(
@@ -1975,6 +2015,16 @@ public class ServletDataImpl implements ServletData {
 							ProductGroupResourceImpl.class,
 							"getProductGroupByExternalReferenceCode"));
 					put(
+						"query#Attachment.productOptionByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ProductOptionResourceImpl.class,
+							"getProductOptionByExternalReferenceCode"));
+					put(
+						"query#Attachment.productOptionValueByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ProductOptionValueResourceImpl.class,
+							"getProductOptionValueByExternalReferenceCode"));
+					put(
 						"query#Attachment.productSpecificationByExternalReferenceCode",
 						new ObjectValuePair<>(
 							ProductSpecificationResourceImpl.class,
@@ -2085,6 +2135,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ProductOptionResourceImpl.class,
 							"getProductByExternalReferenceCodeProductOptionsPage"));
+					put(
+						"query#Attachment.productOptionByExternalReferenceCodeProductOptionValues",
+						new ObjectValuePair<>(
+							ProductOptionValueResourceImpl.class,
+							"getProductOptionByExternalReferenceCodeProductOptionValuesPage"));
 					put(
 						"query#Attachment.productByExternalReferenceCodeShippingConfiguration",
 						new ObjectValuePair<>(
@@ -2310,4 +2365,4 @@ public class ServletDataImpl implements ServletData {
 		_skuVirtualSettingsResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1495354712
+// LIFERAY-REST-BUILDER-HASH:-342348414

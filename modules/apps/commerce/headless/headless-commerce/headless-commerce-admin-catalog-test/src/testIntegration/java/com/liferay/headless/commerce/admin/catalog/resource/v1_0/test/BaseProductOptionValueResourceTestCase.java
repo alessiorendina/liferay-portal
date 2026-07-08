@@ -212,6 +212,7 @@ public abstract class BaseProductOptionValueResourceTestCase {
 
 		ProductOptionValue productOptionValue = randomProductOptionValue();
 
+		productOptionValue.setExternalReferenceCode(regex);
 		productOptionValue.setKey(regex);
 		productOptionValue.setSkuExternalReferenceCode(regex);
 		productOptionValue.setUnitOfMeasureKey(regex);
@@ -222,6 +223,8 @@ public abstract class BaseProductOptionValueResourceTestCase {
 
 		productOptionValue = ProductOptionValueSerDes.toDTO(json);
 
+		Assert.assertEquals(
+			regex, productOptionValue.getExternalReferenceCode());
 		Assert.assertEquals(regex, productOptionValue.getKey());
 		Assert.assertEquals(
 			regex, productOptionValue.getSkuExternalReferenceCode());
@@ -343,12 +346,50 @@ public abstract class BaseProductOptionValueResourceTestCase {
 			testDeleteProductOptionValueBatch_addProductOptionValue();
 
 		testDeleteProductOptionValueBatch_deleteProductOptionValue(
+			202, productOptionValue1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionValueResource.getProductOptionValueHttpResponse(
+				productOptionValue1.getId()));
+
+		productOptionValue1 =
+			testDeleteProductOptionValueBatch_addProductOptionValue();
+
+		testDeleteProductOptionValueBatch_deleteProductOptionValue(
 			202, null, productOptionValue1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			productOptionValueResource.getProductOptionValueHttpResponse(
 				productOptionValue1.getId()));
+
+		productOptionValue1 =
+			testDeleteProductOptionValueBatch_addProductOptionValue();
+		ProductOptionValue productOptionValue2 =
+			testDeleteProductOptionValueBatch_addProductOptionValue();
+
+		testDeleteProductOptionValueBatch_deleteProductOptionValue(
+			202, productOptionValue2.getExternalReferenceCode(),
+			productOptionValue1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionValueResource.getProductOptionValueHttpResponse(
+				productOptionValue1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			productOptionValueResource.getProductOptionValueHttpResponse(
+				productOptionValue2.getId()));
+
+		testDeleteProductOptionValueBatch_deleteProductOptionValue(
+			202, productOptionValue2.getExternalReferenceCode(),
+			productOptionValue1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionValueResource.getProductOptionValueHttpResponse(
+				productOptionValue2.getId()));
 	}
 
 	protected ProductOptionValue
@@ -378,6 +419,527 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		waitForFinish(
 			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+	}
+
+	@Test
+	public void testDeleteProductOptionValueByExternalReferenceCode()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ProductOptionValue productOptionValue =
+			testDeleteProductOptionValueByExternalReferenceCode_addProductOptionValue();
+
+		assertHttpResponseStatusCode(
+			204,
+			productOptionValueResource.
+				deleteProductOptionValueByExternalReferenceCodeHttpResponse(
+					productOptionValue.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionValueResource.
+				getProductOptionValueByExternalReferenceCodeHttpResponse(
+					productOptionValue.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			productOptionValueResource.
+				getProductOptionValueByExternalReferenceCodeHttpResponse("-"));
+	}
+
+	protected ProductOptionValue
+			testDeleteProductOptionValueByExternalReferenceCode_addProductOptionValue()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteProductOptionValueByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ProductOptionValue productOptionValue1 =
+			testGraphQLDeleteProductOptionValueByExternalReferenceCode_addProductOptionValue();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteProductOptionValueByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										productOptionValue1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteProductOptionValueByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"productOptionValueByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" +
+									productOptionValue1.
+										getExternalReferenceCode() + "\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessCommerceAdminCatalog_v1_0
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ProductOptionValue productOptionValue2 =
+			testGraphQLDeleteProductOptionValueByExternalReferenceCode_addProductOptionValue();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminCatalog_v1_0",
+						new GraphQLField(
+							"deleteProductOptionValueByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											productOptionValue2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminCatalog_v1_0",
+				"Object/deleteProductOptionValueByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessCommerceAdminCatalog_v1_0",
+					new GraphQLField(
+						"productOptionValueByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										productOptionValue2.
+											getExternalReferenceCode() + "\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected ProductOptionValue
+			testGraphQLDeleteProductOptionValueByExternalReferenceCode_addProductOptionValue()
+		throws Exception {
+
+		return testGraphQLProductOptionValue_addProductOptionValue();
+	}
+
+	@Test
+	public void testGetProductOptionByExternalReferenceCodeProductOptionValuesPage()
+		throws Exception {
+
+		String externalReferenceCode =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_getExternalReferenceCode();
+		String irrelevantExternalReferenceCode =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_getIrrelevantExternalReferenceCode();
+
+		Page<ProductOptionValue> page =
+			productOptionValueResource.
+				getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+					externalReferenceCode, null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantExternalReferenceCode != null) {
+			ProductOptionValue irrelevantProductOptionValue =
+				testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_addProductOptionValue(
+					irrelevantExternalReferenceCode,
+					randomIrrelevantProductOptionValue());
+
+			page =
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						irrelevantExternalReferenceCode, null,
+						Pagination.of(1, (int)totalCount + 1), null);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantProductOptionValue,
+				(List<ProductOptionValue>)page.getItems());
+			assertValid(
+				page,
+				testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_getExpectedActions(
+					irrelevantExternalReferenceCode));
+		}
+
+		ProductOptionValue productOptionValue1 =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_addProductOptionValue(
+				externalReferenceCode, randomProductOptionValue());
+
+		ProductOptionValue productOptionValue2 =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_addProductOptionValue(
+				externalReferenceCode, randomProductOptionValue());
+
+		page =
+			productOptionValueResource.
+				getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+					externalReferenceCode, null, Pagination.of(1, 10), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(
+			productOptionValue1, (List<ProductOptionValue>)page.getItems());
+		assertContains(
+			productOptionValue2, (List<ProductOptionValue>)page.getItems());
+		assertValid(
+			page,
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_getExpectedActions(
+				externalReferenceCode));
+
+		productOptionValueResource.deleteProductOptionValue(
+			productOptionValue1.getId());
+
+		productOptionValueResource.deleteProductOptionValue(
+			productOptionValue2.getId());
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_getExpectedActions(
+				String externalReferenceCode)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetProductOptionByExternalReferenceCodeProductOptionValuesPageWithPagination()
+		throws Exception {
+
+		String externalReferenceCode =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_getExternalReferenceCode();
+
+		Page<ProductOptionValue> productOptionValuesPage =
+			productOptionValueResource.
+				getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+					externalReferenceCode, null, null, null);
+
+		int totalCount = GetterUtil.getInteger(
+			productOptionValuesPage.getTotalCount());
+
+		ProductOptionValue productOptionValue1 =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_addProductOptionValue(
+				externalReferenceCode, randomProductOptionValue());
+
+		ProductOptionValue productOptionValue2 =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_addProductOptionValue(
+				externalReferenceCode, randomProductOptionValue());
+
+		ProductOptionValue productOptionValue3 =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_addProductOptionValue(
+				externalReferenceCode, randomProductOptionValue());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<ProductOptionValue> page1 =
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						externalReferenceCode, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+							pageSizeLimit),
+						null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(
+				productOptionValue1,
+				(List<ProductOptionValue>)page1.getItems());
+
+			Page<ProductOptionValue> page2 =
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						externalReferenceCode, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+							pageSizeLimit),
+						null);
+
+			assertContains(
+				productOptionValue2,
+				(List<ProductOptionValue>)page2.getItems());
+
+			Page<ProductOptionValue> page3 =
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						externalReferenceCode, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+							pageSizeLimit),
+						null);
+
+			assertContains(
+				productOptionValue3,
+				(List<ProductOptionValue>)page3.getItems());
+		}
+		else {
+			Page<ProductOptionValue> page1 =
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						externalReferenceCode, null,
+						Pagination.of(1, totalCount + 2), null);
+
+			List<ProductOptionValue> productOptionValues1 =
+				(List<ProductOptionValue>)page1.getItems();
+
+			Assert.assertEquals(
+				productOptionValues1.toString(), totalCount + 2,
+				productOptionValues1.size());
+
+			Page<ProductOptionValue> page2 =
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						externalReferenceCode, null,
+						Pagination.of(2, totalCount + 2), null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<ProductOptionValue> productOptionValues2 =
+				(List<ProductOptionValue>)page2.getItems();
+
+			Assert.assertEquals(
+				productOptionValues2.toString(), 1,
+				productOptionValues2.size());
+
+			Page<ProductOptionValue> page3 =
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						externalReferenceCode, null,
+						Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(
+				productOptionValue1,
+				(List<ProductOptionValue>)page3.getItems());
+			assertContains(
+				productOptionValue2,
+				(List<ProductOptionValue>)page3.getItems());
+			assertContains(
+				productOptionValue3,
+				(List<ProductOptionValue>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetProductOptionByExternalReferenceCodeProductOptionValuesPageWithSortDateTime()
+		throws Exception {
+
+		testGetProductOptionByExternalReferenceCodeProductOptionValuesPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, productOptionValue1, productOptionValue2) -> {
+				BeanTestUtil.setProperty(
+					productOptionValue1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetProductOptionByExternalReferenceCodeProductOptionValuesPageWithSortDouble()
+		throws Exception {
+
+		testGetProductOptionByExternalReferenceCodeProductOptionValuesPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, productOptionValue1, productOptionValue2) -> {
+				BeanTestUtil.setProperty(
+					productOptionValue1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					productOptionValue2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetProductOptionByExternalReferenceCodeProductOptionValuesPageWithSortInteger()
+		throws Exception {
+
+		testGetProductOptionByExternalReferenceCodeProductOptionValuesPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, productOptionValue1, productOptionValue2) -> {
+				BeanTestUtil.setProperty(
+					productOptionValue1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(
+					productOptionValue2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetProductOptionByExternalReferenceCodeProductOptionValuesPageWithSortString()
+		throws Exception {
+
+		testGetProductOptionByExternalReferenceCodeProductOptionValuesPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, productOptionValue1, productOptionValue2) -> {
+				Class<?> clazz = productOptionValue1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						productOptionValue1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						productOptionValue2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						productOptionValue1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						productOptionValue2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						productOptionValue1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						productOptionValue2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPageWithSort(
+				EntityField.Type type,
+				UnsafeTriConsumer
+					<EntityField, ProductOptionValue, ProductOptionValue,
+					 Exception> unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String externalReferenceCode =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_getExternalReferenceCode();
+
+		ProductOptionValue productOptionValue1 = randomProductOptionValue();
+		ProductOptionValue productOptionValue2 = randomProductOptionValue();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(
+				entityField, productOptionValue1, productOptionValue2);
+		}
+
+		productOptionValue1 =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_addProductOptionValue(
+				externalReferenceCode, productOptionValue1);
+
+		productOptionValue2 =
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_addProductOptionValue(
+				externalReferenceCode, productOptionValue2);
+
+		Page<ProductOptionValue> page =
+			productOptionValueResource.
+				getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+					externalReferenceCode, null, null, null);
+
+		for (EntityField entityField : entityFields) {
+			Page<ProductOptionValue> ascPage =
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						externalReferenceCode, null,
+						Pagination.of(1, (int)page.getTotalCount() + 1),
+						entityField.getName() + ":asc");
+
+			assertContains(
+				productOptionValue1,
+				(List<ProductOptionValue>)ascPage.getItems());
+			assertContains(
+				productOptionValue2,
+				(List<ProductOptionValue>)ascPage.getItems());
+
+			Page<ProductOptionValue> descPage =
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						externalReferenceCode, null,
+						Pagination.of(1, (int)page.getTotalCount() + 1),
+						entityField.getName() + ":desc");
+
+			assertContains(
+				productOptionValue2,
+				(List<ProductOptionValue>)descPage.getItems());
+			assertContains(
+				productOptionValue1,
+				(List<ProductOptionValue>)descPage.getItems());
+		}
+	}
+
+	protected ProductOptionValue
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_addProductOptionValue(
+				String externalReferenceCode,
+				ProductOptionValue productOptionValue)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_getExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_getIrrelevantExternalReferenceCode()
+		throws Exception {
+
+		return null;
 	}
 
 	@Test
@@ -1074,6 +1636,144 @@ public abstract class BaseProductOptionValueResourceTestCase {
 	}
 
 	@Test
+	public void testGetProductOptionValueByExternalReferenceCode()
+		throws Exception {
+
+		ProductOptionValue postProductOptionValue =
+			testGetProductOptionValueByExternalReferenceCode_addProductOptionValue();
+
+		ProductOptionValue getProductOptionValue =
+			productOptionValueResource.
+				getProductOptionValueByExternalReferenceCode(
+					postProductOptionValue.getExternalReferenceCode());
+
+		assertEquals(postProductOptionValue, getProductOptionValue);
+		assertValid(getProductOptionValue);
+	}
+
+	protected ProductOptionValue
+			testGetProductOptionValueByExternalReferenceCode_addProductOptionValue()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetProductOptionValueByExternalReferenceCode()
+		throws Exception {
+
+		ProductOptionValue productOptionValue =
+			testGraphQLGetProductOptionValueByExternalReferenceCode_addProductOptionValue();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				productOptionValue,
+				ProductOptionValueSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"productOptionValueByExternalReferenceCode",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"externalReferenceCode",
+											"\"" +
+												productOptionValue.
+													getExternalReferenceCode() +
+														"\"");
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data",
+						"Object/productOptionValueByExternalReferenceCode"))));
+
+		// Using the namespace headlessCommerceAdminCatalog_v1_0
+
+		Assert.assertTrue(
+			equals(
+				productOptionValue,
+				ProductOptionValueSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"headlessCommerceAdminCatalog_v1_0",
+								new GraphQLField(
+									"productOptionValueByExternalReferenceCode",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"externalReferenceCode",
+												"\"" +
+													productOptionValue.
+														getExternalReferenceCode() +
+															"\"");
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data",
+						"JSONObject/headlessCommerceAdminCatalog_v1_0",
+						"Object/productOptionValueByExternalReferenceCode"))));
+	}
+
+	@Test
+	public void testGraphQLGetProductOptionValueByExternalReferenceCodeNotFound()
+		throws Exception {
+
+		String irrelevantExternalReferenceCode =
+			"\"" + RandomTestUtil.randomString() + "\"";
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"productOptionValueByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									irrelevantExternalReferenceCode);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace headlessCommerceAdminCatalog_v1_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"headlessCommerceAdminCatalog_v1_0",
+						new GraphQLField(
+							"productOptionValueByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										irrelevantExternalReferenceCode);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected ProductOptionValue
+			testGraphQLGetProductOptionValueByExternalReferenceCode_addProductOptionValue()
+		throws Exception {
+
+		return testGraphQLProductOptionValue_addProductOptionValue();
+	}
+
+	@Test
 	public void testPatchProductOptionValue() throws Exception {
 		ProductOptionValue postProductOptionValue =
 			testPatchProductOptionValue_addProductOptionValue();
@@ -1109,6 +1809,70 @@ public abstract class BaseProductOptionValueResourceTestCase {
 	}
 
 	@Test
+	public void testPatchProductOptionValueByExternalReferenceCode()
+		throws Exception {
+
+		ProductOptionValue postProductOptionValue =
+			testPatchProductOptionValueByExternalReferenceCode_addProductOptionValue();
+
+		ProductOptionValue randomPatchProductOptionValue =
+			randomPatchProductOptionValue();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ProductOptionValue patchProductOptionValue =
+			productOptionValueResource.
+				patchProductOptionValueByExternalReferenceCode(
+					postProductOptionValue.getExternalReferenceCode(),
+					randomPatchProductOptionValue);
+
+		ProductOptionValue expectedPatchProductOptionValue =
+			postProductOptionValue.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchProductOptionValue, expectedPatchProductOptionValue);
+
+		ProductOptionValue getProductOptionValue =
+			productOptionValueResource.
+				getProductOptionValueByExternalReferenceCode(
+					patchProductOptionValue.getExternalReferenceCode());
+
+		assertEquals(expectedPatchProductOptionValue, getProductOptionValue);
+		assertValid(getProductOptionValue);
+	}
+
+	protected ProductOptionValue
+			testPatchProductOptionValueByExternalReferenceCode_addProductOptionValue()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPostProductOptionByExternalReferenceCodeProductOptionValue()
+		throws Exception {
+
+		ProductOptionValue randomProductOptionValue =
+			randomProductOptionValue();
+
+		ProductOptionValue postProductOptionValue =
+			testPostProductOptionByExternalReferenceCodeProductOptionValue_addProductOptionValue(
+				randomProductOptionValue);
+
+		assertEquals(randomProductOptionValue, postProductOptionValue);
+		assertValid(postProductOptionValue);
+	}
+
+	protected ProductOptionValue
+			testPostProductOptionByExternalReferenceCodeProductOptionValue_addProductOptionValue(
+				ProductOptionValue productOptionValue)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPostProductOptionIdProductOptionValue() throws Exception {
 		ProductOptionValue randomProductOptionValue =
 			randomProductOptionValue();
@@ -1136,12 +1900,50 @@ public abstract class BaseProductOptionValueResourceTestCase {
 			testBatchEngineDeleteImportTask_addProductOptionValue();
 
 		testBatchEngineDeleteImportTask_deleteProductOptionValue(
+			200, productOptionValue1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionValueResource.getProductOptionValueHttpResponse(
+				productOptionValue1.getId()));
+
+		productOptionValue1 =
+			testBatchEngineDeleteImportTask_addProductOptionValue();
+
+		testBatchEngineDeleteImportTask_deleteProductOptionValue(
 			200, null, productOptionValue1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			productOptionValueResource.getProductOptionValueHttpResponse(
 				productOptionValue1.getId()));
+
+		productOptionValue1 =
+			testBatchEngineDeleteImportTask_addProductOptionValue();
+		ProductOptionValue productOptionValue2 =
+			testBatchEngineDeleteImportTask_addProductOptionValue();
+
+		testBatchEngineDeleteImportTask_deleteProductOptionValue(
+			200, productOptionValue2.getExternalReferenceCode(),
+			productOptionValue1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionValueResource.getProductOptionValueHttpResponse(
+				productOptionValue1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			productOptionValueResource.getProductOptionValueHttpResponse(
+				productOptionValue2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteProductOptionValue(
+			200, productOptionValue2.getExternalReferenceCode(),
+			productOptionValue1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionValueResource.getProductOptionValueHttpResponse(
+				productOptionValue2.getId()));
 	}
 
 	protected ProductOptionValue
@@ -1295,6 +2097,16 @@ public abstract class BaseProductOptionValueResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (productOptionValue.getExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("key", additionalAssertFieldName)) {
 				if (productOptionValue.getKey() == null) {
 					valid = false;
@@ -1420,6 +2232,8 @@ public abstract class BaseProductOptionValueResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
 		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
@@ -1488,6 +2302,19 @@ public abstract class BaseProductOptionValueResourceTestCase {
 				if (!Objects.deepEquals(
 						productOptionValue1.getDeltaPrice(),
 						productOptionValue2.getDeltaPrice())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productOptionValue1.getExternalReferenceCode(),
+						productOptionValue2.getExternalReferenceCode())) {
 
 					return false;
 				}
@@ -1709,6 +2536,52 @@ public abstract class BaseProductOptionValueResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("externalReferenceCode")) {
+			Object object = productOptionValue.getExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("id")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1925,6 +2798,8 @@ public abstract class BaseProductOptionValueResourceTestCase {
 	protected ProductOptionValue randomProductOptionValue() throws Exception {
 		return new ProductOptionValue() {
 			{
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				preselected = RandomTestUtil.randomBoolean();
@@ -2208,4 +3083,4 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-908221978
+// LIFERAY-REST-BUILDER-HASH:793231169

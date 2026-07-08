@@ -211,6 +211,7 @@ public abstract class BaseProductOptionResourceTestCase {
 
 		ProductOption productOption = randomProductOption();
 
+		productOption.setExternalReferenceCode(regex);
 		productOption.setFieldType(regex);
 		productOption.setInfoItemServiceKey(regex);
 		productOption.setKey(regex);
@@ -224,6 +225,7 @@ public abstract class BaseProductOptionResourceTestCase {
 
 		productOption = ProductOptionSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, productOption.getExternalReferenceCode());
 		Assert.assertEquals(regex, productOption.getFieldType());
 		Assert.assertEquals(regex, productOption.getInfoItemServiceKey());
 		Assert.assertEquals(regex, productOption.getKey());
@@ -345,12 +347,48 @@ public abstract class BaseProductOptionResourceTestCase {
 			testDeleteProductOptionBatch_addProductOption();
 
 		testDeleteProductOptionBatch_deleteProductOption(
+			202, productOption1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionResource.getProductOptionHttpResponse(
+				productOption1.getId()));
+
+		productOption1 = testDeleteProductOptionBatch_addProductOption();
+
+		testDeleteProductOptionBatch_deleteProductOption(
 			202, null, productOption1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			productOptionResource.getProductOptionHttpResponse(
 				productOption1.getId()));
+
+		productOption1 = testDeleteProductOptionBatch_addProductOption();
+		ProductOption productOption2 =
+			testDeleteProductOptionBatch_addProductOption();
+
+		testDeleteProductOptionBatch_deleteProductOption(
+			202, productOption2.getExternalReferenceCode(),
+			productOption1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionResource.getProductOptionHttpResponse(
+				productOption1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			productOptionResource.getProductOptionHttpResponse(
+				productOption2.getId()));
+
+		testDeleteProductOptionBatch_deleteProductOption(
+			202, productOption2.getExternalReferenceCode(),
+			productOption1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionResource.getProductOptionHttpResponse(
+				productOption2.getId()));
 	}
 
 	protected ProductOption testDeleteProductOptionBatch_addProductOption()
@@ -378,6 +416,139 @@ public abstract class BaseProductOptionResourceTestCase {
 		waitForFinish(
 			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+	}
+
+	@Test
+	public void testDeleteProductOptionByExternalReferenceCode()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ProductOption productOption =
+			testDeleteProductOptionByExternalReferenceCode_addProductOption();
+
+		assertHttpResponseStatusCode(
+			204,
+			productOptionResource.
+				deleteProductOptionByExternalReferenceCodeHttpResponse(
+					productOption.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionResource.
+				getProductOptionByExternalReferenceCodeHttpResponse(
+					productOption.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			productOptionResource.
+				getProductOptionByExternalReferenceCodeHttpResponse("-"));
+	}
+
+	protected ProductOption
+			testDeleteProductOptionByExternalReferenceCode_addProductOption()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteProductOptionByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ProductOption productOption1 =
+			testGraphQLDeleteProductOptionByExternalReferenceCode_addProductOption();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteProductOptionByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										productOption1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteProductOptionByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"productOptionByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" +
+									productOption1.getExternalReferenceCode() +
+										"\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessCommerceAdminCatalog_v1_0
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ProductOption productOption2 =
+			testGraphQLDeleteProductOptionByExternalReferenceCode_addProductOption();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminCatalog_v1_0",
+						new GraphQLField(
+							"deleteProductOptionByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											productOption2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminCatalog_v1_0",
+				"Object/deleteProductOptionByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessCommerceAdminCatalog_v1_0",
+					new GraphQLField(
+						"productOptionByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										productOption2.
+											getExternalReferenceCode() + "\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected ProductOption
+			testGraphQLDeleteProductOptionByExternalReferenceCode_addProductOption()
+		throws Exception {
+
+		return testGraphQLProductOption_addProductOption();
 	}
 
 	@Test
@@ -1395,7 +1566,149 @@ public abstract class BaseProductOptionResourceTestCase {
 	}
 
 	@Test
+	public void testGetProductOptionByExternalReferenceCode() throws Exception {
+		ProductOption postProductOption =
+			testGetProductOptionByExternalReferenceCode_addProductOption();
+
+		ProductOption getProductOption =
+			productOptionResource.getProductOptionByExternalReferenceCode(
+				postProductOption.getExternalReferenceCode());
+
+		assertEquals(postProductOption, getProductOption);
+		assertValid(getProductOption);
+	}
+
+	protected ProductOption
+			testGetProductOptionByExternalReferenceCode_addProductOption()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetProductOptionByExternalReferenceCode()
+		throws Exception {
+
+		ProductOption productOption =
+			testGraphQLGetProductOptionByExternalReferenceCode_addProductOption();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				productOption,
+				ProductOptionSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"productOptionByExternalReferenceCode",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"externalReferenceCode",
+											"\"" +
+												productOption.
+													getExternalReferenceCode() +
+														"\"");
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data",
+						"Object/productOptionByExternalReferenceCode"))));
+
+		// Using the namespace headlessCommerceAdminCatalog_v1_0
+
+		Assert.assertTrue(
+			equals(
+				productOption,
+				ProductOptionSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"headlessCommerceAdminCatalog_v1_0",
+								new GraphQLField(
+									"productOptionByExternalReferenceCode",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"externalReferenceCode",
+												"\"" +
+													productOption.
+														getExternalReferenceCode() +
+															"\"");
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data",
+						"JSONObject/headlessCommerceAdminCatalog_v1_0",
+						"Object/productOptionByExternalReferenceCode"))));
+	}
+
+	@Test
+	public void testGraphQLGetProductOptionByExternalReferenceCodeNotFound()
+		throws Exception {
+
+		String irrelevantExternalReferenceCode =
+			"\"" + RandomTestUtil.randomString() + "\"";
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"productOptionByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									irrelevantExternalReferenceCode);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace headlessCommerceAdminCatalog_v1_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"headlessCommerceAdminCatalog_v1_0",
+						new GraphQLField(
+							"productOptionByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										irrelevantExternalReferenceCode);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected ProductOption
+			testGraphQLGetProductOptionByExternalReferenceCode_addProductOption()
+		throws Exception {
+
+		return testGraphQLProductOption_addProductOption();
+	}
+
+	@Test
 	public void testPatchProductOption() throws Exception {
+		Assert.assertTrue(false);
+	}
+
+	@Test
+	public void testPatchProductOptionByExternalReferenceCode()
+		throws Exception {
+
 		Assert.assertTrue(false);
 	}
 
@@ -1417,12 +1730,48 @@ public abstract class BaseProductOptionResourceTestCase {
 			testBatchEngineDeleteImportTask_addProductOption();
 
 		testBatchEngineDeleteImportTask_deleteProductOption(
+			200, productOption1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionResource.getProductOptionHttpResponse(
+				productOption1.getId()));
+
+		productOption1 = testBatchEngineDeleteImportTask_addProductOption();
+
+		testBatchEngineDeleteImportTask_deleteProductOption(
 			200, null, productOption1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			productOptionResource.getProductOptionHttpResponse(
 				productOption1.getId()));
+
+		productOption1 = testBatchEngineDeleteImportTask_addProductOption();
+		ProductOption productOption2 =
+			testBatchEngineDeleteImportTask_addProductOption();
+
+		testBatchEngineDeleteImportTask_deleteProductOption(
+			200, productOption2.getExternalReferenceCode(),
+			productOption1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionResource.getProductOptionHttpResponse(
+				productOption1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			productOptionResource.getProductOptionHttpResponse(
+				productOption2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteProductOption(
+			200, productOption2.getExternalReferenceCode(),
+			productOption1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			productOptionResource.getProductOptionHttpResponse(
+				productOption2.getId()));
 	}
 
 	protected ProductOption testBatchEngineDeleteImportTask_addProductOption()
@@ -1582,6 +1931,16 @@ public abstract class BaseProductOptionResourceTestCase {
 
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (productOption.getDescription() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (productOption.getExternalReferenceCode() == null) {
 					valid = false;
 				}
 
@@ -1756,6 +2115,8 @@ public abstract class BaseProductOptionResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
 		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
@@ -1858,6 +2219,19 @@ public abstract class BaseProductOptionResourceTestCase {
 				if (!equals(
 						(Map)productOption1.getDescription(),
 						(Map)productOption2.getDescription())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productOption1.getExternalReferenceCode(),
+						productOption2.getExternalReferenceCode())) {
 
 					return false;
 				}
@@ -2148,6 +2522,52 @@ public abstract class BaseProductOptionResourceTestCase {
 		if (entityFieldName.equals("description")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("externalReferenceCode")) {
+			Object object = productOption.getExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("facetable")) {
@@ -2516,6 +2936,8 @@ public abstract class BaseProductOptionResourceTestCase {
 			{
 				catalogId = RandomTestUtil.randomLong();
 				definedExternally = RandomTestUtil.randomBoolean();
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				facetable = RandomTestUtil.randomBoolean();
 				fieldType = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
@@ -2802,4 +3224,4 @@ public abstract class BaseProductOptionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1329749147
+// LIFERAY-REST-BUILDER-HASH:2044691135

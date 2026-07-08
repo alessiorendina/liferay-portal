@@ -2130,7 +2130,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOption(id: ___){catalogId, customFields, definedExternally, description, facetable, fieldType, id, infoItemServiceKey, key, name, optionExternalReferenceCode, optionId, priceType, priority, productOptionValues, required, skuContributor, typeSettings}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOption(id: ___){catalogId, customFields, definedExternally, description, externalReferenceCode, facetable, fieldType, id, infoItemServiceKey, key, name, optionExternalReferenceCode, optionId, priceType, priority, productOptionValues, required, skuContributor, typeSettings}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetches the product option relation identified by id. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRel (via DTO converter). Validation -- NoSuchCPDefinitionOptionRelException -> 404 when id not found."
@@ -2143,6 +2143,56 @@ public class Query {
 			this::_populateResourceContext,
 			productOptionResource -> productOptionResource.getProductOption(
 				id));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOptionByExternalReferenceCode(externalReferenceCode: ___){catalogId, customFields, definedExternally, description, externalReferenceCode, facetable, fieldType, id, infoItemServiceKey, key, name, optionExternalReferenceCode, optionId, priceType, priority, productOptionValues, required, skuContributor, typeSettings}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Fetches the product option relation identified by external reference code. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRelByExternalReferenceCode (via DTO converter). Validation -- NoSuchCPDefinitionOptionRelException -> 404 when external reference code not found."
+	)
+	public ProductOption productOptionByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productOptionResource ->
+				productOptionResource.getProductOptionByExternalReferenceCode(
+					externalReferenceCode));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOptionByExternalReferenceCodeProductOptionValues(externalReferenceCode: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Lists the product option value relations of the product option identified by id. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRel + CPDefinitionOptionValueRelService.searchCPDefinitionOptionValueRels. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when parent option relation id not found."
+	)
+	public ProductOptionValuePage
+			productOptionByExternalReferenceCodeProductOptionValues(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("search") String search,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page,
+				@GraphQLName("sort") String sortsString)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productOptionValueResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productOptionValueResource -> new ProductOptionValuePage(
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						externalReferenceCode, search,
+						Pagination.of(page, pageSize),
+						_sortsBiFunction.apply(
+							productOptionValueResource, sortsString))));
 	}
 
 	/**
@@ -2174,7 +2224,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOptionValue(id: ___){deltaPrice, id, key, name, preselected, priority, quantity, skuExternalReferenceCode, skuId, unitOfMeasureKey}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOptionValue(id: ___){deltaPrice, externalReferenceCode, id, key, name, preselected, priority, quantity, skuExternalReferenceCode, skuId, unitOfMeasureKey}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetches the product option value relation identified by id. Calls CPDefinitionOptionValueRelService.getCPDefinitionOptionValueRel (via DTO converter). Validation -- NoSuchCPDefinitionOptionValueRelException -> 404 when id not found."
@@ -2187,6 +2237,27 @@ public class Query {
 			this::_populateResourceContext,
 			productOptionValueResource ->
 				productOptionValueResource.getProductOptionValue(id));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOptionValueByExternalReferenceCode(externalReferenceCode: ___){deltaPrice, externalReferenceCode, id, key, name, preselected, priority, quantity, skuExternalReferenceCode, skuId, unitOfMeasureKey}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Fetches the product option value relation identified by external reference code. Calls CPDefinitionOptionValueRelService.getCPDefinitionOptionValueRelByExternalReferenceCode (via DTO converter). Validation -- NoSuchCPDefinitionOptionValueRelException -> 404 when external reference code not found."
+	)
+	public ProductOptionValue productOptionValueByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productOptionValueResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productOptionValueResource ->
+				productOptionValueResource.
+					getProductOptionValueByExternalReferenceCode(
+						externalReferenceCode));
 	}
 
 	/**
@@ -3204,6 +3275,62 @@ public class Query {
 	}
 
 	@GraphQLTypeExtension(Attachment.class)
+	public class GetProductOptionByExternalReferenceCodeTypeExtension {
+
+		public GetProductOptionByExternalReferenceCodeTypeExtension(
+			Attachment attachment) {
+
+			_attachment = attachment;
+		}
+
+		@GraphQLField(
+			description = "Fetches the product option relation identified by external reference code. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRelByExternalReferenceCode (via DTO converter). Validation -- NoSuchCPDefinitionOptionRelException -> 404 when external reference code not found."
+		)
+		public ProductOption productOptionByExternalReferenceCode()
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_productOptionResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				productOptionResource ->
+					productOptionResource.
+						getProductOptionByExternalReferenceCode(
+							_attachment.getExternalReferenceCode()));
+		}
+
+		private Attachment _attachment;
+
+	}
+
+	@GraphQLTypeExtension(Attachment.class)
+	public class GetProductOptionValueByExternalReferenceCodeTypeExtension {
+
+		public GetProductOptionValueByExternalReferenceCodeTypeExtension(
+			Attachment attachment) {
+
+			_attachment = attachment;
+		}
+
+		@GraphQLField(
+			description = "Fetches the product option value relation identified by external reference code. Calls CPDefinitionOptionValueRelService.getCPDefinitionOptionValueRelByExternalReferenceCode (via DTO converter). Validation -- NoSuchCPDefinitionOptionValueRelException -> 404 when external reference code not found."
+		)
+		public ProductOptionValue productOptionValueByExternalReferenceCode()
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_productOptionValueResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				productOptionValueResource ->
+					productOptionValueResource.
+						getProductOptionValueByExternalReferenceCode(
+							_attachment.getExternalReferenceCode()));
+		}
+
+		private Attachment _attachment;
+
+	}
+
+	@GraphQLTypeExtension(Attachment.class)
 	public class GetProductSpecificationByExternalReferenceCodeTypeExtension {
 
 		public GetProductSpecificationByExternalReferenceCodeTypeExtension(
@@ -3905,6 +4032,43 @@ public class Query {
 							Pagination.of(page, pageSize),
 							_sortsBiFunction.apply(
 								productOptionResource, sortsString))));
+		}
+
+		private Attachment _attachment;
+
+	}
+
+	@GraphQLTypeExtension(Attachment.class)
+	public class
+		GetProductOptionByExternalReferenceCodeProductOptionValuesPageTypeExtension {
+
+		public GetProductOptionByExternalReferenceCodeProductOptionValuesPageTypeExtension(
+			Attachment attachment) {
+
+			_attachment = attachment;
+		}
+
+		@GraphQLField(
+			description = "Lists the product option value relations of the product option identified by id. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRel + CPDefinitionOptionValueRelService.searchCPDefinitionOptionValueRels. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when parent option relation id not found."
+		)
+		public ProductOptionValuePage
+				productOptionByExternalReferenceCodeProductOptionValues(
+					@GraphQLName("search") String search,
+					@GraphQLName("pageSize") int pageSize,
+					@GraphQLName("page") int page,
+					@GraphQLName("sort") String sortsString)
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_productOptionValueResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				productOptionValueResource -> new ProductOptionValuePage(
+					productOptionValueResource.
+						getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+							_attachment.getExternalReferenceCode(), search,
+							Pagination.of(page, pageSize),
+							_sortsBiFunction.apply(
+								productOptionValueResource, sortsString))));
 		}
 
 		private Attachment _attachment;
@@ -6546,4 +6710,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:362831591
+// LIFERAY-REST-BUILDER-HASH:-193577515

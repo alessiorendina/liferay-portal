@@ -51,6 +51,10 @@ public interface ProductOptionResource {
 	public Response deleteProductOptionBatch(String callbackURL, Object object)
 		throws Exception;
 
+	public Response deleteProductOptionByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
 	public Page<ProductOption>
 			getProductByExternalReferenceCodeProductOptionsPage(
 				String externalReferenceCode, String search,
@@ -65,7 +69,15 @@ public interface ProductOptionResource {
 
 	public ProductOption getProductOption(Long id) throws Exception;
 
+	public ProductOption getProductOptionByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
 	public Response patchProductOption(Long id, ProductOption productOption)
+		throws Exception;
+
+	public Response patchProductOptionByExternalReferenceCode(
+			String externalReferenceCode, ProductOption productOption)
 		throws Exception;
 
 	public Page<ProductOption>
@@ -173,4 +185,4 @@ public interface ProductOptionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:141825193
+// LIFERAY-REST-BUILDER-HASH:1775246711

@@ -158,6 +158,46 @@ public abstract class BaseProductOptionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Removes the product option relation identified by external reference code from its product. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRelByExternalReferenceCode + deleteCPDefinitionOptionRel. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when external reference code not found. Side effects -- Cascades deletion of associated CPDefinitionOptionValueRel rows."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that addresses the target resource on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "ProductOption")
+		}
+	)
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path(
+		"/productOptions/by-externalReferenceCode/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Response deleteProductOptionByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode)
+		throws Exception {
+
+		Response.ResponseBuilder responseBuilder = Response.ok();
+
+		return responseBuilder.build();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/productOptions'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
@@ -321,7 +361,45 @@ public abstract class BaseProductOptionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/{id}' -d $'{"catalogId": ___, "customFields": ___, "definedExternally": ___, "description": ___, "facetable": ___, "fieldType": ___, "infoItemServiceKey": ___, "key": ___, "name": ___, "optionExternalReferenceCode": ___, "optionId": ___, "priceType": ___, "priority": ___, "productOptionValues": ___, "required": ___, "skuContributor": ___, "typeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Fetches the product option relation identified by external reference code. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRelByExternalReferenceCode (via DTO converter). Validation -- NoSuchCPDefinitionOptionRelException -> 404 when external reference code not found."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that addresses the target resource on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "ProductOption")
+		}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
+		"/productOptions/by-externalReferenceCode/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public ProductOption getProductOptionByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode)
+		throws Exception {
+
+		return new ProductOption();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/{id}' -d $'{"catalogId": ___, "customFields": ___, "definedExternally": ___, "description": ___, "externalReferenceCode": ___, "facetable": ___, "fieldType": ___, "infoItemServiceKey": ___, "key": ___, "name": ___, "optionExternalReferenceCode": ___, "optionId": ___, "priceType": ___, "priority": ___, "productOptionValues": ___, "required": ___, "skuContributor": ___, "typeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partially updates the product option relation identified by id, including any nested product option values. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRel + updateCPDefinitionOptionRel + nested addOrUpdateCPDefinitionOptionValueRel. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when id not found. Side effects -- Reindexes the parent product; cascades into nested product option values."
@@ -350,6 +428,48 @@ public abstract class BaseProductOptionResourceImpl
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("id")
 			Long id,
+			ProductOption productOption)
+		throws Exception {
+
+		Response.ResponseBuilder responseBuilder = Response.ok();
+
+		return responseBuilder.build();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/by-externalReferenceCode/{externalReferenceCode}' -d $'{"catalogId": ___, "customFields": ___, "definedExternally": ___, "description": ___, "externalReferenceCode": ___, "facetable": ___, "fieldType": ___, "infoItemServiceKey": ___, "key": ___, "name": ___, "optionExternalReferenceCode": ___, "optionId": ___, "priceType": ___, "priority": ___, "productOptionValues": ___, "required": ___, "skuContributor": ___, "typeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Partially updates the product option relation identified by external reference code, including any nested product option values. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRelByExternalReferenceCode + updateCPDefinitionOptionRel + nested addOrUpdateCPDefinitionOptionValueRel. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when external reference code not found. Side effects -- Reindexes the parent product; cascades into nested product option values."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that addresses the target resource on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "ProductOption")
+		}
+	)
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path(
+		"/productOptions/by-externalReferenceCode/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Response patchProductOptionByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode,
 			ProductOption productOption)
 		throws Exception {
 
@@ -456,9 +576,30 @@ public abstract class BaseProductOptionResourceImpl
 
 		UnsafeFunction<ProductOption, ProductOption, Exception>
 			productOptionUnsafeFunction = productOption -> {
-				deleteProductOption(productOption.getId());
+				if (productOption.getId() != null) {
+					try {
+						deleteProductOption(productOption.getId());
 
-				return productOption;
+						return productOption;
+					}
+					catch (Exception exception) {
+						if (productOption.getExternalReferenceCode() != null) {
+							deleteProductOptionByExternalReferenceCode(
+								productOption.getExternalReferenceCode());
+
+							return productOption;
+						}
+					}
+				}
+				else if (productOption.getExternalReferenceCode() != null) {
+					deleteProductOptionByExternalReferenceCode(
+						productOption.getExternalReferenceCode());
+
+					return productOption;
+				}
+
+				throw new UnsupportedOperationException(
+					"Unable to delete by external reference code or ID");
 			};
 
 		if (contextBatchUnsafeBiConsumer != null) {
@@ -1151,4 +1292,4 @@ public abstract class BaseProductOptionResourceImpl
 		LogFactoryUtil.getLog(BaseProductOptionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1446431788
+// LIFERAY-REST-BUILDER-HASH:1991981802
