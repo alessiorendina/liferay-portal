@@ -251,6 +251,11 @@ public interface CPDefinitionOptionValueRelLocalService
 	public CPDefinitionOptionValueRel fetchCPDefinitionOptionValueRel(
 		long cpDefinitionOptionRelId, String key);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionValueRel
+		fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+			String externalReferenceCode, long companyId);
+
 	/**
 	 * Returns the cp definition option value rel matching the UUID and group.
 	 *
@@ -290,6 +295,12 @@ public interface CPDefinitionOptionValueRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinitionOptionValueRel getCPDefinitionOptionValueRel(
 			long CPDefinitionOptionValueRelId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionValueRel
+			getCPDefinitionOptionValueRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
 		throws PortalException;
 
 	/**
@@ -395,6 +406,12 @@ public interface CPDefinitionOptionValueRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -487,4 +504,4 @@ public interface CPDefinitionOptionValueRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:331356748
+// LIFERAY-SERVICE-BUILDER-HASH:1503270435

@@ -261,6 +261,11 @@ public interface CPDefinitionOptionRelLocalService
 		long cpDefinitionId, long cpOptionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionRel
+		fetchCPDefinitionOptionRelByExternalReferenceCode(
+			String externalReferenceCode, long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinitionOptionRel fetchCPDefinitionOptionRelByKey(
 		long cpDefinitionId, String key);
 
@@ -288,6 +293,12 @@ public interface CPDefinitionOptionRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinitionOptionRel getCPDefinitionOptionRel(
 			long CPDefinitionOptionRelId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionRel
+			getCPDefinitionOptionRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
 		throws PortalException;
 
 	/**
@@ -417,6 +428,12 @@ public interface CPDefinitionOptionRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -507,4 +524,4 @@ public interface CPDefinitionOptionRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:515245476
+// LIFERAY-SERVICE-BUILDER-HASH:2085256541

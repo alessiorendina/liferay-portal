@@ -101,6 +101,17 @@ public class CPDefinitionOptionRelServiceWrapper
 	}
 
 	@Override
+	public CPDefinitionOptionRel
+			fetchCPDefinitionOptionRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionOptionRelService.
+			fetchCPDefinitionOptionRelByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
+	@Override
 	public CPDefinitionOptionRel getCPDefinitionOptionRel(
 			long cpDefinitionOptionRelId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -258,4 +269,4 @@ public class CPDefinitionOptionRelServiceWrapper
 	private CPDefinitionOptionRelService _cpDefinitionOptionRelService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:862840564
+// LIFERAY-SERVICE-BUILDER-HASH:1446660944

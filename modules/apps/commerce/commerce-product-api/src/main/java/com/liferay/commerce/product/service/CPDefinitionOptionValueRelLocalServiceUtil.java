@@ -272,6 +272,15 @@ public class CPDefinitionOptionValueRelLocalServiceUtil {
 			cpDefinitionOptionRelId, key);
 	}
 
+	public static CPDefinitionOptionValueRel
+		fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return getService().
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the cp definition option value rel matching the UUID and group.
 	 *
@@ -332,6 +341,16 @@ public class CPDefinitionOptionValueRelLocalServiceUtil {
 
 		return getService().getCPDefinitionOptionValueRel(
 			CPDefinitionOptionValueRelId);
+	}
+
+	public static CPDefinitionOptionValueRel
+			getCPDefinitionOptionValueRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().
+			getCPDefinitionOptionValueRelByExternalReferenceCode(
+				externalReferenceCode, companyId);
 	}
 
 	/**
@@ -480,6 +499,16 @@ public class CPDefinitionOptionValueRelLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static CPDefinitionOptionValueRel
+			getOrAddEmptyCPDefinitionOptionValueRel(
+				String externalReferenceCode, long companyId, long userId,
+				long groupId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPDefinitionOptionValueRel(
+			externalReferenceCode, companyId, userId, groupId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -613,4 +642,4 @@ public class CPDefinitionOptionValueRelLocalServiceUtil {
 			CPDefinitionOptionValueRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1324743478
+// LIFERAY-SERVICE-BUILDER-HASH:1424029322

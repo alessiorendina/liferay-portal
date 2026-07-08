@@ -310,6 +310,16 @@ public class CPDefinitionOptionValueRelLocalServiceWrapper
 			fetchCPDefinitionOptionValueRel(cpDefinitionOptionRelId, key);
 	}
 
+	@Override
+	public CPDefinitionOptionValueRel
+		fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return _cpDefinitionOptionValueRelLocalService.
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the cp definition option value rel matching the UUID and group.
 	 *
@@ -381,6 +391,17 @@ public class CPDefinitionOptionValueRelLocalServiceWrapper
 
 		return _cpDefinitionOptionValueRelLocalService.
 			getCPDefinitionOptionValueRel(CPDefinitionOptionValueRelId);
+	}
+
+	@Override
+	public CPDefinitionOptionValueRel
+			getCPDefinitionOptionValueRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionOptionValueRelLocalService.
+			getCPDefinitionOptionValueRelByExternalReferenceCode(
+				externalReferenceCode, companyId);
 	}
 
 	/**
@@ -549,6 +570,17 @@ public class CPDefinitionOptionValueRelLocalServiceWrapper
 
 		return _cpDefinitionOptionValueRelLocalService.
 			getIndexableActionableDynamicQuery();
+	}
+
+	@Override
+	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionOptionValueRelLocalService.
+			getOrAddEmptyCPDefinitionOptionValueRel(
+				externalReferenceCode, companyId, userId, groupId);
 	}
 
 	/**
@@ -738,4 +770,4 @@ public class CPDefinitionOptionValueRelLocalServiceWrapper
 		_cpDefinitionOptionValueRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1095163404
+// LIFERAY-SERVICE-BUILDER-HASH:-740056953

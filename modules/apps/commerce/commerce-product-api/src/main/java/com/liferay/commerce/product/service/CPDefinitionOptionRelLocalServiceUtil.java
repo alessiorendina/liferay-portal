@@ -295,6 +295,14 @@ public class CPDefinitionOptionRelLocalServiceUtil {
 			cpDefinitionId, cpOptionId);
 	}
 
+	public static CPDefinitionOptionRel
+		fetchCPDefinitionOptionRelByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return getService().fetchCPDefinitionOptionRelByExternalReferenceCode(
+			externalReferenceCode, companyId);
+	}
+
 	public static CPDefinitionOptionRel fetchCPDefinitionOptionRelByKey(
 		long cpDefinitionId, String key) {
 
@@ -334,6 +342,15 @@ public class CPDefinitionOptionRelLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getCPDefinitionOptionRel(CPDefinitionOptionRelId);
+	}
+
+	public static CPDefinitionOptionRel
+			getCPDefinitionOptionRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().getCPDefinitionOptionRelByExternalReferenceCode(
+			externalReferenceCode, companyId);
 	}
 
 	/**
@@ -517,6 +534,15 @@ public class CPDefinitionOptionRelLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPDefinitionOptionRel(
+			externalReferenceCode, companyId, userId, groupId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -641,4 +667,4 @@ public class CPDefinitionOptionRelLocalServiceUtil {
 			CPDefinitionOptionRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-744639187
+// LIFERAY-SERVICE-BUILDER-HASH:-1141803928

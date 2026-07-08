@@ -80,6 +80,12 @@ public interface CPDefinitionOptionValueRelService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionValueRel
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinitionOptionValueRel getCPDefinitionOptionValueRel(
 			long cpDefinitionOptionValueRelId)
 		throws PortalException;
@@ -141,4 +147,4 @@ public interface CPDefinitionOptionValueRelService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1443227594
+// LIFERAY-SERVICE-BUILDER-HASH:1240964240
