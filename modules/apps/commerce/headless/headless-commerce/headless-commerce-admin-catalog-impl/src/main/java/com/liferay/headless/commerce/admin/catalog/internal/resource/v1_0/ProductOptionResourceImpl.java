@@ -6,6 +6,7 @@
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
+import com.liferay.commerce.product.exception.NoSuchCPDefinitionOptionRelException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPOption;
@@ -71,6 +72,17 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 		Response.ResponseBuilder responseBuilder = Response.ok();
 
 		return responseBuilder.build();
+	}
+
+	@Override
+	public Response deleteProductOptionByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		return deleteProductOption(
+			_getCPDefinitionOptionRel(
+				externalReferenceCode
+			).getCPDefinitionOptionRelId());
 	}
 
 	@Override
@@ -151,6 +163,17 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 	}
 
 	@Override
+	public ProductOption getProductOptionByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		return getProductOption(
+			_getCPDefinitionOptionRel(
+				externalReferenceCode
+			).getCPDefinitionOptionRelId());
+	}
+
+	@Override
 	public Response patchProductOption(Long id, ProductOption productOption)
 		throws Exception {
 
@@ -228,6 +251,18 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 		Response.ResponseBuilder responseBuilder = Response.ok();
 
 		return responseBuilder.build();
+	}
+
+	@Override
+	public Response patchProductOptionByExternalReferenceCode(
+			String externalReferenceCode, ProductOption productOption)
+		throws Exception {
+
+		return patchProductOption(
+			_getCPDefinitionOptionRel(
+				externalReferenceCode
+			).getCPDefinitionOptionRelId(),
+			productOption);
 	}
 
 	@Override
@@ -312,6 +347,24 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 				QueryUtil.ALL_POS),
 			cpDefinitionOptionRel -> _toProductOption(
 				cpDefinitionOptionRel.getCPDefinitionOptionRelId()));
+	}
+
+	private CPDefinitionOptionRel _getCPDefinitionOptionRel(
+			String externalReferenceCode)
+		throws Exception {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelService.
+				fetchCPDefinitionOptionRelByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId());
+
+		if (cpDefinitionOptionRel == null) {
+			throw new NoSuchCPDefinitionOptionRelException(
+				"Unable to find product option with external reference code " +
+					externalReferenceCode);
+		}
+
+		return cpDefinitionOptionRel;
 	}
 
 	private Map<String, Serializable> _getExpandoBridgeAttributes(

@@ -5,6 +5,8 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
+import com.liferay.commerce.product.exception.NoSuchCPDefinitionOptionRelException;
+import com.liferay.commerce.product.exception.NoSuchCPDefinitionOptionValueRelException;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
@@ -51,6 +53,31 @@ public class ProductOptionValueResourceImpl
 		_cpDefinitionOptionValueRelService.deleteCPDefinitionOptionValueRel(id);
 	}
 
+	@Override
+	public void deleteProductOptionValueByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		deleteProductOptionValue(
+			_getCPDefinitionOptionValueRel(
+				externalReferenceCode
+			).getCPDefinitionOptionValueRelId());
+	}
+
+	@Override
+	public Page<ProductOptionValue>
+			getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+				String externalReferenceCode, String search,
+				Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return getProductOptionIdProductOptionValuesPage(
+			_getCPDefinitionOptionRel(
+				externalReferenceCode
+			).getCPDefinitionOptionRelId(),
+			search, pagination, sorts);
+	}
+
 	@NestedField(
 		parentClass = ProductOption.class, value = "productOptionValues"
 	)
@@ -91,6 +118,17 @@ public class ProductOptionValueResourceImpl
 		return _toProductOptionValue(
 			_cpDefinitionOptionValueRelService.getCPDefinitionOptionValueRel(
 				id));
+	}
+
+	@Override
+	public ProductOptionValue getProductOptionValueByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		return getProductOptionValue(
+			_getCPDefinitionOptionValueRel(
+				externalReferenceCode
+			).getCPDefinitionOptionValueRelId());
 	}
 
 	@Override
@@ -158,6 +196,32 @@ public class ProductOptionValueResourceImpl
 	}
 
 	@Override
+	public ProductOptionValue patchProductOptionValueByExternalReferenceCode(
+			String externalReferenceCode, ProductOptionValue productOptionValue)
+		throws Exception {
+
+		return patchProductOptionValue(
+			_getCPDefinitionOptionValueRel(
+				externalReferenceCode
+			).getCPDefinitionOptionValueRelId(),
+			productOptionValue);
+	}
+
+	@Override
+	public ProductOptionValue
+			postProductOptionByExternalReferenceCodeProductOptionValue(
+				String externalReferenceCode,
+				ProductOptionValue productOptionValue)
+		throws Exception {
+
+		return _addOrUpdateProductOptionValue(
+			_getCPDefinitionOptionRel(
+				externalReferenceCode
+			).getCPDefinitionOptionRelId(),
+			productOptionValue);
+	}
+
+	@Override
 	public ProductOptionValue postProductOptionIdProductOptionValue(
 			Long id, ProductOptionValue productOptionValue)
 		throws Exception {
@@ -180,6 +244,42 @@ public class ProductOptionValueResourceImpl
 				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 				_serviceContextHelper.getServiceContext(
 					cpDefinitionOptionRel.getGroupId())));
+	}
+
+	private CPDefinitionOptionRel _getCPDefinitionOptionRel(
+			String externalReferenceCode)
+		throws Exception {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelService.
+				fetchCPDefinitionOptionRelByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId());
+
+		if (cpDefinitionOptionRel == null) {
+			throw new NoSuchCPDefinitionOptionRelException(
+				"Unable to find product option with external reference code " +
+					externalReferenceCode);
+		}
+
+		return cpDefinitionOptionRel;
+	}
+
+	private CPDefinitionOptionValueRel _getCPDefinitionOptionValueRel(
+			String externalReferenceCode)
+		throws Exception {
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			_cpDefinitionOptionValueRelService.
+				fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId());
+
+		if (cpDefinitionOptionValueRel == null) {
+			throw new NoSuchCPDefinitionOptionValueRelException(
+				"Unable to find product option value with external reference " +
+					"code " + externalReferenceCode);
+		}
+
+		return cpDefinitionOptionValueRel;
 	}
 
 	private ProductOptionValue _toProductOptionValue(

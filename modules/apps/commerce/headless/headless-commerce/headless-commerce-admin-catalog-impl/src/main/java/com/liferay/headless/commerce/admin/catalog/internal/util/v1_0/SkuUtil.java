@@ -16,7 +16,9 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelService;
+import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelService;
 import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Sku;
@@ -30,6 +32,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -58,6 +61,9 @@ public class SkuUtil {
 			CPDefinition cpDefinition,
 			CPDefinitionOptionRelService cpDefinitionOptionRelService,
 			CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService,
+			CPDefinitionOptionRelLocalService cpDefinitionOptionRelLocalService,
+			CPDefinitionOptionValueRelLocalService
+				cpDefinitionOptionValueRelLocalService,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -215,7 +221,9 @@ public class SkuUtil {
 			GetterUtil.get(sku.getPurchasable(), false),
 			_getOptions(
 				cpDefinitionOptionRelService, cpDefinitionOptionValueRelService,
-				sku),
+				cpDefinitionOptionRelLocalService,
+				cpDefinitionOptionValueRelLocalService,
+				cpDefinition.getCompanyId(), sku, serviceContext),
 			GetterUtil.get(sku.getWidth(), 0.0),
 			GetterUtil.get(sku.getHeight(), 0.0),
 			GetterUtil.get(sku.getDepth(), 0.0),
@@ -293,6 +301,36 @@ public class SkuUtil {
 		return null;
 	}
 
+	private static String _getCPDefinitionOptionRelKey(
+			String externalReferenceCode, long companyId,
+			CPDefinitionOptionRelService cpDefinitionOptionRelService,
+			CPDefinitionOptionRelLocalService cpDefinitionOptionRelLocalService,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			cpDefinitionOptionRelService.
+				fetchCPDefinitionOptionRelByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		if ((cpDefinitionOptionRel == null) &&
+			LazyReferencingThreadLocal.isEnabled()) {
+
+			cpDefinitionOptionRel =
+				cpDefinitionOptionRelLocalService.
+					getOrAddEmptyCPDefinitionOptionRel(
+						externalReferenceCode, companyId,
+						serviceContext.getUserId(),
+						serviceContext.getScopeGroupId());
+		}
+
+		if (cpDefinitionOptionRel != null) {
+			return cpDefinitionOptionRel.getKey();
+		}
+
+		return null;
+	}
+
 	private static String _getCPDefinitionOptionValueRelKey(
 			long optionValueId,
 			CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService)
@@ -309,10 +347,44 @@ public class SkuUtil {
 		return null;
 	}
 
+	private static String _getCPDefinitionOptionValueRelKey(
+			String externalReferenceCode, long companyId,
+			CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService,
+			CPDefinitionOptionValueRelLocalService
+				cpDefinitionOptionValueRelLocalService,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			cpDefinitionOptionValueRelService.
+				fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		if ((cpDefinitionOptionValueRel == null) &&
+			LazyReferencingThreadLocal.isEnabled()) {
+
+			cpDefinitionOptionValueRel =
+				cpDefinitionOptionValueRelLocalService.
+					getOrAddEmptyCPDefinitionOptionValueRel(
+						externalReferenceCode, companyId,
+						serviceContext.getUserId(),
+						serviceContext.getScopeGroupId());
+		}
+
+		if (cpDefinitionOptionValueRel != null) {
+			return cpDefinitionOptionValueRel.getKey();
+		}
+
+		return null;
+	}
+
 	private static String _getOptions(
 		CPDefinitionOptionRelService cpDefinitionOptionRelService,
 		CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService,
-		Sku sku) {
+		CPDefinitionOptionRelLocalService cpDefinitionOptionRelLocalService,
+		CPDefinitionOptionValueRelLocalService
+			cpDefinitionOptionValueRelLocalService,
+		long companyId, Sku sku, ServiceContext serviceContext) {
 
 		SkuOption[] skuOptions = sku.getSkuOptions();
 
@@ -327,6 +399,21 @@ public class SkuUtil {
 				JSONUtil.put(
 					"key",
 					() -> {
+						if (Validator.isNotNull(
+								skuOption.getOptionExternalReferenceCode())) {
+
+							String cpDefinitionOptionRelKey =
+								_getCPDefinitionOptionRelKey(
+									skuOption.getOptionExternalReferenceCode(),
+									companyId, cpDefinitionOptionRelService,
+									cpDefinitionOptionRelLocalService,
+									serviceContext);
+
+							if (Validator.isNotNull(cpDefinitionOptionRelKey)) {
+								return cpDefinitionOptionRelKey;
+							}
+						}
+
 						if (Validator.isNull(skuOption.getKey())) {
 							return _getCPDefinitionOptionRelKey(
 								GetterUtil.getLong(skuOption.getOptionId()),
@@ -356,6 +443,26 @@ public class SkuUtil {
 					"value",
 					JSONUtil.put(
 						() -> {
+							if (Validator.isNotNull(
+									skuOption.
+										getOptionValueExternalReferenceCode())) {
+
+								String cpDefinitionOptionValueRelKey =
+									_getCPDefinitionOptionValueRelKey(
+										skuOption.
+											getOptionValueExternalReferenceCode(),
+										companyId,
+										cpDefinitionOptionValueRelService,
+										cpDefinitionOptionValueRelLocalService,
+										serviceContext);
+
+								if (Validator.isNotNull(
+										cpDefinitionOptionValueRelKey)) {
+
+									return cpDefinitionOptionValueRelKey;
+								}
+							}
+
 							if (Validator.isNull(skuOption.getValue())) {
 								return _getCPDefinitionOptionValueRelKey(
 									GetterUtil.getLong(

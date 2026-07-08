@@ -32,7 +32,9 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryService;
 import com.liferay.commerce.product.service.CPConfigurationEntryService;
 import com.liferay.commerce.product.service.CPDefinitionLinkService;
+import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelService;
+import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelService;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueService;
@@ -1253,7 +1255,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				CPInstance cpInstance = SkuUtil.addOrUpdateCPInstance(
 					_cpInstanceService, sku, cpDefinition,
 					_cpDefinitionOptionRelService,
-					_cpDefinitionOptionValueRelService, serviceContext);
+					_cpDefinitionOptionValueRelService,
+					_cpDefinitionOptionRelLocalService,
+					_cpDefinitionOptionValueRelLocalService, serviceContext);
 
 				serviceContext.setExpandoBridgeAttributes(null);
 
@@ -1739,7 +1743,15 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		_cpDefinitionModelResourcePermission;
 
 	@Reference
+	private CPDefinitionOptionRelLocalService
+		_cpDefinitionOptionRelLocalService;
+
+	@Reference
 	private CPDefinitionOptionRelService _cpDefinitionOptionRelService;
+
+	@Reference
+	private CPDefinitionOptionValueRelLocalService
+		_cpDefinitionOptionValueRelLocalService;
 
 	@Reference
 	private CPDefinitionOptionValueRelService

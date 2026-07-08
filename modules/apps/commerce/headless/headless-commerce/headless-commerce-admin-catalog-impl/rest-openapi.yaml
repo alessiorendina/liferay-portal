@@ -2587,6 +2587,11 @@ components:
                         hr_HR: Description HR
                         hu_HU: Description HU
                     type: object
+                externalReferenceCode:
+                    description:
+                        Idempotency key for create and update; addresses the product option on the `by-externalReferenceCode` paths and is unique within the company.
+                    example: AB-34098-789-N
+                    type: string
                 facetable:
                     description:
                         Per-product override of whether this option is exposed as a search facet for the parent product; defaults to the global option flag on first attach.
@@ -2686,6 +2691,11 @@ components:
                     format: bigdecimal
                     minimum: 0
                     type: number
+                externalReferenceCode:
+                    description:
+                        Idempotency key for create and update; addresses the product option value on the `by-externalReferenceCode` paths and is unique within the company.
+                    example: AB-34098-789-N
+                    type: string
                 id:
                     description:
                         Primary key; read-only and assigned by the service on create.
@@ -3400,6 +3410,11 @@ components:
                         Stable string key of the product option; on read the value is the option's key, while on write the value may also be the option's numeric identifier encoded as a string, which the service resolves back to the key.
                     example: color
                     type: string
+                optionExternalReferenceCode:
+                    description:
+                        External reference code of the product option (ProductOption) this selection answers; the portable, environment-independent reference resolved on import.
+                    example: exampleERC
+                    type: string
                 optionId:
                     description:
                         Internal numeric identifier of the product option this selection answers.
@@ -3407,6 +3422,11 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                optionValueExternalReferenceCode:
+                    description:
+                        External reference code of the chosen product option value (ProductOptionValue) within the option referenced by `optionExternalReferenceCode`; the portable reference resolved on import.
+                    example: exampleERC
+                    type: string
                 optionValueId:
                     description:
                         Internal numeric identifier of the chosen value within the product option referenced by `optionId`.
@@ -11126,6 +11146,183 @@ paths:
             summary: Creates or updates a product related to a product group.
             tags:
                 -   ProductGroupProduct
+    /product-option-values/by-externalReferenceCode/{externalReferenceCode}:
+        delete:
+            description:
+                Removes the product option value relation identified by external reference code. Calls CPDefinitionOptionValueRelService.deleteCPDefinitionOptionValueRel. Validation -- Service-level NoSuchCPDefinitionOptionValueRelException -> 404. Side effects -- Cascades through CPInstance option value listeners; reindexes affected SKUs.
+            operationId: deleteProductOptionValueByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this product option value.
+            summary: Deletes a product option value by external reference code.
+            tags:
+                -   ProductOptionValue
+        get:
+            description:
+                Fetches the product option value relation identified by external reference code. Calls CPDefinitionOptionValueRelService.getCPDefinitionOptionValueRelByExternalReferenceCode (via DTO converter). Validation -- NoSuchCPDefinitionOptionValueRelException -> 404 when external reference code not found.
+            operationId: getProductOptionValueByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ProductOptionValue"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ProductOptionValue"
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this product option value.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets the value related to a product option value.
+            tags:
+                -   ProductOptionValue
+        patch:
+            description:
+                Partially updates the product option value relation identified by external reference code. Calls CPDefinitionOptionValueRelService.getCPDefinitionOptionValueRelByExternalReferenceCode + updateCPDefinitionOptionValueRel. Validation -- NoSuchCPDefinitionOptionValueRelException -> 404 when external reference code not found. Side effects -- May link the value to a specific CPInstance (SKU); reindexes affected SKUs.
+            operationId: patchProductOptionValueByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ProductOptionValue"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ProductOptionValue"
+                required: true
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ProductOptionValue"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ProductOptionValue"
+                    description:
+                        Successful operation
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this product option value.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        A domain validation error prevented the product option value from being created or updated (for example, a referenced entity is missing, a required cross-reference is unresolved, or a value is out of range).
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Updates a product option value by external reference code.
+            tags:
+                -   ProductOptionValue
     /product-option-values/{id}:
         delete:
             description:
@@ -11590,6 +11787,338 @@ paths:
                         A domain validation error prevented the product virtual settings file entry from being created or updated (for example, a referenced entity is missing, a required cross-reference is unresolved, or a value is out of range).
             tags:
                 -   ProductVirtualSettingsFileEntry
+    /productOptions/by-externalReferenceCode/{externalReferenceCode}:
+        delete:
+            description:
+                Removes the product option relation identified by external reference code from its product. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRelByExternalReferenceCode + deleteCPDefinitionOptionRel. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when external reference code not found. Side effects -- Cascades deletion of associated CPDefinitionOptionValueRel rows.
+            operationId: deleteProductOptionByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            responses:
+                204:
+                    description:
+                        No content
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this product option.
+            summary: Deletes a product option by external reference code.
+            tags:
+                -   ProductOption
+        get:
+            description:
+                Fetches the product option relation identified by external reference code. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRelByExternalReferenceCode (via DTO converter). Validation -- NoSuchCPDefinitionOptionRelException -> 404 when external reference code not found.
+            operationId: getProductOptionByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ProductOption"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ProductOption"
+                    description:
+                        Successful operation
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this product option.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a product option by external reference code.
+            tags:
+                -   ProductOption
+        patch:
+            description:
+                Partially updates the product option relation identified by external reference code, including any nested product option values. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRelByExternalReferenceCode + updateCPDefinitionOptionRel + nested addOrUpdateCPDefinitionOptionValueRel. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when external reference code not found. Side effects -- Reindexes the parent product; cascades into nested product option values.
+            operationId: patchProductOptionByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ProductOption"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ProductOption"
+                required: true
+            responses:
+                202:
+                    description:
+                        Accepted - Async
+                204:
+                    description:
+                        No content
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this product option.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        A domain validation error prevented the product option from being created or updated (for example, a referenced entity is missing, a required cross-reference is unresolved, or a value is out of range).
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Updates a product option by external reference code.
+            tags:
+                -   ProductOption
+    /productOptions/by-externalReferenceCode/{externalReferenceCode}/productOptionValues:
+        get:
+            description:
+                Lists the product option value relations of the product option identified by id. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRel + CPDefinitionOptionValueRelService.searchCPDefinitionOptionValueRels. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when parent option relation id not found.
+            operationId: getProductOptionByExternalReferenceCodeProductOptionValuesPage
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+                -   $ref: "#/components/parameters/pageQueryParam"
+                -   $ref: "#/components/parameters/pageSizeQueryParam"
+                -   $ref: "#/components/parameters/searchQueryParam"
+                -   $ref: "#/components/parameters/sortQueryParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ProductOptionValue"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ProductOptionValue"
+                                type: array
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a list of values related to a product option.
+            tags:
+                -   ProductOptionValue
+        post:
+            description:
+                Creates or updates a product option value relation under the product option identified by id. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRel + ProductOptionValueUtil.addOrUpdateCPDefinitionOptionValueRel. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when parent option relation id not found. Side effects -- May link the value to a specific CPInstance (SKU); reindexes affected SKUs.
+            operationId: postProductOptionByExternalReferenceCodeProductOptionValue
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ProductOptionValue"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ProductOptionValue"
+                required: true
+            responses:
+                201:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ProductOptionValue"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ProductOptionValue"
+                    description:
+                        Created
+                202:
+                    description:
+                        Accepted - Async
+                204:
+                    description:
+                        No content
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this product option value.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                409:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The supplied product option value key is already in use within this product option.
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        A domain validation error prevented the product option value from being created or updated (for example, a referenced entity is missing, a required cross-reference is unresolved, or a value is out of range).
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Creates or updates a value related to a product option.
+            tags:
+                -   ProductOptionValue
     /productOptions/{id}:
         delete:
             description:

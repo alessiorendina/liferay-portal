@@ -15,7 +15,9 @@ import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
+import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelService;
+import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelService;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPInstanceService;
@@ -522,7 +524,8 @@ public class SkuResourceImpl extends BaseSkuResourceImpl {
 		CPInstance cpInstance = SkuUtil.addOrUpdateCPInstance(
 			_cpInstanceService, sku, cpDefinition,
 			_cpDefinitionOptionRelService, _cpDefinitionOptionValueRelService,
-			serviceContext);
+			_cpDefinitionOptionRelLocalService,
+			_cpDefinitionOptionValueRelLocalService, serviceContext);
 
 		serviceContext.setExpandoBridgeAttributes(null);
 
@@ -945,7 +948,15 @@ public class SkuResourceImpl extends BaseSkuResourceImpl {
 	private ConfigurationProvider _configurationProvider;
 
 	@Reference
+	private CPDefinitionOptionRelLocalService
+		_cpDefinitionOptionRelLocalService;
+
+	@Reference
 	private CPDefinitionOptionRelService _cpDefinitionOptionRelService;
+
+	@Reference
+	private CPDefinitionOptionValueRelLocalService
+		_cpDefinitionOptionValueRelLocalService;
 
 	@Reference
 	private CPDefinitionOptionValueRelService
