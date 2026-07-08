@@ -37,6 +37,8 @@ import com.liferay.commerce.product.service.base.CPDefinitionOptionValueRelLocal
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionRelPersistence;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.info.pagination.Pagination;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -190,6 +192,7 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		cpDefinitionOptionValueRel.setQuantity(
 			BigDecimalUtil.get(quantity, BigDecimal.ONE));
 		cpDefinitionOptionValueRel.setUnitOfMeasureKey(unitOfMeasureKey);
+		cpDefinitionOptionValueRel.setStatus(WorkflowConstants.STATUS_APPROVED);
 		cpDefinitionOptionValueRel.setExpandoBridgeAttributes(serviceContext);
 
 		_validateLinkedCPDefinitionOptionValueRel(cpDefinitionOptionValueRel);
@@ -279,6 +282,7 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 
 		cpDefinitionOptionValueRel.setPriority(priority);
 		cpDefinitionOptionValueRel.setQuantity(BigDecimal.ZERO);
+		cpDefinitionOptionValueRel.setStatus(WorkflowConstants.STATUS_APPROVED);
 		cpDefinitionOptionValueRel.setExpandoBridgeAttributes(serviceContext);
 
 		_validateLinkedCPDefinitionOptionValueRel(cpDefinitionOptionValueRel);
@@ -638,6 +642,24 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 	}
 
 	@Override
+	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId)
+		throws PortalException {
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPDefinitionOptionValueRel.class, companyId,
+			() -> _addEmptyCPDefinitionOptionValueRel(
+				externalReferenceCode, companyId, userId, groupId),
+			externalReferenceCode,
+			cpDefinitionOptionValueRelLocalService::
+				fetchCPDefinitionOptionValueRelByExternalReferenceCode,
+			cpDefinitionOptionValueRelLocalService::
+				getCPDefinitionOptionValueRelByExternalReferenceCode,
+			CPDefinitionOptionValueRel.class.getName());
+	}
+
+	@Override
 	public boolean hasCPDefinitionOptionValueRels(
 		long cpDefinitionOptionRelId) {
 
@@ -856,6 +878,13 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 
 		cpDefinitionOptionValueRel.setQuantity(quantity);
 		cpDefinitionOptionValueRel.setUnitOfMeasureKey(unitOfMeasureKey);
+		cpDefinitionOptionValueRel.setStatus(
+			EmptyModelManagerUtil.solveEmptyModel(
+				cpDefinitionOptionValueRel.getExternalReferenceCode(),
+				cpDefinitionOptionValueRel.getModelClassName(),
+				cpDefinitionOptionValueRel.getCompanyId(), 0,
+				cpDefinitionOptionValueRel.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 		cpDefinitionOptionValueRel.setExpandoBridgeAttributes(serviceContext);
 
 		_validateLinkedCPDefinitionOptionValueRel(cpDefinitionOptionValueRel);
@@ -911,6 +940,29 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 				addCPDefinitionOptionValueRel(
 					cpDefinitionOptionRelId, cpOptionValue, serviceContext);
 		}
+	}
+
+	private CPDefinitionOptionValueRel _addEmptyCPDefinitionOptionValueRel(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId)
+		throws PortalException {
+
+		User user = _userLocalService.getUser(userId);
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			cpDefinitionOptionValueRelPersistence.create(
+				counterLocalService.increment());
+
+		cpDefinitionOptionValueRel.setExternalReferenceCode(
+			externalReferenceCode);
+		cpDefinitionOptionValueRel.setGroupId(groupId);
+		cpDefinitionOptionValueRel.setCompanyId(companyId);
+		cpDefinitionOptionValueRel.setUserId(user.getUserId());
+		cpDefinitionOptionValueRel.setUserName(user.getFullName());
+		cpDefinitionOptionValueRel.setStatus(WorkflowConstants.STATUS_EMPTY);
+
+		return cpDefinitionOptionValueRelPersistence.update(
+			cpDefinitionOptionValueRel);
 	}
 
 	private SearchContext _buildSearchContext(
@@ -1367,6 +1419,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 
 	@Reference
 	private CPOptionValueLocalService _cpOptionValueLocalService;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;

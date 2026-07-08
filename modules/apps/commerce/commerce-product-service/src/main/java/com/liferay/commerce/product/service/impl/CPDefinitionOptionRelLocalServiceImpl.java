@@ -25,6 +25,8 @@ import com.liferay.commerce.product.service.persistence.CPDefinitionOptionValueR
 import com.liferay.commerce.product.service.persistence.CPInstanceOptionValueRelPersistence;
 import com.liferay.commerce.product.util.CPJSONUtil;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -64,6 +66,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -283,6 +286,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		}
 
 		cpDefinitionOptionRel.setTypeSettings(typeSettings);
+		cpDefinitionOptionRel.setStatus(WorkflowConstants.STATUS_APPROVED);
 		cpDefinitionOptionRel.setExpandoBridgeAttributes(serviceContext);
 
 		cpDefinitionOptionRel = cpDefinitionOptionRelPersistence.update(
@@ -735,6 +739,24 @@ public class CPDefinitionOptionRelLocalServiceImpl
 	}
 
 	@Override
+	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId)
+		throws PortalException {
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPDefinitionOptionRel.class, companyId,
+			() -> _addEmptyCPDefinitionOptionRel(
+				externalReferenceCode, companyId, userId, groupId),
+			externalReferenceCode,
+			cpDefinitionOptionRelLocalService::
+				fetchCPDefinitionOptionRelByExternalReferenceCode,
+			cpDefinitionOptionRelLocalService::
+				getCPDefinitionOptionRelByExternalReferenceCode,
+			CPDefinitionOptionRel.class.getName());
+	}
+
+	@Override
 	public boolean hasCPDefinitionPriceContributorCPDefinitionOptionRels(
 		long cpDefinitionId) {
 
@@ -918,6 +940,13 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		cpDefinitionOptionRel.setSkuContributor(skuContributor);
 		cpDefinitionOptionRel.setPriceType(priceType);
 		cpDefinitionOptionRel.setTypeSettings(typeSettings);
+		cpDefinitionOptionRel.setStatus(
+			EmptyModelManagerUtil.solveEmptyModel(
+				cpDefinitionOptionRel.getExternalReferenceCode(),
+				cpDefinitionOptionRel.getModelClassName(),
+				cpDefinitionOptionRel.getCompanyId(), 0,
+				cpDefinitionOptionRel.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 		cpDefinitionOptionRel.setExpandoBridgeAttributes(serviceContext);
 
 		cpDefinitionOptionRel = cpDefinitionOptionRelPersistence.update(
@@ -939,6 +968,27 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		_reindexCPDefinition(cpDefinitionOptionRel.getCPDefinitionId());
 
 		return cpDefinitionOptionRel;
+	}
+
+	private CPDefinitionOptionRel _addEmptyCPDefinitionOptionRel(
+			String externalReferenceCode, long companyId, long userId,
+			long groupId)
+		throws PortalException {
+
+		User user = _userLocalService.getUser(userId);
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			cpDefinitionOptionRelPersistence.create(
+				counterLocalService.increment());
+
+		cpDefinitionOptionRel.setExternalReferenceCode(externalReferenceCode);
+		cpDefinitionOptionRel.setGroupId(groupId);
+		cpDefinitionOptionRel.setCompanyId(companyId);
+		cpDefinitionOptionRel.setUserId(user.getUserId());
+		cpDefinitionOptionRel.setUserName(user.getFullName());
+		cpDefinitionOptionRel.setStatus(WorkflowConstants.STATUS_EMPTY);
+
+		return cpDefinitionOptionRelPersistence.update(cpDefinitionOptionRel);
 	}
 
 	private SearchContext _buildSearchContext(
@@ -1237,6 +1287,9 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 	@Reference
 	private CPOptionLocalService _cpOptionLocalService;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;

@@ -152,6 +152,29 @@ public class CPDefinitionOptionValueRelServiceImpl
 	}
 
 	@Override
+	public CPDefinitionOptionValueRel
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			cpDefinitionOptionValueRelLocalService.
+				fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		if (cpDefinitionOptionValueRel != null) {
+			CPDefinitionOptionRel cpDefinitionOptionRel =
+				_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
+
+			_checkCommerceCatalog(
+				cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);
+		}
+
+		return cpDefinitionOptionValueRel;
+	}
+
+	@Override
 	public CPDefinitionOptionValueRel getCPDefinitionOptionValueRel(
 			long cpDefinitionOptionValueRelId)
 		throws PortalException {
