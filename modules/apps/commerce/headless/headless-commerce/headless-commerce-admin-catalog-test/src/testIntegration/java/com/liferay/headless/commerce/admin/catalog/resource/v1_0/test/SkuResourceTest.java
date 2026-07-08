@@ -17,6 +17,7 @@ import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
+import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
@@ -154,6 +155,7 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	public void testPostProductIdSku() throws Exception {
 		super.testPostProductIdSku();
 
+		_testPostProductIdSkuWithOptionExternalReferenceCode();
 		_testPostProductIdSkuWithOptionId();
 		_testPostProductIdSkuWithOptionIdKey();
 		_testPostProductIdSkuWithOptionKey();
@@ -313,6 +315,25 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		return _commercePriceEntryLocalService.
 			getInstanceBaseCommercePriceEntry(
 				cpInstance.getCPInstanceUuid(), priceListType, uomKey);
+	}
+
+	private Sku _randomSkuWithSkuOptionExternalReferenceCodes(
+			String optionERC, String optionValueERC)
+		throws Exception {
+
+		Sku sku = randomSku();
+
+		sku.setSkuOptions(
+			() -> new SkuOption[] {
+				new SkuOption() {
+					{
+						optionExternalReferenceCode = optionERC;
+						optionValueExternalReferenceCode = optionValueERC;
+					}
+				}
+			});
+
+		return sku;
 	}
 
 	private Sku _randomSkuWithSkuOptions(
@@ -498,6 +519,50 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		assertValid(patchSku);
 	}
 
+	private void _testPostProductIdSkuWithOptionExternalReferenceCode()
+		throws Exception {
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			_cpDefinitionOptionValueRels.get(0);
+
+		String optionERC = RandomTestUtil.randomString();
+		String optionValueERC = RandomTestUtil.randomString();
+
+		_cpDefinitionOptionRel.setExternalReferenceCode(optionERC);
+
+		_cpDefinitionOptionRel =
+			_cpDefinitionOptionRelLocalService.updateCPDefinitionOptionRel(
+				_cpDefinitionOptionRel);
+
+		cpDefinitionOptionValueRel.setExternalReferenceCode(optionValueERC);
+
+		cpDefinitionOptionValueRel =
+			_cpDefinitionOptionValueRelLocalService.
+				updateCPDefinitionOptionValueRel(cpDefinitionOptionValueRel);
+
+		Sku postSku = skuResource.postProductIdSku(
+			_cpDefinition.getCProductId(),
+			_randomSkuWithSkuOptionExternalReferenceCodes(
+				optionERC, optionValueERC));
+
+		SkuOption[] skuOptions = postSku.getSkuOptions();
+
+		Assert.assertTrue((skuOptions != null) && (skuOptions.length == 1));
+
+		SkuOption skuOption = skuOptions[0];
+
+		Assert.assertEquals(
+			skuOption.getOptionExternalReferenceCode(), optionERC);
+		Assert.assertEquals(
+			(long)skuOption.getOptionId(),
+			_cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+		Assert.assertEquals(
+			skuOption.getOptionValueExternalReferenceCode(), optionValueERC);
+		Assert.assertEquals(
+			(long)skuOption.getOptionValueId(),
+			cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId());
+	}
+
 	private void _testPostProductIdSkuWithOptionId() throws Exception {
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
 			_cpDefinitionOptionValueRels.get(0);
@@ -660,6 +725,10 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	@Inject
 	private CPDefinitionOptionRelLocalService
 		_cpDefinitionOptionRelLocalService;
+
+	@Inject
+	private CPDefinitionOptionValueRelLocalService
+		_cpDefinitionOptionValueRelLocalService;
 
 	@DeleteAfterTestRun
 	private List<CPDefinitionOptionValueRel> _cpDefinitionOptionValueRels =
