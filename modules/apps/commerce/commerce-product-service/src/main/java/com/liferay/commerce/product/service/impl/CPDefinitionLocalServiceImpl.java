@@ -88,6 +88,7 @@ import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.friendly.url.constants.FriendlyURLEntryConstants;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
@@ -264,6 +265,8 @@ public class CPDefinitionLocalServiceImpl
 		cpDefinition.setCompanyId(user.getCompanyId());
 		cpDefinition.setUserId(user.getUserId());
 		cpDefinition.setUserName(user.getFullName());
+		cpDefinition.setCProductExternalReferenceCode(
+			cProduct.getExternalReferenceCode());
 		cpDefinition.setCProductId(cProduct.getCProductId());
 		cpDefinition.setCPTaxCategoryId(cpTaxCategoryId);
 		cpDefinition.setAccountGroupFilterEnabled(accountGroupFilterEnabled);
@@ -1610,6 +1613,25 @@ public class CPDefinitionLocalServiceImpl
 	}
 
 	@Override
+	public CPDefinition getCPDefinitionByCProductExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CProduct cProduct = _cProductPersistence.findByERC_C(
+			externalReferenceCode, companyId);
+
+		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
+			cProduct.getPublishedCPDefinitionId());
+
+		if (cpDefinition != null) {
+			return cpDefinition;
+		}
+
+		return cpDefinitionPersistence.findByC_V(
+			cProduct.getCProductId(), cProduct.getLatestVersion());
+	}
+
+	@Override
 	public CPDefinition getCPDefinitionByCProductId(long cProductId)
 		throws PortalException {
 
@@ -1998,6 +2020,25 @@ public class CPDefinitionLocalServiceImpl
 		return cpDisplayLayout.getLayoutUuid();
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CPDefinition getOrAddEmptyCPDefinition(
+			String externalReferenceCode, String productTypeName,
+			long companyId, long userId, long groupId)
+		throws PortalException {
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPDefinition.class, companyId,
+			() -> _addEmptyCPDefinition(
+				externalReferenceCode, productTypeName, userId, groupId),
+			externalReferenceCode,
+			(curExternalReferenceCode, curCompanyId) ->
+				fetchCPDefinitionByCProductExternalReferenceCode(
+					curExternalReferenceCode, curCompanyId, false),
+			this::getCPDefinitionByCProductExternalReferenceCode,
+			CPDefinition.class.getName());
+	}
+
 	@Override
 	public Map<Locale, String> getUrlTitleMap(long cpDefinitionId) {
 		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
@@ -2348,7 +2389,15 @@ public class CPDefinitionLocalServiceImpl
 		cpDefinition.setWeight(weight);
 		cpDefinition.setWidth(width);
 
-		if ((expirationDate == null) || expirationDate.after(date)) {
+		if (cpDefinition.getStatus() == WorkflowConstants.STATUS_EMPTY) {
+			cpDefinition.setStatus(
+				_emptyModelManager.solveEmptyModel(
+					cpDefinition.getCProductExternalReferenceCode(),
+					cpDefinition.getModelClassName(),
+					cpDefinition.getCompanyId(), 0, cpDefinition.getStatus(),
+					() -> WorkflowConstants.STATUS_DRAFT));
+		}
+		else if ((expirationDate == null) || expirationDate.after(date)) {
 			cpDefinition.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -2896,6 +2945,47 @@ public class CPDefinitionLocalServiceImpl
 
 		return cpDefinitionLocalizationPersistence.update(
 			cpDefinitionLocalization);
+	}
+
+	private CPDefinition _addEmptyCPDefinition(
+			String externalReferenceCode, String productTypeName, long userId,
+			long groupId)
+		throws PortalException {
+
+		User user = _userLocalService.getUser(userId);
+
+		CProduct cProduct = _cProductLocalService.addCProduct(
+			externalReferenceCode, userId, groupId, new ServiceContext());
+
+		CPDefinition cpDefinition = cpDefinitionPersistence.create(
+			counterLocalService.increment());
+
+		cpDefinition.setGroupId(groupId);
+		cpDefinition.setCompanyId(user.getCompanyId());
+		cpDefinition.setUserId(user.getUserId());
+		cpDefinition.setUserName(user.getFullName());
+		cpDefinition.setCProductExternalReferenceCode(
+			cProduct.getExternalReferenceCode());
+		cpDefinition.setCProductId(cProduct.getCProductId());
+
+		Date date = new Date();
+
+		cpDefinition.setDisplayDate(date);
+
+		cpDefinition.setProductTypeName(productTypeName);
+		cpDefinition.setPublished(false);
+		cpDefinition.setVersion(1);
+		cpDefinition.setStatus(WorkflowConstants.STATUS_EMPTY);
+		cpDefinition.setStatusByUserId(user.getUserId());
+		cpDefinition.setStatusByUserName(user.getFullName());
+		cpDefinition.setStatusDate(date);
+
+		cpDefinition = cpDefinitionPersistence.update(cpDefinition);
+
+		_cProductLocalService.updatePublishedCPDefinitionId(
+			cProduct.getCProductId(), cpDefinition.getCPDefinitionId());
+
+		return cpDefinition;
 	}
 
 	private void _addFriendlyURLEntries(
@@ -3695,6 +3785,9 @@ public class CPDefinitionLocalServiceImpl
 
 	@Reference
 	private DDMStructureLocalService _ddmStructureLocalService;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
