@@ -111,23 +111,35 @@ long cpDefinitionId = cpCatalogEntry.getCPDefinitionId();
 
 				<h2 class="product-header-title"><%= HtmlUtil.escape(cpCatalogEntry.getName()) %></h2>
 
-				<p class="my-2 <%= hideCssClass %>" data-text-cp-instance-manufacturer-part-number>
-					<span class="font-weight-semi-bold">
-						<liferay-ui:message key="mpn-colon" />
-					</span>
-					<span>
-						<%= (cpSku == null) ? StringPool.BLANK : HtmlUtil.escape(cpSku.getManufacturerPartNumber()) %>
-					</span>
-				</p>
+				<c:if test="<%= cpSku != null %>">
 
-				<p class="my-2 <%= hideCssClass %>" data-text-cp-instance-gtin>
-					<span class="font-weight-semi-bold">
-						<liferay-ui:message arguments="<%= StringPool.BLANK %>" key="gtin-x" />
-					</span>
-					<span>
-						<%= (cpSku == null) ? StringPool.BLANK : HtmlUtil.escape(cpSku.getGtin()) %>
-					</span>
-				</p>
+					<%
+					String cpSkuGtin = cpSku.getGtin();
+					String cpSkuMpn = cpSku.getManufacturerPartNumber();
+					%>
+
+					<c:if test="<%= !cpSkuMpn.equals(StringPool.BLANK) %>">
+						<p class="my-2 <%= hideCssClass %>" data-text-cp-instance-manufacturer-part-number>
+							<span class="font-weight-semi-bold">
+								<liferay-ui:message key="mpn-colon" />
+							</span>
+							<span>
+								<%= HtmlUtil.escape(cpSku.getManufacturerPartNumber()) %>
+							</span>
+						</p>
+					</c:if>
+
+					<c:if test="<%= !cpSkuGtin.equals(StringPool.BLANK) %>">
+						<p class="my-2 <%= hideCssClass %>" data-text-cp-instance-gtin>
+							<span class="font-weight-semi-bold">
+								<liferay-ui:message arguments="<%= StringPool.BLANK %>" key="gtin-x" />
+							</span>
+							<span>
+								<%= HtmlUtil.escape(cpSku.getGtin()) %>
+							</span>
+						</p>
+					</c:if>
+				</c:if>
 			</header>
 
 			<p class="mt-3 product-description"><%= HtmlUtil.escape(cpCatalogEntry.getShortDescription()) %></p>
