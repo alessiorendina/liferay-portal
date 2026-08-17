@@ -19,6 +19,10 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuil
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -60,7 +64,23 @@ public class PendingCommerceOrderItemFDSActionProvider
 		CPInstance cpInstance = _cpInstanceLocalService.fetchCPInstance(
 			orderItem.getCPInstanceId());
 
+		List<OrderItem> orderItems = orderItem.getOrderItems();
+
 		return DropdownItemListBuilder.add(
+			() ->
+				_modelResourcePermission.contains(
+					PermissionThreadLocal.getPermissionChecker(), commerceOrder,
+					ActionKeys.UPDATE) &&
+				commerceOrder.isOpen() && !orderItems.isEmpty(),
+			dropdownItem -> {
+				dropdownItem.setHref(
+					_getEditCommerceOrderItemRenderURL(
+						orderItem.getOrderItemId(), httpServletRequest));
+				dropdownItem.setLabel(
+					_language.get(httpServletRequest, "edit"));
+				dropdownItem.setTarget("sidePanel");
+			}
+		).add(
 			() -> _modelResourcePermission.contains(
 				PermissionThreadLocal.getPermissionChecker(), commerceOrder,
 				ActionKeys.VIEW),
@@ -129,6 +149,23 @@ public class PendingCommerceOrderItemFDSActionProvider
 	private String _getDeleteCommerceOrderItemURL(long commerceOrderItemId) {
 		return "/o/headless-commerce-delivery-cart/v1.0/cart-items/" +
 			commerceOrderItemId;
+	}
+
+	private String _getEditCommerceOrderItemRenderURL(
+			long commerceOrderItemId, HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		return PortletURLBuilder.create(
+			PortletProviderUtil.getPortletURL(
+				httpServletRequest, CommerceOrder.class.getName(),
+				PortletProvider.Action.EDIT)
+		).setMVCRenderCommandName(
+			"/commerce_open_order_content/edit_commerce_order_item"
+		).setParameter(
+			"commerceOrderItemId", commerceOrderItemId
+		).setWindowState(
+			LiferayWindowState.POP_UP
+		).buildString();
 	}
 
 	@Reference
