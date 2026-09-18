@@ -14,6 +14,7 @@ import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountAccountGroup
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -34,33 +35,73 @@ public class DiscountAccountGroupUtil {
 		ServiceContext serviceContext =
 			serviceContextHelper.getServiceContext();
 
-		AccountGroup accountGroup;
+		AccountGroup accountGroup = _getAccountGroup(
+			accountGroupService, discountAccountGroup, serviceContext);
 
-		if (Validator.isNull(
-				discountAccountGroup.getAccountGroupExternalReferenceCode())) {
+		CommerceDiscountCommerceAccountGroupRel
+			commerceDiscountCommerceAccountGroupRel =
+				commerceDiscountCommerceAccountGroupRelService.
+					fetchCommerceDiscountCommerceAccountGroupRel(
+						commerceDiscount.getCommerceDiscountId(),
+						accountGroup.getAccountGroupId());
 
-			accountGroup = accountGroupService.getAccountGroup(
-				discountAccountGroup.getAccountGroupId());
-		}
-		else if (LazyReferencingThreadLocal.isEnabled()) {
-			String accountGroupExternalReferenceCode =
-				discountAccountGroup.getAccountGroupExternalReferenceCode();
-
-			accountGroup = accountGroupService.getOrAddEmptyAccountGroup(
-				accountGroupExternalReferenceCode,
-				accountGroupExternalReferenceCode);
-		}
-		else {
-			accountGroup =
-				accountGroupService.getAccountGroupByExternalReferenceCode(
-					discountAccountGroup.getAccountGroupExternalReferenceCode(),
-					serviceContext.getCompanyId());
+		if (commerceDiscountCommerceAccountGroupRel != null) {
+			return commerceDiscountCommerceAccountGroupRel;
 		}
 
 		return commerceDiscountCommerceAccountGroupRelService.
 			addCommerceDiscountCommerceAccountGroupRel(
 				commerceDiscount.getCommerceDiscountId(),
 				accountGroup.getAccountGroupId(), serviceContext);
+	}
+
+	private static AccountGroup _getAccountGroup(
+			AccountGroupService accountGroupService,
+			DiscountAccountGroup discountAccountGroup,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		String accountGroupExternalReferenceCode =
+			discountAccountGroup.getAccountGroupExternalReferenceCode();
+
+		if (Validator.isNull(accountGroupExternalReferenceCode)) {
+			return accountGroupService.getAccountGroup(
+				GetterUtil.getLong(discountAccountGroup.getAccountGroupId()));
+		}
+
+		AccountGroup accountGroup =
+			accountGroupService.fetchAccountGroupByExternalReferenceCode(
+				accountGroupExternalReferenceCode,
+				serviceContext.getCompanyId());
+
+		if (accountGroup != null) {
+			return accountGroup;
+		}
+
+		long accountGroupId = GetterUtil.getLong(
+			discountAccountGroup.getAccountGroupId());
+
+		if ((accountGroupId > 0) && !LazyReferencingThreadLocal.isEnabled()) {
+			accountGroup = accountGroupService.fetchAccountGroup(
+				accountGroupId);
+
+			if ((accountGroup != null) &&
+				(accountGroup.getCompanyId() ==
+					serviceContext.getCompanyId())) {
+
+				return accountGroup;
+			}
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			return accountGroupService.getAccountGroupByExternalReferenceCode(
+				accountGroupExternalReferenceCode,
+				serviceContext.getCompanyId());
+		}
+
+		return accountGroupService.getOrAddEmptyAccountGroup(
+			accountGroupExternalReferenceCode,
+			accountGroupExternalReferenceCode);
 	}
 
 }

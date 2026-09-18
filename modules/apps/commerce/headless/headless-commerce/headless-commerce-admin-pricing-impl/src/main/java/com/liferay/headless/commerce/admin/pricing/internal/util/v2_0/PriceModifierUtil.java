@@ -5,16 +5,12 @@
 
 package com.liferay.headless.commerce.admin.pricing.internal.util.v2_0;
 
-import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.pricing.model.CommercePriceModifier;
-import com.liferay.commerce.pricing.model.CommercePriceModifierRel;
-import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.service.CommercePriceModifierRelService;
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
-import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
@@ -33,12 +29,12 @@ public class PriceModifierUtil {
 	public static void addOrUpdateCommercePriceModifierRels(
 			long groupId, AssetCategoryLocalService assetCategoryLocalService,
 			AssetCategoryService assetCategoryService,
+			CProductLocalService cProductLocalService,
 			CommerceCatalogService commerceCatalogService,
 			CommerceCurrencyService commerceCurrencyService,
 			CommercePriceModifierRelService commercePriceModifierRelService,
 			CommercePricingClassService commercePricingClassService,
 			CPDefinitionService cpDefinitionService,
-			CProductLocalService cProductLocalService,
 			PriceModifier priceModifier,
 			CommercePriceModifier commercePriceModifier,
 			ServiceContextHelper serviceContextHelper)
@@ -50,17 +46,6 @@ public class PriceModifierUtil {
 		if (priceModifierCategories != null) {
 			for (PriceModifierCategory priceModifierCategory :
 					priceModifierCategories) {
-
-				CommercePriceModifierRel commercePriceModifierRel =
-					commercePriceModifierRelService.
-						fetchCommercePriceModifierRel(
-							commercePriceModifier.getCommercePriceModifierId(),
-							AssetCategory.class.getName(),
-							priceModifierCategory.getCategoryId());
-
-				if (commercePriceModifierRel != null) {
-					continue;
-				}
 
 				PriceModifierCategoryUtil.addCommercePriceModifierRel(
 					groupId, assetCategoryLocalService, assetCategoryService,
@@ -76,17 +61,6 @@ public class PriceModifierUtil {
 			for (PriceModifierProductGroup priceModifierProductGroup :
 					priceModifierProductGroups) {
 
-				CommercePriceModifierRel commercePriceModifierRel =
-					commercePriceModifierRelService.
-						fetchCommercePriceModifierRel(
-							commercePriceModifier.getCommercePriceModifierId(),
-							CommercePricingClass.class.getName(),
-							priceModifierProductGroup.getProductGroupId());
-
-				if (commercePriceModifierRel != null) {
-					continue;
-				}
-
 				PriceModifierProductGroupUtil.addCommercePriceModifierRel(
 					commercePricingClassService,
 					commercePriceModifierRelService, priceModifierProductGroup,
@@ -101,21 +75,10 @@ public class PriceModifierUtil {
 			for (PriceModifierProduct priceModifierProduct :
 					priceModifierProducts) {
 
-				CommercePriceModifierRel commercePriceModifierRel =
-					commercePriceModifierRelService.
-						fetchCommercePriceModifierRel(
-							commercePriceModifier.getCommercePriceModifierId(),
-							CPDefinition.class.getName(),
-							priceModifierProduct.getProductId());
-
-				if (commercePriceModifierRel != null) {
-					continue;
-				}
-
 				PriceModifierProductUtil.addCommercePriceModifierRel(
-					commerceCatalogService, commerceCurrencyService,
-					commercePriceModifierRelService, cpDefinitionService,
-					cProductLocalService, priceModifierProduct,
+					cProductLocalService, commerceCatalogService,
+					commerceCurrencyService, commercePriceModifierRelService,
+					cpDefinitionService, priceModifierProduct,
 					commercePriceModifier, serviceContextHelper);
 			}
 		}

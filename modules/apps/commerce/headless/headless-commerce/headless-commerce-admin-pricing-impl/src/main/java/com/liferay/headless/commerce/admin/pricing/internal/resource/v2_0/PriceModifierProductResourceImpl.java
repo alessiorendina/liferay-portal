@@ -139,9 +139,9 @@ public class PriceModifierProductResourceImpl
 
 		CommercePriceModifierRel commercePriceModifierRel =
 			PriceModifierProductUtil.addCommercePriceModifierRel(
-				_commerceCatalogService, _commerceCurrencyService,
-				_commercePriceModifierRelService, _cpDefinitionService,
-				_cProductLocalService, priceModifierProduct,
+				_cProductLocalService, _commerceCatalogService,
+				_commerceCurrencyService, _commercePriceModifierRelService,
+				_cpDefinitionService, priceModifierProduct,
 				commercePriceModifier, _serviceContextHelper);
 
 		return _toPriceModifierProduct(
@@ -155,9 +155,9 @@ public class PriceModifierProductResourceImpl
 
 		CommercePriceModifierRel commercePriceModifierRel =
 			PriceModifierProductUtil.addCommercePriceModifierRel(
-				_commerceCatalogService, _commerceCurrencyService,
-				_commercePriceModifierRelService, _cpDefinitionService,
-				_cProductLocalService, priceModifierProduct,
+				_cProductLocalService, _commerceCatalogService,
+				_commerceCurrencyService, _commercePriceModifierRelService,
+				_cpDefinitionService, priceModifierProduct,
 				_commercePriceModifierService.getCommercePriceModifier(id),
 				_serviceContextHelper);
 

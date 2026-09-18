@@ -337,10 +337,10 @@ public class PriceModifierResourceImpl extends BasePriceModifierResourceImpl {
 
 		PriceModifierUtil.addOrUpdateCommercePriceModifierRels(
 			contextCompany.getGroupId(), _assetCategoryLocalService,
-			_assetCategoryService, _commerceCatalogService,
-			_commerceCurrencyService, _commercePriceModifierRelService,
-			_commercePricingClassService, _cpDefinitionService,
-			_cProductLocalService, priceModifier, commercePriceModifier,
+			_assetCategoryService, _cProductLocalService,
+			_commerceCatalogService, _commerceCurrencyService,
+			_commercePriceModifierRelService, _commercePricingClassService,
+			_cpDefinitionService, priceModifier, commercePriceModifier,
 			_serviceContextHelper);
 	}
 

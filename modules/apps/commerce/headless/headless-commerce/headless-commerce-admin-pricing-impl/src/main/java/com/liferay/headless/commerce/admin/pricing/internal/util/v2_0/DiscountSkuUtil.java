@@ -17,8 +17,8 @@ import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountSku;
-import com.liferay.headless.commerce.admin.pricing.internal.util.CPInstanceUtil;
-import com.liferay.headless.commerce.admin.pricing.internal.util.CommerceCatalogUtil;
+import com.liferay.headless.commerce.admin.pricing.internal.util.CatalogUtil;
+import com.liferay.headless.commerce.admin.pricing.internal.util.SkuUtil;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
@@ -69,6 +69,17 @@ public class DiscountSkuUtil {
 			).build();
 		}
 
+		CommerceDiscountRel commerceDiscountRel =
+			commerceDiscountRelService.fetchCommerceDiscountRel(
+				commerceDiscount.getCommerceDiscountId(),
+				CPInstance.class.getName(), cpInstance.getCPInstanceId());
+
+		if (commerceDiscountRel != null) {
+			return commerceDiscountRelService.updateCommerceDiscountRel(
+				commerceDiscountRel.getCommerceDiscountRelId(),
+				typeSettingsUnicodeProperties);
+		}
+
 		return commerceDiscountRelService.addCommerceDiscountRel(
 			commerceDiscount.getCommerceDiscountId(),
 			CPInstance.class.getName(), cpInstance.getCPInstanceId(),
@@ -94,18 +105,17 @@ public class DiscountSkuUtil {
 		long groupId = 0;
 
 		if (LazyReferencingThreadLocal.isEnabled()) {
-			CommerceCatalog commerceCatalog =
-				CommerceCatalogUtil.getCommerceCatalog(
-					discountSku.getCatalogCurrencyCode(),
-					discountSku.getCatalogCurrencyExternalReferenceCode(),
-					discountSku.getCatalogExternalReferenceCode(),
-					commerceCatalogService, commerceCurrencyService,
-					serviceContext);
+			CommerceCatalog commerceCatalog = CatalogUtil.getCommerceCatalog(
+				discountSku.getCatalogCurrencyCode(),
+				discountSku.getCatalogCurrencyExternalReferenceCode(),
+				discountSku.getCatalogExternalReferenceCode(),
+				commerceCatalogService, commerceCurrencyService,
+				serviceContext);
 
 			groupId = commerceCatalog.getGroupId();
 		}
 
-		CPInstance cpInstance = CPInstanceUtil.fetchCPInstance(
+		CPInstance cpInstance = SkuUtil.fetchCPInstance(
 			cpDefinitionService, cpInstanceService, groupId,
 			discountSku.getProductExternalReferenceCode(),
 			discountSku.getProductType(), serviceContext,

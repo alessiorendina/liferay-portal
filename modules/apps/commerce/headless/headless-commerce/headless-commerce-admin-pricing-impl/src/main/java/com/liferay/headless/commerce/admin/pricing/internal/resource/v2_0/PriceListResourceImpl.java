@@ -52,7 +52,7 @@ import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListOrderType;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifier;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.TierPrice;
 import com.liferay.headless.commerce.admin.pricing.internal.odata.entity.v2_0.PriceListEntityModel;
-import com.liferay.headless.commerce.admin.pricing.internal.util.CPInstanceUtil;
+import com.liferay.headless.commerce.admin.pricing.internal.util.SkuUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.PriceListAccountGroupUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.PriceListAccountUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.PriceListChannelUtil;
@@ -167,7 +167,8 @@ public class PriceListResourceImpl
 					"creator", "priceEntries.tierPrices",
 					"priceListAccountGroups", "priceListAccounts",
 					"priceListChannels", "priceListDiscounts",
-					"priceListOrderTypes", "priceModifiers");
+					"priceListOrderTypes",
+					"priceModifiers.priceModifierProducts");
 			}
 
 			@Override
@@ -600,10 +601,11 @@ public class PriceListResourceImpl
 
 				PriceModifierUtil.addOrUpdateCommercePriceModifierRels(
 					contextCompany.getGroupId(), _assetCategoryLocalService,
-					_assetCategoryService, _commerceCatalogService,
-					_commerceCurrencyService, _commercePriceModifierRelService,
+					_assetCategoryService, _cProductLocalService,
+					_commerceCatalogService, _commerceCurrencyService,
+					_commercePriceModifierRelService,
 					_commercePricingClassService, _cpDefinitionService,
-					_cProductLocalService, priceModifier, commercePriceModifier,
+					priceModifier, commercePriceModifier,
 					_serviceContextHelper);
 			}
 		}
@@ -624,7 +626,7 @@ public class PriceListResourceImpl
 				long cProductId = 0;
 				String cpInstanceUuid = null;
 
-				CPInstance cpInstance = CPInstanceUtil.fetchCPInstance(
+				CPInstance cpInstance = SkuUtil.fetchCPInstance(
 					_cpDefinitionService, _cpInstanceService,
 					commercePriceList.getGroupId(),
 					priceEntry.getProductExternalReferenceCode(),

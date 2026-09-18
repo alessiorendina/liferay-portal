@@ -16,6 +16,7 @@ import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -33,41 +34,68 @@ public class DiscountChannelUtil {
 		ServiceContext serviceContext =
 			serviceContextHelper.getServiceContext();
 
-		CommerceChannel commerceChannel;
+		CommerceChannel commerceChannel = _getCommerceChannel(
+			commerceChannelService, discountChannel, serviceContext);
 
-		if (Validator.isNull(
-				discountChannel.getChannelExternalReferenceCode())) {
+		CommerceChannelRel commerceChannelRel =
+			commerceChannelRelService.fetchCommerceChannelRel(
+				CommerceDiscount.class.getName(),
+				commerceDiscount.getCommerceDiscountId(),
+				commerceChannel.getCommerceChannelId());
 
-			commerceChannel = commerceChannelService.getCommerceChannel(
-				discountChannel.getChannelId());
-		}
-		else {
-			commerceChannel =
-				commerceChannelService.
-					fetchCommerceChannelByExternalReferenceCode(
-						discountChannel.getChannelExternalReferenceCode(),
-						serviceContext.getCompanyId());
-
-			if (commerceChannel == null) {
-				String channelExternalReferenceCode =
-					discountChannel.getChannelExternalReferenceCode();
-
-				if (!LazyReferencingThreadLocal.isEnabled()) {
-					throw new NoSuchChannelException(
-						"Unable to find channel with external reference code " +
-							channelExternalReferenceCode);
-				}
-
-				commerceChannel =
-					commerceChannelService.getOrAddEmptyCommerceChannel(
-						channelExternalReferenceCode);
-			}
+		if (commerceChannelRel != null) {
+			return commerceChannelRel;
 		}
 
 		return commerceChannelRelService.addCommerceChannelRel(
 			CommerceDiscount.class.getName(),
 			commerceDiscount.getCommerceDiscountId(),
 			commerceChannel.getCommerceChannelId(), serviceContext);
+	}
+
+	private static CommerceChannel _getCommerceChannel(
+			CommerceChannelService commerceChannelService,
+			DiscountChannel discountChannel, ServiceContext serviceContext)
+		throws PortalException {
+
+		String channelExternalReferenceCode =
+			discountChannel.getChannelExternalReferenceCode();
+
+		if (Validator.isNull(channelExternalReferenceCode)) {
+			return commerceChannelService.getCommerceChannel(
+				GetterUtil.getLong(discountChannel.getChannelId()));
+		}
+
+		CommerceChannel commerceChannel =
+			commerceChannelService.fetchCommerceChannelByExternalReferenceCode(
+				channelExternalReferenceCode, serviceContext.getCompanyId());
+
+		if (commerceChannel != null) {
+			return commerceChannel;
+		}
+
+		long channelId = GetterUtil.getLong(discountChannel.getChannelId());
+
+		if ((channelId > 0) && !LazyReferencingThreadLocal.isEnabled()) {
+			commerceChannel = commerceChannelService.fetchCommerceChannel(
+				channelId);
+
+			if ((commerceChannel != null) &&
+				(commerceChannel.getCompanyId() ==
+					serviceContext.getCompanyId())) {
+
+				return commerceChannel;
+			}
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			throw new NoSuchChannelException(
+				"Unable to find channel with external reference code " +
+					channelExternalReferenceCode);
+		}
+
+		return commerceChannelService.getOrAddEmptyCommerceChannel(
+			channelExternalReferenceCode);
 	}
 
 }

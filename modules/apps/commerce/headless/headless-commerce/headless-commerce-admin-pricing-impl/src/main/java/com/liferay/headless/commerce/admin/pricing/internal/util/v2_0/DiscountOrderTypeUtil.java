@@ -36,43 +36,78 @@ public class DiscountOrderTypeUtil {
 		ServiceContext serviceContext =
 			serviceContextHelper.getServiceContext();
 
-		CommerceOrderType commerceOrderType = null;
+		CommerceOrderType commerceOrderType = _getCommerceOrderType(
+			commerceOrderTypeService, discountOrderType, serviceContext);
 
-		if (Validator.isNull(
-				discountOrderType.getOrderTypeExternalReferenceCode())) {
+		int priority = GetterUtil.get(discountOrderType.getPriority(), 0);
 
-			commerceOrderType = commerceOrderTypeService.getCommerceOrderType(
-				discountOrderType.getOrderTypeId());
-		}
-		else {
-			commerceOrderType =
-				commerceOrderTypeService.
-					fetchCommerceOrderTypeByExternalReferenceCode(
-						discountOrderType.getOrderTypeExternalReferenceCode(),
-						serviceContext.getCompanyId());
+		CommerceDiscountOrderTypeRel commerceDiscountOrderTypeRel =
+			commerceDiscountOrderTypeRelService.
+				fetchCommerceDiscountOrderTypeRel(
+					commerceDiscount.getCommerceDiscountId(),
+					commerceOrderType.getCommerceOrderTypeId());
 
-			if (commerceOrderType == null) {
-				String orderTypeExternalReferenceCode =
-					discountOrderType.getOrderTypeExternalReferenceCode();
-
-				if (!LazyReferencingThreadLocal.isEnabled()) {
-					throw new NoSuchOrderTypeException(
-						"Unable to find order type with external reference " +
-							"code " + orderTypeExternalReferenceCode);
-				}
-
-				commerceOrderType =
-					commerceOrderTypeService.getOrAddEmptyCommerceOrderType(
-						orderTypeExternalReferenceCode);
-			}
+		if (commerceDiscountOrderTypeRel != null) {
+			return commerceDiscountOrderTypeRelService.
+				updateCommerceDiscountOrderTypeRel(
+					commerceDiscountOrderTypeRel.
+						getCommerceDiscountOrderTypeRelId(),
+					priority);
 		}
 
 		return commerceDiscountOrderTypeRelService.
 			addCommerceDiscountOrderTypeRel(
 				commerceDiscount.getCommerceDiscountId(),
-				commerceOrderType.getCommerceOrderTypeId(),
-				GetterUtil.get(discountOrderType.getPriority(), 0),
+				commerceOrderType.getCommerceOrderTypeId(), priority,
 				serviceContext);
+	}
+
+	private static CommerceOrderType _getCommerceOrderType(
+			CommerceOrderTypeService commerceOrderTypeService,
+			DiscountOrderType discountOrderType, ServiceContext serviceContext)
+		throws PortalException {
+
+		String orderTypeExternalReferenceCode =
+			discountOrderType.getOrderTypeExternalReferenceCode();
+
+		if (Validator.isNull(orderTypeExternalReferenceCode)) {
+			return commerceOrderTypeService.getCommerceOrderType(
+				GetterUtil.getLong(discountOrderType.getOrderTypeId()));
+		}
+
+		CommerceOrderType commerceOrderType =
+			commerceOrderTypeService.
+				fetchCommerceOrderTypeByExternalReferenceCode(
+					orderTypeExternalReferenceCode,
+					serviceContext.getCompanyId());
+
+		if (commerceOrderType != null) {
+			return commerceOrderType;
+		}
+
+		long orderTypeId = GetterUtil.getLong(
+			discountOrderType.getOrderTypeId());
+
+		if ((orderTypeId > 0) && !LazyReferencingThreadLocal.isEnabled()) {
+			commerceOrderType = commerceOrderTypeService.fetchCommerceOrderType(
+				orderTypeId);
+
+			if ((commerceOrderType != null) &&
+				(commerceOrderType.getCompanyId() ==
+					serviceContext.getCompanyId())) {
+
+				return commerceOrderType;
+			}
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			throw new NoSuchOrderTypeException(
+				"Unable to find order type with external reference code " +
+					orderTypeExternalReferenceCode);
+		}
+
+		return commerceOrderTypeService.getOrAddEmptyCommerceOrderType(
+			orderTypeExternalReferenceCode);
 	}
 
 }

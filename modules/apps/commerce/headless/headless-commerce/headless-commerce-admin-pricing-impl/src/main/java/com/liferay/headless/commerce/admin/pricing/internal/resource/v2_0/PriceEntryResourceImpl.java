@@ -20,7 +20,7 @@ import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceEntry;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceList;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.TierPrice;
 import com.liferay.headless.commerce.admin.pricing.internal.odata.entity.v2_0.PriceEntryEntityModel;
-import com.liferay.headless.commerce.admin.pricing.internal.util.CPInstanceUtil;
+import com.liferay.headless.commerce.admin.pricing.internal.util.SkuUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.TierPriceUtil;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceEntryResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
@@ -266,7 +266,7 @@ public class PriceEntryResourceImpl extends BasePriceEntryResourceImpl {
 		long cProductId = 0;
 		String cpInstanceUuid = null;
 
-		CPInstance cpInstance = CPInstanceUtil.fetchCPInstance(
+		CPInstance cpInstance = SkuUtil.fetchCPInstance(
 			_cpDefinitionService, _cpInstanceService,
 			commercePriceList.getGroupId(),
 			priceEntry.getProductExternalReferenceCode(),

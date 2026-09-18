@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.util.Validator;
 /**
  * @author Alessio Antonio Rendina
  */
-public class CommerceCatalogUtil {
+public class CatalogUtil {
 
 	public static CommerceCatalog getCommerceCatalog(
 			String catalogCurrencyCode,

@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.util.Validator;
 /**
  * @author Alessio Antonio Rendina
  */
-public class CPInstanceUtil {
+public class SkuUtil {
 
 	public static CPInstance fetchCPInstance(
 			CPDefinitionService cpDefinitionService,
@@ -41,10 +41,12 @@ public class CPInstanceUtil {
 			}
 		}
 
-		if (skuId > 0) {
+		if ((skuId > 0) && !LazyReferencingThreadLocal.isEnabled()) {
 			CPInstance cpInstance = cpInstanceService.fetchCPInstance(skuId);
 
-			if (cpInstance != null) {
+			if ((cpInstance != null) &&
+				(cpInstance.getCompanyId() == serviceContext.getCompanyId())) {
+
 				return cpInstance;
 			}
 		}
