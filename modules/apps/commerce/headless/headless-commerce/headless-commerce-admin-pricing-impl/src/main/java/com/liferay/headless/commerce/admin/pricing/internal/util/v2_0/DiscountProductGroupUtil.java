@@ -14,6 +14,7 @@ import com.liferay.commerce.pricing.service.CommercePricingClassService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountProductGroup;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -54,9 +55,17 @@ public class DiscountProductGroupUtil {
 				String productGroupExternalReferenceCode =
 					discountProductGroup.getProductGroupExternalReferenceCode();
 
-				throw new NoSuchPricingClassException(
-					"Unable to find product group with external reference " +
-						"code " + productGroupExternalReferenceCode);
+				if (!LazyReferencingThreadLocal.isEnabled()) {
+					throw new NoSuchPricingClassException(
+						"Unable to find product group with external " +
+							"reference code " +
+								productGroupExternalReferenceCode);
+				}
+
+				commercePricingClass =
+					commercePricingClassService.
+						getOrAddEmptyCommercePricingClass(
+							productGroupExternalReferenceCode);
 			}
 		}
 

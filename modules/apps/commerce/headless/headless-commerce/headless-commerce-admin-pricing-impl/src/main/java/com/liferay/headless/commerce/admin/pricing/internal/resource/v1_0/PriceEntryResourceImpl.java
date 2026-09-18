@@ -242,7 +242,8 @@ public class PriceEntryResourceImpl extends BasePriceEntryResourceImpl {
 		String cpInstanceUuid = null;
 
 		CPInstance cpInstance = CPInstanceUtil.fetchCPInstance(
-			commercePriceList, _cpDefinitionService, _cpInstanceService,
+			_cpDefinitionService, _cpInstanceService,
+			commercePriceList.getGroupId(),
 			priceEntry.getProductExternalReferenceCode(),
 			priceEntry.getProductType(), serviceContext,
 			priceEntry.getSkuExternalReferenceCode(),

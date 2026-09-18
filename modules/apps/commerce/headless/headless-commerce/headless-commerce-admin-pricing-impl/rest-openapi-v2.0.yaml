@@ -576,6 +576,12 @@ components:
                     items:
                         $ref: "#/components/schemas/DiscountRule"
                     type: array
+                discountSkus:
+                    description:
+                        SKU bindings cascaded on upsert. Each entry restricts the discount to one SKU; supplying this array on POST/PUT replaces the previous bindings.
+                    items:
+                        $ref: "#/components/schemas/DiscountSku"
+                    type: array
                 displayDate:
                     description:
                         Date and time when the discount becomes effective. ISO 8601.
@@ -990,6 +996,21 @@ components:
                         Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
+                catalogCurrencyCode:
+                    description:
+                        Currency code of the catalog the referenced product belongs to. On read it mirrors that catalog's currency code; on write it is used only when the catalog does not yet exist, to create it with the right currency.
+                    example: USD
+                    type: string
+                catalogCurrencyExternalReferenceCode:
+                    description:
+                        External reference code of the catalog currency. On read it mirrors that currency's external reference code; on write it is resolved after `catalogCurrencyCode` and, when the currency has not been imported yet, used to create it as an empty stub.
+                    example: US_DOLLAR
+                    type: string
+                catalogExternalReferenceCode:
+                    description:
+                        External reference code of the catalog the referenced product belongs to. On read it mirrors that catalog's external reference code; on write it is used only when the product does not yet exist, to create it in the right catalog.
+                    example: CAT0111
+                    type: string
                 discountExternalReferenceCode:
                     description:
                         External reference code of the bound discount; alternative to `discountId` for lookup.
@@ -1026,6 +1047,11 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                productType:
+                    description:
+                        Product type name of the bound product. On read it mirrors that product's type; on write it is used only when the product does not yet exist, to create it with the right type, and is then required.
+                    example: simple
+                    type: string
             required:
                 -   productId
             type: object
@@ -1141,6 +1167,21 @@ components:
                         Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
+                catalogCurrencyCode:
+                    description:
+                        Currency code of the catalog the referenced product belongs to. On read it mirrors that catalog's currency code; on write it is used only when the catalog does not yet exist, to create it with the right currency.
+                    example: USD
+                    type: string
+                catalogCurrencyExternalReferenceCode:
+                    description:
+                        External reference code of the catalog currency. On read it mirrors that currency's external reference code; on write it is resolved after `catalogCurrencyCode` and, when the currency has not been imported yet, used to create it as an empty stub.
+                    example: US_DOLLAR
+                    type: string
+                catalogExternalReferenceCode:
+                    description:
+                        External reference code of the catalog the referenced product belongs to. On read it mirrors that catalog's external reference code; on write it is used only when the product does not yet exist, to create it in the right catalog.
+                    example: CAT0111
+                    type: string
                 discountExternalReferenceCode:
                     description:
                         External reference code of the bound discount; alternative to `discountId` for lookup.
@@ -1162,6 +1203,11 @@ components:
                     minimum: 0
                     readOnly: true
                     type: integer
+                productExternalReferenceCode:
+                    description:
+                        External reference code of the product the bound SKU belongs to. On read it mirrors that product's external reference code; on write it is used only when the SKU does not yet exist, to create it under that product.
+                    example: PROD0111
+                    type: string
                 productId:
                     description:
                         Reference to the product entity (FK identifier).
@@ -1179,6 +1225,11 @@ components:
                         hr_HR: Product Name HR
                         hu_HU: Product Name HU
                     type: object
+                productType:
+                    description:
+                        Product type name of the product the bound SKU belongs to. On read it mirrors that product's type; on write it is used only when neither the SKU nor its product exists yet, to create the product with the right type, and is then required.
+                    example: simple
+                    type: string
                 sku:
                     $ref: "#/components/schemas/Sku"
                     readOnly: true
@@ -2121,6 +2172,21 @@ components:
                         Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
+                catalogCurrencyCode:
+                    description:
+                        Currency code of the catalog the referenced product belongs to. On read it mirrors that catalog's currency code; on write it is used only when the catalog does not yet exist, to create it with the right currency.
+                    example: USD
+                    type: string
+                catalogCurrencyExternalReferenceCode:
+                    description:
+                        External reference code of the catalog currency. On read it mirrors that currency's external reference code; on write it is resolved after `catalogCurrencyCode` and, when the currency has not been imported yet, used to create it as an empty stub.
+                    example: US_DOLLAR
+                    type: string
+                catalogExternalReferenceCode:
+                    description:
+                        External reference code of the catalog the referenced product belongs to. On read it mirrors that catalog's external reference code; on write it is used only when the product does not yet exist, to create it in the right catalog.
+                    example: CAT0111
+                    type: string
                 priceModifierExternalReferenceCode:
                     description:
                         External reference code of the bound priceModifier; alternative to `priceModifierId` for lookup.
@@ -2156,6 +2222,11 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                productType:
+                    description:
+                        Product type name of the bound product. On read it mirrors that product's type; on write it is used only when the product does not yet exist, to create it with the right type, and is then required.
+                    example: simple
+                    type: string
             required:
                 -   priceModifierId
                 -   productId

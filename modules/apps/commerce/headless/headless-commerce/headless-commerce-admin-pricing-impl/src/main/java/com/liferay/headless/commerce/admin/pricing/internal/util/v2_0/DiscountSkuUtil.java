@@ -5,18 +5,29 @@
 
 package com.liferay.headless.commerce.admin.pricing.internal.util.v2_0;
 
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.model.CommerceDiscountRel;
 import com.liferay.commerce.discount.service.CommerceDiscountRelService;
+import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
 import com.liferay.commerce.product.model.CPInstance;
-import com.liferay.commerce.product.service.CPInstanceLocalService;
+import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountSku;
+import com.liferay.headless.commerce.admin.pricing.internal.util.CPInstanceUtil;
+import com.liferay.headless.commerce.admin.pricing.internal.util.CommerceCatalogUtil;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Alessio Antonio Rendina
@@ -24,16 +35,24 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 public class DiscountSkuUtil {
 
 	public static CommerceDiscountRel addCommerceDiscountRel(
+			CommerceCatalogService commerceCatalogService,
+			CommerceCurrencyService commerceCurrencyService,
 			CommerceDiscount commerceDiscount,
 			CommerceDiscountRelService commerceDiscountRelService,
-			CPInstanceLocalService cpInstanceLocalService,
+			CPDefinitionService cpDefinitionService,
+			CPInstanceService cpInstanceService,
 			CPInstanceUnitOfMeasureLocalService
 				cpInstanceUnitOfMeasureLocalService,
 			DiscountSku discountSku, ServiceContextHelper serviceContextHelper)
 		throws PortalException {
 
-		CPInstance cpInstance = cpInstanceLocalService.getCPInstance(
-			discountSku.getSkuId());
+		ServiceContext serviceContext =
+			serviceContextHelper.getServiceContext();
+
+		CPInstance cpInstance = _getCPInstance(
+			commerceCatalogService, commerceCurrencyService,
+			cpDefinitionService, cpInstanceService, discountSku,
+			serviceContext);
 
 		UnicodeProperties typeSettingsUnicodeProperties = null;
 		String unitOfMeasureKey = discountSku.getUnitOfMeasureKey();
@@ -53,8 +72,53 @@ public class DiscountSkuUtil {
 		return commerceDiscountRelService.addCommerceDiscountRel(
 			commerceDiscount.getCommerceDiscountId(),
 			CPInstance.class.getName(), cpInstance.getCPInstanceId(),
-			typeSettingsUnicodeProperties,
-			serviceContextHelper.getServiceContext());
+			typeSettingsUnicodeProperties, serviceContext);
+	}
+
+	private static CPInstance _getCPInstance(
+			CommerceCatalogService commerceCatalogService,
+			CommerceCurrencyService commerceCurrencyService,
+			CPDefinitionService cpDefinitionService,
+			CPInstanceService cpInstanceService, DiscountSku discountSku,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		String skuExternalReferenceCode =
+			discountSku.getSkuExternalReferenceCode();
+
+		if (Validator.isNull(skuExternalReferenceCode)) {
+			return cpInstanceService.getCPInstance(
+				GetterUtil.getLong(discountSku.getSkuId()));
+		}
+
+		long groupId = 0;
+
+		if (LazyReferencingThreadLocal.isEnabled()) {
+			CommerceCatalog commerceCatalog =
+				CommerceCatalogUtil.getCommerceCatalog(
+					discountSku.getCatalogCurrencyCode(),
+					discountSku.getCatalogCurrencyExternalReferenceCode(),
+					discountSku.getCatalogExternalReferenceCode(),
+					commerceCatalogService, commerceCurrencyService,
+					serviceContext);
+
+			groupId = commerceCatalog.getGroupId();
+		}
+
+		CPInstance cpInstance = CPInstanceUtil.fetchCPInstance(
+			cpDefinitionService, cpInstanceService, groupId,
+			discountSku.getProductExternalReferenceCode(),
+			discountSku.getProductType(), serviceContext,
+			skuExternalReferenceCode,
+			GetterUtil.getLong(discountSku.getSkuId()));
+
+		if (cpInstance == null) {
+			throw new NoSuchCPInstanceException(
+				"Unable to find SKU with external reference code " +
+					skuExternalReferenceCode);
+		}
+
+		return cpInstance;
 	}
 
 }

@@ -9,6 +9,8 @@ import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountGroupService;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.discount.exception.NoSuchDiscountException;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.model.CommerceDiscountAccountRel;
@@ -28,7 +30,11 @@ import com.liferay.commerce.product.exception.NoSuchCProductException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceChannelRel;
+import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.service.CPInstanceService;
+import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.product.service.CProductLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.commerce.product.service.CommerceChannelRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.service.CommerceOrderTypeService;
@@ -43,6 +49,7 @@ import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountOrderType;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountProduct;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountProductGroup;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountRule;
+import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountSku;
 import com.liferay.headless.commerce.admin.pricing.internal.odata.entity.v2_0.DiscountEntityModel;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountAccountGroupUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountAccountUtil;
@@ -52,6 +59,7 @@ import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountOr
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountProductGroupUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountProductUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountRuleUtil;
+import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountSkuUtil;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.DateConfig;
@@ -513,8 +521,8 @@ public class DiscountResourceImpl
 
 				DiscountCategoryUtil.addCommerceDiscountRel(
 					contextCompany.getGroupId(), _assetCategoryLocalService,
-					_commerceDiscountRelService, discountCategory,
-					commerceDiscount, _serviceContextHelper);
+					_assetCategoryService, _commerceDiscountRelService,
+					discountCategory, commerceDiscount, _serviceContextHelper);
 			}
 		}
 
@@ -624,8 +632,10 @@ public class DiscountResourceImpl
 				}
 
 				DiscountProductUtil.addCommerceDiscountRel(
-					_cProductLocalService, _commerceDiscountRelService,
-					discountProduct, commerceDiscount, _serviceContextHelper);
+					_commerceCatalogService, _commerceCurrencyService,
+					_commerceDiscountRelService, _cpDefinitionService,
+					_cProductLocalService, discountProduct, commerceDiscount,
+					_serviceContextHelper);
 			}
 		}
 
@@ -649,6 +659,21 @@ public class DiscountResourceImpl
 			}
 		}
 
+		// Discount skus
+
+		DiscountSku[] discountSkus = discount.getDiscountSkus();
+
+		if (discountSkus != null) {
+			for (DiscountSku discountSku : discountSkus) {
+				DiscountSkuUtil.addCommerceDiscountRel(
+					_commerceCatalogService, _commerceCurrencyService,
+					commerceDiscount, _commerceDiscountRelService,
+					_cpDefinitionService, _cpInstanceService,
+					_cpInstanceUnitOfMeasureLocalService, discountSku,
+					_serviceContextHelper);
+			}
+		}
+
 		return commerceDiscount;
 	}
 
@@ -664,13 +689,22 @@ public class DiscountResourceImpl
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
+	private AssetCategoryService _assetCategoryService;
+
+	@Reference
 	private CProductLocalService _cProductLocalService;
+
+	@Reference
+	private CommerceCatalogService _commerceCatalogService;
 
 	@Reference
 	private CommerceChannelRelService _commerceChannelRelService;
 
 	@Reference
 	private CommerceChannelService _commerceChannelService;
+
+	@Reference
+	private CommerceCurrencyService _commerceCurrencyService;
 
 	@Reference
 	private CommerceDiscountAccountRelService
@@ -698,6 +732,16 @@ public class DiscountResourceImpl
 
 	@Reference
 	private CommercePricingClassService _commercePricingClassService;
+
+	@Reference
+	private CPDefinitionService _cpDefinitionService;
+
+	@Reference
+	private CPInstanceService _cpInstanceService;
+
+	@Reference
+	private CPInstanceUnitOfMeasureLocalService
+		_cpInstanceUnitOfMeasureLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.pricing.internal.dto.v2_0.converter.DiscountDTOConverter)"

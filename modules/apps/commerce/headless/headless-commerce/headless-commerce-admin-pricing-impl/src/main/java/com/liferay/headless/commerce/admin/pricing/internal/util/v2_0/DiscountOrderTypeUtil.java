@@ -14,6 +14,7 @@ import com.liferay.commerce.service.CommerceOrderTypeService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountOrderType;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -54,8 +55,14 @@ public class DiscountOrderTypeUtil {
 				String orderTypeExternalReferenceCode =
 					discountOrderType.getOrderTypeExternalReferenceCode();
 
-				throw new NoSuchOrderTypeException(
-					"Unable to find order type with external reference code " +
+				if (!LazyReferencingThreadLocal.isEnabled()) {
+					throw new NoSuchOrderTypeException(
+						"Unable to find order type with external reference " +
+							"code " + orderTypeExternalReferenceCode);
+				}
+
+				commerceOrderType =
+					commerceOrderTypeService.getOrAddEmptyCommerceOrderType(
 						orderTypeExternalReferenceCode);
 			}
 		}

@@ -8,6 +8,7 @@ package com.liferay.headless.commerce.admin.pricing.internal.resource.v2_0;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountGroupService;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
@@ -599,9 +600,11 @@ public class PriceListResourceImpl
 
 				PriceModifierUtil.addOrUpdateCommercePriceModifierRels(
 					contextCompany.getGroupId(), _assetCategoryLocalService,
-					_commercePricingClassService, _cProductLocalService,
-					_commercePriceModifierRelService, priceModifier,
-					commercePriceModifier, _serviceContextHelper);
+					_assetCategoryService, _commerceCatalogService,
+					_commerceCurrencyService, _commercePriceModifierRelService,
+					_commercePricingClassService, _cpDefinitionService,
+					_cProductLocalService, priceModifier, commercePriceModifier,
+					_serviceContextHelper);
 			}
 		}
 
@@ -622,7 +625,8 @@ public class PriceListResourceImpl
 				String cpInstanceUuid = null;
 
 				CPInstance cpInstance = CPInstanceUtil.fetchCPInstance(
-					commercePriceList, _cpDefinitionService, _cpInstanceService,
+					_cpDefinitionService, _cpInstanceService,
+					commercePriceList.getGroupId(),
 					priceEntry.getProductExternalReferenceCode(),
 					priceEntry.getProductType(), serviceContext,
 					priceEntry.getSkuExternalReferenceCode(),
@@ -762,6 +766,9 @@ public class PriceListResourceImpl
 
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
+	private AssetCategoryService _assetCategoryService;
 
 	@Reference
 	private CProductLocalService _cProductLocalService;

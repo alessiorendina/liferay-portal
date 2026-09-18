@@ -5,17 +5,25 @@
 
 package com.liferay.headless.commerce.admin.pricing.internal.util.v2_0;
 
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.pricing.exception.NoSuchPricingClassException;
 import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.model.CommercePriceModifierRel;
 import com.liferay.commerce.pricing.service.CommercePriceModifierRelService;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
+import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CProductLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogService;
+import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierProduct;
+import com.liferay.headless.commerce.admin.pricing.internal.util.CommerceCatalogUtil;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -24,8 +32,11 @@ import com.liferay.portal.kernel.util.Validator;
 public class PriceModifierProductUtil {
 
 	public static CommercePriceModifierRel addCommercePriceModifierRel(
-			CProductLocalService cProductLocalService,
+			CommerceCatalogService commerceCatalogService,
+			CommerceCurrencyService commerceCurrencyService,
 			CommercePriceModifierRelService commercePriceModifierRelService,
+			CPDefinitionService cpDefinitionService,
+			CProductLocalService cProductLocalService,
 			PriceModifierProduct priceModifierProduct,
 			CommercePriceModifier commercePriceModifier,
 			ServiceContextHelper serviceContextHelper)
@@ -49,9 +60,34 @@ public class PriceModifierProductUtil {
 					serviceContext.getCompanyId());
 
 			if (cProduct == null) {
-				throw new NoSuchPricingClassException(
-					"Unable to find product with external reference code " +
-						priceModifierProduct.getProductExternalReferenceCode());
+				String productExternalReferenceCode =
+					priceModifierProduct.getProductExternalReferenceCode();
+
+				if (!LazyReferencingThreadLocal.isEnabled()) {
+					throw new NoSuchPricingClassException(
+						"Unable to find product with external reference code " +
+							productExternalReferenceCode);
+				}
+
+				CommerceCatalog commerceCatalog =
+					CommerceCatalogUtil.getCommerceCatalog(
+						priceModifierProduct.getCatalogCurrencyCode(),
+						priceModifierProduct.
+							getCatalogCurrencyExternalReferenceCode(),
+						priceModifierProduct.getCatalogExternalReferenceCode(),
+						commerceCatalogService, commerceCurrencyService,
+						serviceContext);
+
+				CPDefinition cpDefinition =
+					cpDefinitionService.getOrAddEmptyCPDefinition(
+						productExternalReferenceCode,
+						commerceCatalog.getGroupId(),
+						GetterUtil.getString(
+							priceModifierProduct.getProductType(),
+							SimpleCPTypeConstants.NAME));
+
+				cProduct = cProductLocalService.getCProduct(
+					cpDefinition.getCProductId());
 			}
 		}
 

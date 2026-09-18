@@ -8,12 +8,14 @@ package com.liferay.headless.commerce.admin.pricing.internal.util.v2_0;
 import com.liferay.asset.kernel.exception.NoSuchCategoryException;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.model.CommercePriceModifierRel;
 import com.liferay.commerce.pricing.service.CommercePriceModifierRelService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierCategory;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -23,6 +25,7 @@ public class PriceModifierCategoryUtil {
 
 	public static CommercePriceModifierRel addCommercePriceModifierRel(
 			long groupId, AssetCategoryLocalService assetCategoryLocalService,
+			AssetCategoryService assetCategoryService,
 			CommercePriceModifierRelService commercePriceModifierRelService,
 			PriceModifierCategory priceModifierCategory,
 			CommercePriceModifier commercePriceModifier,
@@ -49,9 +52,14 @@ public class PriceModifierCategoryUtil {
 				String categoryExternalReferenceCode =
 					priceModifierCategory.getCategoryExternalReferenceCode();
 
-				throw new NoSuchCategoryException(
-					"Unable to find category with external reference code " +
-						categoryExternalReferenceCode);
+				if (!LazyReferencingThreadLocal.isEnabled()) {
+					throw new NoSuchCategoryException(
+						"Unable to find category with external reference " +
+							"code " + categoryExternalReferenceCode);
+				}
+
+				assetCategory = assetCategoryService.getOrAddEmptyCategory(
+					categoryExternalReferenceCode, groupId);
 			}
 		}
 

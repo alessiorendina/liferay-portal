@@ -7,13 +7,17 @@ package com.liferay.headless.commerce.admin.pricing.internal.util.v2_0;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.model.CommercePriceModifierRel;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.service.CommercePriceModifierRelService;
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CProductLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifier;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierCategory;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierProduct;
@@ -28,9 +32,13 @@ public class PriceModifierUtil {
 
 	public static void addOrUpdateCommercePriceModifierRels(
 			long groupId, AssetCategoryLocalService assetCategoryLocalService,
-			CommercePricingClassService commercePricingClassService,
-			CProductLocalService cProductLocalService,
+			AssetCategoryService assetCategoryService,
+			CommerceCatalogService commerceCatalogService,
+			CommerceCurrencyService commerceCurrencyService,
 			CommercePriceModifierRelService commercePriceModifierRelService,
+			CommercePricingClassService commercePricingClassService,
+			CPDefinitionService cpDefinitionService,
+			CProductLocalService cProductLocalService,
 			PriceModifier priceModifier,
 			CommercePriceModifier commercePriceModifier,
 			ServiceContextHelper serviceContextHelper)
@@ -55,7 +63,7 @@ public class PriceModifierUtil {
 				}
 
 				PriceModifierCategoryUtil.addCommercePriceModifierRel(
-					groupId, assetCategoryLocalService,
+					groupId, assetCategoryLocalService, assetCategoryService,
 					commercePriceModifierRelService, priceModifierCategory,
 					commercePriceModifier, serviceContextHelper);
 			}
@@ -105,9 +113,10 @@ public class PriceModifierUtil {
 				}
 
 				PriceModifierProductUtil.addCommercePriceModifierRel(
-					cProductLocalService, commercePriceModifierRelService,
-					priceModifierProduct, commercePriceModifier,
-					serviceContextHelper);
+					commerceCatalogService, commerceCurrencyService,
+					commercePriceModifierRelService, cpDefinitionService,
+					cProductLocalService, priceModifierProduct,
+					commercePriceModifier, serviceContextHelper);
 			}
 		}
 	}

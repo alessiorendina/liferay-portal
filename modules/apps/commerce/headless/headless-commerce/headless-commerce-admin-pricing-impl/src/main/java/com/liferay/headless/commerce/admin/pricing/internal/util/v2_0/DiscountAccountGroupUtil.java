@@ -12,7 +12,7 @@ import com.liferay.commerce.discount.model.CommerceDiscountCommerceAccountGroupR
 import com.liferay.commerce.discount.service.CommerceDiscountCommerceAccountGroupRelService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountAccountGroup;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -29,7 +29,7 @@ public class DiscountAccountGroupUtil {
 				DiscountAccountGroup discountAccountGroup,
 				CommerceDiscount commerceDiscount,
 				ServiceContextHelper serviceContextHelper)
-		throws PortalException {
+		throws Exception {
 
 		ServiceContext serviceContext =
 			serviceContextHelper.getServiceContext();
@@ -41,6 +41,14 @@ public class DiscountAccountGroupUtil {
 
 			accountGroup = accountGroupService.getAccountGroup(
 				discountAccountGroup.getAccountGroupId());
+		}
+		else if (LazyReferencingThreadLocal.isEnabled()) {
+			String accountGroupExternalReferenceCode =
+				discountAccountGroup.getAccountGroupExternalReferenceCode();
+
+			accountGroup = accountGroupService.getOrAddEmptyAccountGroup(
+				accountGroupExternalReferenceCode,
+				accountGroupExternalReferenceCode);
 		}
 		else {
 			accountGroup =

@@ -14,6 +14,7 @@ import com.liferay.commerce.pricing.service.CommercePricingClassService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierProductGroup;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -56,9 +57,16 @@ public class PriceModifierProductGroupUtil {
 					priceModifierProductGroup.
 						getProductGroupExternalReferenceCode();
 
-				throw new NoSuchPricingClassException(
-					"Unable to find Product Group with " +
-						"externalReferenceCode: " +
+				if (!LazyReferencingThreadLocal.isEnabled()) {
+					throw new NoSuchPricingClassException(
+						"Unable to find Product Group with " +
+							"externalReferenceCode: " +
+								productGroupExternalReferenceCode);
+				}
+
+				commercePricingClass =
+					commercePricingClassService.
+						getOrAddEmptyCommercePricingClass(
 							productGroupExternalReferenceCode);
 			}
 		}

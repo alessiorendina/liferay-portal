@@ -5,7 +5,6 @@
 
 package com.liferay.headless.commerce.admin.pricing.internal.util;
 
-import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
 import com.liferay.commerce.product.exception.NoSuchCProductException;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -25,9 +24,8 @@ import com.liferay.portal.kernel.util.Validator;
 public class CPInstanceUtil {
 
 	public static CPInstance fetchCPInstance(
-			CommercePriceList commercePriceList,
 			CPDefinitionService cpDefinitionService,
-			CPInstanceService cpInstanceService,
+			CPInstanceService cpInstanceService, long groupId,
 			String productExternalReferenceCode, String productType,
 			ServiceContext serviceContext, String skuExternalReferenceCode,
 			long skuId)
@@ -69,12 +67,12 @@ public class CPInstanceUtil {
 
 		CPDefinition cpDefinition =
 			cpDefinitionService.getOrAddEmptyCPDefinition(
-				productExternalReferenceCode, commercePriceList.getGroupId(),
+				productExternalReferenceCode, groupId,
 				GetterUtil.getString(productType, SimpleCPTypeConstants.NAME));
 
 		return cpInstanceService.getOrAddEmptyCPInstance(
 			skuExternalReferenceCode, cpDefinition.getCPDefinitionId(),
-			commercePriceList.getGroupId());
+			groupId);
 	}
 
 }

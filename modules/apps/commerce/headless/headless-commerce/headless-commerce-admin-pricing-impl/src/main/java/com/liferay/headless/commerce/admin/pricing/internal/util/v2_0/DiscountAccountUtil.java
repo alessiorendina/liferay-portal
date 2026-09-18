@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.admin.pricing.internal.util.v2_0;
 
+import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.discount.model.CommerceDiscount;
@@ -13,6 +14,7 @@ import com.liferay.commerce.discount.service.CommerceDiscountAccountRelService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountAccount;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -38,6 +40,14 @@ public class DiscountAccountUtil {
 
 			accountEntry = accountEntryService.getAccountEntry(
 				discountAccount.getAccountId());
+		}
+		else if (LazyReferencingThreadLocal.isEnabled()) {
+			String accountExternalReferenceCode =
+				discountAccount.getAccountExternalReferenceCode();
+
+			accountEntry = accountEntryService.getOrAddEmptyAccountEntry(
+				accountExternalReferenceCode, accountExternalReferenceCode,
+				AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
 		}
 		else {
 			accountEntry =

@@ -14,6 +14,7 @@ import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountChannel;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -48,9 +49,18 @@ public class DiscountChannelUtil {
 						serviceContext.getCompanyId());
 
 			if (commerceChannel == null) {
-				throw new NoSuchChannelException(
-					"Unable to find channel with external reference code " +
-						discountChannel.getChannelExternalReferenceCode());
+				String channelExternalReferenceCode =
+					discountChannel.getChannelExternalReferenceCode();
+
+				if (!LazyReferencingThreadLocal.isEnabled()) {
+					throw new NoSuchChannelException(
+						"Unable to find channel with external reference code " +
+							channelExternalReferenceCode);
+				}
+
+				commerceChannel =
+					commerceChannelService.getOrAddEmptyCommerceChannel(
+						channelExternalReferenceCode);
 			}
 		}
 
