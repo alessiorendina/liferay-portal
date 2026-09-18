@@ -10,6 +10,7 @@ import com.liferay.account.service.AccountGroupService;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.discount.service.CommerceDiscountService;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.exception.NoSuchPriceListException;
@@ -32,7 +33,12 @@ import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.service.CommercePriceModifierRelService;
 import com.liferay.commerce.pricing.service.CommercePriceModifierService;
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
+import com.liferay.commerce.product.exception.NoSuchCatalogException;
+import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.commerce.product.service.CommerceChannelService;
@@ -47,6 +53,7 @@ import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListOrderType;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifier;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.TierPrice;
 import com.liferay.headless.commerce.admin.pricing.internal.odata.entity.v2_0.PriceListEntityModel;
+import com.liferay.headless.commerce.admin.pricing.internal.util.CPInstanceUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.PriceListAccountGroupUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.PriceListAccountUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.PriceListChannelUtil;
@@ -59,6 +66,7 @@ import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.CommerceCurrencyUtil;
 import com.liferay.headless.commerce.core.util.DateConfig;
 import com.liferay.headless.commerce.core.util.ExpandoUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
@@ -68,6 +76,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -223,22 +232,9 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 			String externalReferenceCode, PriceList priceList)
 		throws Exception {
 
-		CommerceCatalog commerceCatalog =
-			_commerceCatalogService.fetchCommerceCatalogByExternalReferenceCode(
-				GetterUtil.getString(
-					priceList.getCatalogExternalReferenceCode()),
-				contextCompany.getCompanyId());
+		CommerceCatalog commerceCatalog = _getCommerceCatalog(priceList);
 
-		if (commerceCatalog == null) {
-			commerceCatalog = _commerceCatalogService.getCommerceCatalog(
-				priceList.getCatalogId());
-		}
-
-		CommerceCurrency commerceCurrency =
-			CommerceCurrencyUtil.getCommerceCurrency(
-				contextCompany.getCompanyId(), priceList.getCurrencyCode(),
-				priceList.getCurrencyExternalReferenceCode(),
-				GetterUtil.getLong(priceList.getCurrencyId()));
+		CommerceCurrency commerceCurrency = _getCommerceCurrency(priceList);
 
 		ServiceContext serviceContext =
 			_serviceContextHelper.getServiceContext();
@@ -316,6 +312,98 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 				"UPDATE", commercePriceList.getCommercePriceListId(),
 				"patchPriceList", _commercePriceListModelResourcePermission)
 		).build();
+	}
+
+	private CommerceCurrency _getCatalogCommerceCurrency(PriceList priceList)
+		throws Exception {
+
+		String catalogCurrencyCode = priceList.getCatalogCurrencyCode();
+		String catalogCurrencyExternalReferenceCode =
+			priceList.getCatalogCurrencyExternalReferenceCode();
+
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyUtil.fetchCommerceCurrency(
+				contextCompany.getCompanyId(), catalogCurrencyCode,
+				catalogCurrencyExternalReferenceCode, 0);
+
+		if (commerceCurrency != null) {
+			return commerceCurrency;
+		}
+
+		if (Validator.isNull(catalogCurrencyExternalReferenceCode)) {
+			throw new NoSuchCurrencyException(
+				"Unable to find currency with external reference code " +
+					catalogCurrencyExternalReferenceCode);
+		}
+
+		return _commerceCurrencyService.getOrAddEmptyCommerceCurrency(
+			catalogCurrencyExternalReferenceCode, catalogCurrencyCode);
+	}
+
+	private CommerceCatalog _getCommerceCatalog(PriceList priceList)
+		throws Exception {
+
+		String catalogExternalReferenceCode =
+			priceList.getCatalogExternalReferenceCode();
+
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogService.fetchCommerceCatalogByExternalReferenceCode(
+				GetterUtil.getString(catalogExternalReferenceCode),
+				contextCompany.getCompanyId());
+
+		if (commerceCatalog != null) {
+			return commerceCatalog;
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			return _commerceCatalogService.getCommerceCatalog(
+				GetterUtil.getLong(priceList.getCatalogId()));
+		}
+
+		if (Validator.isNull(catalogExternalReferenceCode)) {
+			throw new NoSuchCatalogException(
+				"Unable to find catalog with external reference code " +
+					catalogExternalReferenceCode);
+		}
+
+		CommerceCurrency commerceCurrency = _getCatalogCommerceCurrency(
+			priceList);
+
+		return _commerceCatalogService.getOrAddEmptyCommerceCatalog(
+			catalogExternalReferenceCode, commerceCurrency.getCode());
+	}
+
+	private CommerceCurrency _getCommerceCurrency(PriceList priceList)
+		throws Exception {
+
+		String currencyCode = priceList.getCurrencyCode();
+		String currencyExternalReferenceCode =
+			priceList.getCurrencyExternalReferenceCode();
+		long currencyId = GetterUtil.getLong(priceList.getCurrencyId());
+
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyUtil.fetchCommerceCurrency(
+				contextCompany.getCompanyId(), currencyCode,
+				currencyExternalReferenceCode, currencyId);
+
+		if (commerceCurrency != null) {
+			return commerceCurrency;
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			return CommerceCurrencyUtil.getCommerceCurrency(
+				contextCompany.getCompanyId(), currencyCode,
+				currencyExternalReferenceCode, currencyId);
+		}
+
+		if (Validator.isNull(currencyExternalReferenceCode)) {
+			throw new NoSuchCurrencyException(
+				"Unable to find currency with external reference code " +
+					currencyExternalReferenceCode);
+		}
+
+		return _commerceCurrencyService.getOrAddEmptyCommerceCurrency(
+			currencyExternalReferenceCode, currencyCode);
 	}
 
 	private PriceList _toPriceList(CommercePriceList commercePriceList)
@@ -524,11 +612,29 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 						priceEntry.getExpirationDate(),
 						serviceContext.getTimeZone());
 
+				long cProductId = 0;
+				String cpInstanceUuid = null;
+
+				CPInstance cpInstance = CPInstanceUtil.fetchCPInstance(
+					commercePriceList, _cpDefinitionService, _cpInstanceService,
+					priceEntry.getProductExternalReferenceCode(),
+					priceEntry.getProductType(), serviceContext,
+					priceEntry.getSkuExternalReferenceCode(),
+					GetterUtil.getLong(priceEntry.getSkuId()));
+
+				if (cpInstance != null) {
+					CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+					cProductId = cpDefinition.getCProductId();
+
+					cpInstanceUuid = cpInstance.getCPInstanceUuid();
+				}
+
 				CommercePriceEntry commercePriceEntry =
 					_commercePriceEntryService.addOrUpdateCommercePriceEntry(
 						priceEntry.getExternalReferenceCode(),
 						GetterUtil.getLong(priceEntry.getPriceEntryId()),
-						GetterUtil.getLong(priceEntry.getSkuId()), null,
+						cProductId, cpInstanceUuid,
 						commercePriceList.getCommercePriceListId(),
 						priceEntry.getDiscountDiscovery(),
 						priceEntry.getDiscountLevel1(),
@@ -654,6 +760,9 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 	private CommerceChannelService _commerceChannelService;
 
 	@Reference
+	private CommerceCurrencyService _commerceCurrencyService;
+
+	@Reference
 	private CommerceDiscountService _commerceDiscountService;
 
 	@Reference
@@ -702,6 +811,12 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 
 	@Reference
 	private CommerceTierPriceEntryService _commerceTierPriceEntryService;
+
+	@Reference
+	private CPDefinitionService _cpDefinitionService;
+
+	@Reference
+	private CPInstanceService _cpInstanceService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
