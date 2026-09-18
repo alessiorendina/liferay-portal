@@ -1324,9 +1324,10 @@ public class ProductResourceImpl
 						masterCPConfigurationEntry.isBackOrders()),
 					ProductConfigurationUtil.getCommerceAvailabilityEstimateId(
 						_commerceAvailabilityEstimateService,
-						productConfiguration,
+						contextCompany.getCompanyId(),
 						masterCPConfigurationEntry.
-							getCommerceAvailabilityEstimateId()),
+							getCommerceAvailabilityEstimateId(),
+						productConfiguration),
 					GetterUtil.getString(
 						productConfiguration.getInventoryEngine(),
 						masterCPConfigurationEntry.
@@ -1390,8 +1391,8 @@ public class ProductResourceImpl
 
 			ProductConfigurationUtil.updateCPDAvailabilityEstimate(
 				_commerceAvailabilityEstimateService,
-				_cpdAvailabilityEstimateService, productConfiguration,
-				cpDefinition.getCPDefinitionId());
+				cpDefinition.getCompanyId(), _cpdAvailabilityEstimateService,
+				productConfiguration, cpDefinition.getCPDefinitionId());
 		}
 
 		// Product shipping configuration
