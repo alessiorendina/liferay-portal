@@ -12,7 +12,6 @@ import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.discount.exception.NoSuchDiscountException;
 import com.liferay.commerce.discount.model.CommerceDiscount;
-import com.liferay.commerce.discount.model.CommerceDiscountRule;
 import com.liferay.commerce.discount.service.CommerceDiscountAccountRelService;
 import com.liferay.commerce.discount.service.CommerceDiscountCommerceAccountGroupRelService;
 import com.liferay.commerce.discount.service.CommerceDiscountOrderTypeRelService;
@@ -55,8 +54,6 @@ import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountResourc
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.DateConfig;
 import com.liferay.headless.commerce.core.util.ExpandoUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -550,36 +547,10 @@ public class DiscountResourceImpl
 		DiscountRule[] discountRules = discount.getDiscountRules();
 
 		if (discountRules != null) {
-			if (LazyReferencingThreadLocal.isEnabled()) {
-				for (CommerceDiscountRule commerceDiscountRule :
-						_commerceDiscountRuleService.getCommerceDiscountRules(
-							commerceDiscount.getCommerceDiscountId(),
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
-					_commerceDiscountRuleService.deleteCommerceDiscountRule(
-						commerceDiscountRule.getCommerceDiscountRuleId());
-				}
-
-				for (DiscountRule discountRule : discountRules) {
-					DiscountRuleUtil.addCommerceDiscountRule(
-						_commerceDiscountRuleService, discountRule,
-						commerceDiscount, _serviceContextHelper);
-				}
-			}
-			else {
-				for (DiscountRule discountRule : discountRules) {
-					CommerceDiscountRule commerceDiscountRule =
-						_commerceDiscountRuleService.fetchCommerceDiscountRule(
-							discountRule.getId());
-
-					if (commerceDiscountRule != null) {
-						continue;
-					}
-
-					DiscountRuleUtil.addCommerceDiscountRule(
-						_commerceDiscountRuleService, discountRule,
-						commerceDiscount, _serviceContextHelper);
-				}
+			for (DiscountRule discountRule : discountRules) {
+				DiscountRuleUtil.addOrUpdateCommerceDiscountRule(
+					_commerceDiscountRuleService, discountRule,
+					commerceDiscount, _serviceContextHelper);
 			}
 		}
 
