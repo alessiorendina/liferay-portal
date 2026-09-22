@@ -24,7 +24,7 @@ import com.liferay.portal.kernel.util.Validator;
 public class CatalogUtil {
 
 	public static CommerceCatalog getCommerceCatalog(
-			String catalogCurrencyCode,
+			long catalogId, String catalogCurrencyCode,
 			String catalogCurrencyExternalReferenceCode,
 			String catalogExternalReferenceCode,
 			CommerceCatalogService commerceCatalogService,
@@ -41,6 +41,18 @@ public class CatalogUtil {
 			return commerceCatalog;
 		}
 
+		if ((catalogId > 0) && !LazyReferencingThreadLocal.isEnabled()) {
+			commerceCatalog = commerceCatalogService.fetchCommerceCatalog(
+				catalogId);
+
+			if ((commerceCatalog != null) &&
+				(commerceCatalog.getCompanyId() ==
+					serviceContext.getCompanyId())) {
+
+				return commerceCatalog;
+			}
+		}
+
 		if (!LazyReferencingThreadLocal.isEnabled() ||
 			Validator.isNull(catalogExternalReferenceCode)) {
 
@@ -49,7 +61,7 @@ public class CatalogUtil {
 					catalogExternalReferenceCode);
 		}
 
-		CommerceCurrency commerceCurrency = _getCommerceCurrency(
+		CommerceCurrency commerceCurrency = getCommerceCurrency(
 			catalogCurrencyCode, catalogCurrencyExternalReferenceCode,
 			commerceCurrencyService, serviceContext);
 
@@ -57,7 +69,7 @@ public class CatalogUtil {
 			catalogExternalReferenceCode, commerceCurrency.getCode());
 	}
 
-	private static CommerceCurrency _getCommerceCurrency(
+	public static CommerceCurrency getCommerceCurrency(
 			String catalogCurrencyCode,
 			String catalogCurrencyExternalReferenceCode,
 			CommerceCurrencyService commerceCurrencyService,

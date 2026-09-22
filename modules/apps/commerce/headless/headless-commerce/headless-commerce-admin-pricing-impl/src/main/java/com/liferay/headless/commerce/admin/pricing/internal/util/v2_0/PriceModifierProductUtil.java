@@ -111,7 +111,7 @@ public class PriceModifierProductUtil {
 		}
 
 		CommerceCatalog commerceCatalog = CatalogUtil.getCommerceCatalog(
-			priceModifierProduct.getCatalogCurrencyCode(),
+			0, priceModifierProduct.getCatalogCurrencyCode(),
 			priceModifierProduct.getCatalogCurrencyExternalReferenceCode(),
 			priceModifierProduct.getCatalogExternalReferenceCode(),
 			commerceCatalogService, commerceCurrencyService, serviceContext);

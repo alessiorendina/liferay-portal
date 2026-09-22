@@ -108,7 +108,7 @@ public class DiscountProductUtil {
 		}
 
 		CommerceCatalog commerceCatalog = CatalogUtil.getCommerceCatalog(
-			discountProduct.getCatalogCurrencyCode(),
+			0, discountProduct.getCatalogCurrencyCode(),
 			discountProduct.getCatalogCurrencyExternalReferenceCode(),
 			discountProduct.getCatalogExternalReferenceCode(),
 			commerceCatalogService, commerceCurrencyService, serviceContext);

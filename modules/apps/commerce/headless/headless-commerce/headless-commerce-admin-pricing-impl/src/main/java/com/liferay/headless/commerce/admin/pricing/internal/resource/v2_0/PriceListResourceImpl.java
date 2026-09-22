@@ -30,7 +30,6 @@ import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.service.CommercePriceModifierRelService;
 import com.liferay.commerce.pricing.service.CommercePriceModifierService;
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
-import com.liferay.commerce.product.exception.NoSuchCatalogException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -52,6 +51,7 @@ import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListOrderType;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifier;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.TierPrice;
 import com.liferay.headless.commerce.admin.pricing.internal.odata.entity.v2_0.PriceListEntityModel;
+import com.liferay.headless.commerce.admin.pricing.internal.util.CatalogUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.SkuUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.PriceListAccountGroupUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.PriceListAccountUtil;
@@ -284,12 +284,17 @@ public class PriceListResourceImpl
 			String externalReferenceCode, PriceList priceList)
 		throws Exception {
 
-		CommerceCatalog commerceCatalog = _getCommerceCatalog(priceList);
-
-		CommerceCurrency commerceCurrency = _getCommerceCurrency(priceList);
-
 		ServiceContext serviceContext =
 			_serviceContextHelper.getServiceContext();
+
+		CommerceCatalog commerceCatalog = CatalogUtil.getCommerceCatalog(
+			GetterUtil.getLong(priceList.getCatalogId()),
+			priceList.getCatalogCurrencyCode(),
+			priceList.getCatalogCurrencyExternalReferenceCode(),
+			priceList.getCatalogExternalReferenceCode(),
+			_commerceCatalogService, _commerceCurrencyService, serviceContext);
+
+		CommerceCurrency commerceCurrency = _getCommerceCurrency(priceList);
 
 		DateConfig displayDateConfig = DateConfig.toDisplayDateConfig(
 			priceList.getDisplayDate(), serviceContext.getTimeZone());
@@ -364,65 +369,6 @@ public class PriceListResourceImpl
 				"UPDATE", commercePriceList.getCommercePriceListId(),
 				"patchPriceList", _commercePriceListModelResourcePermission)
 		).build();
-	}
-
-	private CommerceCurrency _getCatalogCommerceCurrency(PriceList priceList)
-		throws Exception {
-
-		String catalogCurrencyCode = priceList.getCatalogCurrencyCode();
-		String catalogCurrencyExternalReferenceCode =
-			priceList.getCatalogCurrencyExternalReferenceCode();
-
-		CommerceCurrency commerceCurrency =
-			CommerceCurrencyUtil.fetchCommerceCurrency(
-				contextCompany.getCompanyId(), catalogCurrencyCode,
-				catalogCurrencyExternalReferenceCode, 0);
-
-		if (commerceCurrency != null) {
-			return commerceCurrency;
-		}
-
-		if (Validator.isNull(catalogCurrencyExternalReferenceCode)) {
-			throw new NoSuchCurrencyException(
-				"Unable to find currency with external reference code " +
-					catalogCurrencyExternalReferenceCode);
-		}
-
-		return _commerceCurrencyService.getOrAddEmptyCommerceCurrency(
-			catalogCurrencyExternalReferenceCode, catalogCurrencyCode);
-	}
-
-	private CommerceCatalog _getCommerceCatalog(PriceList priceList)
-		throws Exception {
-
-		String catalogExternalReferenceCode =
-			priceList.getCatalogExternalReferenceCode();
-
-		CommerceCatalog commerceCatalog =
-			_commerceCatalogService.fetchCommerceCatalogByExternalReferenceCode(
-				GetterUtil.getString(catalogExternalReferenceCode),
-				contextCompany.getCompanyId());
-
-		if (commerceCatalog != null) {
-			return commerceCatalog;
-		}
-
-		if (!LazyReferencingThreadLocal.isEnabled()) {
-			return _commerceCatalogService.getCommerceCatalog(
-				GetterUtil.getLong(priceList.getCatalogId()));
-		}
-
-		if (Validator.isNull(catalogExternalReferenceCode)) {
-			throw new NoSuchCatalogException(
-				"Unable to find catalog with external reference code " +
-					catalogExternalReferenceCode);
-		}
-
-		CommerceCurrency commerceCurrency = _getCatalogCommerceCurrency(
-			priceList);
-
-		return _commerceCatalogService.getOrAddEmptyCommerceCatalog(
-			catalogExternalReferenceCode, commerceCurrency.getCode());
 	}
 
 	private CommerceCurrency _getCommerceCurrency(PriceList priceList)

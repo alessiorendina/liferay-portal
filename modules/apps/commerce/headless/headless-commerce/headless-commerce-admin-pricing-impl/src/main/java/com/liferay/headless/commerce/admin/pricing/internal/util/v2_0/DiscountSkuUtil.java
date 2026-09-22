@@ -106,7 +106,7 @@ public class DiscountSkuUtil {
 
 		if (LazyReferencingThreadLocal.isEnabled()) {
 			CommerceCatalog commerceCatalog = CatalogUtil.getCommerceCatalog(
-				discountSku.getCatalogCurrencyCode(),
+				0, discountSku.getCatalogCurrencyCode(),
 				discountSku.getCatalogCurrencyExternalReferenceCode(),
 				discountSku.getCatalogExternalReferenceCode(),
 				commerceCatalogService, commerceCurrencyService,
