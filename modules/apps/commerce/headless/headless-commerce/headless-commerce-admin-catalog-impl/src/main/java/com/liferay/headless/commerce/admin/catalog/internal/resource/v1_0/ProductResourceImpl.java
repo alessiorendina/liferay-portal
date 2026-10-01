@@ -57,6 +57,7 @@ import com.liferay.commerce.product.service.CommerceChannelRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.CPTypeRegistry;
+import com.liferay.commerce.product.type.grouped.service.CPDefinitionGroupedEntryService;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.service.CPDVirtualSettingFileEntryService;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingService;
@@ -77,6 +78,7 @@ import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngin
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Category;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Diagram;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.GroupedProduct;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.MappedProduct;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Pin;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
@@ -98,6 +100,7 @@ import com.liferay.headless.commerce.admin.catalog.internal.odata.entity.v1_0.Pr
 import com.liferay.headless.commerce.admin.catalog.internal.util.DateConfigUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.AttachmentUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.DiagramUtil;
+import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.GroupedProductUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.MappedProductUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.PinUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductConfigurationUtil;
@@ -407,8 +410,8 @@ public class ProductResourceImpl
 			@Override
 			public List<String> getNestedFields() {
 				return List.of(
-					"attachments", "creator", "diagram", "images",
-					"mappedProducts", "pins", "productAccountGroups",
+					"attachments", "creator", "diagram", "groupedProducts",
+					"images", "mappedProducts", "pins", "productAccountGroups",
 					"productChannels", "productConfiguration", "productGroups",
 					"productOptions", "productOptions.productOptionValues",
 					"productSpecifications", "productVirtualSettings",
@@ -1482,6 +1485,20 @@ public class ProductResourceImpl
 			}
 		}
 
+		// Grouped products
+
+		GroupedProduct[] groupedProducts = product.getGroupedProducts();
+
+		if (groupedProducts != null) {
+			for (GroupedProduct groupedProduct : groupedProducts) {
+				GroupedProductUtil.addOrUpdateCPDefinitionGroupedEntry(
+					cpDefinition, _cpDefinitionGroupedEntryService,
+					_cpDefinitionService, groupedProduct,
+					_serviceContextHelper.getServiceContext(
+						cpDefinition.getGroupId()));
+			}
+		}
+
 		// Skus
 
 		Sku[] skus = product.getSkus();
@@ -2093,6 +2110,9 @@ public class ProductResourceImpl
 
 	@Reference
 	private CPConfigurationEntryService _cpConfigurationEntryService;
+
+	@Reference
+	private CPDefinitionGroupedEntryService _cpDefinitionGroupedEntryService;
 
 	@Reference
 	private CPDefinitionInventoryService _cpDefinitionInventoryService;
