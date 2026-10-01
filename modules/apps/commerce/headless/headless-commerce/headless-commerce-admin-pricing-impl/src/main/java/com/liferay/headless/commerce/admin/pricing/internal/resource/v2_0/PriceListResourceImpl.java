@@ -9,6 +9,7 @@ import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountGroupService;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetCategoryService;
+import com.liferay.asset.kernel.service.AssetVocabularyService;
 import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
@@ -546,12 +547,12 @@ public class PriceListResourceImpl
 							serviceContext);
 
 				PriceModifierUtil.addOrUpdateCommercePriceModifierRels(
-					contextCompany.getGroupId(), _assetCategoryLocalService,
-					_assetCategoryService, _cProductLocalService,
+					_assetCategoryLocalService, _assetCategoryService,
+					_assetVocabularyService, _cProductLocalService,
 					_commerceCatalogService, _commerceCurrencyService,
-					_commercePriceModifierRelService,
+					commercePriceModifier, _commercePriceModifierRelService,
 					_commercePricingClassService, _cpDefinitionService,
-					priceModifier, commercePriceModifier,
+					contextCompany.getGroupId(), priceModifier,
 					_serviceContextHelper);
 			}
 		}
@@ -717,6 +718,9 @@ public class PriceListResourceImpl
 
 	@Reference
 	private AssetCategoryService _assetCategoryService;
+
+	@Reference
+	private AssetVocabularyService _assetVocabularyService;
 
 	@Reference
 	private CProductLocalService _cProductLocalService;
