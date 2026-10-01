@@ -8,6 +8,10 @@ package com.liferay.headless.commerce.admin.pricing.resource.v2_0.test;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrderType;
@@ -42,6 +46,7 @@ import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListAcco
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListChannel;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListOrderType;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceModifier;
+import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceModifierCategory;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.TierPrice;
 import com.liferay.headless.commerce.admin.pricing.client.pagination.Page;
 import com.liferay.headless.commerce.admin.pricing.client.pagination.Pagination;
@@ -231,6 +236,7 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 
 		_testPostPriceListWithCreator();
 		_testPostPriceListWithExistingIds();
+		_testPostPriceListWithLazyReferencedPriceModifierCategory();
 		_testPostPriceListWithLazyReferencingDisabled();
 		_testPostPriceListWithLazyReferencingEnabled();
 		_testPostPriceListWithSamePriceListAccount();
@@ -680,6 +686,63 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 			priceModifier1.getTitle(), commercePriceModifier.getTitle());
 	}
 
+	private void _testPostPriceListWithLazyReferencedPriceModifierCategory()
+		throws Exception {
+
+		PriceList priceList = randomPriceList();
+
+		PriceModifierCategory priceModifierCategory =
+			new PriceModifierCategory() {
+				{
+					categoryExternalReferenceCode =
+						RandomTestUtil.randomString();
+					vocabularyExternalReferenceCode =
+						RandomTestUtil.randomString();
+				}
+			};
+
+		priceList.setPriceModifiers(
+			new PriceModifier[] {
+				new PriceModifier() {
+					{
+						active = true;
+						externalReferenceCode = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						modifierAmount = BigDecimal.ONE;
+						modifierType =
+							CommercePriceModifierConstants.
+								MODIFIER_TYPE_PERCENTAGE;
+						priceModifierCategories = new PriceModifierCategory[] {
+							priceModifierCategory
+						};
+						target =
+							CommercePriceModifierConstants.TARGET_CATEGORIES;
+						title = RandomTestUtil.randomString();
+					}
+				}
+			});
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			priceListResource.postPriceList(priceList);
+		}
+
+		AssetCategory assetCategory =
+			_assetCategoryLocalService.getAssetCategoryByExternalReferenceCode(
+				priceModifierCategory.getCategoryExternalReferenceCode(),
+				testCompany.getGroupId());
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.
+				getAssetVocabularyByExternalReferenceCode(
+					priceModifierCategory.getVocabularyExternalReferenceCode(),
+					testCompany.getGroupId());
+
+		Assert.assertEquals(
+			assetVocabulary.getVocabularyId(), assetCategory.getVocabularyId());
+	}
+
 	private void _testPostPriceListWithLazyReferencingDisabled()
 		throws Exception {
 
@@ -902,6 +965,12 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;

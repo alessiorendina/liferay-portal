@@ -10,6 +10,9 @@ import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
@@ -33,6 +36,7 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.batch.engine.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Attachment;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Category;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Creator;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Diagram;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
@@ -431,6 +435,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductVirtual();
 		_testPostProductWithCreator();
 		_testPostProductWithDiagramImageExternalReferenceCode();
+		_testPostProductWithLazyReferencedCategory();
 		_testPostProductWithLazyReferencingDisabled();
 		_testPostProductWithLazyReferencingEnabled();
 		_testPostProductWithProductAccountGroupExternalReferenceCode();
@@ -1438,6 +1443,39 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(_DIAGRAM_TYPE_DEFAULT, diagram.getType());
 	}
 
+	private void _testPostProductWithLazyReferencedCategory() throws Exception {
+		Product randomProduct = randomProduct();
+
+		Category category = new Category() {
+			{
+				externalReferenceCode = RandomTestUtil.randomString();
+				id = RandomTestUtil.randomLong();
+				vocabularyExternalReferenceCode = RandomTestUtil.randomString();
+			}
+		};
+
+		randomProduct.setCategories(new Category[] {category});
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			productResource.postProduct(randomProduct);
+		}
+
+		AssetCategory assetCategory =
+			_assetCategoryLocalService.getAssetCategoryByExternalReferenceCode(
+				category.getExternalReferenceCode(), testCompany.getGroupId());
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.
+				getAssetVocabularyByExternalReferenceCode(
+					category.getVocabularyExternalReferenceCode(),
+					testCompany.getGroupId());
+
+		Assert.assertEquals(
+			assetVocabulary.getVocabularyId(), assetCategory.getVocabularyId());
+	}
+
 	private void _testPostProductWithLazyReferencingDisabled()
 		throws Exception {
 
@@ -1755,6 +1793,12 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Inject
 	private AccountGroupLocalService _accountGroupLocalService;
+
+	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
