@@ -991,7 +991,7 @@ public class ProductResourceImpl
 		CommerceCurrency commerceCurrency = _getCommerceCurrency(product);
 
 		return _commerceCatalogService.getOrAddEmptyCommerceCatalog(
-			catalogExternalReferenceCode, commerceCurrency.getCode());
+			catalogExternalReferenceCode, null, commerceCurrency.getCode());
 	}
 
 	private Map<String, Map<String, String>> _getActions(
